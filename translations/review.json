@@ -849,11 +849,1376 @@
     "fix": "按保护步骤逆序恢复，先外层注释/标签再内部公式；全374页检查确认无占位符残留。"
   },
   "publication": {
-    "status": "author_notification_confirmed_deployment_prepared",
+    "status": "published_and_verified",
     "site": "https://xingshuozhu1998.github.io/",
     "repository": "https://github.com/xingshuozhu1998/xingshuozhu1998.github.io",
     "author_notification": "维护者在对话中确认自行完成作者通知并明确授权上传发布，无需等待作者回信。",
     "confirmed_at": "2026-10-05T06:50:43.188161+00:00",
-    "faq": "https://lilianweng.github.io/faq/"
+    "faq": "https://lilianweng.github.io/faq/",
+    "verified_at": "2026-10-05T06:55:59.683209+00:00",
+    "translation_source_commit": "225b308",
+    "deployment_commit": "f5cd9cb02989423e4ca846bfc8019485db60b8f9",
+    "pages_build_status": "built",
+    "anonymous_http_checked_urls": 119,
+    "online_article_pages": 104,
+    "http_errors": 0,
+    "content_mismatches": 0
+  },
+  "online_validation": {
+    "site": "https://xingshuozhu1998.github.io",
+    "anonymous_requests": true,
+    "http_checked_urls": 119,
+    "bilingual_articles": 52,
+    "article_pages": 104,
+    "all_http_200": true,
+    "all_match_local_bytes": true,
+    "errors": 0,
+    "rows": [
+      {
+        "path": "/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "61977db45e0d9f5b098d4508b296179f5570d3420cb725fb0a68df94eb0b7580",
+        "bytes": 27150
+      },
+      {
+        "path": "/en/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "59685b50138df10a793710c665181f2bce01469bc3429a6c9dd58b1e10aa26e3",
+        "bytes": 26545
+      },
+      {
+        "path": "/translations.json",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "653f64b6aa9a8015314a20c17672bef1fc2625af7b215581002eb83a8b79a2f6",
+        "bytes": 419976
+      },
+      {
+        "path": "/index.json",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "c8246d36bf71abc7fa0d6468bb1d5b7777a9a3c5034870bb170c35c731cd6378",
+        "bytes": 1840691
+      },
+      {
+        "path": "/en/index.json",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "5ad11c08bd776035366356a28e27481af00b7c986754ff69eee2ecc0a4f6faee",
+        "bytes": 1989867
+      },
+      {
+        "path": "/index.xml",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "891d08ecc77be76386f78b113ff90b3950791f962dfc0e94a9a25ffc4dcc0e4d",
+        "bytes": 72280
+      },
+      {
+        "path": "/en/index.xml",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "b846fa1f62e8ae70a66ff2183f08e973cb17e5ba3894736ced21f83514c8c0e7",
+        "bytes": 39727
+      },
+      {
+        "path": "/sitemap.xml",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "4067a497246cd71aae515c27534b0192ec312f57ce6fec9333d10354ab67cd82",
+        "bytes": 14801
+      },
+      {
+        "path": "/en/sitemap.xml",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "fc53de3eddabe8a6c0c864c0f11ed6c9b12a04b3237255ada7edb73e1cc08705",
+        "bytes": 15359
+      },
+      {
+        "path": "/search/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "bca5d5ac9634ff462df3d125b599383bab910a299c9d6914c1e33672fdbdc2ed",
+        "bytes": 11225
+      },
+      {
+        "path": "/en/search/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "f4f9432de0a56ffc6ad5f77ada24163c5367cdbe2df9c7853819a1d56fced1be",
+        "bytes": 11388
+      },
+      {
+        "path": "/archives/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "082660883ae1e2fe729fee8e3f55f785338a4bf3cc005224ff86066390cbaf61",
+        "bytes": 44324
+      },
+      {
+        "path": "/en/archives/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "810b26c3c01029ca87522772742fb4a06acfa71c85827486e2f21c94b5707229",
+        "bytes": 42816
+      },
+      {
+        "path": "/faq/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "a3d06d939c6d858c7f48cb72d6adb79c2173b41ba5148c6e520c7bbe0a9d6ce6",
+        "bytes": 14720
+      },
+      {
+        "path": "/en/faq/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "eb50495e3369510a368c7cdbc2459feba52d30faeb2946b478822753103f0a59",
+        "bytes": 14755
+      },
+      {
+        "path": "/posts/2017-06-21-overview/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "92af1cba36c374514a2a7d6241d7ee35b7319258f27767e50563c0c3a337b7e0",
+        "bytes": 70336
+      },
+      {
+        "path": "/en/posts/2017-06-21-overview/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "77497805438f6eaac540ab5d923af09dc2fc1f59d2d40d36d292fefe891f3659",
+        "bytes": 71151
+      },
+      {
+        "path": "/posts/2017-07-08-stock-rnn-part-1/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "0c6b161a88c979a632184ced3a9eb2f759bdad2eea7a59a7575d338a60f91911",
+        "bytes": 85238
+      },
+      {
+        "path": "/en/posts/2017-07-08-stock-rnn-part-1/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "d03fde606d0125121c70060a8322ec0d64fb757a48e0402d7ca9d033c669ca93",
+        "bytes": 85906
+      },
+      {
+        "path": "/posts/2017-07-22-stock-rnn-part-2/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "a42abb0e124c7b29893a89c2cdfe3ac621fb79cdc4ea9df65f5b75f24e885943",
+        "bytes": 66140
+      },
+      {
+        "path": "/en/posts/2017-07-22-stock-rnn-part-2/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "c69d8b2510809c66da28fdd8795682dd9f43266102911a4d5de481f2ef8c78ea",
+        "bytes": 67413
+      },
+      {
+        "path": "/posts/2017-08-01-interpretation/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "7f2a155f18498c13f5ead97ca3ba64c1bc5551b10964b63c9f4ac1bbdf0bea37",
+        "bytes": 79812
+      },
+      {
+        "path": "/en/posts/2017-08-01-interpretation/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "c38713c9ab5e065d5833c200e028e4da5441619a5d3fc3bd9695f46f7aeae04f",
+        "bytes": 85000
+      },
+      {
+        "path": "/posts/2017-08-20-gan/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "5b05086f36d6b17f1178db6eca82e9f00a88f1ce8fcb49fdfccc8143be77ca90",
+        "bytes": 86117
+      },
+      {
+        "path": "/en/posts/2017-08-20-gan/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "e01cdb9f4309dc7d5fd6f92b16be802b16f1e5c6e885b2dde3fd7ee14cb0ccc0",
+        "bytes": 94855
+      },
+      {
+        "path": "/posts/2017-09-28-information-bottleneck/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "872062fc931612fc6f1a645f9fcdf2e4fc62ab2bc4a184a7bd7588672c12d007",
+        "bytes": 54959
+      },
+      {
+        "path": "/en/posts/2017-09-28-information-bottleneck/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "d5e31a64493d83df6bf42ea1005514eee8d3ca101ed26d86f4b3fdcab362b8a2",
+        "bytes": 57847
+      },
+      {
+        "path": "/posts/2017-10-15-word-embedding/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "268dbfbb1dee9cc8f5bad894f990fe6dc681aa774326fdd18a41ef9aa6d2734d",
+        "bytes": 90040
+      },
+      {
+        "path": "/en/posts/2017-10-15-word-embedding/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "3a0b84f70f45440426e5c25e5f8dc6c6394588799e0b1c86d2cd81f7f822fdf3",
+        "bytes": 93999
+      },
+      {
+        "path": "/posts/2017-10-29-object-recognition-part-1/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "eea5ce19673d6bf5a799e79611ca9aa7edb9fe497109e0185d6d14bf33070005",
+        "bytes": 92850
+      },
+      {
+        "path": "/en/posts/2017-10-29-object-recognition-part-1/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "996e4ebaac417735691601bfeb8fc5a660b5aec0d0cbfda3d50fac0265e7b2c7",
+        "bytes": 96217
+      },
+      {
+        "path": "/posts/2017-12-15-object-recognition-part-2/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "c67d5d9af51ed4853ebbcf68c82dfce4c34e67d17cee2f47254343d2e42866e2",
+        "bytes": 51472
+      },
+      {
+        "path": "/en/posts/2017-12-15-object-recognition-part-2/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "17cf4c19cc3d84483139173e0604360d655aadb7daea61208e85141790d681fd",
+        "bytes": 51707
+      },
+      {
+        "path": "/posts/2017-12-31-object-recognition-part-3/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "56f2f13f0d2abc39ef039535a21b87c0dde06b65983cb7e15753c27c3c16a1b4",
+        "bytes": 74686
+      },
+      {
+        "path": "/en/posts/2017-12-31-object-recognition-part-3/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "5751d099911a6e7223c01ff50158c646a8e5a6bfa124686448cae3831f19b8ae",
+        "bytes": 74652
+      },
+      {
+        "path": "/posts/2018-01-23-multi-armed-bandit/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "9d6f59a4b831f100aecf38ab41ae2d3ec0eeaf1d947947c7649a731325d107de",
+        "bytes": 59060
+      },
+      {
+        "path": "/en/posts/2018-01-23-multi-armed-bandit/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "2615aabe06111babff4a2ff8df711e31b3d14d7c736d25eab7a09c4f69a076e6",
+        "bytes": 60426
+      },
+      {
+        "path": "/posts/2018-02-19-rl-overview/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "c8bd0f420534d9be23200d1d812cfa314fbb2c5473c4fc0c41a15fc284577f2b",
+        "bytes": 120079
+      },
+      {
+        "path": "/en/posts/2018-02-19-rl-overview/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "1eb2abb7927962cee252ac536d4bec4c5440a184893b7b378eecc27671ebb00f",
+        "bytes": 128135
+      },
+      {
+        "path": "/posts/2018-04-08-policy-gradient/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "12d391a450b0f4ece98ba23018a987046d17bdad0e341325d6918def7c9f0d25",
+        "bytes": 204470
+      },
+      {
+        "path": "/en/posts/2018-04-08-policy-gradient/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "33aa982ac4b2eaaaf1ef8cf6497ed8355ce79465b00cb74ef0837633bcc23e14",
+        "bytes": 209915
+      },
+      {
+        "path": "/posts/2018-05-05-drl-implementation/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "08fed3da35913b59ed8253752605d73e87a5b2b5157b7a92f2940165e29a6bbe",
+        "bytes": 114368
+      },
+      {
+        "path": "/en/posts/2018-05-05-drl-implementation/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "fb64c2f980ba60a01b7d4f01c98a3041a4c89b1669950bbd0756bab10ac289f9",
+        "bytes": 114150
+      },
+      {
+        "path": "/posts/2018-06-24-attention/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "f9ef43284b8a24deab051494d4f1063eb1516d4036881be8f288c92ea44a1f2e",
+        "bytes": 97466
+      },
+      {
+        "path": "/en/posts/2018-06-24-attention/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "dac9ae6240b7d301dabb0adf0b1384c1e08d88f5c644e041ad360a2ae537ad65",
+        "bytes": 103960
+      },
+      {
+        "path": "/posts/2018-08-12-vae/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "c67a809153439b799bc9bb7cd024a01cfe9e939fe5263c40b297709dfb85ce0b",
+        "bytes": 102841
+      },
+      {
+        "path": "/en/posts/2018-08-12-vae/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "e2d96b196d5371d188b8ac434ab47b9460eabec0b9d5e62a83842a60a8f7cd60",
+        "bytes": 107438
+      },
+      {
+        "path": "/posts/2018-10-13-flow-models/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "7f53a0d71c80cb723f78659c75566b3b14dbf8585c2d1d4d5e4b729934b19265",
+        "bytes": 94441
+      },
+      {
+        "path": "/en/posts/2018-10-13-flow-models/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "9e983448afe4047dfa3b6fca1996745af7fff86a305029990ab8b376ba5545d1",
+        "bytes": 102554
+      },
+      {
+        "path": "/posts/2018-11-30-meta-learning/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "dd49881095e5bc1f26e952776d0c7bcb9211056bc0db64bf148a85a8a519f47a",
+        "bytes": 126077
+      },
+      {
+        "path": "/en/posts/2018-11-30-meta-learning/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "37bf709427f09f577b9985ec371752718c532de5e16770a59bfee8f1908d2906",
+        "bytes": 138735
+      },
+      {
+        "path": "/posts/2018-12-27-object-recognition-part-4/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "913530bfb1bfcbf4f4446ff14b384f65cf49e130a888a001c406ff48cfe80f38",
+        "bytes": 86434
+      },
+      {
+        "path": "/en/posts/2018-12-27-object-recognition-part-4/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "f9fbe3254a790ac4c5c761e6aafb08412f4dba7453712580ab90cbd16ba65656",
+        "bytes": 90204
+      },
+      {
+        "path": "/posts/2019-01-31-lm/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "ec3fc72d576364d5efb89a25e926933217f0ec560f260af2837020f054198ebe",
+        "bytes": 155331
+      },
+      {
+        "path": "/en/posts/2019-01-31-lm/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "dd1d8cd5eaf23ce6e185f1493933da2c09b63ce2d579d4ea8474c38954527248",
+        "bytes": 162901
+      },
+      {
+        "path": "/posts/2019-03-14-overfit/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "20514f48a4132c5410b4121d4ec4e71e9bd53f6b8035968edbc004017a72c3bc",
+        "bytes": 90307
+      },
+      {
+        "path": "/en/posts/2019-03-14-overfit/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "160c09874d1caa93a298050c1ebd3aa3dd26d6dc1da40b4b0447b1b0515352fc",
+        "bytes": 98625
+      },
+      {
+        "path": "/posts/2019-05-05-domain-randomization/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "75ed2bd0ffe691831ecfd21f126e74fa69ce03c5a52c40c10d3697a5cefb0711",
+        "bytes": 74985
+      },
+      {
+        "path": "/en/posts/2019-05-05-domain-randomization/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "e1d75ad5b1f48c30cdf6a719f08d2ef8fdcc0703a83d03ac3c1def392bdc1f80",
+        "bytes": 75782
+      },
+      {
+        "path": "/posts/2019-06-23-meta-rl/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "a5a8965006d0129ee95d7e7da1e7a84a5d15c68558d9104ab01e9f4fc1e00e2c",
+        "bytes": 87840
+      },
+      {
+        "path": "/en/posts/2019-06-23-meta-rl/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "42dacbf7b203b461e3518bdeda19847f5a80cfdc15a67c97b6991f95c6ee552f",
+        "bytes": 104569
+      },
+      {
+        "path": "/posts/2019-09-05-evolution-strategies/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "96deeb97492c33fd59c825e082626e449b21417d82d024ea88145660a7d4cc37",
+        "bytes": 106689
+      },
+      {
+        "path": "/en/posts/2019-09-05-evolution-strategies/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "c7b6b1ce2d0a1587fd0c9cd69bfd4597f8f8ddd08dafee7c40a6d4fb43441c6b",
+        "bytes": 111821
+      },
+      {
+        "path": "/posts/2019-11-10-self-supervised/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "f6550899cadf4bcae71282744171c95213da5e98bc103f4ad2f9787afaeb5f94",
+        "bytes": 151003
+      },
+      {
+        "path": "/en/posts/2019-11-10-self-supervised/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "a67f056eb84dcd0510dcb894d72ad32e8be55c8c5a5ace40b987fc6c4d940989",
+        "bytes": 156176
+      },
+      {
+        "path": "/posts/2020-01-29-curriculum-rl/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "dccee5894414e454ce3ae06d82f8d11775713f6b33d2493878d7cabd13b1f48d",
+        "bytes": 95940
+      },
+      {
+        "path": "/en/posts/2020-01-29-curriculum-rl/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "7614d02075dd86046ffbe8d1bb5391a85ba2eb455efcd2e3a89e09998a99189f",
+        "bytes": 102119
+      },
+      {
+        "path": "/posts/2020-04-07-the-transformer-family/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "7cf11badcab95b922aaa00ac347a4d37d9b1dd6334c3fc22e9d76fc5e5c1b257",
+        "bytes": 111286
+      },
+      {
+        "path": "/en/posts/2020-04-07-the-transformer-family/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "9539f1223f460b1da681951bbff7992de788d46368d30424ff0d8260176d5679",
+        "bytes": 115057
+      },
+      {
+        "path": "/posts/2020-06-07-exploration-drl/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "18adb58f951b3eef852313980fb694754d109b74e265d7944c80e9d9c8dc7f3e",
+        "bytes": 138505
+      },
+      {
+        "path": "/en/posts/2020-06-07-exploration-drl/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "c76e28e74b8a056a5a552669992de1c71cca4714c3723881a817139b314b5393",
+        "bytes": 148389
+      },
+      {
+        "path": "/posts/2020-08-06-nas/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "180ef4aee8eb59b8d75e06965b8ab8b98354cdabe1add37f17eab5e0b09564e9",
+        "bytes": 125396
+      },
+      {
+        "path": "/en/posts/2020-08-06-nas/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "8bd9348fd2bf2cfddfc69e6a7222c5870a107715fa61af577124c3e662872e61",
+        "bytes": 140028
+      },
+      {
+        "path": "/posts/2020-10-29-odqa/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "412886f18f5886622a26877ad12421c2d810f913e133b84458ffab56b0c1770e",
+        "bytes": 134576
+      },
+      {
+        "path": "/en/posts/2020-10-29-odqa/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "70638aad572efeb195b722d5b742e34032586b8871f0e64345bb271780159012",
+        "bytes": 143529
+      },
+      {
+        "path": "/posts/2021-01-02-controllable-text-generation/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "1e07091c90716e7b5deb3173b0fb6b59bcfa490d0ce79861ab58a2a296851030",
+        "bytes": 169674
+      },
+      {
+        "path": "/en/posts/2021-01-02-controllable-text-generation/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "5ba6e830b4a70e208744e0d0d39915598f2b872314f357a2840b6ab6dc17b84e",
+        "bytes": 173505
+      },
+      {
+        "path": "/posts/2021-03-21-lm-toxicity/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "8d5718f7d15032acdd4dbbeed277626790b0090b059477955499610f7215781f",
+        "bytes": 93285
+      },
+      {
+        "path": "/en/posts/2021-03-21-lm-toxicity/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "8cb0093c35bbaff1782b9b61f6d2b5b597c9eaf85739503fe6c86823030a9d4c",
+        "bytes": 107697
+      },
+      {
+        "path": "/posts/2021-05-31-contrastive/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "84522d80b7fc4103ee2f5a93854886270de452e326298ad9d74424f7c5526ed7",
+        "bytes": 180124
+      },
+      {
+        "path": "/en/posts/2021-05-31-contrastive/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "270cbf5a843cee1987194067a48c97f6e767ba962462578d0ba377489bc7c7fc",
+        "bytes": 182946
+      },
+      {
+        "path": "/posts/2021-07-11-diffusion-models/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "7856e4e14113b7d3553c6e6005ef306cbf153275eb0c42c3026383f2f9e15389",
+        "bytes": 148804
+      },
+      {
+        "path": "/en/posts/2021-07-11-diffusion-models/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "d86ad7d6cab30d478c786fc5a626f10a9d29c84a2a3e893550debf7137c68ee1",
+        "bytes": 157060
+      },
+      {
+        "path": "/posts/2021-09-25-train-large/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "71adc880382213806d5841ee07ebdf66eb12a9689d95e611bfd77585af99165a",
+        "bytes": 88227
+      },
+      {
+        "path": "/en/posts/2021-09-25-train-large/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "58873cd7c0db150b438d38998bac1f55e8629dc5bb4e3fdc1a92dc12d0b7cabd",
+        "bytes": 96488
+      },
+      {
+        "path": "/posts/2021-12-05-semi-supervised/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "77ac46a827ac60aabd7ca26748538d1af685c33562f4baa5b0524d628d893784",
+        "bytes": 114192
+      },
+      {
+        "path": "/en/posts/2021-12-05-semi-supervised/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "5a65c84ddbc11b4f77b44a6969884dfe08626439db6564239ffda1c2d094f9fe",
+        "bytes": 122765
+      },
+      {
+        "path": "/posts/2022-02-20-active-learning/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "a3a093b9175fd8dbaba8ab65f809c82abf8d45741c6e936d8dd076f1d95c503b",
+        "bytes": 99416
+      },
+      {
+        "path": "/en/posts/2022-02-20-active-learning/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "23ef11e57529a023c4b97ac6af858bd3ca22296790cd9f63a64926a48ba53d83",
+        "bytes": 107841
+      },
+      {
+        "path": "/posts/2022-04-15-data-gen/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "3088408d5d66b3d855b76b1a11c0d917dc1dc06b79a7b24dec7077b1aeaad854",
+        "bytes": 125915
+      },
+      {
+        "path": "/en/posts/2022-04-15-data-gen/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "9d4346792111c758006465c1fa7566f74d5933c66bd06f0ae6841d5632394e8e",
+        "bytes": 129878
+      },
+      {
+        "path": "/posts/2022-06-09-vlm/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "901c5058fd89b3b12a1cba02dc4a1ba7b1dda6dcdd91a2bd74b30706f4c417c5",
+        "bytes": 111286
+      },
+      {
+        "path": "/en/posts/2022-06-09-vlm/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "46b4c8aea3f88d1d7646478ce58b1b60fa22f56c2a2bf1ef540e1d761b923b6d",
+        "bytes": 113519
+      },
+      {
+        "path": "/posts/2022-09-08-ntk/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "00d70491869187ebbc17252f58381c4f6fbe4446f70d042268272cda74c26c41",
+        "bytes": 95197
+      },
+      {
+        "path": "/en/posts/2022-09-08-ntk/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "aed6cc3779486a4ce2639657786285f06e24cf32c695ab66c903d6f45641f446",
+        "bytes": 97337
+      },
+      {
+        "path": "/posts/2023-01-10-inference-optimization/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "fe00ada3c495c9d1313e86172297a40df868df0ff9b6caa4ba1e69c16c23d01d",
+        "bytes": 127519
+      },
+      {
+        "path": "/en/posts/2023-01-10-inference-optimization/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "c122513e3fe12a70e722cc2b799868a0ccb88a1331107a3e3b5d03bd915b1e5f",
+        "bytes": 137356
+      },
+      {
+        "path": "/posts/2023-01-27-the-transformer-family-v2/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "977b8045df365d0a9ec61c36f14161ceb0c489df0b6be8335a71274ae76ede1f",
+        "bytes": 197955
+      },
+      {
+        "path": "/en/posts/2023-01-27-the-transformer-family-v2/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "c9dec2ef379f767575f4e6dd0cd173846d2989724157a326a7580b41761b8d55",
+        "bytes": 202673
+      },
+      {
+        "path": "/posts/2023-03-15-prompt-engineering/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "1dde8d5ee7c5789371f25586c269766d0847b3eda2c5000138bd34a78598c38b",
+        "bytes": 93446
+      },
+      {
+        "path": "/en/posts/2023-03-15-prompt-engineering/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "13af8e6b36ed0cb99003fe4e1213863566af7bf091f2846554a26703cd2c4237",
+        "bytes": 99865
+      },
+      {
+        "path": "/posts/2023-06-23-agent/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "26c0035b279a38d0cbb28120993185131a8e40ed0890b73cf5e4558fb4e6afb8",
+        "bytes": 122460
+      },
+      {
+        "path": "/en/posts/2023-06-23-agent/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "62101a67f4e728eadab338eb1c43bd26e35a749acc008f5e40332ce381a9675f",
+        "bytes": 132600
+      },
+      {
+        "path": "/posts/2023-10-25-adv-attack-llm/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "04e8be1c754a14ca841c849dfc6bb63e3cc1cf70c9e86b3f0180f160f38e54e2",
+        "bytes": 139193
+      },
+      {
+        "path": "/en/posts/2023-10-25-adv-attack-llm/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "99b4efd7cb895f4cf1e825391026c1cce594df1061aa1e41d5ce092590c1eff8",
+        "bytes": 143940
+      },
+      {
+        "path": "/posts/2024-02-05-human-data-quality/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "b2787e29705415ea8580af773b9bed3f7fcac5f9b2f5232f941fe954ce9d8302",
+        "bytes": 91512
+      },
+      {
+        "path": "/en/posts/2024-02-05-human-data-quality/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "bdd2b9452e7900a06516e8d1eeb8a2fb741e952d4778fbe3fc0443813e544475",
+        "bytes": 96896
+      },
+      {
+        "path": "/posts/2024-04-12-diffusion-video/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "868a227f1903bb674225d0efedc8bd07e31d362dd1495a285659faaaf33755d4",
+        "bytes": 90643
+      },
+      {
+        "path": "/en/posts/2024-04-12-diffusion-video/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "1d5cd27e293d02b01b54a4407e9a58fcbb73082f38652084dac16cb971553199",
+        "bytes": 101552
+      },
+      {
+        "path": "/posts/2024-07-07-hallucination/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "7acca940e21eae708591b8636958450c90ad282e00e8b80d88c8cbd84424dccd",
+        "bytes": 128237
+      },
+      {
+        "path": "/en/posts/2024-07-07-hallucination/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "0819da87a3e5f1da0473ee60d162da902f61e10254d0121012764aefccefaaee",
+        "bytes": 132662
+      },
+      {
+        "path": "/posts/2024-11-28-reward-hacking/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "3b7233e3a957754320a179fcc41fe7a4a73bd9705b82049bc2e2fbbbf8dc4c3b",
+        "bytes": 146227
+      },
+      {
+        "path": "/en/posts/2024-11-28-reward-hacking/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "1d294d3b409ba16083ec1284c6d4a0a4ec373430bbc2a46d49c0c9aae87cb433",
+        "bytes": 153396
+      },
+      {
+        "path": "/posts/2025-05-01-thinking/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "d38db297834e9e0b724586114fb229bf3e00d0694816576edb4f3f60acd4ca12",
+        "bytes": 149360
+      },
+      {
+        "path": "/en/posts/2025-05-01-thinking/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "1e2915ca951674843776088d2dc323d7ce9bfbb795aea40d43b95c94863a7fb5",
+        "bytes": 157979
+      },
+      {
+        "path": "/posts/2026-06-24-scaling-laws/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "efa476a36c6f0bca4d1e015275a51d9d67530dccc01dafffa9083c760995e659",
+        "bytes": 114858
+      },
+      {
+        "path": "/en/posts/2026-06-24-scaling-laws/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "f8126f46d5ea665e20df788896843635b0343db84958e8733e685e7efa7843ad",
+        "bytes": 128787
+      },
+      {
+        "path": "/posts/2026-07-04-harness/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "11a1bf811a0f0db86dff80c9dcf6556fc4dc7d1a254d366bae5c3643a9794d5a",
+        "bytes": 130589
+      },
+      {
+        "path": "/en/posts/2026-07-04-harness/",
+        "http_status": 200,
+        "matches_local": true,
+        "sha256": "bd58c2170872385b4cbc16d4730dd3c8d1038dbabc86988d489dd0c1a6277781",
+        "bytes": 137264
+      }
+    ]
+  },
+  "online_browser_review": {
+    "direct_public_site": true,
+    "resource_mapping": false,
+    "pages": [
+      {
+        "title": "Lil'Log",
+        "language": "zh-CN",
+        "mathCount": 6,
+        "images": [],
+        "note": "作者：Lilian Weng · 作者原站 · 本站英文原文 · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。",
+        "path": "/",
+        "label": "zh-home",
+        "http_status": 200,
+        "errors": []
+      },
+      {
+        "title": "策略梯度算法 | Lil’Log 中文学习镜像",
+        "language": "zh-CN",
+        "mathCount": 460,
+        "images": [
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/general_form_policy_gradient.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/A3C_vs_A2C.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/DDPG_algo.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/D4PG_algo.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/MADDPG.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/ppo-loss-functions.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/PPG_algo.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/PPG_exp.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SAC_algo.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SAC2_algo.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/TD3.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SVPG.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/IMPALA.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/IMPALA-arch.png",
+            "loaded": true
+          }
+        ],
+        "note": "作者：Lilian Weng · 作者原站 · 本站英文原文 · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。",
+        "path": "/posts/2018-04-08-policy-gradient/",
+        "label": "zh-policy",
+        "http_status": 200,
+        "errors": [],
+        "mobile": {
+          "viewport": 390,
+          "scrollWidth": 873
+        },
+        "toc_navigation": true,
+        "language_switch": true
+      },
+      {
+        "title": "Policy Gradient Algorithms | Lil'Log",
+        "language": "en-us",
+        "mathCount": 460,
+        "images": [
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/general_form_policy_gradient.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/A3C_vs_A2C.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/DDPG_algo.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/D4PG_algo.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/MADDPG.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/ppo-loss-functions.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/PPG_algo.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/PPG_exp.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SAC_algo.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SAC2_algo.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/TD3.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SVPG.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/IMPALA.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/IMPALA-arch.png",
+            "loaded": true
+          }
+        ],
+        "note": "作者：Lilian Weng · 作者原站 · 中文译文 · English mirror; original author: Lilian Weng.",
+        "path": "/en/posts/2018-04-08-policy-gradient/",
+        "label": "en-policy",
+        "http_status": 200,
+        "errors": []
+      },
+      {
+        "title": "学习词嵌入 | Lil’Log 中文学习镜像",
+        "language": "zh-CN",
+        "mathCount": 147,
+        "images": [
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2017-10-15-word-embedding/word2vec-skip-gram.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2017-10-15-word-embedding/word2vec-cbow.png",
+            "loaded": true
+          },
+          {
+            "src": "https://xingshuozhu1998.github.io/posts/2017-10-15-word-embedding/word2vec-hierarchical-softmax.png",
+            "loaded": true
+          }
+        ],
+        "note": "作者：Lilian Weng · 作者原站 · 本站英文原文 · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。",
+        "path": "/posts/2017-10-15-word-embedding/",
+        "label": "zh-word",
+        "http_status": 200,
+        "errors": []
+      },
+      {
+        "title": "搜索 | Lil'Log",
+        "language": "zh-CN",
+        "mathCount": 0,
+        "images": [],
+        "note": "作者：Lilian Weng · 作者原站 · 本站英文原文 · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。",
+        "path": "/search/",
+        "label": "zh-search",
+        "http_status": 200,
+        "errors": [],
+        "search_query": "强化学习",
+        "search_results": [
+          {
+            "title": "元强化学习",
+            "url": "https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/"
+          },
+          {
+            "title": "强化学习中的课程学习",
+            "url": "https://xingshuozhu1998.github.io/posts/2020-01-29-curriculum-rl/"
+          },
+          {
+            "title": "深入了解强化学习",
+            "url": "https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/"
+          },
+          {
+            "title": "深度强化学习中的探索策略",
+            "url": "https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/"
+          },
+          {
+            "title": "强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）",
+            "url": "https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/"
+          },
+          {
+            "title": "使用 TensorFlow（机器学习框架） 与 OpenAI Gym（强化学习环境工具库） 实现深度强化学习模型",
+            "url": "https://xingshuozhu1998.github.io/posts/2018-05-05-drl-implementation/"
+          },
+          {
+            "title": "多臂老虎机问题及其解法",
+            "url": "https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/"
+          },
+          {
+            "title": "面向好奇读者的深度学习概览",
+            "url": "https://xingshuozhu1998.github.io/posts/2017-06-21-overview/"
+          },
+          {
+            "title": "用于仿真到现实迁移的域随机化",
+            "url": "https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/"
+          },
+          {
+            "title": "注意力？注意力！",
+            "url": "https://xingshuozhu1998.github.io/posts/2018-06-24-attention/"
+          },
+          {
+            "title": "关于高质量人工数据的思考",
+            "url": "https://xingshuozhu1998.github.io/posts/2024-02-05-human-data-quality/"
+          },
+          {
+            "title": "数据不足时的学习（二）：主动学习",
+            "url": "https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/"
+          },
+          {
+            "title": "数据不足时的学习（一）：半监督学习",
+            "url": "https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/"
+          },
+          {
+            "title": "LLMs（大语言模型）中的 Extrinsic Hallucinations（缺乏外部事实依据的生成内容）",
+            "url": "https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/"
+          },
+          {
+            "title": "进化策略",
+            "url": "https://xingshuozhu1998.github.io/posts/2019-09-05-evolution-strategies/"
+          },
+          {
+            "title": "Transformer（基于注意力机制的神经网络架构） 家族",
+            "url": "https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/"
+          },
+          {
+            "title": "神经架构搜索",
+            "url": "https://xingshuozhu1998.github.io/posts/2020-08-06-nas/"
+          },
+          {
+            "title": "数据不足时的学习（三）：数据生成",
+            "url": "https://xingshuozhu1998.github.io/posts/2022-04-15-data-gen/"
+          },
+          {
+            "title": "Prompt Engineering（提示工程）",
+            "url": "https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/"
+          },
+          {
+            "title": "针对 LLMs（大语言模型）的对抗攻击",
+            "url": "https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/"
+          },
+          {
+            "title": "用于自我改进的 Harness Engineering（智能体运行框架工程）",
+            "url": "https://xingshuozhu1998.github.io/posts/2026-07-04-harness/"
+          },
+          {
+            "title": "元学习：学会快速学习",
+            "url": "https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/"
+          },
+          {
+            "title": "自监督表征学习",
+            "url": "https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/"
+          },
+          {
+            "title": "如何构建开放域问答系统？",
+            "url": "https://xingshuozhu1998.github.io/posts/2020-10-29-odqa/"
+          },
+          {
+            "title": "由 LLM（大语言模型）驱动的自主智能体",
+            "url": "https://xingshuozhu1998.github.io/posts/2023-06-23-agent/"
+          },
+          {
+            "title": "我们为什么思考",
+            "url": "https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/"
+          },
+          {
+            "title": "可控神经文本生成",
+            "url": "https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/"
+          },
+          {
+            "title": "对比表征学习",
+            "url": "https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/"
+          },
+          {
+            "title": "Transformer（基于注意力机制的神经网络架构） 家族 2.0",
+            "url": "https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/"
+          },
+          {
+            "title": "策略梯度算法",
+            "url": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/"
+          },
+          {
+            "title": "如何使用多块 GPU（图形处理器） 训练超大模型？",
+            "url": "https://xingshuozhu1998.github.io/posts/2021-09-25-train-large/"
+          }
+        ]
+      },
+      {
+        "title": "Search | Lil'Log",
+        "language": "en-us",
+        "mathCount": 0,
+        "images": [],
+        "note": "作者：Lilian Weng · 作者原站 · 中文译文 · English mirror; original author: Lilian Weng.",
+        "path": "/en/search/",
+        "label": "en-search",
+        "http_status": 200,
+        "errors": [],
+        "search_query": "reinforcement",
+        "search_results": [
+          {
+            "title": "Meta Reinforcement Learning",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2019-06-23-meta-rl/"
+          },
+          {
+            "title": "Curriculum for Reinforcement Learning",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2020-01-29-curriculum-rl/"
+          },
+          {
+            "title": "Reward Hacking in Reinforcement Learning",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2024-11-28-reward-hacking/"
+          },
+          {
+            "title": "A (Long) Peek into Reinforcement Learning",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2018-02-19-rl-overview/"
+          },
+          {
+            "title": "Exploration Strategies in Deep Reinforcement Learning",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2020-06-07-exploration-drl/"
+          },
+          {
+            "title": "Implementing Deep Reinforcement Learning Models with Tensorflow + OpenAI Gym",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2018-05-05-drl-implementation/"
+          },
+          {
+            "title": "An Overview of Deep Learning for Curious People",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2017-06-21-overview/"
+          },
+          {
+            "title": "Domain Randomization for Sim2Real Transfer",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2019-05-05-domain-randomization/"
+          },
+          {
+            "title": "Learning Word Embedding",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2017-10-15-word-embedding/"
+          },
+          {
+            "title": "Attention? Attention!",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2018-06-24-attention/"
+          },
+          {
+            "title": "Prompt Engineering",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2023-03-15-prompt-engineering/"
+          },
+          {
+            "title": "Evolution Strategies",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2019-09-05-evolution-strategies/"
+          },
+          {
+            "title": "Learning with not Enough Data Part 2: Active Learning",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2022-02-20-active-learning/"
+          },
+          {
+            "title": "The Transformer Family",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2020-04-07-the-transformer-family/"
+          },
+          {
+            "title": "Meta-Learning: Learning to Learn Fast",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2018-11-30-meta-learning/"
+          },
+          {
+            "title": "Neural Architecture Search",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2020-08-06-nas/"
+          },
+          {
+            "title": "How to Build an Open-Domain Question Answering System?",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2020-10-29-odqa/"
+          },
+          {
+            "title": "LLM Powered Autonomous Agents",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2023-06-23-agent/"
+          },
+          {
+            "title": "Adversarial Attacks on LLMs",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2023-10-25-adv-attack-llm/"
+          },
+          {
+            "title": "Harness Engineering for Self-Improvement",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2026-07-04-harness/"
+          },
+          {
+            "title": "Self-Supervised Representation Learning",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2019-11-10-self-supervised/"
+          },
+          {
+            "title": "Contrastive Representation Learning",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2021-05-31-contrastive/"
+          },
+          {
+            "title": "Why We Think",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2025-05-01-thinking/"
+          },
+          {
+            "title": "Controllable Neural Text Generation",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2021-01-02-controllable-text-generation/"
+          },
+          {
+            "title": "The Transformer Family Version 2.0",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2023-01-27-the-transformer-family-v2/"
+          },
+          {
+            "title": "Policy Gradient Algorithms",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2018-04-08-policy-gradient/"
+          },
+          {
+            "title": "Anatomize Deep Learning with Information Theory",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2017-09-28-information-bottleneck/"
+          },
+          {
+            "title": "Predict Stock Prices Using RNN: Part 2",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2017-07-22-stock-rnn-part-2/"
+          },
+          {
+            "title": "The Multi-Armed Bandit Problem and Its Solutions",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2018-01-23-multi-armed-bandit/"
+          },
+          {
+            "title": "Predict Stock Prices Using RNN: Part 1",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2017-07-08-stock-rnn-part-1/"
+          },
+          {
+            "title": "How to Train Really Large Models on Many GPUs?",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2021-09-25-train-large/"
+          },
+          {
+            "title": "Some Math behind Neural Tangent Kernel",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2022-09-08-ntk/"
+          },
+          {
+            "title": "Learning with not Enough Data Part 1: Semi-Supervised Learning",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2021-12-05-semi-supervised/"
+          },
+          {
+            "title": "How to Explain the Prediction of a Machine Learning Model?",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2017-08-01-interpretation/"
+          },
+          {
+            "title": "From Autoencoder to Beta-VAE",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2018-08-12-vae/"
+          },
+          {
+            "title": "Flow-based Deep Generative Models",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2018-10-13-flow-models/"
+          },
+          {
+            "title": "Object Detection Part 4: Fast Detection Models",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2018-12-27-object-recognition-part-4/"
+          },
+          {
+            "title": "Thinking about High-Quality Human Data",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2024-02-05-human-data-quality/"
+          },
+          {
+            "title": "Diffusion Models for Video Generation",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2024-04-12-diffusion-video/"
+          },
+          {
+            "title": "Reducing Toxicity in Language Models",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2021-03-21-lm-toxicity/"
+          },
+          {
+            "title": "Scaling Laws, Carefully",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2026-06-24-scaling-laws/"
+          },
+          {
+            "title": "Learning with not Enough Data Part 3: Data Generation",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2022-04-15-data-gen/"
+          },
+          {
+            "title": "Large Transformer Model Inference Optimization",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2023-01-10-inference-optimization/"
+          },
+          {
+            "title": "Generalized Language Models",
+            "url": "https://xingshuozhu1998.github.io/en/posts/2019-01-31-lm/"
+          }
+        ]
+      }
+    ],
+    "visual_inspection": "主代理查看正式站策略梯度文章的桌面和手机截图，标题、作者/原文链接、蓝色更新说明、目录及正文样式正常。"
   }
 }
