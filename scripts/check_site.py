@@ -263,7 +263,7 @@ def main():
     parser.add_argument('--titles', type=Path, default=Path('translations/titles.json'))
     parser.add_argument('--terms', type=Path, default=Path('translations/english_terms.json'))
     parser.add_argument('--report', type=Path, default=Path('translations/validation.json'))
-    parser.add_argument('--base-path', default='', help='GitHub项目Pages站点路径前缀，例如 /lilianweng-cn')
+    parser.add_argument('--base-path', default='/lilianweng', help='本站项目路径前缀，默认 /lilianweng')
     args = parser.parse_args()
     titles = json.loads(args.titles.read_text())
     terms = json.loads(args.terms.read_text())

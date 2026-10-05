@@ -756,6 +756,7 @@
     "rss_items_per_language": 52,
     "unchanged_assets": 970,
     "manifest_complete": true,
+    "internal_url_prefix": "/lilianweng",
     "errors": 0
   },
   "browser_review": {
@@ -849,9 +850,9 @@
     "fix": "按保护步骤逆序恢复，先外层注释/标签再内部公式；全374页检查确认无占位符残留。"
   },
   "publication": {
-    "status": "published_and_verified",
-    "site": "https://xingshuozhu1998.github.io/",
-    "repository": "https://github.com/xingshuozhu1998/xingshuozhu1998.github.io",
+    "status": "migration_prepared",
+    "site": "https://xingshuozhu1998.github.io/lilianweng/",
+    "repository": "https://github.com/xingshuozhu1998/lilianweng",
     "author_notification": "维护者在对话中确认自行完成作者通知并明确授权上传发布，无需等待作者回信。",
     "confirmed_at": "2026-10-05T06:50:43.188161+00:00",
     "faq": "https://lilianweng.github.io/faq/",
@@ -2220,5 +2221,18 @@
       }
     ],
     "visual_inspection": "主代理查看正式站策略梯度文章的桌面和手机截图，标题、作者/原文链接、蓝色更新说明、目录及正文样式正常。"
+  },
+  "path_migration": {
+    "from_site": "https://xingshuozhu1998.github.io/",
+    "to_site": "https://xingshuozhu1998.github.io/lilianweng/",
+    "method": "将本次创建的个人主页仓库重命名为lilianweng项目仓库；完整保留提交、源码、译文、发布分支；重建全部链接与元数据。",
+    "translation_changes": false,
+    "status": "in_progress",
+    "local_validation": {
+      "passed_posts": 52,
+      "errors": 0,
+      "pages": 374,
+      "url_prefix": "/lilianweng"
+    }
   }
 }

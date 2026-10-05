@@ -18,7 +18,7 @@ from urllib.parse import quote, urljoin, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 ORIGIN = "https://lilianweng.github.io"
-SITE = "https://xingshuozhu1998.github.io"
+SITE = "https://xingshuozhu1998.github.io/lilianweng"
 VOID = set("area base br col embed hr img input link meta param source track wbr".split())
 SKIP = set("script style pre code svg textarea noscript".split())
 BLOCK = set("p li h1 h2 h3 h4 h5 h6 td th figcaption dd dt".split())

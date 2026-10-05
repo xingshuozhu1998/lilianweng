@@ -1,12 +1,12 @@
 # Lilian Weng 中文阅读站
 
-网站：[xingshuozhu1998.github.io](https://xingshuozhu1998.github.io/)。仓库：[xingshuozhu1998/xingshuozhu1998.github.io](https://github.com/xingshuozhu1998/xingshuozhu1998.github.io)。原文作者为 **Lilian Weng**，原站为 [Lil’Log](https://lilianweng.github.io/)。本站用于学习，中文页面位于根路径，英文对照位于 `/en/`。
+网站：[Lilian Weng 中文阅读站](https://xingshuozhu1998.github.io/lilianweng/)。仓库：[xingshuozhu1998/lilianweng](https://github.com/xingshuozhu1998/lilianweng)。原文作者为 **Lilian Weng**，原站为 [Lil’Log](https://lilianweng.github.io/)。本站用于学习，中文页面位于 `/lilianweng/`，英文对照位于 `/lilianweng/en/`。博客以独立项目发布，不占用个人域名根路径。
 
 ## 已完成内容与发布状态
 
 固定版本的 **52 篇文章已全部译成简体中文**，连同导航、归档、搜索、标签、FAQ 等公共页面，共覆盖 **10,555 个去重翻译片段**，缺失片段为 0。全文由指定的 **GPT-6.1-sol 子代理**按三组分工直接翻译，长任务由同型号子代理接续。正式全文没有使用本机模型或外部翻译接口。主代理 `/root` 自行完成最终验收，范围及证据见下文。
 
-**52 篇全文已完成本地验收，维护者已确认完成作者通知，并授权公开发布。** [作者 FAQ](https://lilianweng.github.io/faq/) 允许翻译，要求提前邮件通知作者，并在译文顶部保留原文链接。通知由维护者自行完成；每篇中文和英文页面顶部已注明作者、原站文章链接和语言切换链接。原站内容的版权归属仍属于原作者。正式网站已发布至本文顶部的公开地址，52 篇译文和 52 篇英文对照均已匿名访问验证。发布分支提交为 `f5cd9cb02989423e4ca846bfc8019485db60b8f9`，GitHub Pages 构建状态为 `built`（部署完成）。
+**52 篇全文已完成本地验收，维护者已确认完成作者通知，并授权公开发布。** [作者 FAQ](https://lilianweng.github.io/faq/) 允许翻译，要求提前邮件通知作者，并在译文顶部保留原文链接。通知由维护者自行完成；每篇中文和英文页面顶部已注明作者、原站文章链接和语言切换链接。原站内容的版权归属仍属于原作者。52 篇译文和 52 篇英文对照此前已通过线上验收；本次按维护者要求迁移到 `/lilianweng/` 独立项目地址，并对新地址重新验收。最新部署提交和逐页结果记录在 `translations/review.json` 中。
 
 ## 来源与保留格式
 
@@ -44,8 +44,8 @@
 可用以下命令获取公开源码并复核：
 
 ```bash
-git clone --recurse-submodules https://github.com/xingshuozhu1998/xingshuozhu1998.github.io.git
-cd xingshuozhu1998.github.io
+git clone --recurse-submodules https://github.com/xingshuozhu1998/lilianweng.git
+cd lilianweng
 python3 -m pip install -r requirements.txt
 python3 scripts/build.py extract
 python3 scripts/build.py build
