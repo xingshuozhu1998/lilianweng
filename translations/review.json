@@ -849,9 +849,11 @@
     "fix": "按保护步骤逆序恢复，先外层注释/标签再内部公式；全374页检查确认无占位符残留。"
   },
   "publication": {
-    "status": "awaiting_author_notification_confirmation",
+    "status": "author_notification_confirmed_deployment_prepared",
     "site": "https://xingshuozhu1998.github.io/",
-    "reason": "作者FAQ要求提前邮件通知；维护者表示自行通知，尚未确认已发送。",
+    "repository": "https://github.com/xingshuozhu1998/xingshuozhu1998.github.io",
+    "author_notification": "维护者在对话中确认自行完成作者通知并明确授权上传发布，无需等待作者回信。",
+    "confirmed_at": "2026-10-05T06:50:43.188161+00:00",
     "faq": "https://lilianweng.github.io/faq/"
   }
 }
