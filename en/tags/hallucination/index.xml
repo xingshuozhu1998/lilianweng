@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log English mirror · tags/hallucination</title>
+    <link>https://xingshuozhu1998.github.io/en/tags/hallucination/</link>
+    <description>English mirror of Lilian Weng’s blog.</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 07 Jul 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/hallucination/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Extrinsic Hallucinations in LLMs</title>
+      <link>https://xingshuozhu1998.github.io/en/posts/2024-07-07-hallucination/</link>
+      <pubDate>Sun, 07 Jul 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/en/posts/2024-07-07-hallucination/</guid>
+      <description>Hallucination in large language models usually refers to the model generating unfaithful, fabricated, inconsistent, or nonsensical content. As a term, hallucination has been somewhat generalized to cases when the model makes mistakes. Here, I would like to narrow down the problem of hallucination to cases where the model output is fabricated and  not grounded  by either the provided context or world knowledge. 
+ There are two types of hallucination: 
+ 
+ In-context hallucination: The model output</description>
+    </item>
+    
+  </channel>
+</rss>

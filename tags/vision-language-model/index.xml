@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/vision-language-model</title>
+    <link>https://xingshuozhu1998.github.io/tags/vision-language-model/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 09 Jun 2022 15:10:30 -0700</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/vision-language-model/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>通用视觉语言模型</title>
+      <link>https://xingshuozhu1998.github.io/posts/2022-06-09-vlm/</link>
+      <pubDate>Thu, 09 Jun 2022 15:10:30 -0700</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2022-06-09-vlm/</guid>
+      <description>处理图像以生成文本，例如图像描述与视觉问答，已经研究多年。传统系统依赖目标检测网络作为视觉编码器，捕获视觉特征，再通过文本解码器生成文本。鉴于已有大量文献，本文只关注解决视觉语言任务的一种方法： 扩展预训练 通用语言模型 ，使其能够接收视觉信号 。 
+ 我将此类 vision language models（视觉语言模型，VLMs）粗略分为四类： 
+ 
+ 将图像转换为嵌入特征，与词元嵌入联合训练。 
+ 学习良好的图像嵌入，用作冻结的预训练语言模型的前缀。 
+ 使用专门设计的 cross-attention（交叉注意力）机制，将视觉信息融合到语言模型各层。 
+ 无需任何训练，将视觉模型和语言模型结合。 
+ 
+ 使用图像和文本联合训练 #  
+ 将视觉信息融合到语言模型的一种直接方式，是把图像视为普通文本词元，在文本与图像的联合表征序列上训练模型。具体而言，将图像划分为多个较小图像块，每个图像块作为输入序列中的一个“词元”。 
+  VisualBERT（联合处理文本与图像区域的 BERT（基于双向编码器的预训练语言模型） 模型） （ Li 等，2019 ）将文本输入和图像区域都送入  BE</description>
+    </item>
+    
+  </channel>
+</rss>

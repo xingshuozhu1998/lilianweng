@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/neural-tangent-kernel</title>
+    <link>https://xingshuozhu1998.github.io/tags/neural-tangent-kernel/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 08 Sep 2022 10:00:00 -0700</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/neural-tangent-kernel/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>神经切线核背后的数学</title>
+      <link>https://xingshuozhu1998.github.io/posts/2022-09-08-ntk/</link>
+      <pubDate>Thu, 08 Sep 2022 10:00:00 -0700</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2022-09-08-ntk/</guid>
+      <description>神经网络具有过度参数化的特点，这是 众所周知的 。神经网络往往能够轻松拟合数据，使训练损失接近零，同时在测试数据集上取得不错的泛化表现。尽管所有参数都随机初始化，优化过程仍能稳定地得到同样良好的结果。即使模型参数数量超过训练数据点数量，这一点也成立。 
+  Neural tangent kernel（神经切线核；NTK（神经切线核）） （ Jacot et al. 2018 ）是一种核，用于解释神经网络在梯度下降训练过程中的演化。它帮助我们深入理解：为什么具有足够宽度的神经网络在训练以最小化经验损失时，能够稳定地收敛到全局最小值。本文将深入讨论 NTK 的动机与定义，并通过刻画无限宽神经网络中的 NTK，证明这些网络在不同初始化下的确定性收敛。 
+ 
+ 🤓 与我之前的文章不同，这篇文章主要聚焦于少量核心论文，而没有广泛回顾这一领域的文献。NTK 之后出现了许多有趣的研究，通过修改或扩展这一理论来理解 NNs（神经网络）的学习动态，但本文不会涉及这些研究。本文的目标是以清晰、容易理解的形式展示 NTK 背后的全部数学，因此数学内容相当密集。如果你发现任何错误，请告诉我，我会很乐意尽快改正</description>
+    </item>
+    
+  </channel>
+</rss>

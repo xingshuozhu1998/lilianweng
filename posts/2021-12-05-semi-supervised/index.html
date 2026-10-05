@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>数据不足时的学习（一）：半监督学习 | Lil’Log 中文学习镜像</title>
+<meta name="keywords" content="data, unsupervised-learning" />
+<meta name="description" content="
+面对监督学习任务中有限的带标签数据，通常讨论四种方法。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="数据不足时的学习（一）：半监督学习" />
+<meta property="og:description" content="
+面对监督学习任务中有限的带标签数据，通常讨论四种方法。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-12-05T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2021-12-05T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="数据不足时的学习（一）：半监督学习"/>
+<meta name="twitter:description" content="
+面对监督学习任务中有限的带标签数据，通常讨论四种方法。"/>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/posts/"}, {"@type": "ListItem", "position": 2, "name": "数据不足时的学习（一）：半监督学习", "item": "https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "数据不足时的学习（一）：半监督学习", "name": "数据不足时的学习（一）：半监督学习", "description": "面对监督学习任务中有限的带标签数据，通常讨论四种方法。", "keywords": ["data", "unsupervised-learning"], "articleBody": "面对监督学习任务中有限的带标签数据，通常讨论四种方法。 \n \n  预训练 + 微调 ：在大量无监督数据上预训练强大的任务无关模型，例如在自由文本上  预训练 LM（语言模型） ，或通过  自监督学习  在无标签图像上预训练视觉模型；随后，用少量带标签样本在下游任务上微调。 \n  半监督学习 ：同时从带标签与无标签样本学习。视觉任务中已有大量采用这一方法的研究。 \n  主动学习 ：标注昂贵，但仍希望在成本预算内收集更多标签。主动学习学会选择最有价值的无标签样本作为下一批标注对象，帮助我们在有限预算下明智行动。 \n  预训练 + 自动生成数据集 ：给定有能力的预训练模型，可以利用它自动生成更多带标签样本。受到 few-shot learning（少样本学习）成功的推动，这在语言领域尤为流行。 \n \n 我计划围绕“数据不足时的学习”写一系列文章。第一部分介绍  半监督学习 。 \n 什么是半监督学习？ #  \n 半监督学习同时使用带标签与无标签数据训练模型。 \n 有趣的是，目前大多数半监督学习文献聚焦视觉任务；语言任务更常见的范式则是预训练 + 微调。 \n 本文介绍的所有方法，其损失都结合两部分：$\\mathcal{L} = \\mathcal{L}_s +  \\mu(t) \\mathcal{L}_u$。给定全部带标签样本，很容易得到监督损失 $\\mathcal{L}_s$。我们将聚焦无监督损失 $\\mathcal{L}_u$ 的设计。权重项 $\\mu(t)$ 的常见选择是 ramp function（逐渐上升函数），随时间增加 $\\mathcal{L}_u$ 的重要性，其中 $t$ 是训练步骤。 \n \n  说明 ：本文不介绍以修改模型架构为重点的半监督方法。关于如何在半监督学习中使用生成模型与基于图的方法，请参阅  这篇综述 。 \n \n 符号说明 #  \n \n\t \n\t\t\t \n\t\t\t\t\t 符号 \n\t\t\t\t\t 含义 \n\t\t\t \n\t \n\t \n\t\t\t \n\t\t\t\t\t $L$ \n\t\t\t\t\t 不同标签的数量。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $(\\mathbf{x}^l, y) \\sim \\mathcal{X}, y \\in \\{0, 1\\}^L$ \n\t\t\t\t\t 带标签数据集。$y$ 是真实标签的 one-hot（独热）表示。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mathbf{u} \\sim \\mathcal{U}$ \n\t\t\t\t\t 无标签数据集。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mathcal{D} = \\mathcal{X} \\cup \\mathcal{U}$ \n\t\t\t\t\t 整个数据集，包括带标签与无标签样本。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mathbf{x}$ \n\t\t\t\t\t 任意样本，可以带标签，也可以不带标签。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\bar{\\mathbf{x}}$ \n\t\t\t\t\t 应用数据增强后的 $\\mathbf{x}$。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mathbf{x}_i$ \n\t\t\t\t\t 第 $i$ 个样本。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mathcal{L}$, $\\mathcal{L}_s$, $\\mathcal{L}_u$ \n\t\t\t\t\t 损失、监督损失与无监督损失。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mu(t)$ \n\t\t\t\t\t 随时间增加的无监督损失权重。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $p(y \\vert \\mathbf{x}), p_\\theta(y \\vert \\mathbf{x})$ \n\t\t\t\t\t 给定输入时，标签集合上的条件概率。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $f_\\theta(.)$ \n\t\t\t\t\t 权重为 $\\theta$ 的已实现神经网络，即希望训练的模型。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mathbf{z} = f_\\theta(\\mathbf{x})$ \n\t\t\t\t\t $f$ 输出的 logits（未归一化分数）向量。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\hat{y} = \\text{softmax}(\\mathbf{z})$ \n\t\t\t\t\t 预测标签分布。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $D[.,.]$ \n\t\t\t\t\t 两个分布之间的距离函数，例如 MSE（均方误差）、交叉熵、KL divergence（衡量两个概率分布差异的相对熵）（KL散度）等。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\beta$ \n\t\t\t\t\t  teacher（教师）  模型权重的 EMA（指数移动平均）加权超参数。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\alpha, \\lambda$ \n\t\t\t\t\t MixUp 参数，$\\lambda \\sim \\text{Beta}(\\alpha, \\alpha)$。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $T$ \n\t\t\t\t\t 锐化预测分布的温度。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\tau$ \n\t\t\t\t\t 选择合格预测的置信度阈值。 \n\t\t\t \n\t \n \n 假设 #  \n 文献讨论了若干假设，用于支持半监督学习方法中的某些设计决策。 \n \n \n H1： Smoothness Assumptions（平滑性假设） ：如果两个数据样本在特征空间高密度区域中彼此接近，标签应相同或非常相似。 \n \n \n H2： Cluster Assumptions（聚类假设） ：特征空间既有密集区域，也有稀疏区域。密集聚集的数据点自然形成一个簇。同一簇中的样本应具有相同标签。这是 H1 的小幅扩展。 \n \n \n H3： Low-density Separation Assumptions（低密度分隔假设） ：类别间的决策边界倾向于位于稀疏低密度区域；否则，决策边界会将高密度簇分成两个类别，分别对应两个簇，违反 H1 和 H2。 \n \n \n H4： Manifold Assumptions（流形假设） ：高维数据倾向于位于低维 manifold（流形）上。现实数据虽可能在极高维空间中观测（例如现实物体／场景图像），实际上可以由更低维流形描述，其中某些属性得到捕捉，相似点紧密聚集（例如现实物体／场景图像并非从所有像素组合的均匀分布中抽取）。这使我们能学习更高效的表示，发现并衡量无标签数据点的相似性。这也是表示学习的基础。[参阅  一个有帮助的链接 。] \n \n \n Consistency Regularization（一致性正则化） #  \n  Consistency Regularization（一致性正则化） ，也称  Consistency Training（一致性训练） ，假设神经网络内部随机性（如 Dropout（随机失活））或数据增强变换，不应改变模型对同一输入的预测。本节每种方法都将一致性正则化损失作为 $\\mathcal{L}_u$。 \n 这一思路已被多种  自监督   学习  方法采用，例如 SimCLR（使用数据增强与对比损失的表征学习方法）、BYOL（不依赖负样本的自监督表征学习方法）、SimCSE 等。同一样本的不同增强版本，应产生相同表示。语言建模中的  Cross-view training（跨视图训练） ，以及自监督学习中的多视图学习，动机相同。 \n Π-model（Π模型） #  \n \n\t \n\t Π-model 概览。同一输入的两个版本经过不同随机增强与 dropout（随机失活）掩码，通过网络后，输出应保持一致。（图片来源： Laine & Aila (2017) ） \n \n  Sajjadi et al. (2016)  提出无监督学习损失，最小化同一数据点经过两次网络计算的差异，两次使用随机变换（如 dropout（随机失活）、随机最大池化）。由于不显式使用标签，损失可应用于无标签数据集。 Laine & Aila (2017)  后来为这种设置命名为  Π-Model 。 \n \n$$\n\\mathcal{L}_u^\\Pi = \\sum_{\\mathbf{x} \\in \\mathcal{D}} \\text{MSE}(f_\\theta(\\mathbf{x}), f'_\\theta(\\mathbf{x}))\n$$\n \n 其中 $f’$ 是同一神经网络，只是应用不同随机增强或 dropout（随机失活）掩码。该损失使用整个数据集。 \n Temporal ensembling（时间集成） #  \n \n\t \n\t Temporal Ensembling（时间集成）概览。每个样本标签预测的 EMA是学习目标。（图片来源： Laine & Aila (2017) ） \n \n Π-model 要求网络对每个样本运行两次，使计算成本翻倍。为降低成本， Temporal Ensembling（时间集成） （ Laine & Aila 2017 ）为每个训练样本维护随时间变化的模型预测 EMA$\\tilde{\\mathbf{z}}_i$，作为学习目标；每个 epoch（训练轮次）只评估更新一次。由于集成输出 $\\tilde{\\mathbf{z}}_i$ 初始化为 $\\mathbf{0}$，需要除以 $(1-\\alpha^t)$ 归一化，校正启动偏差。Adam 优化器出于同样原因，也有这种  bias correction（偏差校正）  项。 \n \n$$\n\\tilde{\\mathbf{z}}^{(t)}_i = \\frac{\\alpha \\tilde{\\mathbf{z}}^{(t-1)}_i + (1-\\alpha) \\mathbf{z}_i}{1-\\alpha^t}\n$$\n \n 其中 $\\tilde{\\mathbf{z}}^{(t)}$ 是第 $t$ 个 epoch（训练轮次）的集成预测，$\\mathbf{z}_i$ 是当前轮的模型预测。注意，由于 $\\tilde{\\mathbf{z}}^{(0)} = \\mathbf{0}$，经过校正，在第1轮，$\\tilde{\\mathbf{z}}^{(1)}$ 就等价于 $\\mathbf{z}_i$。 \n Mean teachers（均值教师） #  \n \n\t \n\t Mean Teacher（均值教师） 框架概览。（图片来源： Tarvaninen & Valpola, 2017 ） \n \n Temporal Ensembling（时间集成）为每个训练样本追踪标签预测的 EMA，作为学习目标。然而，这种标签预测只在  每个训练轮次  更新一次，大型训练集上显得笨重。 Mean Teacher （ Tarvaninen & Valpola, 2017 ）追踪模型权重的移动平均，而非模型输出，以克服目标更新缓慢。将权重为 $\\theta$ 的原始模型称为  student（学生） ，将连续学生模型权重的移动平均 $\\theta’$ 所对应的模型称为  mean teacher ：$\\theta’ \\gets \\beta \\theta’ + (1-\\beta)\\theta$ \n 一致性正则化损失是学生与教师预测之间的距离，应最小化学生—教师差距。预计mean teacher的预测比学生更准确。实证实验确认了这一点，如图所示：  \n \n Mean Teacher 与 Π-model 在 SVHN 上的分类错误率。Mean Teacher（均值教师，橙色）性能优于学生模型（蓝色）。（图片来源： Tarvaninen & Valpola, 2017 ）  \n \n 根据消融研究， \n \n 良好性能需要输入增强（例如随机翻转输入图像、高斯噪声），或学生模型的 dropout（随机失活）。教师模型无需 dropout。 \n 性能对 EMA衰减超参数 $\\beta$ 敏感。良好策略是，在逐步增大阶段使用较小的 $\\beta=0.99$，后期学生模型改进放缓时，使用较大的 $\\beta=0.999$。 \n 他们发现，采用 MSE（均方误差）作为一致性成本函数，优于 KL divergence（KL散度）等其他成本函数。 \n \n 将带噪声样本作为学习目标 #  \n 近期若干一致性训练方法，学习最小化原始无标签样本与其对应增强版本的预测差异。这与 Π-model 很相似，但一致性正则化损失  仅  应用于无标签数据。 \n \n\t \n\t 使用带噪声样本的一致性训练。 \n \n Adversarial Training（对抗训练； Goodfellow et al. 2014 ）在输入上加入对抗噪声，训练模型对这类攻击具有鲁棒性。该设置适用于监督学习， \n \n$$\n\\begin{aligned}\n\\mathcal{L}_\\text{adv}(\\mathbf{x}^l, \\theta) &= D[q(y\\mid \\mathbf{x}^l), p_\\theta(y\\mid \\mathbf{x}^l + r_\\text{adv})] \\\\\nr_\\text{adv} &= {\\arg\\max}_{r; \\|r\\| \\leq \\epsilon} D[q(y\\mid \\mathbf{x}^l), p_\\theta(y\\mid \\mathbf{x}^l + r_\\text{adv})] \\\\\nr_\\text{adv} &\\approx \\epsilon \\frac{g}{\\|g\\|_2} \\approx \\epsilon\\text{sign}(g)\\quad\\text{where }g = \\nabla_{r} D[y, p_\\theta(y\\mid \\mathbf{x}^l + r)]\n\\end{aligned}\n$$\n \n 其中 $q(y \\mid \\mathbf{x}^l)$ 是真实分布，用真实标签的 one-hot（独热）编码 $y$ 近似。$p_\\theta(y \\mid \\mathbf{x}^l)$ 是模型预测。$D[.,.]$ 是衡量两分布差异的距离函数。 \n  Virtual Adversarial Training（虚拟对抗训练） （ VAT ； Miyato et al. 2018 ）将这一思路扩展到半监督学习。由于 $q(y \\mid \\mathbf{x}^l)$ 未知，VAT 用当前权重 $\\hat{\\theta}$ 下，模型对原始输入的预测替换它。注意，$\\hat{\\theta}$ 是模型权重的固定副本，因此 $\\hat{\\theta}$ 不进行梯度更新。 \n \n$$\n\\begin{aligned}\n\\mathcal{L}_u^\\text{VAT}(\\mathbf{x}, \\theta) &= D[p_{\\hat{\\theta}}(y\\mid \\mathbf{x}), p_\\theta(y\\mid \\mathbf{x} + r_\\text{vadv})] \\\\\nr_\\text{vadv} &= {\\arg\\max}_{r; \\|r\\| \\leq \\epsilon} D[p_{\\hat{\\theta}}(y\\mid \\mathbf{x}), p_\\theta(y\\mid \\mathbf{x} + r)]\n\\end{aligned}\n$$\n \n VAT 损失应用于带标签与无标签样本。它在每个数据点上度量当前模型预测流形的不平滑程度。优化这一损失，会推动流形更加平滑。 \n  Interpolation Consistency Training（插值一致性训练） （ ICT ； Verma et al. 2019 ）通过加入更多数据点插值扩充数据集，并期望模型预测与对应标签插值一致。MixUp（ Zheng et al. 2018 ）用简单加权和混合两张图像，并结合标签平滑。沿用 MixUp 思路，ICT 期望模型对混合样本的标签预测，与对应输入预测的插值匹配： \n \n$$\n\\begin{aligned}\n\\text{mixup}_\\lambda (\\mathbf{x}_i, \\mathbf{x}_j) &= \\lambda \\mathbf{x}_i + (1-\\lambda)\\mathbf{x}_j \\\\\np(\\text{mixup}_\\lambda (y \\mid \\mathbf{x}_i, \\mathbf{x}_j)) &\\approx \\lambda p(y \\mid \\mathbf{x}_i) + (1-\\lambda) p(y \\mid \\mathbf{x}_j)\n\\end{aligned}\n$$\n \n 其中 $\\theta’$ 是 $\\theta$ 的移动平均，即  mean teacher 。 \n \n\t \n\t Interpolation Consistency Training（插值一致性训练）概览。应用 MixUp 产生更多插值样本，以插值标签作为学习目标。（图片来源： Verma et al. 2019 ） \n \n 由于随机选取的两个无标签样本属于不同类别的概率较高（例如 ImageNet 有1000种物体类别），对两个随机无标签样本应用 MixUp 的插值，很可能发生在决策边界附近。根据低密度分隔  假设 ，决策边界倾向于位于低密度区域。 \n \n$$\n\\mathcal{L}^\\text{ICT}_{u} = \\mathbb{E}_{\\mathbf{u}_i, \\mathbf{u}_j \\sim \\mathcal{U}} \\mathbb{E}_{\\lambda \\sim \\text{Beta}(\\alpha, \\alpha)} D[p_\\theta(y \\mid \\text{mixup}_\\lambda (\\mathbf{u}_i, \\mathbf{u}_j)), \\text{mixup}_\\lambda(p_{\\theta’}(y \\mid \\mathbf{u}_i), p_{\\theta'}(y \\mid \\mathbf{u}_j)]\n$$\n \n 其中 $\\theta’$ 是 $\\theta$ 的移动平均。 \n 与 VAT 相似， Unsupervised Data Augmentation（无监督数据增强） （ UDA ； Xie et al. 2020 ）学习对无标签样本及其增强版本预测相同输出。UDA 特别研究噪声  “质量”  如何影响一致性训练的半监督学习性能。使用先进数据增强方法，生成有意义、有效的带噪声样本至关重要。良好数据增强应产生有效（不改变标签）、多样的噪声，并携带针对性的归纳偏置。 \n 对于图像，UDA 采用 RandAugment（ Cubuk et al. 2019 ），均匀采样  PIL  中可用的增强操作，无需学习或优化，因此比 AutoAugment（自动搜索数据增强方案的方法）便宜得多。 \n \n\t \n\t 多种半监督学习方法在 CIFAR-10 分类上的比较。完全监督的 Wide-ResNet-28-2 和 PyramidNet+ShakeDrop，在50,000个样本上训练且不使用 RandAugment 时，错误率分别为 **5.4** 和 **2.7**。（图片来源： Xie et al. 2020 ） \n \n 对于语言，UDA 结合 back-translation（回译）与基于 TF-IDF（词频与逆文档频率加权） 的词替换。回译保留高层含义，但可能不保留某些单词；基于 TF-IDF 的词替换则删除低 TF-IDF 得分、信息量较少的单词。语言任务实验发现，UDA 与迁移学习、表示学习互补；例如，在领域内无标签数据上微调 BERT（基于双向编码器的预训练语言模型）（图8中的 $\\text{BERT}_\\text{FINETUNE}$），可进一步改善性能。 \n \n\t \n\t UDA 使用不同初始化配置时，在多种文本分类任务上的比较。（图片来源： Xie et al. 2020 ） \n \n 计算 $\\mathcal{L}_u$ 时，UDA 发现两种训练技术有助于改善结果。 \n \n  Low confidence masking（低置信度掩码） ：如果预测置信度低于阈值 $\\tau$，就屏蔽该样本。 \n  Sharpening prediction distribution（锐化预测分布） ：在 softmax 中使用较低温度 $T$，锐化预测概率分布。 \n  In-domain data filtration（领域内数据筛选） ：为从大型领域外数据集中提取更多领域内数据，训练分类器预测领域内标签，再保留高置信度预测样本作为领域内候选。 \n \n \n$$\n\\begin{aligned}\n&\\mathcal{L}_u^\\text{UDA} = \\mathbb{1}[\\max_{y'} p_{\\hat{\\theta}}(y'\\mid \\mathbf{x}) > \\tau ] \\cdot D[p^\\text{(sharp)}_{\\hat{\\theta}}(y \\mid \\mathbf{x}; T), p_\\theta(y \\mid \\bar{\\mathbf{x}})] \\\\\n&\\text{where } p_{\\hat{\\theta}}^\\text{(sharp)}(y \\mid \\mathbf{x}; T) = \\frac{\\exp(z^{(y)} / T)}{ \\sum_{y'} \\exp(z^{(y')} / T) }\n\\end{aligned}\n$$\n \n 其中 $\\hat{\\theta}$ 是模型权重的固定副本，与 VAT 相同，不进行梯度更新；$\\bar{\\mathbf{x}}$ 是增强数据点。$\\tau$ 是预测置信度阈值，$T$ 是分布锐化温度。 \n Pseudo Labeling（伪标签标注） #  \n  Pseudo Labeling（伪标签标注） （ Lee 2013 ）依据当前模型预测的最大 softmax 概率，为无标签样本赋予伪标签，再在纯监督设置下同时用带标签与无标签样本训练模型。 \n 伪标签为什么有效？它实际上等价于  Entropy Regularization（熵正则化） （ Grandvalet & Bengio 2004 ），最小化无标签数据类别概率的条件熵，促进类别间低密度分隔。换句话说，预测类别概率实际上度量类别重叠，最小化熵等价于减少类别重叠，从而实现低密度分隔。 \n \n\t \n\t 模型在 MNIST 测试集上输出的 t-SNE 可视化：(a) 不使用伪标签；(b) 除600个带标签样本外，对60000个无标签样本使用伪标签训练。伪标签使学习到的嵌入空间分隔更好。（图片来源： Lee 2013 ） \n \n 伪标签训练自然形成迭代过程。产生伪标签的模型称为教师，利用伪标签学习的模型称为学生。 \n Label propagation（标签传播） #  \n  Label Propagation（标签传播） （ Iscen et al. 2019 ）的思路，是依据特征嵌入构建样本间相似度图，再从已知样本向无标签样本“扩散”伪标签，传播权重与图中的成对相似度得分成正比。概念上类似 k-NN（k近邻）分类器，两者都难以扩展到大型数据集。 \n \n\t \n\t Label Propagation（标签传播）的工作方式示意图。（图片来源： Iscen et al. 2019 ） \n \n Self-Training（自训练） #  \n  Self-Training（自训练）  并非新概念（ Scudder 1965 、 Nigram & Ghani CIKM 2000 ）。它是迭代算法，交替执行以下两步，直到每个无标签样本都获得标签： \n \n 首先在带标签数据上构建分类器。 \n 再用该分类器预测无标签数据的标签，将置信度最高的样本转为带标签样本。 \n \n  Xie et al. (2020)  将自训练应用于深度学习，取得出色结果。在 ImageNet 分类任务上，先训练 EfficientNet（ Tan & Le 2019 ）作为教师，为300M张无标签图像生成伪标签，再训练更大的 EfficientNet 作为学生，同时学习真实标签与伪标签图像。设置中的关键元素是，学生训练期间加入  噪声 ，而教师生成伪标签时不加噪声，因此方法称为  Noisy Student 。他们使用 stochastic depth（随机深度； Huang et al. 2016 ）、dropout（随机失活）和 RandAugment 为学生加噪声。噪声对学生超越教师很重要。加入噪声产生复合效应，鼓励模型在带标签与无标签数据上的决策边界更加平滑。 \n Noisy Student 自训练中，其他几个重要技术配置： \n \n 学生模型应足够大（即比教师更大），以拟合更多数据。 \n Noisy Student 应结合数据均衡，尤其要均衡每个类别的伪标签图像数量。 \n 软伪标签优于硬伪标签。 \n \n 虽然模型没有专门优化对抗鲁棒性，Noisy Student 也改善了对 FGSM（Fast Gradient Sign Attack，快速梯度符号攻击：使用损失对输入数据的梯度，调整输入以最大化损失）的鲁棒性。 \n  Du et al. (2020)  提出的 SentAugment，旨在解决语言领域自训练时领域内无标签数据不足的问题。它依赖句子嵌入，从大型语料中找到领域内无标签样本，再使用检索句子进行自训练。 \n 减少 confirmation bias（确认偏差） #  \n 确认偏差源于不完美教师模型提供的错误伪标签。过拟合错误标签，可能无法得到更好的学生模型。 \n 为减少确认偏差， Arazo et al. (2019)  提出两种技术。一种是采用带软标签的 MixUp。给定两个样本 $(\\mathbf{x}_i, \\mathbf{x}_j)$ 及其对应真实标签或伪标签 $(y_i, y_j)$，插值标签方程可转换为使用 softmax 输出的交叉熵损失： \n \n$$\n\\begin{aligned}\n&\\bar{\\mathbf{x}} = \\lambda \\mathbf{x}_i + (1-\\lambda) \\mathbf{x}_j \\\\\n&\\bar{y} = \\lambda y_i + (1-\\lambda) y_j \\Leftrightarrow\n\\mathcal{L} = \\lambda [y_i^\\top \\log f_\\theta(\\bar{\\mathbf{x}})] + (1-\\lambda) [y_j^\\top \\log f_\\theta(\\bar{\\mathbf{x}})]\n\\end{aligned}\n$$\n \n 带标签样本太少时，仅用 MixUp 不足。于是，他们通过过采样带标签样本，为每个小批次设置带标签样本的最低数量。这比提高标签样本权重更好，因为更新更频繁，而不是少量幅度更大、可能较不稳定的更新。与一致性正则化相似，数据增强与 dropout（随机失活）对伪标签标注有效工作也很重要。 \n  Meta Pseudo Labels （ Pham et al. 2021 ）根据学生在带标签数据集上的表现反馈，持续调整教师模型。教师与学生并行训练，教师学习产生更好的伪标签，学生从伪标签学习。 \n 令教师与学生模型权重分别为 $\\theta_T$ 和 $\\theta_S$。学生在带标签样本上的损失，定义为函数 $\\theta^\\text{PL}_S(.)$，自变量为 $\\theta_T$；希望相应优化教师模型，最小化这一损失。 \n \n$$\n\\begin{aligned}\n\\min_{\\theta_T} &\\mathcal{L}_s(\\theta^\\text{PL}_S(\\theta_T)) = \\min_{\\theta_T} \\mathbb{E}_{(\\mathbf{x}^l, y) \\in \\mathcal{X}} \\text{CE}[y, f_{\\theta_S}(\\mathbf{x}^l)]  \\\\\n\\text{where } &\\theta^\\text{PL}_S(\\theta_T)\n= \\arg\\min_{\\theta_S} \\mathcal{L}_u (\\theta_T, \\theta_S)\n= \\arg\\min_{\\theta_S} \\mathbb{E}_{\\mathbf{u} \\sim \\mathcal{U}} \\text{CE}[(f_{\\theta_T}(\\mathbf{u}), f_{\\theta_S}(\\mathbf{u}))]\n\\end{aligned}\n$$\n \n 然而，上式并不容易优化。借鉴  MAML（模型无关元学习）  思路，将多步 $\\arg\\min_{\\theta_S}$ 近似为 $\\theta_S$ 的单步梯度更新， \n \n$$\n\\begin{aligned}\n\\theta^\\text{PL}_S(\\theta_T) &\\approx \\theta_S - \\eta_S \\cdot \\nabla_{\\theta_S} \\mathcal{L}_u(\\theta_T, \\theta_S) \\\\\n\\min_{\\theta_T} \\mathcal{L}_s (\\theta^\\text{PL}_S(\\theta_T)) &\\approx \\min_{\\theta_T} \\mathcal{L}_s \\big( \\theta_S - \\eta_S \\cdot \\nabla_{\\theta_S} \\mathcal{L}_u(\\theta_T, \\theta_S) \\big)\n\\end{aligned}\n$$\n \n 使用软伪标签时，上述目标可微；使用硬伪标签时不可微，因此需要使用 RL（强化学习），例如 REINFORCE（基于蒙特卡洛回报的策略梯度算法）。 \n 优化过程交替训练两个模型： \n \n  学生模型更新 ：给定一批无标签样本 $\\{ \\mathbf{u} \\}$，通过 $f_{\\theta_T}(\\mathbf{u})$ 生成伪标签，再用一步 SGD（随机梯度下降）优化 $\\theta_S$：$\\theta’_S = \\color{green}{\\theta_S - \\eta_S \\cdot \\nabla_{\\theta_S} \\mathcal{L}_u(\\theta_T, \\theta_S)}$。 \n  教师模型更新 ：给定一批带标签样本 $\\{(\\mathbf{x}^l, y)\\}$，复用学生更新，优化 $\\theta_T$：$\\theta’_T = \\theta_T  - \\eta_T \\cdot \\nabla_{\\theta_T} \\mathcal{L}_s ( \\color{green}{\\theta_S - \\eta_S \\cdot \\nabla_{\\theta_S} \\mathcal{L}_u(\\theta_T, \\theta_S)} )$。此外，将 UDA 目标应用于教师模型，纳入一致性正则化。 \n \n \n\t \n\t Meta Pseudo Labels 与其他半监督或自监督学习方法在图像分类任务上的比较。（图片来源： Pham et al. 2021 ） \n \n 结合一致性正则化的伪标签标注 #  \n 可以结合上述两种方法，同时使用伪标签标注与一致性训练进行半监督学习。 \n MixMatch #  \n  MixMatch （ Berthelot et al. 2019 ）作为整体式半监督学习方法，结合以下技术利用无标签数据： \n \n  一致性正则化 ：鼓励模型对扰动后的无标签样本输出相同预测。 \n  熵最小化 ：鼓励模型对无标签数据输出高置信度预测。 \n  MixUp  增强：鼓励模型在样本之间具有线性行为。 \n \n 给定一批带标签数据 $\\mathcal{X}$ 与无标签数据 $\\mathcal{U}$，通过 $\\text{MixMatch}(.)$ 创建增强版本 $\\bar{\\mathcal{X}}$ 和 $\\bar{\\mathcal{U}}$，其中包含增强样本与无标签样本的猜测标签。 \n \n$$\n\\begin{aligned}\n\\bar{\\mathcal{X}}, \\bar{\\mathcal{U}} &= \\text{MixMatch}(\\mathcal{X}, \\mathcal{U}, T, K, \\alpha) \\\\\n\\mathcal{L}^\\text{MM}_s &= \\frac{1}{\\vert \\bar{\\mathcal{X}} \\vert} \\sum_{(\\bar{\\mathbf{x}}^l, y)\\in \\bar{\\mathcal{X}}} D[y, p_\\theta(y \\mid \\bar{\\mathbf{x}}^l)] \\\\\n\\mathcal{L}^\\text{MM}_u &= \\frac{1}{L\\vert \\bar{\\mathcal{U}} \\vert} \\sum_{(\\bar{\\mathbf{u}}, \\hat{y})\\in \\bar{\\mathcal{U}}} \\| \\hat{y} - p_\\theta(y \\mid \\bar{\\mathbf{u}}) \\|^2_2 \\\\\n\\end{aligned}\n$$\n \n 其中 $T$ 是锐化温度，用于减少猜测标签重叠；$K$ 是每个无标签样本生成的增强数量；$\\alpha$ 是 MixUp 参数。 \n 对每个 $\\mathbf{u}$，MixMatch 生成 $K$ 个增强，$\\bar{\\mathbf{u}}^{(k)} = \\text{Augment}(\\mathbf{u})$，其中 $k=1, \\dots, K$，再根据平均值猜测伪标签：$\\hat{y} = \\frac{1}{K} \\sum_{k=1}^K p_\\theta(y \\mid \\bar{\\mathbf{u}}^{(k)})$。 \n \n\t \n\t MixMatch 中的“标签猜测”过程：对 $K$ 个增强取平均，校正预测边缘分布，最后锐化分布。（图片来源： Berthelot et al. 2019 ） \n \n 消融研究表明，MixUp 至关重要，尤其是在无标签数据上。移除伪标签分布的温度锐化，会显著损害性能。标签猜测时，对多个增强取平均也必要。 \n  ReMixMatch （ Berthelot et al. 2020 ）引入两个新机制，改进 MixMatch： \n \n\t \n\t ReMixMatch 相比 MixMatch 引入的两项改进示意图。（图片来源： Berthelot et al. 2020 ） \n \n \n  Distribution alignment（分布对齐）。  它鼓励边缘分布 $p(y)$ 接近真实标签的边缘分布。令 $p(y)$ 为真实标签的类别分布，$\\tilde{p}(\\hat{y})$ 为无标签数据预测类别分布的在线平均值。模型对无标签样本的预测 $p_\\theta(y \\vert \\mathbf{u})$ 被归一化为 $\\text{Normalize}\\big( \\frac{p_\\theta(y \\vert \\mathbf{u}) p(y)}{\\tilde{p}(\\hat{y})} \\big)$，以匹配真实边缘分布。\n \n 注意，如果边缘分布不均匀，熵最小化就不是有用的目标。 \n 我确实觉得，带标签与无标签数据类别分布应一致的假设过强，在现实设置中未必成立。 \n \n \n  Augmentation anchoring（增强锚定） 。给定无标签样本，先用弱增强产生“锚点”版本，再用 CTAugment (Control Theory Augment) 对 $K$ 个强增强版本取平均。CTAugment 只采样能让模型预测保持在网络容忍范围内的增强。 \n \n ReMixMatch 损失由若干项结合而成： \n \n 应用数据增强与 MixUp 的监督损失； \n 应用数据增强与 MixUp、以伪标签为目标的无监督损失； \n 单张经过强增强、未使用 MixUp 的无标签图像的 CE（交叉熵）损失； \n 自监督学习中使用的  旋转  损失。 \n \n DivideMix #  \n  DivideMix （ Junnan Li et al. 2020 ）将半监督学习与 Learning with noisy labels (LNL)（噪声标签学习）结合。它通过  GMM（高斯混合模型）  建模逐样本损失分布，动态把训练数据分成包含干净样本的带标签集，以及包含噪声样本的无标签集。沿用  Arazo et al. 2019  思路，对逐样本交叉熵损失 $\\ell_i = y_i^\\top \\log f_\\theta(\\mathbf{x}_i)$ 拟合双分量 GMM。预计干净样本比噪声样本更快达到较低损失。均值较小的分量，对应干净标签的簇，记为 $c$。如果 GMM 后验概率 $w_i = p_\\text{GMM}(c \\mid \\ell_i)$（样本属于干净样本集的概率）大于阈值 $\\tau$，就将其视为干净样本，否则为噪声样本。 \n 数据聚类步骤称为  co-divide（协同划分） 。为避免确认偏差，DivideMix 同时训练两个不同网络，每个网络使用另一个网络的数据集划分；可以联想 Double Q Learning（双重Q学习）的工作方式。 \n \n\t \n\t DivideMix 独立训练两个网络，减少确认偏差。它们共同执行 co-divide（协同划分）、co-refinement（协同细化）和 co-guessing（协同猜测）。（图片来源： Junnan Li et al. 2020 ） \n \n 相比 MixMatch，DivideMix 增加  co-divide（协同划分）  阶段处理噪声样本，还在训练中作出以下改进： \n \n  Label co-refinement（标签协同细化） ：将真实标签 $y_i$ 与网络预测 $\\hat{y}_i$ 线性组合，后者是在 $\\mathbf{x}_i$ 的多个增强上取平均，由另一个网络产生的干净集概率 $w_i$ 引导。 \n  Label co-guessing（标签协同猜测） ：对无标签样本，将两个模型的预测取平均。 \n \n \n\t \n\t DivideMix 算法。（图片来源： Junnan Li et al. 2020 ） \n \n FixMatch #  \n  FixMatch （ Sohn et al. 2020 ）对经过弱增强的无标签样本生成伪标签，只保留高置信度预测。弱增强与高置信度筛选，共同帮助生成高质量、可信的伪标签目标。随后，FixMatch 学习在给定强增强样本时预测这些伪标签。 \n \n\t \n\t FixMatch 的工作方式示意图。（图片来源： Sohn et al. 2020 ） \n \n \n$$\n\\begin{aligned}\n\\mathcal{L}_s &= \\frac{1}{B} \\sum^B_{b=1} \\text{CE}[y_b, p_\\theta(y \\mid \\mathcal{A}_\\text{weak}(\\mathbf{x}_b))] \\\\\n\\mathcal{L}_u &= \\frac{1}{\\mu B} \\sum_{b=1}^{\\mu B} \\mathbb{1}[\\max(\\hat{y}_b) \\geq \\tau]\\;\\text{CE}(\\hat{y}_b, p_\\theta(y \\mid \\mathcal{A}_\\text{strong}(\\mathbf{u}_b)))\n\\end{aligned}\n$$\n \n 其中 $\\hat{y}_b$ 是无标签样本的伪标签；$\\mu$ 是决定 $\\mathcal{X}$ 与 $\\mathcal{U}$ 相对大小的超参数。 \n \n 弱增强 $\\mathcal{A}_\\text{weak}(.)$：标准翻转与平移增强。 \n 强增强 $\\mathcal{A}_\\text{strong}(.)$：AutoAugment、Cutout、RandAugment、CTAugment。 \n \n \n\t \n\t FixMatch 与其他几种半监督学习方法在图像分类任务上的性能。（图片来源： Sohn et al. 2020 ） \n \n 根据 FixMatch 消融研究， \n \n 以温度参数 $T$ 锐化预测分布，在使用阈值 $\\tau$ 时，没有显著影响。 \n 将 Cutout 与 CTAugment 作为强增强的一部分，是取得良好性能的必要条件。 \n 如果用强增强替换标签猜测的弱增强，模型在训练早期发散；如果完全取消弱增强，模型会过拟合猜测标签。 \n 伪标签预测时使用弱增强，而非强增强，会导致性能不稳定。强数据增强至关重要。 \n \n 结合强大预训练 #  \n 常见范式，尤其在语言任务中，是先通过自监督学习，在大量无监督语料上预训练任务无关模型，再用较小的带标签数据集在下游任务上微调。研究表明，将半监督学习与预训练结合，还能获得额外收益。 \n  Zoph et al. (2020)  研究  self-training（自训练）  能在多大程度上优于预训练。实验使用 ImageNet 进行预训练或自训练，改善 COCO 性能。注意，用 ImageNet 自训练时，丢弃标签，只将样本作为无标签数据点。 He et al. (2018)  已表明，下游任务差异很大时，例如目标检测，ImageNet 分类预训练效果不好。 \n \n\t \n\t (a) 数据增强（从弱到强），以及 (b) 带标签数据集大小，对目标检测性能的影响。图例中，`Rand Init` 指随机权重初始化模型；`ImageNet` 用 ImageNet top-1准确率84.5%的预训练检查点初始化；`ImageNet++` 用准确率更高、达86.9%的检查点初始化。（图片来源： Zoph et al. 2020 ） \n \n 实验展示了一系列有趣发现： \n \n 随着下游任务可用带标签样本增加，预训练有效性下降。预训练在低数据量设置（20%）中有帮助，但在高数据量设置中作用中性或有害。 \n 在高数据量／强增强设置中，即使预训练有害，自训练仍有帮助。 \n 即使使用同一数据来源，自训练也能在预训练基础上带来额外改进。 \n 自监督预训练（例如通过 SimCLR）在高数据量设置中损害性能，类似监督预训练。 \n 联合训练监督与自监督目标，有助于解决预训练与下游任务不匹配。预训练、联合训练和自训练的收益可以叠加。 \n 噪声标签或不针对任务的标注（即预训练标签与下游标签不对齐），不如针对任务的伪标签标注。 \n 自训练的计算成本高于在预训练模型上微调。 \n \n  Chen et al. (2020)  提出三步过程，结合自监督预训练、监督微调与自训练的优势： \n \n 以无监督或自监督方式预训练大型模型。 \n 用少量带标签样本监督微调。使用大规模（深且宽）神经网络很重要。 更大模型能用更少带标签样本取得更好性能。  \n 通过自训练采用伪标签，用无标签样本蒸馏。\n \n 可以将大模型知识蒸馏到小模型，因为任务专用使用不需要学习表示的额外容量。 \n 蒸馏损失形式如下，其中教师网络固定，权重为 $\\hat{\\theta}_T$。 \n \n \n \n \n     $$\n     \\mathcal{L}_\\text{distill} = - (1-\\alpha) \\underbrace{\\sum_{(\\mathbf{x}^l_i, y_i) \\in \\mathcal{X}} \\big[ \\log p_{\\theta_S}(y_i \\mid \\mathbf{x}^l_i) \\big]}_\\text{Supervised loss} - \\alpha \\underbrace{\\sum_{\\mathbf{u}_i \\in \\mathcal{U}} \\Big[ \\sum_{i=1}^L p_{\\hat{\\theta}_T}(y^{(i)} \\mid \\mathbf{u}_i; T) \\log p_{\\theta_S}(y^{(i)} \\mid \\mathbf{u}_i; T) \\Big]}_\\text{Distillation loss using unlabeled data}\n     $$\n      \n \n\t \n\t 半监督学习框架利用无标签数据语料，方式为（左）任务无关的无监督预训练，以及（右）任务专用自训练与蒸馏。（图片来源： Chen et al. 2020 ） \n \n 他们在 ImageNet 分类任务上实验。自监督预训练使用 SimCLRv2，这是  SimCLR  的直接改进版。实证研究确认了若干经验，与  Zoph et al. 2020  一致： \n \n 更大模型的标签使用效率更高； \n SimCLR 中更大、更深的投影头改善表示学习； \n 使用无标签数据蒸馏，改善半监督学习。 \n \n \n\t \n\t SimCLRv2 + 半监督蒸馏在 ImageNet 分类上的性能比较。（图片来源： Chen et al. 2020 ） \n \n \n 💡 近期半监督学习方法共同主题的简要总结，其中许多旨在减少确认偏差： \n \n 通过先进数据增强，为样本加入有效且多样的噪声。 \n 处理图像时，MixUp 是有效增强。MixUp 也可用于语言，带来小幅增量改善（ Guo et al. 2019 ）。 \n 设置阈值，丢弃低置信度伪标签。 \n 为每个小批次设置带标签样本最低数量。 \n 锐化伪标签分布，减少类别重叠。 \n \n 引用 #  \n 引用格式： \n \n Weng, Lilian. (Dec 2021). Learning with not enough data part 1: semi-supervised learning. Lil’Log. https://lilianweng.github.io/posts/2021-12-05-semi-supervised/. \n \n 或 \n  @article{weng2021semi,\n  title   = \"Learning with not Enough Data Part 1: Semi-Supervised Learning\",\n  author  = \"Weng, Lilian\",\n  journal = \"lilianweng.github.io\",\n  year    = \"2021\",\n  month   = \"Dec\",\n  url     = \"https://lilianweng.github.io/posts/2021-12-05-semi-supervised/\"\n}\n   参考文献 #  \n [1] Ouali, Hudelot & Tami.  “An Overview of Deep Semi-Supervised Learning”  arXiv preprint arXiv:2006.05278 (2020). \n [2] Sajjadi, Javanmardi & Tasdizen  “Regularization With Stochastic Transformations and Perturbations for Deep Semi-Supervised Learning.”  arXiv preprint arXiv:1606.04586 (2016). \n [3] Pham et al.  “Meta Pseudo Labels.”  CVPR 2021. \n [4] Laine & Aila.  “Temporal Ensembling for Semi-Supervised Learning”  ICLR 2017. \n [5] Tarvaninen & Valpola.  “Mean teachers are better role models: Weight-averaged consistency targets improve semi-supervised deep learning results.”  NeuriPS 2017 \n [6] Xie et al.  “Unsupervised Data Augmentation for Consistency Training.”  NeuriPS 2020. \n [7] Miyato et al.  “Virtual Adversarial Training: A Regularization Method for Supervised and Semi-Supervised Learning.”  IEEE transactions on pattern analysis and machine intelligence 41.8 (2018). \n [8] Verma et al.  “Interpolation consistency training for semi-supervised learning.”  IJCAI 2019 \n [9] Lee.  “Pseudo-label: The simple and efficient semi-supervised learning method for deep neural networks.”  ICML 2013 Workshop: Challenges in Representation Learning. \n [10] Iscen et al.  “Label propagation for deep semi-supervised learning.”  CVPR 2019. \n [11] Xie et al.  “Self-training with Noisy Student improves ImageNet classification”  CVPR 2020. \n [12] Jingfei Du et al.  “Self-training Improves Pre-training for Natural Language Understanding.”  2020 \n [13] Iscen et al.  “Label propagation for deep semi-supervised learning.”  CVPR 2019 \n [14] Arazo et al.  “Pseudo-labeling and confirmation bias in deep semi-supervised learning.”  IJCNN 2020. \n [15] Berthelot et al.  “MixMatch: A holistic approach to semi-supervised learning.”  NeuriPS 2019 \n [16] Berthelot et al.  “ReMixMatch: Semi-supervised learning with distribution alignment and augmentation anchoring.”  ICLR 2020 \n [17] Sohn et al.  “FixMatch: Simplifying semi-supervised learning with consistency and confidence.”   CVPR 2020 \n [18] Junnan Li et al.  “DivideMix: Learning with Noisy Labels as Semi-supervised Learning.”  2020 [ 代码 ] \n [19] Zoph et al.  “Rethinking pre-training and self-training.”  2020. \n [20] Chen et al.  “Big Self-Supervised Models are Strong Semi-Supervised Learners”  2020", "wordCount": "5377", "inLanguage": "zh-CN", "datePublished": "2021-12-05T00:00:00Z", "dateModified": "2021-12-05T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/favicon_wine.ico"}}}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/posts/2021-12-05-semi-supervised/">
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2021-12-05-semi-supervised/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/posts/2021-12-05-semi-supervised/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      数据不足时的学习（一）：半监督学习
+    </h1>
+    <div class="post-meta">日期：2021年12月5日 | 预计阅读时间：26分钟 | 作者：Lilian Weng
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#what-is-semi-supervised-learning" aria-label="What is semi-supervised learning?">什么是半监督学习？</a></li>
+                <li>
+                    <a href="#notations" aria-label="Notations">符号说明</a></li>
+                <li>
+                    <a href="#hypotheses" aria-label="Hypotheses">假设</a></li>
+                <li>
+                    <a href="#consistency-regularization" aria-label="Consistency Regularization（一致性正则化）">Consistency Regularization（一致性正则化）</a><ul>
+                        
+                <li>
+                    <a href="#%cf%80-model" aria-label="Π-model">Π-model（Π模型）</a></li>
+                <li>
+                    <a href="#temporal-ensembling" aria-label="Temporal ensembling">Temporal ensembling（时间集成）</a></li>
+                <li>
+                    <a href="#mean-teachers" aria-label="Mean teachers">Mean teachers（均值教师）</a></li>
+                <li>
+                    <a href="#noisy-samples-as-learning-targets" aria-label="Noisy samples as learning targets">将带噪声样本作为学习目标</a></li></ul>
+                </li>
+                <li>
+                    <a href="#pseudo-labeling" aria-label="Pseudo Labeling（伪标签标注）">Pseudo Labeling（伪标签标注）</a><ul>
+                        
+                <li>
+                    <a href="#label-propagation" aria-label="Label propagation">Label propagation（标签传播）</a></li>
+                <li>
+                    <a href="#self-training" aria-label="Self-Training">Self-Training（自训练）</a></li>
+                <li>
+                    <a href="#reducing-confirmation-bias" aria-label="Reducing confirmation bias">减少 confirmation bias（确认偏差）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#pseudo-labeling-with-consistency-regularization" aria-label="结合一致性正则化的伪标签标注">结合一致性正则化的伪标签标注</a><ul>
+                        
+                <li>
+                    <a href="#mixmatch" aria-label="MixMatch">MixMatch</a></li>
+                <li>
+                    <a href="#dividemix" aria-label="DivideMix">DivideMix</a></li>
+                <li>
+                    <a href="#fixmatch" aria-label="FixMatch">FixMatch</a></li></ul>
+                </li>
+                <li>
+                    <a href="#combined-with-powerful-pre-training" aria-label="Combined with Powerful Pre-Training">结合强大预训练</a></li>
+                <li>
+                    <a href="#citation" aria-label="Citation">引用</a></li>
+                <li>
+                    <a href="#references" aria-label="References">参考文献</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><!-- The performance of supervised learning tasks improves with more high-quality labels available. However, it is expensive to collect a large number of labeled samples. There are several paradigms in machine learning to deal with the scenario when the labels are scarce. Semi-supervised learning is one candidate, utilizing a large amount of unlabeled data conjunction with a small amount of labeled data. -->
+<p>面对监督学习任务中有限的带标签数据，通常讨论四种方法。</p>
+<ol>
+<li><strong>预训练 + 微调</strong>：在大量无监督数据上预训练强大的任务无关模型，例如在自由文本上 <a href="https://xingshuozhu1998.github.io/posts/2019-01-31-lm/">预训练 LM（语言模型）</a>，或通过 <a href="https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/">自监督学习</a> 在无标签图像上预训练视觉模型；随后，用少量带标签样本在下游任务上微调。</li>
+<li><strong>半监督学习</strong>：同时从带标签与无标签样本学习。视觉任务中已有大量采用这一方法的研究。</li>
+<li><strong>主动学习</strong>：标注昂贵，但仍希望在成本预算内收集更多标签。主动学习学会选择最有价值的无标签样本作为下一批标注对象，帮助我们在有限预算下明智行动。</li>
+<li><strong>预训练 + 自动生成数据集</strong>：给定有能力的预训练模型，可以利用它自动生成更多带标签样本。受到 few-shot learning（少样本学习）成功的推动，这在语言领域尤为流行。</li>
+</ol>
+<p>我计划围绕“数据不足时的学习”写一系列文章。第一部分介绍 <em>半监督学习</em>。</p>
+<h1 id="what-is-semi-supervised-learning">什么是半监督学习？<a hidden class="anchor" aria-hidden="true" href="#what-is-semi-supervised-learning">#</a></h1>
+<p>半监督学习同时使用带标签与无标签数据训练模型。</p>
+<p>有趣的是，目前大多数半监督学习文献聚焦视觉任务；语言任务更常见的范式则是预训练 + 微调。</p>
+<p>本文介绍的所有方法，其损失都结合两部分：$\mathcal{L} = \mathcal{L}_s +  \mu(t) \mathcal{L}_u$。给定全部带标签样本，很容易得到监督损失 $\mathcal{L}_s$。我们将聚焦无监督损失 $\mathcal{L}_u$ 的设计。权重项 $\mu(t)$ 的常见选择是 ramp function（逐渐上升函数），随时间增加 $\mathcal{L}_u$ 的重要性，其中 $t$ 是训练步骤。</p>
+<blockquote>
+<p><em>说明</em>：本文不介绍以修改模型架构为重点的半监督方法。关于如何在半监督学习中使用生成模型与基于图的方法，请参阅 <a href="https://arxiv.org/abs/2006.05278">这篇综述</a>。</p>
+</blockquote>
+<h1 id="notations">符号说明<a hidden class="anchor" aria-hidden="true" href="#notations">#</a></h1>
+<table>
+	<thead>
+			<tr>
+					<th>符号</th>
+					<th>含义</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>$L$</td>
+					<td>不同标签的数量。</td>
+			</tr>
+			<tr>
+					<td>$(\mathbf{x}^l, y) \sim \mathcal{X}, y \in \{0, 1\}^L$</td>
+					<td>带标签数据集。$y$ 是真实标签的 one-hot（独热）表示。</td>
+			</tr>
+			<tr>
+					<td>$\mathbf{u} \sim \mathcal{U}$</td>
+					<td>无标签数据集。</td>
+			</tr>
+			<tr>
+					<td>$\mathcal{D} = \mathcal{X} \cup \mathcal{U}$</td>
+					<td>整个数据集，包括带标签与无标签样本。</td>
+			</tr>
+			<tr>
+					<td>$\mathbf{x}$</td>
+					<td>任意样本，可以带标签，也可以不带标签。</td>
+			</tr>
+			<tr>
+					<td>$\bar{\mathbf{x}}$</td>
+					<td>应用数据增强后的 $\mathbf{x}$。</td>
+			</tr>
+			<tr>
+					<td>$\mathbf{x}_i$</td>
+					<td>第 $i$ 个样本。</td>
+			</tr>
+			<tr>
+					<td>$\mathcal{L}$, $\mathcal{L}_s$, $\mathcal{L}_u$</td>
+					<td>损失、监督损失与无监督损失。</td>
+			</tr>
+			<tr>
+					<td>$\mu(t)$</td>
+					<td>随时间增加的无监督损失权重。</td>
+			</tr>
+			<tr>
+					<td>$p(y \vert \mathbf{x}), p_\theta(y \vert \mathbf{x})$</td>
+					<td>给定输入时，标签集合上的条件概率。</td>
+			</tr>
+			<tr>
+					<td>$f_\theta(.)$</td>
+					<td>权重为 $\theta$ 的已实现神经网络，即希望训练的模型。</td>
+			</tr>
+			<tr>
+					<td>$\mathbf{z} = f_\theta(\mathbf{x})$</td>
+					<td>$f$ 输出的 logits（未归一化分数）向量。</td>
+			</tr>
+			<tr>
+					<td>$\hat{y} = \text{softmax}(\mathbf{z})$</td>
+					<td>预测标签分布。</td>
+			</tr>
+			<tr>
+					<td>$D[.,.]$</td>
+					<td>两个分布之间的距离函数，例如 MSE（均方误差）、交叉熵、KL divergence（衡量两个概率分布差异的相对熵）（KL散度）等。</td>
+			</tr>
+			<tr>
+					<td>$\beta$</td>
+					<td><a href="#mean-teachers">teacher（教师）</a> 模型权重的 EMA（指数移动平均）加权超参数。</td>
+			</tr>
+			<tr>
+					<td>$\alpha, \lambda$</td>
+					<td>MixUp 参数，$\lambda \sim \text{Beta}(\alpha, \alpha)$。</td>
+			</tr>
+			<tr>
+					<td>$T$</td>
+					<td>锐化预测分布的温度。</td>
+			</tr>
+			<tr>
+					<td>$\tau$</td>
+					<td>选择合格预测的置信度阈值。</td>
+			</tr>
+	</tbody>
+</table>
+<h1 id="hypotheses">假设<a hidden class="anchor" aria-hidden="true" href="#hypotheses">#</a></h1>
+<p>文献讨论了若干假设，用于支持半监督学习方法中的某些设计决策。</p>
+<ul>
+<li>
+<p>H1：<strong>Smoothness Assumptions（平滑性假设）</strong>：如果两个数据样本在特征空间高密度区域中彼此接近，标签应相同或非常相似。</p>
+</li>
+<li>
+<p>H2：<strong>Cluster Assumptions（聚类假设）</strong>：特征空间既有密集区域，也有稀疏区域。密集聚集的数据点自然形成一个簇。同一簇中的样本应具有相同标签。这是 H1 的小幅扩展。</p>
+</li>
+<li>
+<p>H3：<strong>Low-density Separation Assumptions（低密度分隔假设）</strong>：类别间的决策边界倾向于位于稀疏低密度区域；否则，决策边界会将高密度簇分成两个类别，分别对应两个簇，违反 H1 和 H2。</p>
+</li>
+<li>
+<p>H4：<strong>Manifold Assumptions（流形假设）</strong>：高维数据倾向于位于低维 manifold（流形）上。现实数据虽可能在极高维空间中观测（例如现实物体／场景图像），实际上可以由更低维流形描述，其中某些属性得到捕捉，相似点紧密聚集（例如现实物体／场景图像并非从所有像素组合的均匀分布中抽取）。这使我们能学习更高效的表示，发现并衡量无标签数据点的相似性。这也是表示学习的基础。[参阅 <a href="https://stats.stackexchange.com/questions/66939/what-is-the-manifold-assumption-in-semi-supervised-learning">一个有帮助的链接</a>。]</p>
+</li>
+</ul>
+<h1 id="consistency-regularization">Consistency Regularization（一致性正则化）<a hidden class="anchor" aria-hidden="true" href="#consistency-regularization">#</a></h1>
+<p><strong>Consistency Regularization（一致性正则化）</strong>，也称 <strong>Consistency Training（一致性训练）</strong>，假设神经网络内部随机性（如 Dropout（随机失活））或数据增强变换，不应改变模型对同一输入的预测。本节每种方法都将一致性正则化损失作为 $\mathcal{L}_u$。</p>
+<p>这一思路已被多种 <a href="https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/">自监督</a> <a href="https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/">学习</a> 方法采用，例如 SimCLR（使用数据增强与对比损失的表征学习方法）、BYOL（不依赖负样本的自监督表征学习方法）、SimCSE 等。同一样本的不同增强版本，应产生相同表示。语言建模中的 <a href="https://xingshuozhu1998.github.io/posts/2019-01-31-lm/#cross-view-training">Cross-view training（跨视图训练）</a>，以及自监督学习中的多视图学习，动机相同。</p>
+<h2 id="π-model">Π-model（Π模型）<a hidden class="anchor" aria-hidden="true" href="#π-model">#</a></h2>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/PI-model.png" style="width: 100%;"  />
+	<figcaption>Π-model 概览。同一输入的两个版本经过不同随机增强与 dropout（随机失活）掩码，通过网络后，输出应保持一致。（图片来源：<a href="https://arxiv.org/abs/1610.02242" target="_blank">Laine &amp; Aila (2017)</a>）</figcaption>
+</figure>
+<p><a href="https://arxiv.org/abs/1606.04586">Sajjadi et al. (2016)</a> 提出无监督学习损失，最小化同一数据点经过两次网络计算的差异，两次使用随机变换（如 dropout（随机失活）、随机最大池化）。由于不显式使用标签，损失可应用于无标签数据集。<a href="https://arxiv.org/abs/1610.02242">Laine &amp; Aila (2017)</a> 后来为这种设置命名为 <strong>Π-Model</strong>。</p>
+<div>
+$$
+\mathcal{L}_u^\Pi = \sum_{\mathbf{x} \in \mathcal{D}} \text{MSE}(f_\theta(\mathbf{x}), f'_\theta(\mathbf{x}))
+$$
+</div>
+<p>其中 $f&rsquo;$ 是同一神经网络，只是应用不同随机增强或 dropout（随机失活）掩码。该损失使用整个数据集。</p>
+<h2 id="temporal-ensembling">Temporal ensembling（时间集成）<a hidden class="anchor" aria-hidden="true" href="#temporal-ensembling">#</a></h2>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/temperal-ensembling.png" style="width: 100%;"  />
+	<figcaption>Temporal Ensembling（时间集成）概览。每个样本标签预测的 EMA是学习目标。（图片来源：<a href="https://arxiv.org/abs/1610.02242" target="_blank">Laine &amp; Aila (2017)</a>）</figcaption>
+</figure>
+<p>Π-model 要求网络对每个样本运行两次，使计算成本翻倍。为降低成本，<strong>Temporal Ensembling（时间集成）</strong>（<a href="https://arxiv.org/abs/1610.02242">Laine &amp; Aila 2017</a>）为每个训练样本维护随时间变化的模型预测 EMA$\tilde{\mathbf{z}}_i$，作为学习目标；每个 epoch（训练轮次）只评估更新一次。由于集成输出 $\tilde{\mathbf{z}}_i$ 初始化为 $\mathbf{0}$，需要除以 $(1-\alpha^t)$ 归一化，校正启动偏差。Adam 优化器出于同样原因，也有这种 <a href="https://stats.stackexchange.com/questions/232741/why-is-it-important-to-include-a-bias-correction-term-for-the-adam-optimizer-for">bias correction（偏差校正）</a> 项。</p>
+<div>
+$$
+\tilde{\mathbf{z}}^{(t)}_i = \frac{\alpha \tilde{\mathbf{z}}^{(t-1)}_i + (1-\alpha) \mathbf{z}_i}{1-\alpha^t}
+$$
+</div>
+<p>其中 $\tilde{\mathbf{z}}^{(t)}$ 是第 $t$ 个 epoch（训练轮次）的集成预测，$\mathbf{z}_i$ 是当前轮的模型预测。注意，由于 $\tilde{\mathbf{z}}^{(0)} = \mathbf{0}$，经过校正，在第1轮，$\tilde{\mathbf{z}}^{(1)}$ 就等价于 $\mathbf{z}_i$。</p>
+<h2 id="mean-teachers">Mean teachers（均值教师）<a hidden class="anchor" aria-hidden="true" href="#mean-teachers">#</a></h2>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/mean-teacher.png" style="width: 68%;"  />
+	<figcaption>Mean Teacher（均值教师） 框架概览。（图片来源：<a href="https://arxiv.org/abs/1703.01780" target="_blank">Tarvaninen &amp; Valpola, 2017</a>）</figcaption>
+</figure>
+<p>Temporal Ensembling（时间集成）为每个训练样本追踪标签预测的 EMA，作为学习目标。然而，这种标签预测只在 <em>每个训练轮次</em> 更新一次，大型训练集上显得笨重。<strong>Mean Teacher</strong>（<a href="https://arxiv.org/abs/1703.01780">Tarvaninen &amp; Valpola, 2017</a>）追踪模型权重的移动平均，而非模型输出，以克服目标更新缓慢。将权重为 $\theta$ 的原始模型称为 <em>student（学生）</em>，将连续学生模型权重的移动平均 $\theta’$ 所对应的模型称为 <em>mean teacher</em>：$\theta’ \gets \beta \theta’ + (1-\beta)\theta$</p>
+<p>一致性正则化损失是学生与教师预测之间的距离，应最小化学生—教师差距。预计mean teacher的预测比学生更准确。实证实验确认了这一点，如图所示： <figure>
+<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/mean-teacher-results.png" style="width: 100%;"  />
+<figcaption>Mean Teacher 与 Π-model 在 SVHN 上的分类错误率。Mean Teacher（均值教师，橙色）性能优于学生模型（蓝色）。（图片来源：<a href="https://arxiv.org/abs/1703.01780" target="_blank">Tarvaninen &amp; Valpola, 2017</a>）</figcaption></p>
+</figure>
+<p>根据消融研究，</p>
+<ul>
+<li>良好性能需要输入增强（例如随机翻转输入图像、高斯噪声），或学生模型的 dropout（随机失活）。教师模型无需 dropout。</li>
+<li>性能对 EMA衰减超参数 $\beta$ 敏感。良好策略是，在逐步增大阶段使用较小的 $\beta=0.99$，后期学生模型改进放缓时，使用较大的 $\beta=0.999$。</li>
+<li>他们发现，采用 MSE（均方误差）作为一致性成本函数，优于 KL divergence（KL散度）等其他成本函数。</li>
+</ul>
+<h2 id="noisy-samples-as-learning-targets">将带噪声样本作为学习目标<a hidden class="anchor" aria-hidden="true" href="#noisy-samples-as-learning-targets">#</a></h2>
+<p>近期若干一致性训练方法，学习最小化原始无标签样本与其对应增强版本的预测差异。这与 Π-model 很相似，但一致性正则化损失 <em>仅</em> 应用于无标签数据。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/consistency-training-with-noisy-samples.png" style="width: 100%;"  />
+	<figcaption>使用带噪声样本的一致性训练。</figcaption>
+</figure>
+<p>Adversarial Training（对抗训练；<a href="https://arxiv.org/abs/1412.6572">Goodfellow et al. 2014</a>）在输入上加入对抗噪声，训练模型对这类攻击具有鲁棒性。该设置适用于监督学习，</p>
+<div>
+$$
+\begin{aligned}
+\mathcal{L}_\text{adv}(\mathbf{x}^l, \theta) &= D[q(y\mid \mathbf{x}^l), p_\theta(y\mid \mathbf{x}^l + r_\text{adv})] \\
+r_\text{adv} &= {\arg\max}_{r; \|r\| \leq \epsilon} D[q(y\mid \mathbf{x}^l), p_\theta(y\mid \mathbf{x}^l + r_\text{adv})] \\
+r_\text{adv} &\approx \epsilon \frac{g}{\|g\|_2} \approx \epsilon\text{sign}(g)\quad\text{where }g = \nabla_{r} D[y, p_\theta(y\mid \mathbf{x}^l + r)]
+\end{aligned}
+$$
+</div>
+<p>其中 $q(y \mid \mathbf{x}^l)$ 是真实分布，用真实标签的 one-hot（独热）编码 $y$ 近似。$p_\theta(y \mid \mathbf{x}^l)$ 是模型预测。$D[.,.]$ 是衡量两分布差异的距离函数。</p>
+<p><strong>Virtual Adversarial Training（虚拟对抗训练）</strong>（<strong>VAT</strong>；<a href="https://arxiv.org/abs/1704.03976">Miyato et al. 2018</a>）将这一思路扩展到半监督学习。由于 $q(y \mid \mathbf{x}^l)$ 未知，VAT 用当前权重 $\hat{\theta}$ 下，模型对原始输入的预测替换它。注意，$\hat{\theta}$ 是模型权重的固定副本，因此 $\hat{\theta}$ 不进行梯度更新。</p>
+<div>
+$$
+\begin{aligned}
+\mathcal{L}_u^\text{VAT}(\mathbf{x}, \theta) &= D[p_{\hat{\theta}}(y\mid \mathbf{x}), p_\theta(y\mid \mathbf{x} + r_\text{vadv})] \\
+r_\text{vadv} &= {\arg\max}_{r; \|r\| \leq \epsilon} D[p_{\hat{\theta}}(y\mid \mathbf{x}), p_\theta(y\mid \mathbf{x} + r)]
+\end{aligned}
+$$
+</div>
+<p>VAT 损失应用于带标签与无标签样本。它在每个数据点上度量当前模型预测流形的不平滑程度。优化这一损失，会推动流形更加平滑。</p>
+<p><strong>Interpolation Consistency Training（插值一致性训练）</strong>（<strong>ICT</strong>；<a href="https://arxiv.org/abs/1903.03825">Verma et al. 2019</a>）通过加入更多数据点插值扩充数据集，并期望模型预测与对应标签插值一致。MixUp（<a href="https://arxiv.org/abs/1710.09412">Zheng et al. 2018</a>）用简单加权和混合两张图像，并结合标签平滑。沿用 MixUp 思路，ICT 期望模型对混合样本的标签预测，与对应输入预测的插值匹配：</p>
+<div>
+$$
+\begin{aligned}
+\text{mixup}_\lambda (\mathbf{x}_i, \mathbf{x}_j) &= \lambda \mathbf{x}_i + (1-\lambda)\mathbf{x}_j \\
+p(\text{mixup}_\lambda (y \mid \mathbf{x}_i, \mathbf{x}_j)) &\approx \lambda p(y \mid \mathbf{x}_i) + (1-\lambda) p(y \mid \mathbf{x}_j)
+\end{aligned}
+$$
+</div>
+<p>其中 $\theta&rsquo;$ 是 $\theta$ 的移动平均，即 <a href="#mean-teachers">mean teacher</a>。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/ICT.png" style="width: 100%;"  />
+	<figcaption>Interpolation Consistency Training（插值一致性训练）概览。应用 MixUp 产生更多插值样本，以插值标签作为学习目标。（图片来源：<a href="https://arxiv.org/abs/1903.03825" target="_blank">Verma et al. 2019</a>）</figcaption>
+</figure>
+<p>由于随机选取的两个无标签样本属于不同类别的概率较高（例如 ImageNet 有1000种物体类别），对两个随机无标签样本应用 MixUp 的插值，很可能发生在决策边界附近。根据低密度分隔 <a href="#hypotheses">假设</a>，决策边界倾向于位于低密度区域。</p>
+<div>
+$$
+\mathcal{L}^\text{ICT}_{u} = \mathbb{E}_{\mathbf{u}_i, \mathbf{u}_j \sim \mathcal{U}} \mathbb{E}_{\lambda \sim \text{Beta}(\alpha, \alpha)} D[p_\theta(y \mid \text{mixup}_\lambda (\mathbf{u}_i, \mathbf{u}_j)), \text{mixup}_\lambda(p_{\theta’}(y \mid \mathbf{u}_i), p_{\theta'}(y \mid \mathbf{u}_j)]
+$$
+</div>
+<p>其中 $\theta&rsquo;$ 是 $\theta$ 的移动平均。</p>
+<p>与 VAT 相似，<strong>Unsupervised Data Augmentation（无监督数据增强）</strong>（<strong>UDA</strong>；<a href="https://arxiv.org/abs/1904.12848">Xie et al. 2020</a>）学习对无标签样本及其增强版本预测相同输出。UDA 特别研究噪声 <em>“质量”</em> 如何影响一致性训练的半监督学习性能。使用先进数据增强方法，生成有意义、有效的带噪声样本至关重要。良好数据增强应产生有效（不改变标签）、多样的噪声，并携带针对性的归纳偏置。</p>
+<p>对于图像，UDA 采用 RandAugment（<a href="https://arxiv.org/abs/1909.13719">Cubuk et al. 2019</a>），均匀采样 <a href="https://pillow.readthedocs.io/en/stable/">PIL</a> 中可用的增强操作，无需学习或优化，因此比 AutoAugment（自动搜索数据增强方案的方法）便宜得多。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/UDA-image-results.png" style="width: 80%;"  />
+	<figcaption>多种半监督学习方法在 CIFAR-10 分类上的比较。完全监督的 Wide-ResNet-28-2 和 PyramidNet+ShakeDrop，在50,000个样本上训练且不使用 RandAugment 时，错误率分别为 **5.4** 和 **2.7**。（图片来源：<a href="https://arxiv.org/abs/1904.12848" target="_blank">Xie et al. 2020</a>）</figcaption>
+</figure>
+<p>对于语言，UDA 结合 back-translation（回译）与基于 TF-IDF（词频与逆文档频率加权） 的词替换。回译保留高层含义，但可能不保留某些单词；基于 TF-IDF 的词替换则删除低 TF-IDF 得分、信息量较少的单词。语言任务实验发现，UDA 与迁移学习、表示学习互补；例如，在领域内无标签数据上微调 BERT（基于双向编码器的预训练语言模型）（图8中的 $\text{BERT}_\text{FINETUNE}$），可进一步改善性能。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/UDA-language-results.png" style="width: 83%;"  />
+	<figcaption>UDA 使用不同初始化配置时，在多种文本分类任务上的比较。（图片来源：<a href="https://arxiv.org/abs/1904.12848" target="_blank">Xie et al. 2020</a>）</figcaption>
+</figure>
+<p>计算 $\mathcal{L}_u$ 时，UDA 发现两种训练技术有助于改善结果。</p>
+<ul>
+<li><em>Low confidence masking（低置信度掩码）</em>：如果预测置信度低于阈值 $\tau$，就屏蔽该样本。</li>
+<li><em>Sharpening prediction distribution（锐化预测分布）</em>：在 softmax 中使用较低温度 $T$，锐化预测概率分布。</li>
+<li><em>In-domain data filtration（领域内数据筛选）</em>：为从大型领域外数据集中提取更多领域内数据，训练分类器预测领域内标签，再保留高置信度预测样本作为领域内候选。</li>
+</ul>
+<div>
+$$
+\begin{aligned}
+&\mathcal{L}_u^\text{UDA} = \mathbb{1}[\max_{y'} p_{\hat{\theta}}(y'\mid \mathbf{x}) > \tau ] \cdot D[p^\text{(sharp)}_{\hat{\theta}}(y \mid \mathbf{x}; T), p_\theta(y \mid \bar{\mathbf{x}})] \\
+&\text{where } p_{\hat{\theta}}^\text{(sharp)}(y \mid \mathbf{x}; T) = \frac{\exp(z^{(y)} / T)}{ \sum_{y'} \exp(z^{(y')} / T) }
+\end{aligned}
+$$
+</div>
+<p>其中 $\hat{\theta}$ 是模型权重的固定副本，与 VAT 相同，不进行梯度更新；$\bar{\mathbf{x}}$ 是增强数据点。$\tau$ 是预测置信度阈值，$T$ 是分布锐化温度。</p>
+<h1 id="pseudo-labeling">Pseudo Labeling（伪标签标注）<a hidden class="anchor" aria-hidden="true" href="#pseudo-labeling">#</a></h1>
+<p><strong>Pseudo Labeling（伪标签标注）</strong>（<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.664.3543&amp;rep=rep1&amp;type=pdf">Lee 2013</a>）依据当前模型预测的最大 softmax 概率，为无标签样本赋予伪标签，再在纯监督设置下同时用带标签与无标签样本训练模型。</p>
+<p>伪标签为什么有效？它实际上等价于 <em>Entropy Regularization（熵正则化）</em>（<a href="https://papers.nips.cc/paper/2004/hash/96f2b50b5d3613adf9c27049b2a888c7-Abstract.html">Grandvalet &amp; Bengio 2004</a>），最小化无标签数据类别概率的条件熵，促进类别间低密度分隔。换句话说，预测类别概率实际上度量类别重叠，最小化熵等价于减少类别重叠，从而实现低密度分隔。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/pseudo-label-segregation.png" style="width: 100%;"  />
+	<figcaption>模型在 MNIST 测试集上输出的 t-SNE 可视化：(a) 不使用伪标签；(b) 除600个带标签样本外，对60000个无标签样本使用伪标签训练。伪标签使学习到的嵌入空间分隔更好。（图片来源：<a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.664.3543&rep=rep1&type=pdf" target="_blank">Lee 2013</a>）</figcaption>
+</figure>
+<p>伪标签训练自然形成迭代过程。产生伪标签的模型称为教师，利用伪标签学习的模型称为学生。</p>
+<h2 id="label-propagation">Label propagation（标签传播）<a hidden class="anchor" aria-hidden="true" href="#label-propagation">#</a></h2>
+<p><strong>Label Propagation（标签传播）</strong>（<a href="https://arxiv.org/abs/1904.04717">Iscen et al. 2019</a>）的思路，是依据特征嵌入构建样本间相似度图，再从已知样本向无标签样本“扩散”伪标签，传播权重与图中的成对相似度得分成正比。概念上类似 k-NN（k近邻）分类器，两者都难以扩展到大型数据集。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/label-propagation.png" style="width: 100%;"  />
+	<figcaption>Label Propagation（标签传播）的工作方式示意图。（图片来源：<a href="https://arxiv.org/abs/1904.04717" target="_blank">Iscen et al. 2019</a>）</figcaption>
+</figure>
+<h2 id="self-training">Self-Training（自训练）<a hidden class="anchor" aria-hidden="true" href="#self-training">#</a></h2>
+<p><strong>Self-Training（自训练）</strong> 并非新概念（<a href="https://ieeexplore.ieee.org/document/1053799">Scudder 1965</a>、<a href="http://www.kamalnigam.com/papers/cotrain-CIKM00.pdf">Nigram &amp; Ghani CIKM 2000</a>）。它是迭代算法，交替执行以下两步，直到每个无标签样本都获得标签：</p>
+<ul>
+<li>首先在带标签数据上构建分类器。</li>
+<li>再用该分类器预测无标签数据的标签，将置信度最高的样本转为带标签样本。</li>
+</ul>
+<p><a href="https://arxiv.org/abs/1911.04252">Xie et al. (2020)</a> 将自训练应用于深度学习，取得出色结果。在 ImageNet 分类任务上，先训练 EfficientNet（<a href="https://arxiv.org/abs/1905.11946">Tan &amp; Le 2019</a>）作为教师，为300M张无标签图像生成伪标签，再训练更大的 EfficientNet 作为学生，同时学习真实标签与伪标签图像。设置中的关键元素是，学生训练期间加入 <em>噪声</em>，而教师生成伪标签时不加噪声，因此方法称为 <strong>Noisy Student</strong>。他们使用 stochastic depth（随机深度；<a href="https://arxiv.org/abs/1603.09382">Huang et al. 2016</a>）、dropout（随机失活）和 RandAugment 为学生加噪声。噪声对学生超越教师很重要。加入噪声产生复合效应，鼓励模型在带标签与无标签数据上的决策边界更加平滑。</p>
+<p>Noisy Student 自训练中，其他几个重要技术配置：</p>
+<ul>
+<li>学生模型应足够大（即比教师更大），以拟合更多数据。</li>
+<li>Noisy Student 应结合数据均衡，尤其要均衡每个类别的伪标签图像数量。</li>
+<li>软伪标签优于硬伪标签。</li>
+</ul>
+<p>虽然模型没有专门优化对抗鲁棒性，Noisy Student 也改善了对 FGSM（Fast Gradient Sign Attack，快速梯度符号攻击：使用损失对输入数据的梯度，调整输入以最大化损失）的鲁棒性。</p>
+<p><a href="https://arxiv.org/abs/2010.02194">Du et al. (2020)</a> 提出的 SentAugment，旨在解决语言领域自训练时领域内无标签数据不足的问题。它依赖句子嵌入，从大型语料中找到领域内无标签样本，再使用检索句子进行自训练。</p>
+<h2 id="reducing-confirmation-bias">减少 confirmation bias（确认偏差）<a hidden class="anchor" aria-hidden="true" href="#reducing-confirmation-bias">#</a></h2>
+<p>确认偏差源于不完美教师模型提供的错误伪标签。过拟合错误标签，可能无法得到更好的学生模型。</p>
+<p>为减少确认偏差，<a href="https://arxiv.org/abs/1908.02983">Arazo et al. (2019)</a> 提出两种技术。一种是采用带软标签的 MixUp。给定两个样本 $(\mathbf{x}_i, \mathbf{x}_j)$ 及其对应真实标签或伪标签 $(y_i, y_j)$，插值标签方程可转换为使用 softmax 输出的交叉熵损失：</p>
+<div>
+$$
+\begin{aligned}
+&\bar{\mathbf{x}} = \lambda \mathbf{x}_i + (1-\lambda) \mathbf{x}_j \\
+&\bar{y} = \lambda y_i + (1-\lambda) y_j \Leftrightarrow
+\mathcal{L} = \lambda [y_i^\top \log f_\theta(\bar{\mathbf{x}})] + (1-\lambda) [y_j^\top \log f_\theta(\bar{\mathbf{x}})]
+\end{aligned}
+$$
+</div>
+<p>带标签样本太少时，仅用 MixUp 不足。于是，他们通过过采样带标签样本，为每个小批次设置带标签样本的最低数量。这比提高标签样本权重更好，因为更新更频繁，而不是少量幅度更大、可能较不稳定的更新。与一致性正则化相似，数据增强与 dropout（随机失活）对伪标签标注有效工作也很重要。</p>
+<p><strong>Meta Pseudo Labels</strong>（<a href="https://arxiv.org/abs/2003.10580">Pham et al. 2021</a>）根据学生在带标签数据集上的表现反馈，持续调整教师模型。教师与学生并行训练，教师学习产生更好的伪标签，学生从伪标签学习。</p>
+<p>令教师与学生模型权重分别为 $\theta_T$ 和 $\theta_S$。学生在带标签样本上的损失，定义为函数 $\theta^\text{PL}_S(.)$，自变量为 $\theta_T$；希望相应优化教师模型，最小化这一损失。</p>
+<div>
+$$
+\begin{aligned}
+\min_{\theta_T} &\mathcal{L}_s(\theta^\text{PL}_S(\theta_T)) = \min_{\theta_T} \mathbb{E}_{(\mathbf{x}^l, y) \in \mathcal{X}} \text{CE}[y, f_{\theta_S}(\mathbf{x}^l)]  \\
+\text{where } &\theta^\text{PL}_S(\theta_T)
+= \arg\min_{\theta_S} \mathcal{L}_u (\theta_T, \theta_S)
+= \arg\min_{\theta_S} \mathbb{E}_{\mathbf{u} \sim \mathcal{U}} \text{CE}[(f_{\theta_T}(\mathbf{u}), f_{\theta_S}(\mathbf{u}))]
+\end{aligned}
+$$
+</div>
+<p>然而，上式并不容易优化。借鉴 <a href="https://arxiv.org/abs/1703.03400">MAML（模型无关元学习）</a> 思路，将多步 $\arg\min_{\theta_S}$ 近似为 $\theta_S$ 的单步梯度更新，</p>
+<div>
+$$
+\begin{aligned}
+\theta^\text{PL}_S(\theta_T) &\approx \theta_S - \eta_S \cdot \nabla_{\theta_S} \mathcal{L}_u(\theta_T, \theta_S) \\
+\min_{\theta_T} \mathcal{L}_s (\theta^\text{PL}_S(\theta_T)) &\approx \min_{\theta_T} \mathcal{L}_s \big( \theta_S - \eta_S \cdot \nabla_{\theta_S} \mathcal{L}_u(\theta_T, \theta_S) \big)
+\end{aligned}
+$$
+</div>
+<p>使用软伪标签时，上述目标可微；使用硬伪标签时不可微，因此需要使用 RL（强化学习），例如 REINFORCE（基于蒙特卡洛回报的策略梯度算法）。</p>
+<p>优化过程交替训练两个模型：</p>
+<ul>
+<li><em>学生模型更新</em>：给定一批无标签样本 $\{ \mathbf{u} \}$，通过 $f_{\theta_T}(\mathbf{u})$ 生成伪标签，再用一步 SGD（随机梯度下降）优化 $\theta_S$：$\theta’_S = \color{green}{\theta_S - \eta_S \cdot \nabla_{\theta_S} \mathcal{L}_u(\theta_T, \theta_S)}$。</li>
+<li><em>教师模型更新</em>：给定一批带标签样本 $\{(\mathbf{x}^l, y)\}$，复用学生更新，优化 $\theta_T$：$\theta’_T = \theta_T  - \eta_T \cdot \nabla_{\theta_T} \mathcal{L}_s ( \color{green}{\theta_S - \eta_S \cdot \nabla_{\theta_S} \mathcal{L}_u(\theta_T, \theta_S)} )$。此外，将 UDA 目标应用于教师模型，纳入一致性正则化。</li>
+</ul>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/MPL-results.png" style="width: 100%;"  />
+	<figcaption>Meta Pseudo Labels 与其他半监督或自监督学习方法在图像分类任务上的比较。（图片来源：<a href="https://arxiv.org/abs/2003.10580" target="_blank">Pham et al. 2021</a>）</figcaption>
+</figure>
+<h1 id="pseudo-labeling-with-consistency-regularization">结合一致性正则化的伪标签标注<a hidden class="anchor" aria-hidden="true" href="#pseudo-labeling-with-consistency-regularization">#</a></h1>
+<p>可以结合上述两种方法，同时使用伪标签标注与一致性训练进行半监督学习。</p>
+<h2 id="mixmatch">MixMatch<a hidden class="anchor" aria-hidden="true" href="#mixmatch">#</a></h2>
+<p><strong>MixMatch</strong>（<a href="https://arxiv.org/abs/1905.02249">Berthelot et al. 2019</a>）作为整体式半监督学习方法，结合以下技术利用无标签数据：</p>
+<ol>
+<li><em>一致性正则化</em>：鼓励模型对扰动后的无标签样本输出相同预测。</li>
+<li><em>熵最小化</em>：鼓励模型对无标签数据输出高置信度预测。</li>
+<li><em>MixUp</em> 增强：鼓励模型在样本之间具有线性行为。</li>
+</ol>
+<p>给定一批带标签数据 $\mathcal{X}$ 与无标签数据 $\mathcal{U}$，通过 $\text{MixMatch}(.)$ 创建增强版本 $\bar{\mathcal{X}}$ 和 $\bar{\mathcal{U}}$，其中包含增强样本与无标签样本的猜测标签。</p>
+<div>
+$$
+\begin{aligned}
+\bar{\mathcal{X}}, \bar{\mathcal{U}} &= \text{MixMatch}(\mathcal{X}, \mathcal{U}, T, K, \alpha) \\
+\mathcal{L}^\text{MM}_s &= \frac{1}{\vert \bar{\mathcal{X}} \vert} \sum_{(\bar{\mathbf{x}}^l, y)\in \bar{\mathcal{X}}} D[y, p_\theta(y \mid \bar{\mathbf{x}}^l)] \\
+\mathcal{L}^\text{MM}_u &= \frac{1}{L\vert \bar{\mathcal{U}} \vert} \sum_{(\bar{\mathbf{u}}, \hat{y})\in \bar{\mathcal{U}}} \| \hat{y} - p_\theta(y \mid \bar{\mathbf{u}}) \|^2_2 \\
+\end{aligned}
+$$
+</div>
+<p>其中 $T$ 是锐化温度，用于减少猜测标签重叠；$K$ 是每个无标签样本生成的增强数量；$\alpha$ 是 MixUp 参数。</p>
+<p>对每个 $\mathbf{u}$，MixMatch 生成 $K$ 个增强，$\bar{\mathbf{u}}^{(k)} = \text{Augment}(\mathbf{u})$，其中 $k=1, \dots, K$，再根据平均值猜测伪标签：$\hat{y} = \frac{1}{K} \sum_{k=1}^K p_\theta(y \mid \bar{\mathbf{u}}^{(k)})$。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/MixMatch.png" style="width: 100%;"  />
+	<figcaption>MixMatch 中的“标签猜测”过程：对 $K$ 个增强取平均，校正预测边缘分布，最后锐化分布。（图片来源：<a href="https://arxiv.org/abs/1905.02249" target="_blank">Berthelot et al. 2019</a>）</figcaption>
+</figure>
+<p>消融研究表明，MixUp 至关重要，尤其是在无标签数据上。移除伪标签分布的温度锐化，会显著损害性能。标签猜测时，对多个增强取平均也必要。</p>
+<p><strong>ReMixMatch</strong>（<a href="https://arxiv.org/abs/1911.09785">Berthelot et al. 2020</a>）引入两个新机制，改进 MixMatch：</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/ReMixMatch.png" style="width: 100%;"  />
+	<figcaption>ReMixMatch 相比 MixMatch 引入的两项改进示意图。（图片来源：<a href="https://arxiv.org/abs/1911.09785" target="_blank">Berthelot et al. 2020</a>）</figcaption>
+</figure>
+<ul>
+<li><em>Distribution alignment（分布对齐）。</em> 它鼓励边缘分布 $p(y)$ 接近真实标签的边缘分布。令 $p(y)$ 为真实标签的类别分布，$\tilde{p}(\hat{y})$ 为无标签数据预测类别分布的在线平均值。模型对无标签样本的预测 $p_\theta(y \vert \mathbf{u})$ 被归一化为 $\text{Normalize}\big( \frac{p_\theta(y \vert \mathbf{u}) p(y)}{\tilde{p}(\hat{y})} \big)$，以匹配真实边缘分布。
+<ul>
+<li>注意，如果边缘分布不均匀，熵最小化就不是有用的目标。</li>
+<li>我确实觉得，带标签与无标签数据类别分布应一致的假设过强，在现实设置中未必成立。</li>
+</ul>
+</li>
+<li><em>Augmentation anchoring（增强锚定）</em>。给定无标签样本，先用弱增强产生“锚点”版本，再用 CTAugment (Control Theory Augment) 对 $K$ 个强增强版本取平均。CTAugment 只采样能让模型预测保持在网络容忍范围内的增强。</li>
+</ul>
+<p>ReMixMatch 损失由若干项结合而成：</p>
+<ul>
+<li>应用数据增强与 MixUp 的监督损失；</li>
+<li>应用数据增强与 MixUp、以伪标签为目标的无监督损失；</li>
+<li>单张经过强增强、未使用 MixUp 的无标签图像的 CE（交叉熵）损失；</li>
+<li>自监督学习中使用的 <a href="https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/#distortion">旋转</a> 损失。</li>
+</ul>
+<h2 id="dividemix">DivideMix<a hidden class="anchor" aria-hidden="true" href="#dividemix">#</a></h2>
+<p><strong>DivideMix</strong>（<a href="https://arxiv.org/abs/2002.07394">Junnan Li et al. 2020</a>）将半监督学习与 Learning with noisy labels (LNL)（噪声标签学习）结合。它通过 <a href="https://scikit-learn.org/stable/modules/mixture.html">GMM（高斯混合模型）</a> 建模逐样本损失分布，动态把训练数据分成包含干净样本的带标签集，以及包含噪声样本的无标签集。沿用 <a href="https://arxiv.org/abs/1904.11238">Arazo et al. 2019</a> 思路，对逐样本交叉熵损失 $\ell_i = y_i^\top \log f_\theta(\mathbf{x}_i)$ 拟合双分量 GMM。预计干净样本比噪声样本更快达到较低损失。均值较小的分量，对应干净标签的簇，记为 $c$。如果 GMM 后验概率 $w_i = p_\text{GMM}(c \mid \ell_i)$（样本属于干净样本集的概率）大于阈值 $\tau$，就将其视为干净样本，否则为噪声样本。</p>
+<p>数据聚类步骤称为 <em>co-divide（协同划分）</em>。为避免确认偏差，DivideMix 同时训练两个不同网络，每个网络使用另一个网络的数据集划分；可以联想 Double Q Learning（双重Q学习）的工作方式。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/DivideMix.png" style="width: 100%;"  />
+	<figcaption>DivideMix 独立训练两个网络，减少确认偏差。它们共同执行 co-divide（协同划分）、co-refinement（协同细化）和 co-guessing（协同猜测）。（图片来源：<a href="https://arxiv.org/abs/2002.07394" target="_blank">Junnan Li et al. 2020</a>）</figcaption>
+</figure>
+<p>相比 MixMatch，DivideMix 增加 <em>co-divide（协同划分）</em> 阶段处理噪声样本，还在训练中作出以下改进：</p>
+<ul>
+<li><em>Label co-refinement（标签协同细化）</em>：将真实标签 $y_i$ 与网络预测 $\hat{y}_i$ 线性组合，后者是在 $\mathbf{x}_i$ 的多个增强上取平均，由另一个网络产生的干净集概率 $w_i$ 引导。</li>
+<li><em>Label co-guessing（标签协同猜测）</em>：对无标签样本，将两个模型的预测取平均。</li>
+</ul>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/DivideMix-algo.png" style="width: 100%;"  />
+	<figcaption>DivideMix 算法。（图片来源：<a href="https://arxiv.org/abs/2002.07394" target="_blank">Junnan Li et al. 2020</a>）</figcaption>
+</figure>
+<h2 id="fixmatch">FixMatch<a hidden class="anchor" aria-hidden="true" href="#fixmatch">#</a></h2>
+<p><strong>FixMatch</strong>（<a href="https://arxiv.org/abs/2001.07685">Sohn et al. 2020</a>）对经过弱增强的无标签样本生成伪标签，只保留高置信度预测。弱增强与高置信度筛选，共同帮助生成高质量、可信的伪标签目标。随后，FixMatch 学习在给定强增强样本时预测这些伪标签。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/FixMatch.png" style="width: 80%;"  />
+	<figcaption>FixMatch 的工作方式示意图。（图片来源：<a href="https://arxiv.org/abs/2001.07685" target="_blank">Sohn et al. 2020</a>）</figcaption>
+</figure>
+<div>
+$$
+\begin{aligned}
+\mathcal{L}_s &= \frac{1}{B} \sum^B_{b=1} \text{CE}[y_b, p_\theta(y \mid \mathcal{A}_\text{weak}(\mathbf{x}_b))] \\
+\mathcal{L}_u &= \frac{1}{\mu B} \sum_{b=1}^{\mu B} \mathbb{1}[\max(\hat{y}_b) \geq \tau]\;\text{CE}(\hat{y}_b, p_\theta(y \mid \mathcal{A}_\text{strong}(\mathbf{u}_b)))
+\end{aligned}
+$$
+</div>
+<p>其中 $\hat{y}_b$ 是无标签样本的伪标签；$\mu$ 是决定 $\mathcal{X}$ 与 $\mathcal{U}$ 相对大小的超参数。</p>
+<ul>
+<li>弱增强 $\mathcal{A}_\text{weak}(.)$：标准翻转与平移增强。</li>
+<li>强增强 $\mathcal{A}_\text{strong}(.)$：AutoAugment、Cutout、RandAugment、CTAugment。</li>
+</ul>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/FixMatch-results.png" style="width: 100%;"  />
+	<figcaption>FixMatch 与其他几种半监督学习方法在图像分类任务上的性能。（图片来源：<a href="https://arxiv.org/abs/2001.07685" target="_blank">Sohn et al. 2020</a>）</figcaption>
+</figure>
+<p>根据 FixMatch 消融研究，</p>
+<ul>
+<li>以温度参数 $T$ 锐化预测分布，在使用阈值 $\tau$ 时，没有显著影响。</li>
+<li>将 Cutout 与 CTAugment 作为强增强的一部分，是取得良好性能的必要条件。</li>
+<li>如果用强增强替换标签猜测的弱增强，模型在训练早期发散；如果完全取消弱增强，模型会过拟合猜测标签。</li>
+<li>伪标签预测时使用弱增强，而非强增强，会导致性能不稳定。强数据增强至关重要。</li>
+</ul>
+<h1 id="combined-with-powerful-pre-training">结合强大预训练<a hidden class="anchor" aria-hidden="true" href="#combined-with-powerful-pre-training">#</a></h1>
+<p>常见范式，尤其在语言任务中，是先通过自监督学习，在大量无监督语料上预训练任务无关模型，再用较小的带标签数据集在下游任务上微调。研究表明，将半监督学习与预训练结合，还能获得额外收益。</p>
+<p><a href="https://arxiv.org/abs/2006.06882">Zoph et al. (2020)</a> 研究 <a href="#self-training">self-training（自训练）</a> 能在多大程度上优于预训练。实验使用 ImageNet 进行预训练或自训练，改善 COCO 性能。注意，用 ImageNet 自训练时，丢弃标签，只将样本作为无标签数据点。<a href="https://arxiv.org/abs/1811.08883">He et al. (2018)</a> 已表明，下游任务差异很大时，例如目标检测，ImageNet 分类预训练效果不好。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/self-training-pre-training.png" style="width: 100%;"  />
+	<figcaption>(a) 数据增强（从弱到强），以及 (b) 带标签数据集大小，对目标检测性能的影响。图例中，`Rand Init` 指随机权重初始化模型；`ImageNet` 用 ImageNet top-1准确率84.5%的预训练检查点初始化；`ImageNet++` 用准确率更高、达86.9%的检查点初始化。（图片来源：<a href="https://arxiv.org/abs/2006.06882" target="_blank">Zoph et al. 2020</a>）</figcaption>
+</figure>
+<p>实验展示了一系列有趣发现：</p>
+<ul>
+<li>随着下游任务可用带标签样本增加，预训练有效性下降。预训练在低数据量设置（20%）中有帮助，但在高数据量设置中作用中性或有害。</li>
+<li>在高数据量／强增强设置中，即使预训练有害，自训练仍有帮助。</li>
+<li>即使使用同一数据来源，自训练也能在预训练基础上带来额外改进。</li>
+<li>自监督预训练（例如通过 SimCLR）在高数据量设置中损害性能，类似监督预训练。</li>
+<li>联合训练监督与自监督目标，有助于解决预训练与下游任务不匹配。预训练、联合训练和自训练的收益可以叠加。</li>
+<li>噪声标签或不针对任务的标注（即预训练标签与下游标签不对齐），不如针对任务的伪标签标注。</li>
+<li>自训练的计算成本高于在预训练模型上微调。</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2006.10029">Chen et al. (2020)</a> 提出三步过程，结合自监督预训练、监督微调与自训练的优势：</p>
+<ol>
+<li>以无监督或自监督方式预训练大型模型。</li>
+<li>用少量带标签样本监督微调。使用大规模（深且宽）神经网络很重要。<em>更大模型能用更少带标签样本取得更好性能。</em></li>
+<li>通过自训练采用伪标签，用无标签样本蒸馏。
+<ul>
+<li>可以将大模型知识蒸馏到小模型，因为任务专用使用不需要学习表示的额外容量。</li>
+<li>蒸馏损失形式如下，其中教师网络固定，权重为 $\hat{\theta}_T$。</li>
+</ul>
+</li>
+</ol>
+<div>
+     $$
+     \mathcal{L}_\text{distill} = - (1-\alpha) \underbrace{\sum_{(\mathbf{x}^l_i, y_i) \in \mathcal{X}} \big[ \log p_{\theta_S}(y_i \mid \mathbf{x}^l_i) \big]}_\text{Supervised loss} - \alpha \underbrace{\sum_{\mathbf{u}_i \in \mathcal{U}} \Big[ \sum_{i=1}^L p_{\hat{\theta}_T}(y^{(i)} \mid \mathbf{u}_i; T) \log p_{\theta_S}(y^{(i)} \mid \mathbf{u}_i; T) \Big]}_\text{Distillation loss using unlabeled data}
+     $$
+     </div>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/big-self-supervised-model.png" style="width: 85%;"  />
+	<figcaption>半监督学习框架利用无标签数据语料，方式为（左）任务无关的无监督预训练，以及（右）任务专用自训练与蒸馏。（图片来源：<a href="https://arxiv.org/abs/2006.10029" target="_blank">Chen et al. 2020</a>）</figcaption>
+</figure>
+<p>他们在 ImageNet 分类任务上实验。自监督预训练使用 SimCLRv2，这是 <a href="https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/#simclr">SimCLR</a> 的直接改进版。实证研究确认了若干经验，与 <a href="https://arxiv.org/abs/2006.06882">Zoph et al. 2020</a> 一致：</p>
+<ul>
+<li>更大模型的标签使用效率更高；</li>
+<li>SimCLR 中更大、更深的投影头改善表示学习；</li>
+<li>使用无标签数据蒸馏，改善半监督学习。</li>
+</ul>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/big-self-supervised-model-results.png" style="width: 85%;"  />
+	<figcaption>SimCLRv2 + 半监督蒸馏在 ImageNet 分类上的性能比较。（图片来源：<a href="https://arxiv.org/abs/2006.10029" target="_blank">Chen et al. 2020</a>）</figcaption>
+</figure>
+<hr>
+<p>💡 近期半监督学习方法共同主题的简要总结，其中许多旨在减少确认偏差：</p>
+<ul>
+<li>通过先进数据增强，为样本加入有效且多样的噪声。</li>
+<li>处理图像时，MixUp 是有效增强。MixUp 也可用于语言，带来小幅增量改善（<a href="https://arxiv.org/abs/1905.08941">Guo et al. 2019</a>）。</li>
+<li>设置阈值，丢弃低置信度伪标签。</li>
+<li>为每个小批次设置带标签样本最低数量。</li>
+<li>锐化伪标签分布，减少类别重叠。</li>
+</ul>
+<h1 id="citation">引用<a hidden class="anchor" aria-hidden="true" href="#citation">#</a></h1>
+<p>引用格式：</p>
+<blockquote>
+<p>Weng, Lilian. (Dec 2021). Learning with not enough data part 1: semi-supervised learning. Lil’Log. https://lilianweng.github.io/posts/2021-12-05-semi-supervised/.</p>
+</blockquote>
+<p>或</p>
+<pre tabindex="0"><code>@article{weng2021semi,
+  title   = &#34;Learning with not Enough Data Part 1: Semi-Supervised Learning&#34;,
+  author  = &#34;Weng, Lilian&#34;,
+  journal = &#34;lilianweng.github.io&#34;,
+  year    = &#34;2021&#34;,
+  month   = &#34;Dec&#34;,
+  url     = &#34;https://lilianweng.github.io/posts/2021-12-05-semi-supervised/&#34;
+}
+</code></pre><h1 id="references">参考文献<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<p>[1] Ouali, Hudelot &amp; Tami. <a href="https://arxiv.org/abs/2006.05278">“An Overview of Deep Semi-Supervised Learning”</a> arXiv preprint arXiv:2006.05278 (2020).</p>
+<p>[2] Sajjadi, Javanmardi &amp; Tasdizen <a href="https://arxiv.org/abs/1606.04586">“Regularization With Stochastic Transformations and Perturbations for Deep Semi-Supervised Learning.”</a> arXiv preprint arXiv:1606.04586 (2016).</p>
+<p>[3] Pham et al. <a href="https://arxiv.org/abs/2003.10580">“Meta Pseudo Labels.”</a> CVPR 2021.</p>
+<p>[4] Laine &amp; Aila. <a href="https://arxiv.org/abs/1610.02242">“Temporal Ensembling for Semi-Supervised Learning”</a> ICLR 2017.</p>
+<p>[5] Tarvaninen &amp; Valpola. <a href="https://arxiv.org/abs/1703.01780">“Mean teachers are better role models: Weight-averaged consistency targets improve semi-supervised deep learning results.”</a> NeuriPS 2017</p>
+<p>[6] Xie et al. <a href="https://arxiv.org/abs/1904.12848">“Unsupervised Data Augmentation for Consistency Training.”</a> NeuriPS 2020.</p>
+<p>[7] Miyato et al. <a href="https://arxiv.org/abs/1704.03976">“Virtual Adversarial Training: A Regularization Method for Supervised and Semi-Supervised Learning.”</a> IEEE transactions on pattern analysis and machine intelligence 41.8 (2018).</p>
+<p>[8] Verma et al. <a href="https://arxiv.org/abs/1903.03825">“Interpolation consistency training for semi-supervised learning.”</a> IJCAI 2019</p>
+<p>[9] Lee. <a href="http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.664.3543&amp;rep=rep1&amp;type=pdf">“Pseudo-label: The simple and efficient semi-supervised learning method for deep neural networks.”</a> ICML 2013 Workshop: Challenges in Representation Learning.</p>
+<p>[10] Iscen et al. <a href="https://arxiv.org/abs/1904.04717">“Label propagation for deep semi-supervised learning.”</a> CVPR 2019.</p>
+<p>[11] Xie et al. <a href="https://arxiv.org/abs/1911.04252">“Self-training with Noisy Student improves ImageNet classification”</a> CVPR 2020.</p>
+<p>[12] Jingfei Du et al. <a href="https://arxiv.org/abs/2010.02194">“Self-training Improves Pre-training for Natural Language Understanding.”</a> 2020</p>
+<p>[13] Iscen et al. <a href="https://arxiv.org/abs/1904.04717">“Label propagation for deep semi-supervised learning.”</a> CVPR 2019</p>
+<p>[14] Arazo et al. <a href="https://arxiv.org/abs/1908.02983">“Pseudo-labeling and confirmation bias in deep semi-supervised learning.”</a> IJCNN 2020.</p>
+<p>[15] Berthelot et al. <a href="https://arxiv.org/abs/1905.02249">“MixMatch: A holistic approach to semi-supervised learning.”</a> NeuriPS 2019</p>
+<p>[16] Berthelot et al. <a href="https://arxiv.org/abs/1911.09785">“ReMixMatch: Semi-supervised learning with distribution alignment and augmentation anchoring.”</a> ICLR 2020</p>
+<p>[17] Sohn et al. <a href="https://arxiv.org/abs/2001.07685">“FixMatch: Simplifying semi-supervised learning with consistency and confidence.”</a>  CVPR 2020</p>
+<p>[18] Junnan Li et al. <a href="https://arxiv.org/abs/2002.07394">“DivideMix: Learning with Noisy Labels as Semi-supervised Learning.”</a> 2020 [<a href="https://github.com/LiJunnan1992/DivideMix">代码</a>]</p>
+<p>[19] Zoph et al. <a href="https://arxiv.org/abs/2006.06882">“Rethinking pre-training and self-training.”</a> 2020.</p>
+<p>[20] Chen et al. <a href="https://arxiv.org/abs/2006.10029">“Big Self-Supervised Models are Strong Semi-Supervised Learners”</a> 2020</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://xingshuozhu1998.github.io/tags/data/">数据</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/unsupervised-learning/">无监督学习</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/">
+    <span class="title">« </span>
+    <br>
+    <span>数据不足时的学习（二）：主动学习</span>
+  </a>
+  <a class="next" href="https://xingshuozhu1998.github.io/posts/2021-09-25-train-large/">
+    <span class="title"> »</span>
+    <br>
+    <span>如何使用多块 GPU（图形处理器） 训练超大模型？</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 twitter 分享《数据不足时的学习，第一部分：半监督学习》"
+        href="https://twitter.com/intent/tweet/?text=Learning%20with%20not%20Enough%20Data%20Part%201%3a%20Semi-Supervised%20Learning&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2021-12-05-semi-supervised%2f&amp;hashtags=data%2cunsupervised-learning">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 linkedin 分享《数据不足时的学习，第一部分：半监督学习》"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2021-12-05-semi-supervised%2f&amp;title=Learning%20with%20not%20Enough%20Data%20Part%201%3a%20Semi-Supervised%20Learning&amp;summary=Learning%20with%20not%20Enough%20Data%20Part%201%3a%20Semi-Supervised%20Learning&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2021-12-05-semi-supervised%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 reddit 分享《数据不足时的学习，第一部分：半监督学习》"
+        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2021-12-05-semi-supervised%2f&title=Learning%20with%20not%20Enough%20Data%20Part%201%3a%20Semi-Supervised%20Learning">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 facebook 分享《数据不足时的学习，第一部分：半监督学习》"
+        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2021-12-05-semi-supervised%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 whatsapp 分享《数据不足时的学习，第一部分：半监督学习》"
+        href="https://api.whatsapp.com/send?text=Learning%20with%20not%20Enough%20Data%20Part%201%3a%20Semi-Supervised%20Learning%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2021-12-05-semi-supervised%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 telegram 分享《数据不足时的学习，第一部分：半监督学习》"
+        href="https://telegram.me/share/url?text=Learning%20with%20not%20Enough%20Data%20Part%201%3a%20Semi-Supervised%20Learning&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2021-12-05-semi-supervised%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

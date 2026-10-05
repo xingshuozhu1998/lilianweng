@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/reasoning</title>
+    <link>https://xingshuozhu1998.github.io/tags/reasoning/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 01 May 2025 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/reasoning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>我们为什么思考</title>
+      <link>https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/</link>
+      <pubDate>Thu, 01 May 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/</guid>
+      <description>特别感谢  John Schulman  为本文提供大量极有价值的反馈，并直接编辑本文。  
+ Test-time compute（测试时计算）（ Graves et al. 2016 、 Ling, et al. 2017 、 Cobbe et al. 2021 ）与 chain-of-thought（思维链）（思维链，CoT（思维链））（ Wei et al. 2022 、 Nye et al. 2021 ）显著提升了模型性能，同时也提出了许多研究问题。本文旨在回顾如何有效使用测试时计算（即“思考时间”）、以及它为何有效的最新进展。 
+ 动机 #  
+ 让模型思考更长时间，有几种不同的动机。 
+ 与心理学类比 #  
+ 这一核心想法与人类的思考方式密切相关。我们人类无法立刻给出  "What's 12345 times 56789?"  的答案。相反，在得到结果之前花时间思考和分析是很自然的，尤其对于复杂问题。在  Thinking, Fast and Slow（《思考，快与慢》，Kahneman, 2013）  中，Daniel Kahneman 从  dual process </description>
+    </item>
+    
+  </channel>
+</rss>

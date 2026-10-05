@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>面向好奇读者的深度学习概览 | Lil’Log 中文学习镜像</title>
+<meta name="keywords" content="foundation, tutorial" />
+<meta name="description" content="
+（本文源于我在 Affirm 举办的 WiMLDS x Fintech 聚会上所作的演讲。）
+相信你们很多人看过或听说过 2016 年 AlphaGo 与职业围棋棋手 Lee Sedol（李世石）之间的比赛。Lee 的段位是最高的九段，并曾多次获得世界冠军。毫无疑问，他是世界上最优秀的围棋棋手之一，但在这一系列与 AlphaGo 的对局中，他以 1 比 4 落败。在此之前，人们认为围棋是一种计算机难以掌握的游戏，因为其简单规则所产生的棋盘局面变化数量呈指数增长，远多于国际象棋。这件事无疑让 2016 年成为 AI 的重要一年。AlphaGo 使 AI 的进展受到了广泛关注。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="面向好奇读者的深度学习概览" />
+<meta property="og:description" content="
+（本文源于我在 Affirm 举办的 WiMLDS x Fintech 聚会上所作的演讲。）
+相信你们很多人看过或听说过 2016 年 AlphaGo 与职业围棋棋手 Lee Sedol（李世石）之间的比赛。Lee 的段位是最高的九段，并曾多次获得世界冠军。毫无疑问，他是世界上最优秀的围棋棋手之一，但在这一系列与 AlphaGo 的对局中，他以 1 比 4 落败。在此之前，人们认为围棋是一种计算机难以掌握的游戏，因为其简单规则所产生的棋盘局面变化数量呈指数增长，远多于国际象棋。这件事无疑让 2016 年成为 AI 的重要一年。AlphaGo 使 AI 的进展受到了广泛关注。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-06-21T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2017-06-21T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="面向好奇读者的深度学习概览"/>
+<meta name="twitter:description" content="
+（本文源于我在 Affirm 举办的 WiMLDS x Fintech 聚会上所作的演讲。）
+相信你们很多人看过或听说过 2016 年 AlphaGo 与职业围棋棋手 Lee Sedol（李世石）之间的比赛。Lee 的段位是最高的九段，并曾多次获得世界冠军。毫无疑问，他是世界上最优秀的围棋棋手之一，但在这一系列与 AlphaGo 的对局中，他以 1 比 4 落败。在此之前，人们认为围棋是一种计算机难以掌握的游戏，因为其简单规则所产生的棋盘局面变化数量呈指数增长，远多于国际象棋。这件事无疑让 2016 年成为 AI 的重要一年。AlphaGo 使 AI 的进展受到了广泛关注。"/>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/posts/"}, {"@type": "ListItem", "position": 2, "name": "面向好奇读者的深度学习概览", "item": "https://xingshuozhu1998.github.io/posts/2017-06-21-overview/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "面向好奇读者的深度学习概览", "name": "面向好奇读者的深度学习概览", "description": "（本文源于我在 Affirm 举办的 WiMLDS x Fintech 聚会上所作的演讲。）\n相信你们很多人看过或听说过 2016 年 AlphaGo 与职业围棋棋手 Lee Sedol（李世石）之间的比赛。Lee 的段位是最高的九段，并曾多次获得世界冠军。毫无疑问，他是世界上最优秀的围棋棋手之一，但在这一系列与 AlphaGo 的对局中，他以 1 比 4 落败。在此之前，人们认为围棋是一种计算机难以掌握的游戏，因为其简单规则所产生的棋盘局面变化数量呈指数增长，远多于国际象棋。这件事无疑让 2016 年成为 AI 的重要一年。AlphaGo 使 AI 的进展受到了广泛关注。", "keywords": ["foundation", "tutorial"], "articleBody": "（本文源于我在  WiMLDS x Fintech 聚会 上所作的演讲，聚会由  Affirm  举办。）  \n 相信你们很多人看过或听说过 2016 年 AlphaGo 与职业围棋棋手之间的 比赛 ，那位棋手是  Lee Sedol（李世石） 。Lee 的段位是最高的九段，并曾多次获得世界冠军。毫无疑问，他是世界上最优秀的围棋棋手之一，但在这一系列与 AlphaGo 的对局中，他 以 1 比 4 落败 。在此之前，人们认为围棋是一种计算机难以掌握的游戏，因为其简单规则所产生的棋盘局面变化数量呈指数增长，远多于国际象棋。这件事无疑让 2016 年成为 AI 的重要一年。AlphaGo 使 AI 的进展受到了广泛关注。 \n 与此同时，许多公司投入资源，推动 AI 应用的前沿发展；这些应用确实有潜力改变甚至彻底革新我们的生活方式。熟悉的例子包括自动驾驶汽车、聊天机器人、家庭助手设备，以及其他许多应用。近年来我们取得进展的秘密配方之一就是深度学习。 \n 为什么深度学习如今能够奏效？ #  \n 简单地说，深度学习模型就是规模大、层数深的人工神经网络。神经网络（NN）可以很好地表示为 有向无环图 ：输入层接收信号向量；一个或多个隐藏层处理上一层的输出。神经网络最初的概念可以追溯到 半个多世纪以前 。但为什么它如今能够奏效？为什么人们突然开始讨论它？ \n \n\t \n\t 三层人工神经网络。（图片来源： http://cs231n.github.io/convolutional-networks/#conv ） \n \n 原因出乎意料地简单： \n \n 我们拥有 多得多的数据 。 \n 我们拥有 强大得多的计算机 。 \n \n 规模大、层数深的神经网络有更多层，每层也有更多节点，因此需要调整的参数数量呈指数增加。没有足够的数据，我们就无法高效学习参数。没有强大的计算机，学习就会太慢，也不充分。 \n 下面这张有趣的图展示数据规模与模型性能之间的关系，由 Andrew Ng（吴恩达）在其“ Nuts and Bolts of Applying Deep Learning（应用深度学习的实务细节） ”演讲中提出。在小数据集上，传统算法（回归、随机森林、SVM、GBM 等）或统计学习表现很好，但一旦数据规模大幅增长，大型 NN（神经网络）就会胜过其他方法。部分原因在于，与传统 ML（机器学习）模型相比，神经网络模型拥有更多参数，能够学习复杂的非线性模式。因此，我们期望模型自行选取最有用的特征，而无需过多依赖专家参与的人工特征工程。 \n \n\t \n\t 数据规模与模型性能。（根据以下来源重绘： https://youtu.be/F1ka6a13S9I ） \n \n 深度学习模型 #  \n 接下来，我们来看几个经典深度学习模型。 \n Convolutional Neural Network（卷积神经网络） #  \n Convolutional neural networks（卷积神经网络），简称 CNN（卷积神经网络），是一种前馈人工神经网络，其神经元之间的连接模式受到视觉皮层系统组织方式的启发。初级视觉皮层（V1）从视网膜的原始视觉输入中检测边缘。次级视觉皮层（V2），也称纹外皮层，接收 V1 的边缘特征，提取方向、空间频率和颜色等简单视觉属性。V4 视觉区处理更复杂的对象属性。所有经过处理的视觉特征流向最终的逻辑单元——颞下回（IT），用于对象识别。V1 与 V4 之间的捷径启发了一种在非相邻层之间建立连接的特殊 CNN：Residual Net（残差网络， He 等，2016 ）。其中的 Residual Block（残差块）支持将某一层的部分输入直接传给两层之后的组件。 \n \n\t \n\t 人类视觉皮层系统示意图。（图片来源： Wang 和 Raj，2017 ） \n \n 卷积是一个数学术语，此处指两个矩阵之间的运算。卷积层定义了一个固定的小矩阵，也称为核或滤波器。当核在输入图像的矩阵表示上滑动，即进行卷积时，会计算核矩阵的数值与原始图像数值的逐元素乘积。 专门设计的核 可以快速、高效地处理图像，完成模糊、锐化、边缘检测等许多常见任务。 \n \n\t \n\t LeNet 架构包含两组卷积层、激活层和池化层，随后是全连接层、激活、另一个全连接层，最后是 softmax 分类器。（图片来源： http://deeplearning.net/tutorial/lenet.html ） \n \n  卷积 和 池化 层（图 4 中称为“sub-sampling”，即下采样）类似于 V1、V2 和 V4 视觉皮层单元，负责特征提取。对象识别的推理发生在后续的全连接层，这些层使用提取出的特征。 \n Recurrent Neural Network（循环神经网络） #  \n 序列模型通常用于将输入序列转换为处于不同领域的输出序列。Recurrent neural network（循环神经网络），简称 RNN（循环神经网络），适用于这一目的，并且在手写识别、语音识别和机器翻译等问题上取得了巨大进步（ Sutskever 等，2011 ； Liwicki 等，2007 ）。 \n Recurrent neural network（循环神经网络）模型天生能够处理长序列数据，并应对上下文随时间延展的任务。模型在每个时间步处理序列中的一个元素。计算后，新更新的单元状态传给下一个时间步，以帮助计算下一个元素。想象一个 RNN 模型逐个字符阅读所有 Wikipedia 文章，随后便能根据上下文预测接下来的词。 \n \n\t \n\t 具有一个隐藏单元的 Recurrent neural network（循环神经网络，左）及其沿时间展开的形式（右）。展开形式展示随时间发生的变化：$s\\_{t-1}$、$s\\_{t}$ 和 $s\\_{t+1}$ 是同一个单元，在不同时间步 $t-1$、$t$ 和 $t+1$ 处具有不同状态。（图片来源： LeCun、Bengio 和 Hinton，2015 ； 图 5 ） \n \n 不过，将当前输入元素与上一单元状态线性组合的简单感知机神经元，很容易丢失长期依赖关系。例如，我们以“Alice is working at …（Alice 正在……工作）”开始一个句子，而在整个段落之后，希望正确地用“She”或“He”开始下一句。如果模型忘记了角色名字“Alice”，我们就无从判断。为解决这一问题，研究人员创建了一种内部结构复杂得多的特殊神经元，用来记忆长期上下文，名为 “Long-short term memory（长短期记忆，LSTM（长短期记忆网络））” 单元。它足够灵活，能够学习旧信息应记住多久、何时遗忘、何时利用新数据，以及如何将旧记忆与新输入结合。这篇 介绍 写得非常好，我建议所有对 LSTM 感兴趣的人阅读。 Tensorflow（机器学习框架） 文档 也已正式推荐它 ;-) \n \n\t \n\t LSTM（长短期记忆）单元的结构。（图片来源： http://colah.github.io/posts/2015-08-Understanding-LSTMs ） \n \n 为展示 RNN的能力， Andrej Karpathy 利用包含 LSTM 单元的 RNN 构建了字符级语言模型。在预先不知道任何英语词汇的情况下，模型能够学习字符之间的关系以形成单词，再学习单词之间的关系以形成句子。即使没有海量训练数据，它也能达到不错的表现。 \n \n\t \n\t 字符级 Recurrent neural network（循环神经网络）模型模仿 Shakespeare 写作。（图片来源： http://karpathy.github.io/2015/05/21/rnn-effectiveness ） \n \n RNN：Sequence-to-Sequence Model（序列到序列模型） #  \n  sequence-to-sequence model（序列到序列模型） 是 RNN 的扩展版本，但其应用领域足够独特，因此我想单独列出一节。与 RNN 一样，sequence-to-sequence model 处理序列数据，不过它尤其常用于开发聊天机器人或个人助手，两者都为输入的问题生成有意义的回答。sequence-to-sequence model 由两个 RNN 组成，即编码器和解码器。编码器从输入词语中学习上下文信息，再通过“ context vector（上下文向量） ”（图 8 中也称“thought vector”，即思维向量）将这些知识传给解码器。最后，解码器使用上下文向量，生成恰当的回答。 \n \n\t \n\t 用于生成 Gmail 自动回复的 sequence-to-sequence model（序列到序列模型）。（图片来源： https://research.googleblog.com/2015/11/computer-respond-to-this-email.html ） \n \n Autoencoders（自编码器） #  \n 与前述模型不同，autoencoders（自编码器）用于无监督学习。它旨在学习 低维 表示，所表示的是一个 高维 数据集，类似于  Principal Components Analysis（主成分分析，PCA）  的作用。autoencoder 模型试图学习近似函数 $ f(x) \\approx x $，以重现输入数据。不过，模型受到中间瓶颈层的限制，该层只有很少的节点。在有限容量下，模型被迫形成非常高效的数据编码，而这实际上就是我们学到的低维编码。 \n \n\t \n\t autoencoder（自编码器）模型具有一个只有少量神经元的瓶颈层。（图片来源：Geoffrey Hinton 的 Coursera 课程  “Neural Networks for Machine Learning”（用于机器学习的神经网络） —— 第 15 周 ） \n \n  Hinton 和 Salakhutdinov 使用 autoencoders（自编码器）压缩涉及各种主题的文档。如图 10 所示，当 PCA 和 autoencoder 都用于将文档降至二维时，autoencoder 的效果好得多。借助 autoencoder，我们可以高效压缩数据，加快包括文档和图像在内的信息检索。 \n \n\t \n\t PCA（左）与 autoencoder（自编码器，右）将文档压缩成两个数字时的输出。（图片来源： Hinton 和 Salakhutdinov，2006 ） \n \n 强化（深度）学习 #  \n 既然本文以 AlphaGo 开头，就让我们进一步探究 AlphaGo 为何成功。 Reinforcement learning（强化学习，RL（强化学习）） 是其成功背后的秘诀之一。RL 是机器学习的一个子领域，让机器和软件智能体在给定情境下自动确定最优行为，目标是最大化由给定指标衡量的长期表现。 \n \n\t \n \n\t \n\t AlphaGo 神经网络的训练流程与架构。（图片来源： Silver 等，2016 ） \n \n AlphaGo 系统先进行监督学习，依靠人工整理的职业棋手对局训练数据集，训练快速 rollout policy（模拟对局策略）和策略网络。它学习在当前棋盘局面下什么策略最好。随后，它通过设置自我对弈进行强化学习。当 RL策略网络在与此前版本策略网络的对局中赢得越来越多时，它便得到改进。在自我对弈阶段，AlphaGo 通过与自己对弈变得越来越强，无需额外的外部训练数据。 \n Generative Adversarial Network（生成对抗网络） #  \n  Generative adversarial network（生成对抗网络） ，简称 GAN（生成对抗网络），是一种深度生成模型。GAN 能在通过真实数据学习后创建新样本。它由两个模型组成，两个模型在零和博弈框架下相互竞争。著名深度学习研究者  Yann LeCun 给予了极高评价：Generative Adversarial Network 是机器学习过去十年中最有趣的想法。（参见 Quora 问题： “What are some recent and potentially upcoming breakthroughs in deep learning?”（深度学习最近有哪些突破，又有哪些可能即将出现的突破？） ） \n \n\t \n\t generative adversarial network（生成对抗网络）的架构。（图片来源： http://www.kdnuggets.com/2017/01/generative-adversarial-networks-hot-topic-machine-learning.html ） \n \n 在 最初的 GAN 论文 中，提出 GAN 的目的是在学习真实照片后生成有意义的图像。它包含两个独立模型： Generator（生成器） 和  Discriminator（判别器） 。生成器产生伪造图像，并将输出发送给判别器模型。判别器像一个裁判，其优化目标是从伪造图像中识别真实照片。生成器模型努力欺骗判别器，而裁判努力避免受骗。这两个模型之间有趣的零和博弈，推动双方培养各自设计的技能并改进功能。最终，我们使用生成器模型产生新图像。 \n 工具包与库 #  \n 了解这些模型后，你可能开始思考如何实现并实际使用这些模型。幸运的是，我们有许多用于构建深度学习模型的开源工具包和库。 Tensorflow  还相当新，却已经吸引了大量关注。事实上，TensorFlow 成为 2015 年被 fork（创建仓库分支副本）次数最多的 Github 项目 。这些都发生在它于 2015 年 11 月发布后的两个月内。 \n \n\t \n 如何学习？ #  \n 如果你刚接触这个领域，愿意花些时间更系统地学习深度学习，我建议从 Ian Goodfellow、Yoshua Bengio 和 Aaron Courville 的书  Deep Learning（深度学习） 开始。另一个选择是 Geoffrey Hinton 的 Coursera 课程  “Neural Networks for Machine Learning”（用于机器学习的神经网络） （他是 深度学习教父！ ）。课程内容大约在 2006 年准备，已经相当久远，但能够帮助你为理解深度学习模型打下坚实基础，加快进一步探索。 \n 同时，保持好奇心和热情。这个领域每天都在进步。即使是经典或广泛采用的深度学习模型，也可能仅在一两年前才被提出。阅读学术论文有助于深入学习，并跟上最前沿的发现。 \n 有用的资源 #  \n \n Google Scholar（谷歌学术）： http://scholar.google.com  \n arXiv 计算机科学分区： https://arxiv.org/list/cs/recent  \n  Unsupervised Feature Learning and Deep Learning Tutorial（无监督特征学习与深度学习教程）  \n  Tensorflow Tutorials（Tensorflow 教程）  \n Data Science Weekly（数据科学周刊） \n  KDnuggets  \n 大量博客文章和在线教程 \n 相关的  Cousera  课程 \n  awesome-deep-learning-papers（深度学习论文精选列表）  \n \n 文中提到的博客文章 #  \n \n  Explained Visually: Image Kernels（可视化解释：图像核）  \n  Understanding LSTM Networks（理解 LSTM 网络）  \n  The Unreasonable Effectiveness of Recurrent Neural Networks（循环神经网络令人惊讶的有效性）  \n  Computer, respond to this email.（计算机，请回复这封邮件。）  \n \n 值得一看的有趣博客 #  \n \n  www.wildml.com  \n  colah.github.io  \n  karpathy.github.io  \n  blog.openai.com  \n \n 文中提到的论文 #  \n [1] He、Kaiming 等。 “Deep residual learning for image recognition.”（用于图像识别的深度残差学习。）  IEEE 计算机视觉与模式识别会议论文集，2016。 \n [2] Wang、Haohan、Bhiksha Raj 和 Eric P. Xing。 “On the Origin of Deep Learning.”（论深度学习的起源。）  arXiv 预印本 arXiv:1702.07800，2017。 \n [3] Sutskever、Ilya、James Martens 和 Geoffrey E. Hinton。 “Generating text with recurrent neural networks.”（使用循环神经网络生成文本。）  第 28 届国际机器学习会议（ICML）论文集，2011。 \n [4] Liwicki、Marcus 等。 “A novel approach to on-line handwriting recognition based on bidirectional long short-term memory networks.”（基于双向长短期记忆网络的在线手写识别新方法。）  第 9 届国际文档分析与识别会议论文集，2007。 \n [5] LeCun、Yann、Yoshua Bengio 和 Geoffrey Hinton。 “Deep learning.”（深度学习。）  Nature 521.7553（2015）：436-444。 \n [6] Hochreiter、Sepp 和 Jurgen Schmidhuber。 “Long short-term memory.”（长短期记忆。）  Neural computation 9.8（1997）：1735-1780。 \n [7] Cho、Kyunghyun 等。 “Learning phrase representations using RNN encoder-decoder for statistical machine translation.”（使用 RNN 编码器—解码器学习用于统计机器翻译的短语表示。）  自然语言处理经验方法会议论文集，1724–1734（2014）。 \n [8] Hinton、Geoffrey E. 和 Ruslan R. Salakhutdinov。 “Reducing the dimensionality of data with neural networks.”（使用神经网络降低数据维度。）  science 313.5786（2006）：504-507。 \n [9] Silver、David 等。 “Mastering the game of Go with deep neural networks and tree search.”（使用深度神经网络和树搜索掌握围棋。）  Nature 529.7587（2016）：484-489。 \n [10] Goodfellow、Ian 等。 “Generative adversarial nets.”（生成对抗网络。）  NIPS，2014。", "wordCount": "2395", "inLanguage": "zh-CN", "datePublished": "2017-06-21T00:00:00Z", "dateModified": "2017-06-21T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/posts/2017-06-21-overview/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/favicon_wine.ico"}}}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/posts/2017-06-21-overview/">
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2017-06-21-overview/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/posts/2017-06-21-overview/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      面向好奇读者的深度学习概览
+    </h1>
+    <div class="post-meta">日期：2017 年 6 月 21 日 | 预计阅读时间：12 分钟 | 作者：Lilian Weng
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#why-does-deep-learning-work-now" aria-label="Why Does Deep Learning Work Now?">为什么深度学习如今能够奏效？</a></li>
+                <li>
+                    <a href="#deep-learning-models" aria-label="深度学习模型">深度学习模型</a><ul>
+                        
+                <li>
+                    <a href="#convolutional-neural-network" aria-label="Convolutional Neural Network">Convolutional Neural Network（卷积神经网络）</a></li>
+                <li>
+                    <a href="#recurrent-neural-network" aria-label="Recurrent Neural Network">Recurrent Neural Network（循环神经网络）</a></li>
+                <li>
+                    <a href="#rnn-sequence-to-sequence-model" aria-label="RNN: Sequence-to-Sequence Model">RNN（循环神经网络）：Sequence-to-Sequence Model（序列到序列模型）</a></li>
+                <li>
+                    <a href="#autoencoders" aria-label="Autoencoders">Autoencoders（自编码器）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#reinforcement-deep-learning" aria-label="强化（深度）学习">强化（深度）学习</a><ul>
+                        
+                <li>
+                    <a href="#generative-adversarial-network" aria-label="Generative Adversarial Network">Generative Adversarial Network（生成对抗网络）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#toolkits-and-libraries" aria-label="Toolkits and Libraries">工具包与库</a></li>
+                <li>
+                    <a href="#how-to-learn" aria-label="如何学习？">如何学习？</a><ul>
+                        <ul>
+                        
+                <li>
+                    <a href="#useful-resources" aria-label="Useful resources">有用的资源</a></li>
+                <li>
+                    <a href="#blog-posts-mentioned" aria-label="Blog posts mentioned">文中提到的博客文章</a></li>
+                <li>
+                    <a href="#interesting-blogs-worthy-of-checking" aria-label="Interesting blogs worthy of checking">值得一看的有趣博客</a></li>
+                <li>
+                    <a href="#papers-mentioned" aria-label="Papers mentioned">文中提到的论文</a>
+                </li>
+            </ul>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><!-- Starting earlier this year, I grew a strong curiosity of deep learning and spent some time reading about this field. To document what I’ve learned and to provide some interesting pointers to people with similar interests, I wrote this overview of deep learning models and their applications. -->
+<p><span style="color: #aaaaaa;">（本文源于我在 <a href="http://wimlds.org/chapters/about-bay-area/">WiMLDS x Fintech 聚会</a>上所作的演讲，聚会由 <a href="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/www.affirm.com">Affirm</a> 举办。）</span></p>
+<p>相信你们很多人看过或听说过 2016 年 AlphaGo 与职业围棋棋手之间的<a href="https://youtu.be/vFr3K2DORc8">比赛</a>，那位棋手是 <a href="https://en.wikipedia.org/wiki/Lee_Sedol">Lee Sedol（李世石）</a>。Lee 的段位是最高的九段，并曾多次获得世界冠军。毫无疑问，他是世界上最优秀的围棋棋手之一，但在这一系列与 AlphaGo 的对局中，他<a href="https://www.scientificamerican.com/article/how-the-computer-beat-the-go-master/">以 1 比 4 落败</a>。在此之前，人们认为围棋是一种计算机难以掌握的游戏，因为其简单规则所产生的棋盘局面变化数量呈指数增长，远多于国际象棋。这件事无疑让 2016 年成为 AI 的重要一年。AlphaGo 使 AI 的进展受到了广泛关注。</p>
+<p>与此同时，许多公司投入资源，推动 AI 应用的前沿发展；这些应用确实有潜力改变甚至彻底革新我们的生活方式。熟悉的例子包括自动驾驶汽车、聊天机器人、家庭助手设备，以及其他许多应用。近年来我们取得进展的秘密配方之一就是深度学习。</p>
+<h1 id="why-does-deep-learning-work-now">为什么深度学习如今能够奏效？<a hidden class="anchor" aria-hidden="true" href="#why-does-deep-learning-work-now">#</a></h1>
+<p>简单地说，深度学习模型就是规模大、层数深的人工神经网络。神经网络（NN）可以很好地表示为<a href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">有向无环图</a>：输入层接收信号向量；一个或多个隐藏层处理上一层的输出。神经网络最初的概念可以追溯到<a href="https://cs.stanford.edu/people/eroberts/courses/soco/projects/neural-networks/History/history1.html">半个多世纪以前</a>。但为什么它如今能够奏效？为什么人们突然开始讨论它？</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/ANN.png" style="width: 400px; max-width: 100%;"  />
+	<figcaption>三层人工神经网络。（图片来源：<a href="http://cs231n.github.io/convolutional-networks/#conv" target="_blank">http://cs231n.github.io/convolutional-networks/#conv</a>）</figcaption>
+</figure>
+<p>原因出乎意料地简单：</p>
+<ul>
+<li>我们拥有<strong>多得多的数据</strong>。</li>
+<li>我们拥有<strong>强大得多的计算机</strong>。</li>
+</ul>
+<p>规模大、层数深的神经网络有更多层，每层也有更多节点，因此需要调整的参数数量呈指数增加。没有足够的数据，我们就无法高效学习参数。没有强大的计算机，学习就会太慢，也不充分。</p>
+<p>下面这张有趣的图展示数据规模与模型性能之间的关系，由 Andrew Ng（吴恩达）在其“<a href="https://youtu.be/F1ka6a13S9I">Nuts and Bolts of Applying Deep Learning（应用深度学习的实务细节）</a>”演讲中提出。在小数据集上，传统算法（回归、随机森林、SVM、GBM 等）或统计学习表现很好，但一旦数据规模大幅增长，大型 NN（神经网络）就会胜过其他方法。部分原因在于，与传统 ML（机器学习）模型相比，神经网络模型拥有更多参数，能够学习复杂的非线性模式。因此，我们期望模型自行选取最有用的特征，而无需过多依赖专家参与的人工特征工程。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/data_size_vs_model_performance.png" style="width: 400px; max-width: 100%;"  />
+	<figcaption>数据规模与模型性能。（根据以下来源重绘：<a href="https://youtu.be/F1ka6a13S9I" target="_blank">https://youtu.be/F1ka6a13S9I</a>）</figcaption>
+</figure>
+<h1 id="deep-learning-models">深度学习模型<a hidden class="anchor" aria-hidden="true" href="#deep-learning-models">#</a></h1>
+<p>接下来，我们来看几个经典深度学习模型。</p>
+<h2 id="convolutional-neural-network">Convolutional Neural Network（卷积神经网络）<a hidden class="anchor" aria-hidden="true" href="#convolutional-neural-network">#</a></h2>
+<p>Convolutional neural networks（卷积神经网络），简称 CNN（卷积神经网络），是一种前馈人工神经网络，其神经元之间的连接模式受到视觉皮层系统组织方式的启发。初级视觉皮层（V1）从视网膜的原始视觉输入中检测边缘。次级视觉皮层（V2），也称纹外皮层，接收 V1 的边缘特征，提取方向、空间频率和颜色等简单视觉属性。V4 视觉区处理更复杂的对象属性。所有经过处理的视觉特征流向最终的逻辑单元——颞下回（IT），用于对象识别。V1 与 V4 之间的捷径启发了一种在非相邻层之间建立连接的特殊 CNN：Residual Net（残差网络，<a href="http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf">He 等，2016</a>）。其中的 Residual Block（残差块）支持将某一层的部分输入直接传给两层之后的组件。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/visual_cortex_system.png" style="width: 680px; max-width: 100%;"  />
+	<figcaption>人类视觉皮层系统示意图。（图片来源：<a href="https://arxiv.org/abs/1702.07800" target="_blank">Wang 和 Raj，2017</a>）</figcaption>
+</figure>
+<p>卷积是一个数学术语，此处指两个矩阵之间的运算。卷积层定义了一个固定的小矩阵，也称为核或滤波器。当核在输入图像的矩阵表示上滑动，即进行卷积时，会计算核矩阵的数值与原始图像数值的逐元素乘积。<a href="http://setosa.io/ev/image-kernels/">专门设计的核</a>可以快速、高效地处理图像，完成模糊、锐化、边缘检测等许多常见任务。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/lenet.png" style="padding-bottom: 3px;"  />
+	<figcaption>LeNet 架构包含两组卷积层、激活层和池化层，随后是全连接层、激活、另一个全连接层，最后是 softmax 分类器。（图片来源：<a href="http://deeplearning.net/tutorial/lenet.html" target="_blank">http://deeplearning.net/tutorial/lenet.html</a>）</figcaption>
+</figure>
+<p><a href="http://ufldl.stanford.edu/tutorial/supervised/FeatureExtractionUsingConvolution/">卷积</a>和<a href="http://ufldl.stanford.edu/tutorial/supervised/Pooling/">池化</a>层（图 4 中称为“sub-sampling”，即下采样）类似于 V1、V2 和 V4 视觉皮层单元，负责特征提取。对象识别的推理发生在后续的全连接层，这些层使用提取出的特征。</p>
+<h2 id="recurrent-neural-network">Recurrent Neural Network（循环神经网络）<a hidden class="anchor" aria-hidden="true" href="#recurrent-neural-network">#</a></h2>
+<p>序列模型通常用于将输入序列转换为处于不同领域的输出序列。Recurrent neural network（循环神经网络），简称 RNN（循环神经网络），适用于这一目的，并且在手写识别、语音识别和机器翻译等问题上取得了巨大进步（<a href="http://machinelearning.wustl.edu/mlpapers/paper_files/ICML2011Sutskever_524.pdf">Sutskever 等，2011</a>；<a href="http://www6.in.tum.de/Main/Publications/Liwicki2007a.pdf">Liwicki 等，2007</a>）。</p>
+<p>Recurrent neural network（循环神经网络）模型天生能够处理长序列数据，并应对上下文随时间延展的任务。模型在每个时间步处理序列中的一个元素。计算后，新更新的单元状态传给下一个时间步，以帮助计算下一个元素。想象一个 RNN 模型逐个字符阅读所有 Wikipedia 文章，随后便能根据上下文预测接下来的词。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/RNN.png" style="width: 500px; max-width: 100%;"  />
+	<figcaption>具有一个隐藏单元的 Recurrent neural network（循环神经网络，左）及其沿时间展开的形式（右）。展开形式展示随时间发生的变化：$s\_{t-1}$、$s\_{t}$ 和 $s\_{t+1}$ 是同一个单元，在不同时间步 $t-1$、$t$ 和 $t+1$ 处具有不同状态。（图片来源：<a href="http://pages.cs.wisc.edu/~dyer/cs540/handouts/deep-learning-nature2015.pdf" target="_blank">LeCun、Bengio 和 Hinton，2015</a>；<a href="https://www.nature.com/nature/journal/v521/n7553/fig_tab/nature14539_F5.html" target="_blank">图 5</a>）</figcaption>
+</figure>
+<p>不过，将当前输入元素与上一单元状态线性组合的简单感知机神经元，很容易丢失长期依赖关系。例如，我们以“Alice is working at …（Alice 正在……工作）”开始一个句子，而在整个段落之后，希望正确地用“She”或“He”开始下一句。如果模型忘记了角色名字“Alice”，我们就无从判断。为解决这一问题，研究人员创建了一种内部结构复杂得多的特殊神经元，用来记忆长期上下文，名为<a href="http://web.eecs.utk.edu/~itamar/courses/ECE-692/Bobby_paper1.pdf">“Long-short term memory（长短期记忆，LSTM（长短期记忆网络））”</a>单元。它足够灵活，能够学习旧信息应记住多久、何时遗忘、何时利用新数据，以及如何将旧记忆与新输入结合。这篇<a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">介绍</a>写得非常好，我建议所有对 LSTM 感兴趣的人阅读。<a href="https://www.tensorflow.org/tutorials/recurrent">Tensorflow（机器学习框架） 文档</a>也已正式推荐它 ;-)</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/LSTM.png" style="width: 320px; max-width: 100%;"  />
+	<figcaption>LSTM（长短期记忆）单元的结构。（图片来源：<a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs" target="_blank">http://colah.github.io/posts/2015-08-Understanding-LSTMs</a>）</figcaption>
+</figure>
+<p>为展示 RNN的能力，<a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/">Andrej Karpathy</a>利用包含 LSTM 单元的 RNN 构建了字符级语言模型。在预先不知道任何英语词汇的情况下，模型能够学习字符之间的关系以形成单词，再学习单词之间的关系以形成句子。即使没有海量训练数据，它也能达到不错的表现。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/rnn_shakespeare.png" style="width: 500px"  />
+	<figcaption>字符级 Recurrent neural network（循环神经网络）模型模仿 Shakespeare 写作。（图片来源：<a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness" target="_blank">http://karpathy.github.io/2015/05/21/rnn-effectiveness</a>）</figcaption>
+</figure>
+<h2 id="rnn-sequence-to-sequence-model">RNN：Sequence-to-Sequence Model（序列到序列模型）<a hidden class="anchor" aria-hidden="true" href="#rnn-sequence-to-sequence-model">#</a></h2>
+<p><a href="https://arxiv.org/pdf/1406.1078.pdf">sequence-to-sequence model（序列到序列模型）</a>是 RNN 的扩展版本，但其应用领域足够独特，因此我想单独列出一节。与 RNN 一样，sequence-to-sequence model 处理序列数据，不过它尤其常用于开发聊天机器人或个人助手，两者都为输入的问题生成有意义的回答。sequence-to-sequence model 由两个 RNN 组成，即编码器和解码器。编码器从输入词语中学习上下文信息，再通过“<strong>context vector（上下文向量）</strong>”（图 8 中也称“thought vector”，即思维向量）将这些知识传给解码器。最后，解码器使用上下文向量，生成恰当的回答。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/seq2seq_gmail.png"   />
+	<figcaption>用于生成 Gmail 自动回复的 sequence-to-sequence model（序列到序列模型）。（图片来源：<a href="https://research.googleblog.com/2015/11/computer-respond-to-this-email.html" target="_blank">https://research.googleblog.com/2015/11/computer-respond-to-this-email.html</a>）</figcaption>
+</figure>
+<h2 id="autoencoders">Autoencoders（自编码器）<a hidden class="anchor" aria-hidden="true" href="#autoencoders">#</a></h2>
+<p>与前述模型不同，autoencoders（自编码器）用于无监督学习。它旨在学习<strong>低维</strong>表示，所表示的是一个<strong>高维</strong>数据集，类似于 <a href="https://en.wikipedia.org/wiki/Principal_component_analysis">Principal Components Analysis（主成分分析，PCA）</a> 的作用。autoencoder 模型试图学习近似函数 $ f(x) \approx x $，以重现输入数据。不过，模型受到中间瓶颈层的限制，该层只有很少的节点。在有限容量下，模型被迫形成非常高效的数据编码，而这实际上就是我们学到的低维编码。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/autoencoder.png" style="width: 300px; max-width: 100%;"  />
+	<figcaption>autoencoder（自编码器）模型具有一个只有少量神经元的瓶颈层。（图片来源：Geoffrey Hinton 的 Coursera 课程 <a href="https://www.coursera.org/learn/neural-networks" target="_blank">“Neural Networks for Machine Learning”（用于机器学习的神经网络）</a>——<a href="https://www.coursera.org/learn/neural-networks/home/week/15" target="_blank">第 15 周</a>）</figcaption>
+</figure>
+<p><a href="https://pdfs.semanticscholar.org/7d76/b71b700846901ac4ac119403aa737a285e36.pdf">Hinton 和 Salakhutdinov</a>使用 autoencoders（自编码器）压缩涉及各种主题的文档。如图 10 所示，当 PCA 和 autoencoder 都用于将文档降至二维时，autoencoder 的效果好得多。借助 autoencoder，我们可以高效压缩数据，加快包括文档和图像在内的信息检索。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/autoencoder_experiment.png"  />
+	<figcaption>PCA（左）与 autoencoder（自编码器，右）将文档压缩成两个数字时的输出。（图片来源：<a href="https://www.cs.toronto.edu/~hinton/science.pdf" target="_blank">Hinton 和 Salakhutdinov，2006</a>）</figcaption>
+</figure>
+<h1 id="reinforcement-deep-learning">强化（深度）学习<a hidden class="anchor" aria-hidden="true" href="#reinforcement-deep-learning">#</a></h1>
+<p>既然本文以 AlphaGo 开头，就让我们进一步探究 AlphaGo 为何成功。<a href="https://en.wikipedia.org/wiki/Reinforcement_learning">Reinforcement learning（强化学习，RL（强化学习））</a>是其成功背后的秘诀之一。RL 是机器学习的一个子领域，让机器和软件智能体在给定情境下自动确定最优行为，目标是最大化由给定指标衡量的长期表现。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/alphago_paper.png"  />
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/alphago_model.png" style="width: 600px; max-width: 100%;"  />
+	<figcaption>AlphaGo 神经网络的训练流程与架构。（图片来源：<a href="https://www.nature.com/articles/nature16961" target="_blank">Silver 等，2016</a>）</figcaption>
+</figure>
+<p>AlphaGo 系统先进行监督学习，依靠人工整理的职业棋手对局训练数据集，训练快速 rollout policy（模拟对局策略）和策略网络。它学习在当前棋盘局面下什么策略最好。随后，它通过设置自我对弈进行强化学习。当 RL策略网络在与此前版本策略网络的对局中赢得越来越多时，它便得到改进。在自我对弈阶段，AlphaGo 通过与自己对弈变得越来越强，无需额外的外部训练数据。</p>
+<h2 id="generative-adversarial-network">Generative Adversarial Network（生成对抗网络）<a hidden class="anchor" aria-hidden="true" href="#generative-adversarial-network">#</a></h2>
+<p><a href="https://arxiv.org/pdf/1406.2661.pdf">Generative adversarial network（生成对抗网络）</a>，简称 GAN（生成对抗网络），是一种深度生成模型。GAN 能在通过真实数据学习后创建新样本。它由两个模型组成，两个模型在零和博弈框架下相互竞争。著名深度学习研究者 <a href="http://yann.lecun.com/">Yann LeCun</a>给予了极高评价：Generative Adversarial Network 是机器学习过去十年中最有趣的想法。（参见 Quora 问题：<a href="https://www.quora.com/What-are-some-recent-and-potentially-upcoming-breakthroughs-in-deep-learning">“What are some recent and potentially upcoming breakthroughs in deep learning?”（深度学习最近有哪些突破，又有哪些可能即将出现的突破？）</a>）</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/GAN.png" style="width: 600px; max-width: 100%;"  />
+	<figcaption>generative adversarial network（生成对抗网络）的架构。（图片来源：<a href="http://www.kdnuggets.com/2017/01/generative-adversarial-networks-hot-topic-machine-learning.html" target="_blank">http://www.kdnuggets.com/2017/01/generative-adversarial-networks-hot-topic-machine-learning.html</a>）</figcaption>
+</figure>
+<p>在<a href="https://arxiv.org/pdf/1406.2661.pdf">最初的 GAN 论文</a>中，提出 GAN 的目的是在学习真实照片后生成有意义的图像。它包含两个独立模型：<strong>Generator（生成器）</strong>和 <strong>Discriminator（判别器）</strong>。生成器产生伪造图像，并将输出发送给判别器模型。判别器像一个裁判，其优化目标是从伪造图像中识别真实照片。生成器模型努力欺骗判别器，而裁判努力避免受骗。这两个模型之间有趣的零和博弈，推动双方培养各自设计的技能并改进功能。最终，我们使用生成器模型产生新图像。</p>
+<h1 id="toolkits-and-libraries">工具包与库<a hidden class="anchor" aria-hidden="true" href="#toolkits-and-libraries">#</a></h1>
+<p>了解这些模型后，你可能开始思考如何实现并实际使用这些模型。幸运的是，我们有许多用于构建深度学习模型的开源工具包和库。<a href="https://www.tensorflow.org/">Tensorflow</a> 还相当新，却已经吸引了大量关注。事实上，TensorFlow 成为<a href="http://deliprao.com/archives/168">2015 年被 fork（创建仓库分支副本）次数最多的 Github 项目</a>。这些都发生在它于 2015 年 11 月发布后的两个月内。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-06-21-overview/deep_learning_toolkits.png" style="padding-bottom: 15px; max-width: 100%;"  />
+<h1 id="how-to-learn">如何学习？<a hidden class="anchor" aria-hidden="true" href="#how-to-learn">#</a></h1>
+<p>如果你刚接触这个领域，愿意花些时间更系统地学习深度学习，我建议从 Ian Goodfellow、Yoshua Bengio 和 Aaron Courville 的书 <a href="https://www.amazon.com/Deep-Learning-Adaptive-Computation-Machine/dp/0262035618/ref=sr_1_1?s=books&amp;ie=UTF8&amp;qid=1499413305&amp;sr=1-1&amp;keywords=deep+learning">Deep Learning（深度学习）</a>开始。另一个选择是 Geoffrey Hinton 的 Coursera 课程 <a href="https://www.coursera.org/learn/neural-networks">“Neural Networks for Machine Learning”（用于机器学习的神经网络）</a>（他是<a href="https://youtu.be/uAu3jQWaN6E">深度学习教父！</a>）。课程内容大约在 2006 年准备，已经相当久远，但能够帮助你为理解深度学习模型打下坚实基础，加快进一步探索。</p>
+<p>同时，保持好奇心和热情。这个领域每天都在进步。即使是经典或广泛采用的深度学习模型，也可能仅在一两年前才被提出。阅读学术论文有助于深入学习，并跟上最前沿的发现。</p>
+<h3 id="useful-resources">有用的资源<a hidden class="anchor" aria-hidden="true" href="#useful-resources">#</a></h3>
+<ul>
+<li>Google Scholar（谷歌学术）：<a href="http://scholar.google.com">http://scholar.google.com</a></li>
+<li>arXiv 计算机科学分区：<a href="https://arxiv.org/list/cs/recent">https://arxiv.org/list/cs/recent</a></li>
+<li><a href="http://ufldl.stanford.edu/tutorial/">Unsupervised Feature Learning and Deep Learning Tutorial（无监督特征学习与深度学习教程）</a></li>
+<li><a href="https://www.tensorflow.org/tutorials/">Tensorflow Tutorials（Tensorflow 教程）</a></li>
+<li>Data Science Weekly（数据科学周刊）</li>
+<li><a href="http://www.kdnuggets.com/2017/01/generative-adversarial-networks-hot-topic-machine-learning.html">KDnuggets</a></li>
+<li>大量博客文章和在线教程</li>
+<li>相关的 <a href="http://coursera.com">Cousera</a> 课程</li>
+<li><a href="https://github.com/terryum/awesome-deep-learning-papers">awesome-deep-learning-papers（深度学习论文精选列表）</a></li>
+</ul>
+<h3 id="blog-posts-mentioned">文中提到的博客文章<a hidden class="anchor" aria-hidden="true" href="#blog-posts-mentioned">#</a></h3>
+<ul>
+<li><a href="http://setosa.io/ev/image-kernels">Explained Visually: Image Kernels（可视化解释：图像核）</a></li>
+<li><a href="http://colah.github.io/posts/2015-08-Understanding-LSTMs/">Understanding LSTM Networks（理解 LSTM 网络）</a></li>
+<li><a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/">The Unreasonable Effectiveness of Recurrent Neural Networks（循环神经网络令人惊讶的有效性）</a></li>
+<li><a href="https://research.googleblog.com/2015/11/computer-respond-to-this-email.html">Computer, respond to this email.（计算机，请回复这封邮件。）</a></li>
+</ul>
+<h3 id="interesting-blogs-worthy-of-checking">值得一看的有趣博客<a hidden class="anchor" aria-hidden="true" href="#interesting-blogs-worthy-of-checking">#</a></h3>
+<ul>
+<li><a href="http://www.wildml.com">www.wildml.com</a></li>
+<li><a href="http://colah.github.io/">colah.github.io</a></li>
+<li><a href="http://karpathy.github.io/">karpathy.github.io</a></li>
+<li><a href="https://blog.openai.com">blog.openai.com</a></li>
+</ul>
+<h3 id="papers-mentioned">文中提到的论文<a hidden class="anchor" aria-hidden="true" href="#papers-mentioned">#</a></h3>
+<p>[1] He、Kaiming 等。<a href="http://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf">“Deep residual learning for image recognition.”（用于图像识别的深度残差学习。）</a> IEEE 计算机视觉与模式识别会议论文集，2016。</p>
+<p>[2] Wang、Haohan、Bhiksha Raj 和 Eric P. Xing。<a href="https://arxiv.org/pdf/1702.07800.pdf">“On the Origin of Deep Learning.”（论深度学习的起源。）</a> arXiv 预印本 arXiv:1702.07800，2017。</p>
+<p>[3] Sutskever、Ilya、James Martens 和 Geoffrey E. Hinton。<a href="http://machinelearning.wustl.edu/mlpapers/paper_files/ICML2011Sutskever_524.pdf">“Generating text with recurrent neural networks.”（使用循环神经网络生成文本。）</a> 第 28 届国际机器学习会议（ICML）论文集，2011。</p>
+<p>[4] Liwicki、Marcus 等。<a href="http://www6.in.tum.de/Main/Publications/Liwicki2007a.pdf">“A novel approach to on-line handwriting recognition based on bidirectional long short-term memory networks.”（基于双向长短期记忆网络的在线手写识别新方法。）</a> 第 9 届国际文档分析与识别会议论文集，2007。</p>
+<p>[5] LeCun、Yann、Yoshua Bengio 和 Geoffrey Hinton。<a href="http://pages.cs.wisc.edu/~dyer/cs540/handouts/deep-learning-nature2015.pdf">“Deep learning.”（深度学习。）</a> Nature 521.7553（2015）：436-444。</p>
+<p>[6] Hochreiter、Sepp 和 Jurgen Schmidhuber。<a href="http://web.eecs.utk.edu/~itamar/courses/ECE-692/Bobby_paper1.pdf">“Long short-term memory.”（长短期记忆。）</a> Neural computation 9.8（1997）：1735-1780。</p>
+<p>[7] Cho、Kyunghyun 等。<a href="https://arxiv.org/pdf/1406.1078.pdf">“Learning phrase representations using RNN encoder-decoder for statistical machine translation.”（使用 RNN 编码器—解码器学习用于统计机器翻译的短语表示。）</a> 自然语言处理经验方法会议论文集，1724–1734（2014）。</p>
+<p>[8] Hinton、Geoffrey E. 和 Ruslan R. Salakhutdinov。<a href="https://pdfs.semanticscholar.org/7d76/b71b700846901ac4ac119403aa737a285e36.pdf">“Reducing the dimensionality of data with neural networks.”（使用神经网络降低数据维度。）</a> science 313.5786（2006）：504-507。</p>
+<p>[9] Silver、David 等。<a href="http://web.iitd.ac.in/~sumeet/Silver16.pdf">“Mastering the game of Go with deep neural networks and tree search.”（使用深度神经网络和树搜索掌握围棋。）</a> Nature 529.7587（2016）：484-489。</p>
+<p>[10] Goodfellow、Ian 等。<a href="https://arxiv.org/pdf/1406.2661.pdf">“Generative adversarial nets.”（生成对抗网络。）</a> NIPS，2014。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://xingshuozhu1998.github.io/tags/foundation/">基础</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/tutorial/">教程</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://xingshuozhu1998.github.io/posts/2017-07-08-stock-rnn-part-1/">
+    <span class="title">« </span>
+    <br>
+    <span>使用 RNN（循环神经网络）预测股价：第一部分</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 twitter 分享《写给好奇读者的深度学习概览》"
+        href="https://twitter.com/intent/tweet/?text=An%20Overview%20of%20Deep%20Learning%20for%20Curious%20People&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-06-21-overview%2f&amp;hashtags=foundation%2ctutorial">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 linkedin 分享《写给好奇读者的深度学习概览》"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-06-21-overview%2f&amp;title=An%20Overview%20of%20Deep%20Learning%20for%20Curious%20People&amp;summary=An%20Overview%20of%20Deep%20Learning%20for%20Curious%20People&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-06-21-overview%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 reddit 分享《写给好奇读者的深度学习概览》"
+        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-06-21-overview%2f&title=An%20Overview%20of%20Deep%20Learning%20for%20Curious%20People">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 facebook 分享《写给好奇读者的深度学习概览》"
+        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-06-21-overview%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 whatsapp 分享《写给好奇读者的深度学习概览》"
+        href="https://api.whatsapp.com/send?text=An%20Overview%20of%20Deep%20Learning%20for%20Curious%20People%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-06-21-overview%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 telegram 分享《写给好奇读者的深度学习概览》"
+        href="https://telegram.me/share/url?text=An%20Overview%20of%20Deep%20Learning%20for%20Curious%20People&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-06-21-overview%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

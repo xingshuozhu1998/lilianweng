@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head>
+	<meta name="generator" content="Hugo 0.163.3"><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Lil'Log</title>
+
+<meta name="description" content="记录我的学习笔记。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://xingshuozhu1998.github.io/index.xml">
+<link rel="alternate" type="application/json" href="https://xingshuozhu1998.github.io/index.json">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="Lil&#x27;Log" />
+<meta property="og:description" content="记录我的学习笔记。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Lil&#x27;Log"/>
+<meta name="twitter:description" content="记录我的学习笔记。"/>
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Lil'Log", "url": "https://xingshuozhu1998.github.io/", "description": "Document my learning notes.", "thumbnailUrl": "https://xingshuozhu1998.github.io/favicon_wine.ico", "sameAs": ["https://twitter.com/lilianweng/", "https://scholar.google.com/citations?user=dCa-pW8AAAAJ&hl=en&oi=ao", "index.xml", "https://github.com/lilianweng", "https://www.instagram.com/lilian.drawings/"]}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/page/4/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/page/4/">
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"><span class="active">文章</span></a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/page/4/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/page/4/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside> 
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>用于仿真到现实迁移的域随机化
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> 在机器人领域，最困难的问题之一是如何将模型迁移到真实世界。由于深度 RL（强化学习）算法的样本效率低，以及在真实机器人上收集数据的成本高，我们经常需要在模拟器中训练模型；理论上，模拟器可以提供无限量的数据。然而，模拟器与物理世界之间的 reality gap（现实差距）往往导致模型在真实机器人上运行失败。差距来自物理参数（例如摩擦、kp、阻尼、质量、密度）的不一致，更致命的是不正确的物理建模（例如柔软表面之间的碰撞）。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2019 年 5 月 5 日 | 预计阅读时间：14 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《用于 Sim2Real Transfer（仿真到现实迁移）的 Domain Randomization（域随机化）》" href="https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>深度神经网络是否严重过拟合？
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> [2019-05-27 更新：新增 Lottery Ticket Hypothesis（彩票假说）部分。]
+如果你和我一样，带着传统机器学习的经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络的参数这么多，训练误差又很容易降到零，它理应严重过拟合。那么，它究竟如何泛化到样本之外的数据点呢？
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2019 年 3 月 14 日 | 预计阅读时间：21 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《深度神经网络是否严重过拟合？》" href="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>通用语言模型
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2019-02-14更新：添加 ULMFiT 与 GPT-2。］［2020-02-29更新：添加 ALBERT。］［2020-10-25更新：添加 RoBERTa。］［2020-12-13更新：添加 T5。］［2020-12-30更新：添加 GPT-3。］［2021-11-13更新：添加 XLNet、BART 与 ELECTRA；同时更新总结一节。］
+我猜它们是 Elmo 和 Bert？（图片来源：这里。）2018年，NLP（自然语言处理）取得了令人惊叹的进展。OpenAI GPT（生成式预训练语言模型）与 BERT（基于双向编码器的预训练语言模型）等大规模预训练语言模型，使用通用模型架构，在多种语言任务中取得了优异表现。这一思路与 ImageNet 分类预训练帮助许多视觉任务的方式类似（*）。比视觉分类预训练更进一步，这种简单而强大的 NLP 方法不需要标注数据进行预训练，使我们能够不断扩大训练规模，直至能力极限。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2019年1月31日 | 预计阅读时间：36分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Generalized Language Models（广义语言模型）》" href="https://xingshuozhu1998.github.io/posts/2019-01-31-lm/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>目标检测（四）：快速检测模型
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> 在第3部分，我们回顾了 R-CNN（基于候选区域的卷积神经网络）家族的模型，它们都是基于区域的目标检测算法。它们能获得很高的准确率，但对于自动驾驶等某些应用可能过于缓慢。在第4部分，我们只关注快速目标检测模型，包括 SSD（单次多框检测器）、RetinaNet 与 YOLO（通过一次网络前向计算完成目标检测的模型）家族的模型。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2018 年 12 月 27 日 | 预计阅读时间：19 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《目标检测第四部分：快速检测模型》" href="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>元学习：学会快速学习
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2019-10-01 更新：感谢 Tianhao，本文已有中文译文！］
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2018 年 11 月 30 日  |  预计阅读时间：30 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Meta-Learning（元学习）：学会快速学习》" href="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>基于流的深度生成模型
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> 到目前为止，我写过两类生成模型：GAN 和 VAE。二者都不会显式学习真实数据的概率密度函数 $p(\mathbf{x})$（其中 $\mathbf{x} \in \mathcal{D}$）——因为这确实很难！以具有潜变量的生成模型为例，$p(\mathbf{x}) = \int p(\mathbf{x}\vert\mathbf{z})p(\mathbf{z})d\mathbf{z}$ 几乎无法计算，因为遍历潜在编码 $\mathbf{z}$ 的所有可能取值是不可行的。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2018 年 10 月 13 日  |  预计阅读时间：21 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Flow-based（基于可逆变换的）深度生成模型》" href="https://xingshuozhu1998.github.io/posts/2018-10-13-flow-models/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>从自编码器到 Beta-VAE（对潜变量约束进行加权的变分自编码器）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> [2019-07-18 更新：新增 VQ-VAE（向量量化变分自编码器）与 VQ-VAE-2 部分。] [2019-07-26 更新：新增 TD-VAE（时间差分变分自编码器）部分。] Autocoder（自编码器）利用中间带有窄瓶颈层的神经网络模型重建高维数据（哎呀，对于 Variational Autoencoder（变分自编码器），这可能并不成立，后续章节会详细讨论）。一个很好的附带效果是降维：瓶颈层捕获压缩后的潜在编码。这种低维表示可以在搜索等各种应用中作为 embedding（嵌入）向量，也有助于数据压缩，或揭示数据背后的生成因素。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2018 年 8 月 12 日 | 预计阅读时间：21 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《从 Autoencoder（自编码器）到 Beta-VAE（对潜变量约束进行加权的变分自编码器）》" href="https://xingshuozhu1998.github.io/posts/2018-08-12-vae/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>注意力？注意力！
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2018-10-28更新：添加 Pointer Network（指针网络）与我的 Transformer 实现链接。］［2018-11-06更新：添加 Transformer 模型实现的链接。］［2018-11-18更新：添加 Neural Turing Machines（神经图灵机）。］［2019-07-18更新：纠正介绍 show-attention-tell 论文时误用“self-attention（自注意力）”术语的问题；将相关内容移到自注意力一节。］［2020-04-07更新：关于改进 Transformer 模型的后续文章在这里。］
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2018 年 6 月 24 日 | 预计阅读时间：21 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Attention（注意力）？Attention！》" href="https://xingshuozhu1998.github.io/posts/2018-06-24-attention/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>使用 TensorFlow（机器学习框架） 与 OpenAI Gym（强化学习环境工具库） 实现深度强化学习模型
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> 完整实现位于 lilianweng/deep-reinforcement-learning-gym
+前两篇文章中，我介绍了许多深度强化学习模型的算法。现在，该亲自动手，实践如何在实际环境中实现这些模型了。实现将基于 Tensorflow 和 OpenAI gym 环境构建。本教程的完整代码位于 [lilian/deep-reinforcement-learning-gym]。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2018年5月5日  |  预计阅读时间：13分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《使用 Tensorflow（机器学习框架）与 OpenAI Gym（强化学习环境工具库）实现深度强化学习模型》" href="https://xingshuozhu1998.github.io/posts/2018-05-05-drl-implementation/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>策略梯度算法
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2018-06-30更新：添加两种新的策略梯度方法，SAC（基于最大熵目标的行动者与评论家算法）与 D4PG（分布式分布型深度确定性策略梯度）。］［2018-09-30更新：添加一种新的策略梯度方法 TD3（双延迟深度确定性策略梯度）。］［2019-02-09更新：添加自动调整温度的 SAC。］［2019-06-26更新：感谢 Chanseok，现在本文有韩文版本。］［2019-09-12更新：添加一种新的策略梯度方法 SVPG（施泰因变分策略梯度）。］［2019-12-22更新：添加一种新的策略梯度方法 IMPALA（重要性加权行动者与学习器架构）。］［2020-10-15更新：添加一种新的策略梯度方法 PPG（分阶段策略梯度），并在 PPO（近端策略优化）中添加一些讨论。］［2021-09-19更新：感谢 Wenhao 与爱吃猫的鱼，现在本文有中文版本1与中文版本2。］
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2018 年 4 月 8 日 | 预计阅读时间：52 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Policy Gradient（策略梯度）算法》" href="https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="prev" href="https://xingshuozhu1998.github.io/page/3/">« </a>
+    <a class="next" href="https://xingshuozhu1998.github.io/page/5/"> »</a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

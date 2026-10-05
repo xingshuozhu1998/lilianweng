@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>审慎理解 Scaling Laws（规模变化与模型性能之间的规律） | Lil’Log 中文学习镜像</title>
+<meta name="keywords" content="language-model, foundation, pretraining, transformer, learning-dynamics" />
+<meta name="description" content="Scaling laws（规模变化与模型性能之间的规律）是深度学习最重要的经验发现之一。观察形式简单：训练损失 $L$ 随模型规模 $N$、数据规模 $D$ 与计算量 $C$ 扩大，以可预测方式按幂律下降，在双对数图上呈直线。可将 scaling laws 视为描述计算、损失、模型规模与数据关系的框架；核心是如何在 $N$ 与 $D$ 之间最优分配宝贵计算。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="审慎理解 Scaling Laws（规模变化与模型性能之间的规律）" />
+<meta property="og:description" content="Scaling laws（规模变化与模型性能之间的规律）是深度学习最重要的经验发现之一。观察形式简单：训练损失 $L$ 随模型规模 $N$、数据规模 $D$ 与计算量 $C$ 扩大，以可预测方式按幂律下降，在双对数图上呈直线。可将 scaling laws 视为描述计算、损失、模型规模与数据关系的框架；核心是如何在 $N$ 与 $D$ 之间最优分配宝贵计算。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2026-06-24T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2026-06-24T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="审慎理解 Scaling Laws（规模变化与模型性能之间的规律）"/>
+<meta name="twitter:description" content="Scaling laws（规模变化与模型性能之间的规律）是深度学习最重要的经验发现之一。观察形式简单：训练损失 $L$ 随模型规模 $N$、数据规模 $D$ 与计算量 $C$ 扩大，以可预测方式按幂律下降，在双对数图上呈直线。可将 scaling laws 视为描述计算、损失、模型规模与数据关系的框架；核心是如何在 $N$ 与 $D$ 之间最优分配宝贵计算。"/>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/posts/"}, {"@type": "ListItem", "position": 2, "name": "审慎理解 Scaling Laws（规模变化与模型性能之间的规律）", "item": "https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "审慎理解 Scaling Laws（规模变化与模型性能之间的规律）", "name": "审慎理解 Scaling Laws（规模变化与模型性能之间的规律）", "description": "Scaling laws（规模变化与模型性能之间的规律）是深度学习最重要的经验发现之一。观察形式简单：训练损失 $L$ 随模型规模 $N$、数据规模 $D$ 与计算量 $C$ 扩大，以可预测方式按幂律下降，在双对数图上呈直线。可将 scaling laws 视为描述计算、损失、模型规模与数据关系的框架；核心是如何在 $N$ 与 $D$ 之间最优分配宝贵计算。", "keywords": ["language-model", "foundation", "pretraining", "transformer", "learning-dynamics"], "articleBody": "Scaling laws是深度学习最重要的经验发现之一。观察形式简单：训练损失 $L$ 随模型规模 $N$、数据规模 $D$ 与计算量 $C$ 扩大，以可预测方式按幂律下降，在双对数图上呈直线。可将 scaling laws 视为描述计算、损失、模型规模与数据关系的框架；核心是如何在 $N$ 与 $D$ 之间最优分配宝贵计算。 \n 这种可预测性使 scaling laws在实践中很有价值。常见流程是在少数小规模运行上拟合 scaling laws，再外推估计大型模型的 token（词元）与计算需求。 \n \n\t \n\t\t\t \n\t\t\t\t\t 符号 \n\t\t\t\t\t 说明 \n\t\t\t \n\t \n\t \n\t\t\t \n\t\t\t\t\t $N$ \n\t\t\t\t\t 模型规模，以参数数量衡量。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $D$ \n\t\t\t\t\t 训练数据规模，通常以 token（词元）数量衡量。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $C$ \n\t\t\t\t\t 训练计算量，单位 FLOPs（浮点运算次数）。实用近似为 $C \\approx 6ND$（ Kaplan et al. 2020 ），其中 $2ND$ 为前向传播，$4ND$ 为反向传播。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $E$ \n\t\t\t\t\t 不可约损失 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $L, \\hat{L}(.)$ \n\t\t\t\t\t 测试损失或预测函数；也可指训练损失，因为两者高度相关。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\epsilon$ \n\t\t\t\t\t 泛化误差。 \n\t\t\t \n\t \n \n 早期：机器学习损失的可预测性 #  \n 在 scaling laws成为主流前，已有研究探索泛化误差随规模的可预测性。 \n  Amari et al. (1992)  用贝叶斯方法与 annealed approximation（退火近似），推导四种学习曲线。 \n \n 确定性学习算法、无噪数据、唯一解：$\\epsilon \\sim c \\cdot D^{-1}$，其中 $c$ 为常数。 \n 确定性学习算法、无噪数据、多个等价解：$\\epsilon \\sim c \\cdot D^{-2}$；每个新数据点使学习更快，因为模型只学习参数最优流形，不必寻找单一解点。 \n 确定性学习算法、有噪数据：$\\epsilon \\sim c \\cdot D^{-1/2}$；噪声使学习更难。 \n 随机学习算法、有噪数据：$\\epsilon \\sim c \\cdot D^{-1} + E$；不可约损失 $E$ 为随机学习器无法进一步减少的残余误差，例如大量数据耗尽模型容量时。\n四类学习曲线都遵循幂律： \n \n \n$$\n\\epsilon \\sim c \\cdot D^\\alpha + E\n$$\n \n 其中，$E$ 可为 0，且 $\\alpha = -2, -1, -1/2$。理论基于简化二分类任务，但为构建经验机器学习损失预测模型提供有用方向。 \n 早期经验研究之一， Hestness et al. (2017)  解释泛化误差、模型规模与数据关系。给定训练数据大小，通过网格搜索找到最适模型大小，再绘制损失与数据规模关系。四个领域（神经机器翻译、图像分类、语言建模、语音识别）都有以下模式： \n \n 泛化误差随一组因素（例如数据大小）呈幂律变化。 \n 模型改进平移误差曲线，似乎不影响幂律指数。 \n 有趣的是，架构改变拟合偏移 $E$，不改变指数 $\\alpha$。幂律斜率似乎属于问题领域，而非架构性质。 \n 拟合数据所需模型参数数 $N$，随数据大小 $D$ 也呈幂律变化。 \n \n \n     \n     （左）Deep-Speech-2（DS2）与注意力语音模型，（右）不同大小 DS2 的学习曲线。训练数据增大后，小模型损失达到平台。（图片来源：Hestness et al. 2017） \n \n 概念示意将曲线分三阶段。小数据区域，学习信号不足，模型只略优于随机猜测。中段“幂律区域”，损失、数据与模型规模呈幂律关系。最终不可约误差区域，可归因于数据噪声等因素。 \n \n     \n     幂律学习曲线各阶段。（图片来源：Hestness et al. 2017） \n \n  Rosenfeld et al. (2020)  进一步在多种架构（ResNet、WRN、LSTM（长短期记忆网络）、Transformer（基于注意力机制的神经网络架构））与优化器（Adam、SGD 变体）上，将误差建模为模型规模 $N$ 与数据规模 $D$ 的联合函数。固定一轴时，误差随另一轴按幂律下降： \n \n$$\n\\hat{L}(D,N) \\approx \\frac{A}{N^{\\alpha}} + E_N,\\quad \n\\hat{L}(D,N) \\approx \\frac{B}{D^{\\beta}} + E_D\n$$\n \n 可合并为联合形式： \n \n$$\n\\hat{L}(D, N) \\approx \\frac{A}{N^{\\alpha}} + \\frac{B}{D^{\\beta}} + E\n$$\n \n 其中，$A > 0, B > 0, \\alpha \\geq 0, \\beta \\geq 0$ 为标量常数，$E$ 不依赖 $N$ 或 $D$。 \n \n     \n     数据规模、模型规模、泛化误差的三维等高图，三轴均为对数尺度。蓝点来自实验，曲面是蓝点间线性插值。（图片来源：Rosenfeld et al. 2020） \n \n 因此，只训练一组小配置，就能构建含 $\\boldsymbol{\\theta} = \\langle A, B, E, \\alpha, \\beta \\rangle$ 的简单参数函数预测模型，预测 $(D, N)$ 大于阈值时的期望损失，训练配置满足 $(D, N)$ 小于阈值。 \n \n     \n     在小配置拟合参数误差模型，外推至更大模型、数据：（a）实验设置；（b）ImageNet、（c）WikiText-103、（d）CIFAR100 结果。误差估计使用三架构（WRN、VGG、DenseNet）与两优化器（SGD、Adam）。（图片来源：Rosenfeld et al. 2020） \n \n 补充：早期工作依赖经典学习理论直觉，如  VC dimension（VC 维，模型能打散的最大点集基数）  作为容量替代。但现代深度学习中，VC 维通常过粗，无法解释行为。经验幂律比理论最坏情况界限更清楚、更实用。 \n 数据无限区域中的 Scaling Laws #  \n Kaplan 等人的 Scaling Laws #  \n  Kaplan et al. (2020)  在语言建模社区普及 scaling laws。交叉熵测试损失 $L$ 随模型规模 $N$（不含嵌入层）、数据规模 $D$、计算量 $C$，跨多个数量级呈幂律变化。与前节早期研究一致，但他们聚焦 Transformer，以更大实验规模形式化概念：非嵌入参数从 7.68 亿至 15 亿，数据从 2200 万至 230 亿 token（词元）。所有运行使用 3000 步线性预热，再余弦衰减至零的学习率调度。 \n 关键发现： \n \n 损失 $L$ 分别随 $N$、$D$、$C$ 呈幂律；最佳性能要求三者同步扩大。 \n 训练曲线遵循可预测幂律，参数大致不依赖模型规模。 \n 大型模型样本效率更高，以更少优化步骤、数据点达到给定损失。 \n 架构细节（宽度、长宽比等）比纯粹规模影响小。 \n 训练、测试损失正相关。（看似平常，却是预训练基础。另一方面，预训练损失改善是否转化为训练后评估提升，需另行研究。） \n 固定计算预算下，训练大模型并  在收敛前  停止，比小模型训练至收敛更高效。 这与下一节 Chinchilla scaling laws（规模变化规律）不同：Kaplan 等人拟合指数较大，高估最优模型规模。  \n \n 他们以单个方程总结对 $N$ 与 $D$ 的联合依赖： \n \n$$\n\\hat{L}(N,D) = \\left[ \\left(\\frac{a}{N}\\right)^{\\frac{\\alpha}{\\beta}} + \\frac{b}{D} \\right]^{\\beta}\n$$\n \n 此形式带来结论：过拟合程度（模型复杂或数据少）主要依赖比值 $N^{\\alpha / \\beta} / D$，说明数据需按特定比例随模型增长，避免训练受数据限制。 \n \n     \n     测试损失随计算、数据规模、参数呈幂律，跨多个数量级。（图片来源：Kaplan et al. 2020） \n \n 最有影响、事后最受争议的结论，是计算最优分配。Kaplan 等人发现 $N_\\text{opt} \\propto C^{0.73}$，认为模型应比数据增长更快。计算增长 10 倍时，建议模型约增 5.5 倍、训练 token（词元）仅约增 1.8 倍。Chinchilla 后来推翻建议，认为会使大模型严重  训练不足 。 \n Kaplan 等人另一实用分析，根据 $D$ 与 $N$ 近似训练 FLOPs（浮点运算次数）。每次乘加计约 2 FLOPs。 \n \n     \n     Transformer各组件参数与计算估计，给定层数 $n_\\text{layer}$、模型宽度 $d_\\text{model}$（= $d_\\text{embed}$；原表记号不一致）、前馈维度 $d_\\text{ff}$（常等于 $4 d_\\text{model}$）、注意力维度 $d_\\text{attn}$（常等于 $d_\\text{model}$）、上下文长度 $n_\\text{ctx}$、词表大小 $n_\\text{vocab}$。（图片来源：Kaplan et al. 2020） \n \n 标准配置 $d_\\text{attn} = d_\\text{model} = d_\\text{ff}/4$ 下，从 $N$ 和每 token（词元）前向计算排除嵌入层： \n \n$$\n\\begin{align}\nN &= n_\\text{layer} d_\\text{model} 3 d_\\text{attn} + n_\\text{layer} d_\\text{attn} d_\\text{model} + n_\\text{layer} 2 d_\\text{model} d_\\text{ff} & \\small{\\text{; no embedding layer}} \\\\\n&= 2\\;n_\\text{layer} d_\\text{model}(2d_\\text{attn} + d_\\text{ff}) & \\\\\n&= 12\\;n_\\text{layer} d_\\text{model}^2 & \\\\\n\\\\\nC_\\text{fwd} &= 2 n_\\text{layer} (d_\\text{model} 3 d_\\text{attn} + n_\\text{ctx}d_\\text{attn} + d_\\text{attn}d_\\text{embed} + 2 d_\\text{model} d_\\text{ff}) & \\\\\n&= 2 n_\\text{layer} (12 d_\\text{model}^2 + n_\\text{ctx}d_\\text{attn}) & \\\\\n&= 2N + 2 n_\\text{layer}n_\\text{ctx}d_\\text{attn} & \\\\\n&\\approx 2N \\quad\\quad \\small{\\text{; assuming }n_\\text{ctx}  \n 反向 FLOPs（浮点运算次数）计为前向两倍，因为反向分别为输入激活、权重梯度执行两次矩阵乘法。每 token（词元）训练总计算约 $6N$，训练 $D$ 个 token 总量为 $C \\approx 6ND$。 \n Chinchilla Scaling Laws（Chinchilla 的规模变化规律） #  \n Chinchilla（ Hoffmann et al. 2022 ）研究最优模型大小 $N$（总参数， 包含 嵌入）与 token（词元）数 $D$ 之间关系，处于  固定  计算预算 $C$ 下。更谨慎的实验得出与 Kaplan 有些不同的答案。 \n \n     \n     你应该知道 chinchilla（龙猫）长什么样 😊（图片来源：ChatGPT 生成） \n \n 核心是约束 $\\text{FLOPs}(N, D) = C \\approx 6ND$ 下如何最好分配资源。有限 FLOPs（浮点运算次数）（给定 GPU（图形处理器） 数量运行给定时间），如何选择更多数据 token（词元）或更多参数？ \n \n$$\nN_\\text{opt}(C), D_\\text{opt}(C) = \\operatorname*{arg\\,min}_{\\text{s.t. } \\text{FLOPs}(N,D) = C} \\hat{L}(N, D)\n$$\n \n Chinchilla 提出三种精心设计的 scaling laws（规模变化规律）拟合方法。 \n 实验扫描 400 多模型，从 7000 万至超过 160 亿参数，训练 token（词元）从 50 亿至 5000 亿。假设每个 token 唯一（无限数据）。所有运行使用余弦学习率，在训练过程中衰减 10 倍。扫描模型大小，描出计算最优前沿。 \n 方法 1：固定模型规模，改变 token（词元）预算 #  \n 每个参数数 $N$，以不同 token（词元）预算多次训练，记录各 FLOP（浮点运算）预算 $C$ 的最低损失。 \n \n     \n     Chinchilla 方法 1：多模型规模的损失随 FLOP（浮点运算）预算变化。（图片来源：Hoffmann et al. 2022） \n \n 方法 2：IsoFLOP（相同浮点运算量）曲线 #  \n 固定预算 $C$，绘制最终损失与参数数 $N$。每条 iso-FLOP（等计算量）曲线在对数空间近似抛物线，最低点标识该预算的最优大小。重复不同预算，描出幂律直线。 \n \n     \n     Chinchilla 方法 2：IsoFLOP（等计算量）抛物线；每条最低点是该预算最优模型规模。（图片来源：Hoffmann et al. 2022） \n \n 方法 3：参数拟合 #  \n   直接拟合与  Rosenfeld et al. (2020)  相同的参数函数， \n \n$$\n\\hat{L}(N, D) = \\frac{A}{N^\\alpha} + \\frac{B}{D^\\beta} + E\n$$\n \n 最优 $N_\\text{opt}(C), D_\\text{opt}(C)$ 的闭式近似，可通过最小化 $\\hat{L}(N, D)$，在约束 $\\text{FLOPs}(N,D) = C \\approx 6ND$ 下求得。 \n 先将表达式化简为仅含 $N$： \n \n$$\n\\begin{align}\n\\hat{L}(N) &= A N^{-\\alpha} + B \\Big(\\frac{C}{6}\\Big)^{-\\beta}N^\\beta + E \\\\\n\\hat{L}'(N) &= -\\alpha A N^{-\\alpha-1} + \\beta B \\Big(\\frac{C}{6}\\Big)^{-\\beta} N^{\\beta -1} = 0 & \\small{\\text{; derivative wrt }N\\text{ should be zero.}} \\\\\n\\text{Thus}\\quad & \\alpha A N^{-\\alpha-1} = \\beta B \\Big(\\frac{C}{6}\\Big)^{-\\beta} N^{\\beta -1} \\\\\n& \\alpha A = \\beta B \\Big(\\frac{C}{6}\\Big)^{-\\beta} N^{\\alpha + \\beta} \\\\\n& N_\\text{opt} = \\Big(\\frac{\\alpha A}{\\beta B}\\Big)^{\\frac{1}{\\alpha + \\beta}} \\Big(\\frac{C}{6}\\Big)^{\\frac{\\beta}{\\alpha+\\beta}} \\\\\n& D_\\text{opt} = \\frac{C}{6 N_\\text{opt}} = \\Big(\\frac{\\beta B}{\\alpha A}\\Big)^{\\frac{1}{\\alpha + \\beta}} \\Big(\\frac{C}{6}\\Big)^{\\frac{\\alpha}{\\alpha+\\beta}}\n\\end{align}\n$$\n \n 当 $\\alpha \\approx \\beta$，模型规模与训练 token（词元）应等速增长。 \n 为找最优 $\\boldsymbol{\\theta} = \\langle A, B, E, \\alpha, \\beta\\rangle$，Chinchilla 用  Huber loss（胡贝尔损失） （对异常值稳健；$\\delta=10^{-3}$）与  L-BFGS algorithm（有限内存拟牛顿优化算法） （适合少参数曲线拟合）。 \n \n$$\n\\begin{align}\n\\min_{A,B,E,\\alpha,\\beta} \\sum_{\\text{runs }\\{i\\}} \\text{Huber}_\\delta (\\log \\hat{L}(N_i, D_i) - \\log L_i) \\\\\n\\text{ where }\\text{Huber}_\\delta (x) = \\begin{cases}\\frac{1}{2} x^2 & \\text{for }\\vert x \\vert \\leq \\delta \\\\ \\delta \\cdot (\\vert x \\vert - \\frac{1}{2}\\delta), & \\text{otherwise.}\\end{cases}\n\\end{align}\n$$\n \n 三种互补方法最终结果一致，是 Chinchilla 结论令人信服的原因之一。 \n \n     \n     三种方法一致支持计算最优前沿 $N_\\text{opt} \\propto C^{0.5}$，但与 Kaplan 不同。方法 3 与另两种略有差异，后面解释。（图片来源：Hoffmann et al. 2022） \n \n \n     \n     Chinchilla 三种方法与 Kaplan et al. (2020) 的预测。三者均表明，当时一些主流 LLM（大语言模型）训练不足。（图片来源：Hoffmann et al. 2022） \n \n Chinchilla 认为当时（约 2022）多数大模型训练不足，有著名实验支持：相同 Gopher（ Rae et al. 2021 ；2800 亿参数、3000 亿 token（词元））计算预算下，训练 Chinchilla（700 亿参数、1.4 万亿 token），模型小 4 倍、训练 token 约多 4 倍，全面超越 Gopher。 \n 协调 Kaplan 与 Chinchilla #  \n Chinchilla scaling laws（规模变化规律）与 Kaplan 分歧如下： \n \n 不是“模型比数据增长快”（$N_\\text{opt} \\propto C^{0.73}$），而是模型每翻倍，训练 token（词元）也应翻倍（$N_\\text{opt} \\propto C^{0.5}$）。 \n 不是“大模型收敛前停止”，而是更多数据训练较小模型。 \n \n 两篇仍认同基本原则，但最优规模与 token（词元）权衡的位置不同。为何差异如此大？ \n  差异 1：Kaplan 主要实验小模型。 \nKaplan 模型较小，Chinchilla 实验规模超过 10 倍。双对数空间外推时，拟合小差异可导致大差异（见  简化模拟 ）。 \n  差异 2：嵌入参数数对小模型重要。 \n参数少时，嵌入占比不可忽略，因此是否计入很重要。 Pearce & Song (2024)  深入分析。用 $N_{\\setminus E}, C_{\\setminus E}$ 表示排除嵌入后的规模、计算，用 $N, C$ 计总参数。 \n \n Kaplan：$N^*_{\\setminus E} \\propto C^{0.73}_{\\setminus E}$（不含嵌入）。 \n Chinchilla：$N^* \\propto C^{0.50}$（总参数）。 \n \n 为联系两者，拟合总参数 $N_T$ 与非嵌入参数 $N_{\\setminus E}$ 的关系，常数为 $\\omega$： \n \n$$\nN = N_{\\setminus E} + \\omega\\, N_{\\setminus E}^{1/3}.\n$$\n \n 该形式严格递增，并满足 $\\lim_{N \\to \\infty} N = N_{\\setminus E}$（因为 $\\frac{N}{N_{\\setminus E}} = 1 + \\omega {N_{\\setminus E}}^{- \\frac{2}{3}}, \\lim_{N_{\\setminus E} \\to \\infty} \\frac{N}{N_{\\setminus E}} = 1$。 \n 代入 Chinchilla 方程， \n \n$$\n\\begin{align}\nL(N_{\\setminus E}, C_{\\setminus E}) &= A(N_{\\setminus E} + \\omega\\, N_{\\setminus E}^{1/3})^{-\\alpha} + B \\Big(\\frac{C_{\\setminus E}}{6}\\Big)^{-\\beta} N_{\\setminus E}^\\beta + E \\\\\nL'(N_{\\setminus E}, C_{\\setminus E}) &= - \\alpha A (N_{\\setminus E} + \\omega N_{\\setminus E}^{1/3})^{-\\alpha -1}(1 + \\frac{\\omega}{3}N_{\\setminus E}^{-2/3}) + \\beta B \\Big(\\frac{C_{\\setminus E}}{6}\\Big)^{-\\beta} N_{\\setminus E}^{\\beta -1} = 0 & \\small{\\text{; derivative wrt }N_{\\setminus E}\\text{ should be zero.}} \\\\\n\\text{Rearrange to get }& \\alpha A (N^{*}_{\\setminus E} + \\omega {N^{*}_{\\setminus E}}^{1/3})^{-\\alpha -1}(1 + \\frac{\\omega}{3} {N^{*}_{\\setminus E}}^{-2/3}) = \\beta B \\Big(\\frac{C_{\\setminus E}}{6}\\Big)^{-\\beta} {N^{*}_{\\setminus E}}^{\\beta -1} \\\\\n& 6^{-\\beta}\\frac{\\alpha A}{\\beta B} ({N^{*}_{\\setminus E}} + \\omega {N^{*}_{\\setminus E}}^{1/3})^{-\\alpha -1}(1 + \\frac{\\omega}{3}{N^{*}_{\\setminus E}}^{-2/3}) {N^{*}_{\\setminus E}}^{1 - \\beta} = C_{\\setminus E}^{-\\beta} \\\\\n& 6 \\Big(\\frac{\\beta B}{\\alpha A}\\Big)^{\\frac{1}{\\beta}} ({N^{*}_{\\setminus E}} + \\omega {N^{*}_{\\setminus E}}^{1/3})^{\\frac{1 + \\alpha}{\\beta}} ({N^{*}_{\\setminus E}} + \\frac{\\omega}{3}{N^{*}_{\\setminus E}}^{1/3})^{-\\frac{1}{\\beta}} {N^{*}_{\\setminus E}} = C_{\\setminus E} \\\\\n\\end{align}\n$$\n \n 上述 $C_{\\setminus E}$ 与 $N_{\\setminus E}$ 不再是纯粹幂律，只能局部近似为 $N^*_{\\setminus E} \\overset{\\propto}{\\sim} C_{\\setminus E}^g$。$g$ 是根据一阶导数（$\\overset{\\propto}{\\sim}$）的局部指数，而非全局幂律指数，得到 $g = \\frac{\\mathrm{d} \\log C_{\\setminus E}}{\\mathrm{d} \\log N_{\\setminus E}}$。指数 $g$ 的近似详情见  Pearce & Song (2024)  附录 A.1。 \n \n     \n     局部幂律指数 $g$ 随 $C_{\\setminus E}$ 增长。（图片来源：Pearce & Song 2024） \n \n 如上图，$C_{\\setminus E}$ 增大时，$g$ 收敛至 Chinchilla 估计。用上述方程生成合成训练曲线，在 7.68 亿至 15 亿规模（与 Kaplan 相同），估计 $g$ 接近该区域 Kaplan 系数 0.73。 \n 为什么是幂律？ #  \n AI 之外许多领域也观察到幂律，例如  Zipf’s law（齐普夫定律） 、 scale-free networks（无标度网络） 、 urban scaling laws（城市规模规律）  与其他复杂系统。共同模式是大事件少、小事件多，大小与频率在双对数尺度上常呈直线。 \n  为什么 LLM的 scaling laws（规模变化规律）也呈幂律？  \n 部分受不同领域指数不同（ Hestness et al. 2017 ）启发， Sharma & Kaplan (2020)  假设语言建模是低维数据流形上的回归。更多参数产生更细流形分区、更小泛化误差。最简单地，有效大小 $N$ 的模型，将 $d$ 维流形分为 $O(N)$ 区域，典型线性分辨率按 $\\sim N^{-1/d}$ 变化，与上述 scaling laws（规模变化规律）的幂律形式相似。理论最适合无限数据、欠拟合区域，但现实中估计流形内在维度很难。 \n 后续假说（ Michaud et al. 2023 、 Brill 2024 ）认为知识、技能以离散块学习（“量子化”），技能频率服从幂律。先学常见技能，再学罕见技能，损失平滑幂律下降。 \n 这里只列两假说；还有研究通过数据谱尾、核特征值、自然语言统计、训练动态相变等解释幂律。 \n 数据受限区域中的 Scaling Laws（规模变化规律） #  \n 经典 scaling laws（规模变化规律）假设  无限独特数据 ，无重复、无多轮训练。模型显著增长后，高质量独特 token（词元）不足。AI 扩展还能持续多久的一些争论，围绕是否遇到“数据墙”。 \n $D$ 背后数据预计已经清理。预训练数据流程往往至关重要，包括精确及模糊去重、质量过滤、模板文本删除、安全过滤、PII（个人可识别信息）或版权遮蔽、基准去污染，以及按语言、质量、内容类型等调整混合权重。即使 token（词元）数 $D$ 相同，高质量数据与低劣网络内容的计算效率也可能大不同。 \n  Hernandez et al. (2022)  研究受控版本：数据大多独特，小部分重复。从大数据集保留 90% 非重复，将剩余 10% 替为原数据很小部分的重复。Transformer训练 1000 亿 token（词元）后，观察到 double-descent（双下降）：重复数据强调程度增加时，测试损失先  恶化  再改善；重复比例越大越明显。 \n \n     \n     重复比例增加时测试损失双下降（左侧 90% 重复，右侧 50%）。（图片来源：Hernandez et al. 2022） \n \n 训练中段平坦或上升，可能源于记忆重复数据，使幂律拟合不准。他们认为重复损害某些 OOD（分布外）评估与下游微调。但混合更像实验室设置，现实重复更复杂（不同重复程度、语义重复等）。 \n 比起笼统说重复损害训练，更关心独特高质量数据有限、训练可能必须重复时，如何拟合 scaling laws（规模变化规律）。 \n  Muennighoff et al. (2023)  研究数据受限时最优计算分配。约 400 实验，1000 万至 90 亿参数，最多 9000 亿 token（词元）、1500 轮。每轮重复相同数据，轮间打乱，在留出集评估。 \n 关键调整将总 token（词元）$D$ 分为独特数 $U_D$ 与重复数 $R_D$（轮数减 1），有 $D = U_D(1 + R_D)$。独特数据预算 $D_\\text{uniq}$ 下，定义 $U_D = \\min \\{{ D_\\text{uniq}, D\\}}$ 与 $R_D = (D / U_D) - 1$。用 Chinchilla scaling laws（规模变化规律）找最优规模 $U_N$，拟合 $U_D$，通过重复 $R_N = (N / U_N) - 1$ 定义过量模型规模。 \n 修改 Chinchilla 参数拟合（ 方法 3 ），用有效折扣数据 $D’$ 与规模 $N’$ 替代原量： \n \n$$\n\\hat{L}(N, D) = \\frac{A}{N'^\\alpha} + \\frac{B}{D'^\\beta} + E\n\\quad\\text{ where }\nD' = U_D + U_D\\, r_D\\left(1 - \\exp\\!\\left(-\\frac{R_D}{r_D}\\right)\\right).\n$$\n \n 直觉是 token（词元）价值随重复  指数  衰减。每次重复损失剩余价值的 $(1 - 1/r_D)$ 比例，$r_D$ 为可学习“半衰期”。当 $R_D = 0$ 或 $R_D \\ll r_D$，恢复 $D’ \\approx D$。 \n 对过量模型规模采用对称形式 $N’ = U_N + U_N r_N(1 - \\exp(-R_N / r_N))$，表示“大模型更快过拟合重复数据”“模型可能相对数据过大”。这不太直观，我未找到为何规模与重复数据须对称的满意解释。 Lovelace et al. (2026)  后来改变此假设。 \n 经验拟合发现  过量参数价值比重复数据衰减更快 ，$r_N < r_D$，应更多投入轮数而非参数。作者指出缺点：严重低估失败模型最终损失（训练中途损失上升），如训练 44 轮的模型。 \n \n     \n     数据受限重复拟合比忽略数据限制更符合实验；重复 token（词元）价值指数衰减至上限。轮数增加时拟合变差，高重复使测试损失中途上升，图未展示。（图片来源：Muennighoff et al. 2023） \n \n 最新  Lovelace et al. (2026)  用不同方法重访：不将过参数化视为有效规模收益递减，而显式建模规模 $\\times$ 与重复交互。约 300 模型，1500 万至 10 亿参数、5000 万至 60 亿独特 token（词元）。 \n 固定规模绘制不同重复下拟合残差：更多轮次更有害，且  大模型更敏感 。损失惩罚可能同时依赖模型、数据规模。 \n \n     \n     有效规模拟合残差显示，过拟合损害随轮数、规模增加。（图片来源：Lovelace et al. 2026） \n \n 引入显式过拟合惩罚，基于  容量比  $N / U_D$（参数数与独特 token（词元）之比）： \n \n$$\n\\hat{L}(N, U_D, R_D) = E + \\frac{A}{N^\\alpha} + \\frac{B}{\\big(U_D (1 + R_D)\\big)^\\beta} + \\color{red}{P \\cdot R_D^\\delta \\cdot \\left(\\frac{N}{U_D}\\right)^\\kappa}\n$$\n \n 其中： \n \n $R_D$ 为重复数； \n 标量 $P$ 为可学习参数； \n 指数 $\\kappa$（第二可学习参数），使惩罚随容量比 $N / U_D$ 非线性变化； \n 重复数的独立指数 $\\delta$（第三可学习参数），将重复的非线性与 $\\kappa$ 解耦。 \n \n 红色新增项直接惩罚过拟合，随数据重复次数，以及模型相对可用独特数据的过参数化程度增长。 \n 作者还研究有限数据下权重衰减，发现较强衰减减少数据重复导致的过拟合惩罚。 \n \n     \n     较强权重衰减减少数据重复的过拟合惩罚。（图片来源：Lovelace et al. 2026） \n \n Muennighoff 与 Lovelace 的建模都来自经验曲线拟合，尚不清楚为何数据受限 scaling laws（规模变化规律）应恰有这些形式，及每个自由参数为何必要。期待更多理论研究。 \n 现实中拟合 Scaling Laws（规模变化规律）的难点 #  \n 尽管形式简洁，拟合可能对看似琐碎的选择非常敏感，如参数计数、精度舍入、损失求和或平均。 \n 只在能负担的相对小而便宜模型上拟合，再  外推  到大几个数量级的模型。看似舍入误差的选择，可能导致预测巨大差异。 \n 拟合假设唯一变化是  规模 ，因此架构、优化器、学习率、批次增长、数据混合、tokenizer（分词器）等应保持相同。另假设设置已仔细调优；训练不足等情况会导致不同结论。 \n Kaplan 与 Chinchilla 分歧展示了 scaling laws（规模变化规律）拟合的复杂性。 \n   第二个例子是一项后续分析，它研究了为什么 Chinchilla 的 方法3 所得结果与另外两种方法略有偏差。 Besiroglu et al. (2024)  从 Hoffmann et al. (2022) 的图4中提取了原始 $(N, D, L)$ 数据点，并重新运行了方法3的参数拟合。他们发现了几个具体问题： \n \n L-BFGS-B 最小化器损失尺度高，由对示例 Huber-loss（胡贝尔损失）平均而非求和造成，使优化提前终止。原拟合与 bootstrap（自举重采样）中提前停止，产生不一致估计及不合理狭窄置信区间。 \n 报告的 $\\alpha$ 与 $\\beta$ 舍入为两位精度，使推导的 $A, B$ 看起来比实际偏差更大。 \n \n 简化模拟 #  \n 以下 ChatGPT 创建的简化模拟组件，展示三种具体失败模式。 \n 假设真实函数为： \n \n$$\n\\hat{L}(N, D) = 482.01 \\cdot N^{-0.3478} + 2085.43 D^{-0.3658} + 1.8172\n$$\n \n 因此 $N_\\text{opt} \\propto C^{0.5126}, D_\\text{opt} \\propto C^{0.4874}$，这是  Besiroglu et al. (2024)  的估计。 \n 模拟绘制损失预测 $\\hat{L}$ 与数据规模 $D$，通过滑块展示： \n \n 损失精度：从多位小数舍入至少位，会改变拟合参数。 \n 损失噪声：仅以 milli-loss（千分之一损失，0.001）单位的倍数扰动，就导致不同拟合。 \n 拟合区域敏感性：只拟合小模型、中模型或全部模型，产生不同表观 scaling laws（规模变化规律）。 \n \n  \n\n\n 引用 #  \n 引用本文时请使用： \n \n Weng, Lilian。“Scaling Laws, Carefully”（审慎看待规模规律）。Lil’Log（2026 年 6 月）。https://lilianweng.github.io/posts/2026-06-24-scaling-laws/ \n \n 或使用 BibTeX 引用： \n  @article{weng2026scaling,\n title = {Scaling Laws, Carefully},\n author = {Weng, Lilian},\n journal = {lilianweng.github.io},\n year = {2026},\n month = {June},\n url = \"https://lilianweng.github.io/posts/2026-06-24-scaling-laws/\"\n}\n   参考文献 #  \n [1] S. Amari, N. Fujita, and S. Shinomoto.  “Four Types of Learning Curves. Neural Computation.”  4(4):605–618, 1992. \n [2] Hestness et al.  “Deep Learning Scaling is Predictable, Empirically.”  arXiv 预印本 arXiv:1712.00409, 2017. \n [3] Rosenfeld et al.  “A Constructive Prediction of the Generalization Error Across Scales.”  ICLR 2020. \n [4] Kaplan et al.  “Scaling Laws for Neural Language Models.”  arXiv 预印本 arXiv:2001.08361, 2020. \n [5] Hoffmann et al.  “Training Compute-Optimal Large Language Models.”  NeurIPS 2022. \n [6] Pearce and Song.  “Reconciling Kaplan and Chinchilla Scaling Laws.”  TMLR 2024. \n [7] Bahri et al.  “Explaining Neural Scaling Laws.”  arXiv 预印本 arXiv:2102.06701, 2021. \n [8] Sharma and Kaplan.  “A Neural Scaling Law from the Dimension of the Data Manifold.”  arXiv 预印本 arXiv:2004.10802, 2020. \n [9] Hernandez et al.  “Scaling Laws and Interpretability of Learning from Repeated Data.”  arXiv 预印本 arXiv:2205.10487, 2022. \n [10] Muennighoff et al.  “Scaling Data-Constrained Language Models.”  NeurIPS 2023. \n [11] Lovelace et al.  “Prescriptive Scaling Laws for Data Constrained Training.”  arXiv 预印本 arXiv:2605.01640, 2026. \n [12] Besiroglu et al.  “Chinchilla Scaling: A Replication Attempt.”  arXiv 预印本 arXiv:2404.10102, 2024. \n [13] Michaud et al.  “The Quantization Model of Neural Scaling”  NeurIPS 2023. \n [14] Brill.  “Neural Scaling Laws Rooted in the Data Distribution.”  arXiv 预印本 arXiv:2412.07942, 2024. \n [15] Rae et al.  “Scaling Language Models: Methods, Analysis & Insights from Training Gopher.”  arXiv 预印本 arXiv:2112.11446, 2021.", "wordCount": "5118", "inLanguage": "zh-CN", "datePublished": "2026-06-24T00:00:00Z", "dateModified": "2026-06-24T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/favicon_wine.ico"}}}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/posts/2026-06-24-scaling-laws/">
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2026-06-24-scaling-laws/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/posts/2026-06-24-scaling-laws/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      审慎理解 Scaling Laws（规模变化与模型性能之间的规律）
+    </h1>
+    <div class="post-meta">日期：2026 年 6 月 24 日  |  预计阅读时间：25 分钟  |  作者：Lilian Weng
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#early-days-ml-loss-predictability" aria-label="Early days: ML loss predictability">早期：机器学习损失的可预测性</a></li>
+                <li>
+                    <a href="#scaling-laws-in-data-infinite-region" aria-label="数据无限区域中的 Scaling Laws（规模变化与模型性能之间的规律）">数据无限区域中的 Scaling Laws（规模变化与模型性能之间的规律）</a><ul>
+                        
+                <li>
+                    <a href="#kaplan-et-als-scaling-laws" aria-label="Kaplan et al.&rsquo;s Scaling Laws">Kaplan 等人的 Scaling Laws（规模变化与模型性能之间的规律）</a></li>
+                <li>
+                    <a href="#chinchilla-scaling-laws" aria-label="Chinchilla Scaling Laws（Chinchilla 的规模变化规律）">Chinchilla Scaling Laws（Chinchilla 的规模变化规律）</a><ul>
+                        
+                <li>
+                    <a href="#method-1-fix-model-sizes-vary-the-token-budget" aria-label="Method 1: Fix model sizes, vary the token budget">方法 1：固定模型规模，改变 token（词元）预算</a></li>
+                <li>
+                    <a href="#method-2-isoflop-profiles" aria-label="Method 2: IsoFLOP profiles">方法 2：IsoFLOP（相同浮点运算量）曲线</a></li>
+                <li>
+                    <a href="#method-3-parametric-fit" aria-label="Method 3: Parametric fit">方法 3：参数拟合</a></li></ul>
+                </li>
+                <li>
+                    <a href="#reconciling-kaplan-and-chinchilla" aria-label="Reconciling Kaplan and Chinchilla">协调 Kaplan 与 Chinchilla</a></li>
+                <li>
+                    <a href="#why-power-law" aria-label="Why power law?">为什么是幂律？</a></li></ul>
+                </li>
+                <li>
+                    <a href="#scaling-laws-in-data-limited-region" aria-label="Scaling Laws in Data-Limited Region">数据受限区域中的 Scaling Laws（规模变化与模型性能之间的规律）</a></li>
+                <li>
+                    <a href="#trickiness-of-fitting-scaling-laws-in-reality" aria-label="现实中拟合 Scaling Laws（规模变化与模型性能之间的规律）的难点">现实中拟合 Scaling Laws（规模变化与模型性能之间的规律）的难点</a><ul>
+                        
+                <li>
+                    <a href="#toy-simulation" aria-label="Toy simulation">简化模拟</a></li></ul>
+                </li>
+                <li>
+                    <a href="#citation" aria-label="Citation">引用</a></li>
+                <li>
+                    <a href="#references" aria-label="References">参考文献</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>Scaling laws是深度学习最重要的经验发现之一。观察形式简单：训练损失 $L$ 随模型规模 $N$、数据规模 $D$ 与计算量 $C$ 扩大，以可预测方式按幂律下降，在双对数图上呈直线。可将 scaling laws 视为描述计算、损失、模型规模与数据关系的框架；核心是如何在 $N$ 与 $D$ 之间最优分配宝贵计算。</p>
+<p>这种可预测性使 scaling laws在实践中很有价值。常见流程是在少数小规模运行上拟合 scaling laws，再外推估计大型模型的 token（词元）与计算需求。</p>
+<table>
+	<thead>
+			<tr>
+					<th>符号</th>
+					<th>说明</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>$N$</td>
+					<td>模型规模，以参数数量衡量。</td>
+			</tr>
+			<tr>
+					<td>$D$</td>
+					<td>训练数据规模，通常以 token（词元）数量衡量。</td>
+			</tr>
+			<tr>
+					<td>$C$</td>
+					<td>训练计算量，单位 FLOPs（浮点运算次数）。实用近似为 $C \approx 6ND$（<a href="https://arxiv.org/abs/2001.08361">Kaplan et al. 2020</a>），其中 $2ND$ 为前向传播，$4ND$ 为反向传播。</td>
+			</tr>
+			<tr>
+					<td>$E$</td>
+					<td>不可约损失</td>
+			</tr>
+			<tr>
+					<td>$L, \hat{L}(.)$</td>
+					<td>测试损失或预测函数；也可指训练损失，因为两者高度相关。</td>
+			</tr>
+			<tr>
+					<td>$\epsilon$</td>
+					<td>泛化误差。</td>
+			</tr>
+	</tbody>
+</table>
+<h1 id="early-days-ml-loss-predictability">早期：机器学习损失的可预测性<a hidden class="anchor" aria-hidden="true" href="#early-days-ml-loss-predictability">#</a></h1>
+<p>在 scaling laws成为主流前，已有研究探索泛化误差随规模的可预测性。</p>
+<p><a href="https://ieeexplore.ieee.org/document/6796972">Amari et al. (1992)</a> 用贝叶斯方法与 annealed approximation（退火近似），推导四种学习曲线。</p>
+<ol>
+<li>确定性学习算法、无噪数据、唯一解：$\epsilon \sim c \cdot D^{-1}$，其中 $c$ 为常数。</li>
+<li>确定性学习算法、无噪数据、多个等价解：$\epsilon \sim c \cdot D^{-2}$；每个新数据点使学习更快，因为模型只学习参数最优流形，不必寻找单一解点。</li>
+<li>确定性学习算法、有噪数据：$\epsilon \sim c \cdot D^{-1/2}$；噪声使学习更难。</li>
+<li>随机学习算法、有噪数据：$\epsilon \sim c \cdot D^{-1} + E$；不可约损失 $E$ 为随机学习器无法进一步减少的残余误差，例如大量数据耗尽模型容量时。
+四类学习曲线都遵循幂律：</li>
+</ol>
+<div>
+$$
+\epsilon \sim c \cdot D^\alpha + E
+$$
+</div>
+<p>其中，$E$ 可为 0，且 $\alpha = -2, -1, -1/2$。理论基于简化二分类任务，但为构建经验机器学习损失预测模型提供有用方向。</p>
+<p>早期经验研究之一，<a href="https://arxiv.org/abs/1712.00409">Hestness et al. (2017)</a> 解释泛化误差、模型规模与数据关系。给定训练数据大小，通过网格搜索找到最适模型大小，再绘制损失与数据规模关系。四个领域（神经机器翻译、图像分类、语言建模、语音识别）都有以下模式：</p>
+<ul>
+<li>泛化误差随一组因素（例如数据大小）呈幂律变化。</li>
+<li>模型改进平移误差曲线，似乎不影响幂律指数。</li>
+<li>有趣的是，架构改变拟合偏移 $E$，不改变指数 $\alpha$。幂律斜率似乎属于问题领域，而非架构性质。</li>
+<li>拟合数据所需模型参数数 $N$，随数据大小 $D$ 也呈幂律变化。</li>
+</ul>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/hestness-1.png" />
+    <figcaption>（左）Deep-Speech-2（DS2）与注意力语音模型，（右）不同大小 DS2 的学习曲线。训练数据增大后，小模型损失达到平台。（图片来源：Hestness et al. 2017）</figcaption>
+</figure>
+<p>概念示意将曲线分三阶段。小数据区域，学习信号不足，模型只略优于随机猜测。中段“幂律区域”，损失、数据与模型规模呈幂律关系。最终不可约误差区域，可归因于数据噪声等因素。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/hestness-2.png" style="width: 60%;" />
+    <figcaption>幂律学习曲线各阶段。（图片来源：Hestness et al. 2017）</figcaption>
+</figure>
+<p><a href="https://arxiv.org/abs/1909.12673">Rosenfeld et al. (2020)</a> 进一步在多种架构（ResNet、WRN、LSTM（长短期记忆网络）、Transformer（基于注意力机制的神经网络架构））与优化器（Adam、SGD 变体）上，将误差建模为模型规模 $N$ 与数据规模 $D$ 的联合函数。固定一轴时，误差随另一轴按幂律下降：</p>
+<div>
+$$
+\hat{L}(D,N) \approx \frac{A}{N^{\alpha}} + E_N,\quad 
+\hat{L}(D,N) \approx \frac{B}{D^{\beta}} + E_D
+$$
+</div>
+<p>可合并为联合形式：</p>
+<div>
+$$
+\hat{L}(D, N) \approx \frac{A}{N^{\alpha}} + \frac{B}{D^{\beta}} + E
+$$
+</div>
+<p>其中，$A &gt; 0, B &gt; 0, \alpha \geq 0, \beta \geq 0$ 为标量常数，$E$ 不依赖 $N$ 或 $D$。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/rosenfeld-1.png" />
+    <figcaption>数据规模、模型规模、泛化误差的三维等高图，三轴均为对数尺度。蓝点来自实验，曲面是蓝点间线性插值。（图片来源：Rosenfeld et al. 2020）</figcaption>
+</figure>
+<p>因此，只训练一组小配置，就能构建含 $\boldsymbol{\theta} = \langle A, B, E, \alpha, \beta \rangle$ 的简单参数函数预测模型，预测 $(D, N)$ 大于阈值时的期望损失，训练配置满足 $(D, N)$ 小于阈值。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/rosenfeld-2.png" />
+    <figcaption>在小配置拟合参数误差模型，外推至更大模型、数据：（a）实验设置；（b）ImageNet、（c）WikiText-103、（d）CIFAR100 结果。误差估计使用三架构（WRN、VGG、DenseNet）与两优化器（SGD、Adam）。（图片来源：Rosenfeld et al. 2020）</figcaption>
+</figure>
+<p>补充：早期工作依赖经典学习理论直觉，如 <a href="https://en.wikipedia.org/wiki/Vapnik%E2%80%93Chervonenkis_dimension">VC dimension（VC 维，模型能打散的最大点集基数）</a> 作为容量替代。但现代深度学习中，VC 维通常过粗，无法解释行为。经验幂律比理论最坏情况界限更清楚、更实用。</p>
+<h1 id="scaling-laws-in-data-infinite-region">数据无限区域中的 Scaling Laws<a hidden class="anchor" aria-hidden="true" href="#scaling-laws-in-data-infinite-region">#</a></h1>
+<h2 id="kaplan-et-als-scaling-laws">Kaplan 等人的 Scaling Laws<a hidden class="anchor" aria-hidden="true" href="#kaplan-et-als-scaling-laws">#</a></h2>
+<p><a href="https://arxiv.org/abs/2001.08361">Kaplan et al. (2020)</a> 在语言建模社区普及 scaling laws。交叉熵测试损失 $L$ 随模型规模 $N$（不含嵌入层）、数据规模 $D$、计算量 $C$，跨多个数量级呈幂律变化。与前节早期研究一致，但他们聚焦 Transformer，以更大实验规模形式化概念：非嵌入参数从 7.68 亿至 15 亿，数据从 2200 万至 230 亿 token（词元）。所有运行使用 3000 步线性预热，再余弦衰减至零的学习率调度。</p>
+<p>关键发现：</p>
+<ul>
+<li>损失 $L$ 分别随 $N$、$D$、$C$ 呈幂律；最佳性能要求三者同步扩大。</li>
+<li>训练曲线遵循可预测幂律，参数大致不依赖模型规模。</li>
+<li>大型模型样本效率更高，以更少优化步骤、数据点达到给定损失。</li>
+<li>架构细节（宽度、长宽比等）比纯粹规模影响小。</li>
+<li>训练、测试损失正相关。（看似平常，却是预训练基础。另一方面，预训练损失改善是否转化为训练后评估提升，需另行研究。）</li>
+<li>固定计算预算下，训练大模型并 <em>在收敛前</em> 停止，比小模型训练至收敛更高效。<strong>这与下一节 Chinchilla scaling laws（规模变化规律）不同：Kaplan 等人拟合指数较大，高估最优模型规模。</strong></li>
+</ul>
+<p>他们以单个方程总结对 $N$ 与 $D$ 的联合依赖：</p>
+<div>
+$$
+\hat{L}(N,D) = \left[ \left(\frac{a}{N}\right)^{\frac{\alpha}{\beta}} + \frac{b}{D} \right]^{\beta}
+$$
+</div>
+<p>此形式带来结论：过拟合程度（模型复杂或数据少）主要依赖比值 $N^{\alpha / \beta} / D$，说明数据需按特定比例随模型增长，避免训练受数据限制。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/kaplan-1.png" />
+    <figcaption>测试损失随计算、数据规模、参数呈幂律，跨多个数量级。（图片来源：Kaplan et al. 2020）</figcaption>
+</figure>
+<p>最有影响、事后最受争议的结论，是计算最优分配。Kaplan 等人发现 $N_\text{opt} \propto C^{0.73}$，认为模型应比数据增长更快。计算增长 10 倍时，建议模型约增 5.5 倍、训练 token（词元）仅约增 1.8 倍。Chinchilla 后来推翻建议，认为会使大模型严重 <em>训练不足</em>。</p>
+<p>Kaplan 等人另一实用分析，根据 $D$ 与 $N$ 近似训练 FLOPs（浮点运算次数）。每次乘加计约 2 FLOPs。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/kaplan-2.png" />
+    <figcaption>Transformer各组件参数与计算估计，给定层数 $n_\text{layer}$、模型宽度 $d_\text{model}$（= $d_\text{embed}$；原表记号不一致）、前馈维度 $d_\text{ff}$（常等于 $4 d_\text{model}$）、注意力维度 $d_\text{attn}$（常等于 $d_\text{model}$）、上下文长度 $n_\text{ctx}$、词表大小 $n_\text{vocab}$。（图片来源：Kaplan et al. 2020）</figcaption>
+</figure>
+<p>标准配置 $d_\text{attn} = d_\text{model} = d_\text{ff}/4$ 下，从 $N$ 和每 token（词元）前向计算排除嵌入层：</p>
+<div>
+$$
+\begin{align}
+N &= n_\text{layer} d_\text{model} 3 d_\text{attn} + n_\text{layer} d_\text{attn} d_\text{model} + n_\text{layer} 2 d_\text{model} d_\text{ff} & \small{\text{; no embedding layer}} \\
+&= 2\;n_\text{layer} d_\text{model}(2d_\text{attn} + d_\text{ff}) & \\
+&= 12\;n_\text{layer} d_\text{model}^2 & \\
+\\
+C_\text{fwd} &= 2 n_\text{layer} (d_\text{model} 3 d_\text{attn} + n_\text{ctx}d_\text{attn} + d_\text{attn}d_\text{embed} + 2 d_\text{model} d_\text{ff}) & \\
+&= 2 n_\text{layer} (12 d_\text{model}^2 + n_\text{ctx}d_\text{attn}) & \\
+&= 2N + 2 n_\text{layer}n_\text{ctx}d_\text{attn} & \\
+&\approx 2N \quad\quad \small{\text{; assuming }n_\text{ctx} < 12 d_\text{model} \text{ and the }n_\text{ctx}\text{ term is relatively small.}}\\
+\end{align}
+$$
+</div>
+<p>反向 FLOPs（浮点运算次数）计为前向两倍，因为反向分别为输入激活、权重梯度执行两次矩阵乘法。每 token（词元）训练总计算约 $6N$，训练 $D$ 个 token 总量为 $C \approx 6ND$。</p>
+<h2 id="chinchilla-scaling-laws">Chinchilla Scaling Laws（Chinchilla 的规模变化规律）<a hidden class="anchor" aria-hidden="true" href="#chinchilla-scaling-laws">#</a></h2>
+<p>Chinchilla（<a href="https://arxiv.org/abs/2203.15556">Hoffmann et al. 2022</a>）研究最优模型大小 $N$（总参数，<em>包含</em>嵌入）与 token（词元）数 $D$ 之间关系，处于 <em>固定</em> 计算预算 $C$ 下。更谨慎的实验得出与 Kaplan 有些不同的答案。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/animal.png" />
+    <figcaption>你应该知道 chinchilla（龙猫）长什么样 😊（图片来源：ChatGPT 生成）</figcaption>
+</figure>
+<p>核心是约束 $\text{FLOPs}(N, D) = C \approx 6ND$ 下如何最好分配资源。有限 FLOPs（浮点运算次数）（给定 GPU（图形处理器） 数量运行给定时间），如何选择更多数据 token（词元）或更多参数？</p>
+<div>
+$$
+N_\text{opt}(C), D_\text{opt}(C) = \operatorname*{arg\,min}_{\text{s.t. } \text{FLOPs}(N,D) = C} \hat{L}(N, D)
+$$
+</div>
+<p>Chinchilla 提出三种精心设计的 scaling laws（规模变化规律）拟合方法。</p>
+<p>实验扫描 400 多模型，从 7000 万至超过 160 亿参数，训练 token（词元）从 50 亿至 5000 亿。假设每个 token 唯一（无限数据）。所有运行使用余弦学习率，在训练过程中衰减 10 倍。扫描模型大小，描出计算最优前沿。</p>
+<h3 id="method-1-fix-model-sizes-vary-the-token-budget">方法 1：固定模型规模，改变 token（词元）预算<a hidden class="anchor" aria-hidden="true" href="#method-1-fix-model-sizes-vary-the-token-budget">#</a></h3>
+<p>每个参数数 $N$，以不同 token（词元）预算多次训练，记录各 FLOP（浮点运算）预算 $C$ 的最低损失。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/chinchilla-1.png" />
+    <figcaption>Chinchilla 方法 1：多模型规模的损失随 FLOP（浮点运算）预算变化。（图片来源：Hoffmann et al. 2022）</figcaption>
+</figure>
+<h3 id="method-2-isoflop-profiles">方法 2：IsoFLOP（相同浮点运算量）曲线<a hidden class="anchor" aria-hidden="true" href="#method-2-isoflop-profiles">#</a></h3>
+<p>固定预算 $C$，绘制最终损失与参数数 $N$。每条 iso-FLOP（等计算量）曲线在对数空间近似抛物线，最低点标识该预算的最优大小。重复不同预算，描出幂律直线。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/chinchilla-2.png" />
+    <figcaption>Chinchilla 方法 2：IsoFLOP（等计算量）抛物线；每条最低点是该预算最优模型规模。（图片来源：Hoffmann et al. 2022）</figcaption>
+</figure>
+<h3 id="method-3-parametric-fit">方法 3：参数拟合<a hidden class="anchor" aria-hidden="true" href="#method-3-parametric-fit">#</a></h3>
+<p><a id="chinchilla-method3"></a>直接拟合与 <a href="https://arxiv.org/abs/1909.12673">Rosenfeld et al. (2020)</a> 相同的参数函数，</p>
+<div>
+$$
+\hat{L}(N, D) = \frac{A}{N^\alpha} + \frac{B}{D^\beta} + E
+$$
+</div>
+<p>最优 $N_\text{opt}(C), D_\text{opt}(C)$ 的闭式近似，可通过最小化 $\hat{L}(N, D)$，在约束 $\text{FLOPs}(N,D) = C \approx 6ND$ 下求得。</p>
+<p>先将表达式化简为仅含 $N$：</p>
+<div>
+$$
+\begin{align}
+\hat{L}(N) &= A N^{-\alpha} + B \Big(\frac{C}{6}\Big)^{-\beta}N^\beta + E \\
+\hat{L}'(N) &= -\alpha A N^{-\alpha-1} + \beta B \Big(\frac{C}{6}\Big)^{-\beta} N^{\beta -1} = 0 & \small{\text{; derivative wrt }N\text{ should be zero.}} \\
+\text{Thus}\quad & \alpha A N^{-\alpha-1} = \beta B \Big(\frac{C}{6}\Big)^{-\beta} N^{\beta -1} \\
+& \alpha A = \beta B \Big(\frac{C}{6}\Big)^{-\beta} N^{\alpha + \beta} \\
+& N_\text{opt} = \Big(\frac{\alpha A}{\beta B}\Big)^{\frac{1}{\alpha + \beta}} \Big(\frac{C}{6}\Big)^{\frac{\beta}{\alpha+\beta}} \\
+& D_\text{opt} = \frac{C}{6 N_\text{opt}} = \Big(\frac{\beta B}{\alpha A}\Big)^{\frac{1}{\alpha + \beta}} \Big(\frac{C}{6}\Big)^{\frac{\alpha}{\alpha+\beta}}
+\end{align}
+$$
+</div>
+<p>当 $\alpha \approx \beta$，模型规模与训练 token（词元）应等速增长。</p>
+<p>为找最优 $\boldsymbol{\theta} = \langle A, B, E, \alpha, \beta\rangle$，Chinchilla 用 <a href="https://en.wikipedia.org/wiki/Huber_loss">Huber loss（胡贝尔损失）</a>（对异常值稳健；$\delta=10^{-3}$）与 <a href="https://en.wikipedia.org/wiki/Limited-memory_BFGS">L-BFGS algorithm（有限内存拟牛顿优化算法）</a>（适合少参数曲线拟合）。</p>
+<div>
+$$
+\begin{align}
+\min_{A,B,E,\alpha,\beta} \sum_{\text{runs }\{i\}} \text{Huber}_\delta (\log \hat{L}(N_i, D_i) - \log L_i) \\
+\text{ where }\text{Huber}_\delta (x) = \begin{cases}\frac{1}{2} x^2 & \text{for }\vert x \vert \leq \delta \\ \delta \cdot (\vert x \vert - \frac{1}{2}\delta), & \text{otherwise.}\end{cases}
+\end{align}
+$$
+</div>
+<p>三种互补方法最终结果一致，是 Chinchilla 结论令人信服的原因之一。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/chinchilla-3.png" style="width: 88%;" />
+    <figcaption>三种方法一致支持计算最优前沿 $N_\text{opt} \propto C^{0.5}$，但与 Kaplan 不同。方法 3 与另两种略有差异，后面解释。（图片来源：Hoffmann et al. 2022）</figcaption>
+</figure>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/chinchilla-4.png" style="width: 80%;" />
+    <figcaption>Chinchilla 三种方法与 Kaplan et al. (2020) 的预测。三者均表明，当时一些主流 LLM（大语言模型）训练不足。（图片来源：Hoffmann et al. 2022）</figcaption>
+</figure>
+<p>Chinchilla 认为当时（约 2022）多数大模型训练不足，有著名实验支持：相同 Gopher（<a href="https://arxiv.org/abs/2112.11446">Rae et al. 2021</a>；2800 亿参数、3000 亿 token（词元））计算预算下，训练 Chinchilla（700 亿参数、1.4 万亿 token），模型小 4 倍、训练 token 约多 4 倍，全面超越 Gopher。</p>
+<h2 id="reconciling-kaplan-and-chinchilla">协调 Kaplan 与 Chinchilla<a hidden class="anchor" aria-hidden="true" href="#reconciling-kaplan-and-chinchilla">#</a></h2>
+<p>Chinchilla scaling laws（规模变化规律）与 Kaplan 分歧如下：</p>
+<ul>
+<li>不是“模型比数据增长快”（$N_\text{opt} \propto C^{0.73}$），而是模型每翻倍，训练 token（词元）也应翻倍（$N_\text{opt} \propto C^{0.5}$）。</li>
+<li>不是“大模型收敛前停止”，而是更多数据训练较小模型。</li>
+</ul>
+<p>两篇仍认同基本原则，但最优规模与 token（词元）权衡的位置不同。为何差异如此大？</p>
+<p><strong>差异 1：Kaplan 主要实验小模型。</strong>
+Kaplan 模型较小，Chinchilla 实验规模超过 10 倍。双对数空间外推时，拟合小差异可导致大差异（见 <a href="#toy-simulation">简化模拟</a>）。</p>
+<p><strong>差异 2：嵌入参数数对小模型重要。</strong>
+参数少时，嵌入占比不可忽略，因此是否计入很重要。<a href="https://arxiv.org/abs/2406.12907">Pearce &amp; Song (2024)</a> 深入分析。用 $N_{\setminus E}, C_{\setminus E}$ 表示排除嵌入后的规模、计算，用 $N, C$ 计总参数。</p>
+<ul>
+<li>Kaplan：$N^*_{\setminus E} \propto C^{0.73}_{\setminus E}$（不含嵌入）。</li>
+<li>Chinchilla：$N^* \propto C^{0.50}$（总参数）。</li>
+</ul>
+<p>为联系两者，拟合总参数 $N_T$ 与非嵌入参数 $N_{\setminus E}$ 的关系，常数为 $\omega$：</p>
+<div>
+$$
+N = N_{\setminus E} + \omega\, N_{\setminus E}^{1/3}.
+$$
+</div>
+<p>该形式严格递增，并满足 $\lim_{N \to \infty} N = N_{\setminus E}$（因为 $\frac{N}{N_{\setminus E}} = 1 + \omega {N_{\setminus E}}^{- \frac{2}{3}}, \lim_{N_{\setminus E} \to \infty} \frac{N}{N_{\setminus E}} = 1$。</p>
+<p>代入 Chinchilla 方程，</p>
+<div>
+$$
+\begin{align}
+L(N_{\setminus E}, C_{\setminus E}) &= A(N_{\setminus E} + \omega\, N_{\setminus E}^{1/3})^{-\alpha} + B \Big(\frac{C_{\setminus E}}{6}\Big)^{-\beta} N_{\setminus E}^\beta + E \\
+L'(N_{\setminus E}, C_{\setminus E}) &= - \alpha A (N_{\setminus E} + \omega N_{\setminus E}^{1/3})^{-\alpha -1}(1 + \frac{\omega}{3}N_{\setminus E}^{-2/3}) + \beta B \Big(\frac{C_{\setminus E}}{6}\Big)^{-\beta} N_{\setminus E}^{\beta -1} = 0 & \small{\text{; derivative wrt }N_{\setminus E}\text{ should be zero.}} \\
+\text{Rearrange to get }& \alpha A (N^{*}_{\setminus E} + \omega {N^{*}_{\setminus E}}^{1/3})^{-\alpha -1}(1 + \frac{\omega}{3} {N^{*}_{\setminus E}}^{-2/3}) = \beta B \Big(\frac{C_{\setminus E}}{6}\Big)^{-\beta} {N^{*}_{\setminus E}}^{\beta -1} \\
+& 6^{-\beta}\frac{\alpha A}{\beta B} ({N^{*}_{\setminus E}} + \omega {N^{*}_{\setminus E}}^{1/3})^{-\alpha -1}(1 + \frac{\omega}{3}{N^{*}_{\setminus E}}^{-2/3}) {N^{*}_{\setminus E}}^{1 - \beta} = C_{\setminus E}^{-\beta} \\
+& 6 \Big(\frac{\beta B}{\alpha A}\Big)^{\frac{1}{\beta}} ({N^{*}_{\setminus E}} + \omega {N^{*}_{\setminus E}}^{1/3})^{\frac{1 + \alpha}{\beta}} ({N^{*}_{\setminus E}} + \frac{\omega}{3}{N^{*}_{\setminus E}}^{1/3})^{-\frac{1}{\beta}} {N^{*}_{\setminus E}} = C_{\setminus E} \\
+\end{align}
+$$
+</div>
+<p>上述 $C_{\setminus E}$ 与 $N_{\setminus E}$ 不再是纯粹幂律，只能局部近似为 $N^*_{\setminus E} \overset{\propto}{\sim} C_{\setminus E}^g$。$g$ 是根据一阶导数（$\overset{\propto}{\sim}$）的局部指数，而非全局幂律指数，得到 $g = \frac{\mathrm{d} \log C_{\setminus E}}{\mathrm{d} \log N_{\setminus E}}$。指数 $g$ 的近似详情见 <a href="https://arxiv.org/abs/2406.12907">Pearce &amp; Song (2024)</a> 附录 A.1。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/pearce-1.png" style="width: 60%;" />
+    <figcaption>局部幂律指数 $g$ 随 $C_{\setminus E}$ 增长。（图片来源：Pearce &amp; Song 2024）</figcaption>
+</figure>
+<p>如上图，$C_{\setminus E}$ 增大时，$g$ 收敛至 Chinchilla 估计。用上述方程生成合成训练曲线，在 7.68 亿至 15 亿规模（与 Kaplan 相同），估计 $g$ 接近该区域 Kaplan 系数 0.73。</p>
+<h2 id="why-power-law">为什么是幂律？<a hidden class="anchor" aria-hidden="true" href="#why-power-law">#</a></h2>
+<p>AI 之外许多领域也观察到幂律，例如 <a href="https://en.wikipedia.org/wiki/Zipf%27s_law">Zipf’s law（齐普夫定律）</a>、<a href="https://en.wikipedia.org/wiki/Scale-free_network">scale-free networks（无标度网络）</a>、<a href="https://en.wikipedia.org/wiki/Urban_scaling">urban scaling laws（城市规模规律）</a> 与其他复杂系统。共同模式是大事件少、小事件多，大小与频率在双对数尺度上常呈直线。</p>
+<p><strong>为什么 LLM的 scaling laws（规模变化规律）也呈幂律？</strong></p>
+<p>部分受不同领域指数不同（<a href="https://arxiv.org/abs/1712.00409">Hestness et al. 2017</a>）启发，<a href="https://arxiv.org/abs/2004.10802">Sharma &amp; Kaplan (2020)</a> 假设语言建模是低维数据流形上的回归。更多参数产生更细流形分区、更小泛化误差。最简单地，有效大小 $N$ 的模型，将 $d$ 维流形分为 $O(N)$ 区域，典型线性分辨率按 $\sim N^{-1/d}$ 变化，与上述 scaling laws（规模变化规律）的幂律形式相似。理论最适合无限数据、欠拟合区域，但现实中估计流形内在维度很难。</p>
+<p>后续假说（<a href="https://arxiv.org/abs/2303.13506">Michaud et al. 2023</a>、<a href="https://arxiv.org/abs/2412.07942">Brill 2024</a>）认为知识、技能以离散块学习（“量子化”），技能频率服从幂律。先学常见技能，再学罕见技能，损失平滑幂律下降。</p>
+<p>这里只列两假说；还有研究通过数据谱尾、核特征值、自然语言统计、训练动态相变等解释幂律。</p>
+<h1 id="scaling-laws-in-data-limited-region">数据受限区域中的 Scaling Laws（规模变化规律）<a hidden class="anchor" aria-hidden="true" href="#scaling-laws-in-data-limited-region">#</a></h1>
+<p>经典 scaling laws（规模变化规律）假设 <em>无限独特数据</em>，无重复、无多轮训练。模型显著增长后，高质量独特 token（词元）不足。AI 扩展还能持续多久的一些争论，围绕是否遇到“数据墙”。</p>
+<p>$D$ 背后数据预计已经清理。预训练数据流程往往至关重要，包括精确及模糊去重、质量过滤、模板文本删除、安全过滤、PII（个人可识别信息）或版权遮蔽、基准去污染，以及按语言、质量、内容类型等调整混合权重。即使 token（词元）数 $D$ 相同，高质量数据与低劣网络内容的计算效率也可能大不同。</p>
+<p><a href="https://arxiv.org/abs/2205.10487">Hernandez et al. (2022)</a> 研究受控版本：数据大多独特，小部分重复。从大数据集保留 90% 非重复，将剩余 10% 替为原数据很小部分的重复。Transformer训练 1000 亿 token（词元）后，观察到 double-descent（双下降）：重复数据强调程度增加时，测试损失先 <em>恶化</em> 再改善；重复比例越大越明显。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/hernandez-1.png" />
+    <figcaption>重复比例增加时测试损失双下降（左侧 90% 重复，右侧 50%）。（图片来源：Hernandez et al. 2022）</figcaption>
+</figure>
+<p>训练中段平坦或上升，可能源于记忆重复数据，使幂律拟合不准。他们认为重复损害某些 OOD（分布外）评估与下游微调。但混合更像实验室设置，现实重复更复杂（不同重复程度、语义重复等）。</p>
+<p>比起笼统说重复损害训练，更关心独特高质量数据有限、训练可能必须重复时，如何拟合 scaling laws（规模变化规律）。</p>
+<p><a href="https://arxiv.org/abs/2305.16264">Muennighoff et al. (2023)</a> 研究数据受限时最优计算分配。约 400 实验，1000 万至 90 亿参数，最多 9000 亿 token（词元）、1500 轮。每轮重复相同数据，轮间打乱，在留出集评估。</p>
+<p>关键调整将总 token（词元）$D$ 分为独特数 $U_D$ 与重复数 $R_D$（轮数减 1），有 $D = U_D(1 + R_D)$。独特数据预算 $D_\text{uniq}$ 下，定义 $U_D = \min \{{ D_\text{uniq}, D\}}$ 与 $R_D = (D / U_D) - 1$。用 Chinchilla scaling laws（规模变化规律）找最优规模 $U_N$，拟合 $U_D$，通过重复 $R_N = (N / U_N) - 1$ 定义过量模型规模。</p>
+<p>修改 Chinchilla 参数拟合（<a href="#chinchilla-method3">方法 3</a>），用有效折扣数据 $D&rsquo;$ 与规模 $N&rsquo;$ 替代原量：</p>
+<div>
+$$
+\hat{L}(N, D) = \frac{A}{N'^\alpha} + \frac{B}{D'^\beta} + E
+\quad\text{ where }
+D' = U_D + U_D\, r_D\left(1 - \exp\!\left(-\frac{R_D}{r_D}\right)\right).
+$$
+</div>
+<p>直觉是 token（词元）价值随重复 <em>指数</em> 衰减。每次重复损失剩余价值的 $(1 - 1/r_D)$ 比例，$r_D$ 为可学习“半衰期”。当 $R_D = 0$ 或 $R_D \ll r_D$，恢复 $D&rsquo; \approx D$。</p>
+<p>对过量模型规模采用对称形式 $N&rsquo; = U_N + U_N r_N(1 - \exp(-R_N / r_N))$，表示“大模型更快过拟合重复数据”“模型可能相对数据过大”。这不太直观，我未找到为何规模与重复数据须对称的满意解释。<a href="https://arxiv.org/abs/2605.01640">Lovelace et al. (2026)</a> 后来改变此假设。</p>
+<p>经验拟合发现 <em>过量参数价值比重复数据衰减更快</em>，$r_N &lt; r_D$，应更多投入轮数而非参数。作者指出缺点：严重低估失败模型最终损失（训练中途损失上升），如训练 44 轮的模型。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/muennighoff-1.png" />
+    <figcaption>数据受限重复拟合比忽略数据限制更符合实验；重复 token（词元）价值指数衰减至上限。轮数增加时拟合变差，高重复使测试损失中途上升，图未展示。（图片来源：Muennighoff et al. 2023）</figcaption>
+</figure>
+<p>最新 <a href="https://arxiv.org/abs/2605.01640">Lovelace et al. (2026)</a> 用不同方法重访：不将过参数化视为有效规模收益递减，而显式建模规模 $\times$ 与重复交互。约 300 模型，1500 万至 10 亿参数、5000 万至 60 亿独特 token（词元）。</p>
+<p>固定规模绘制不同重复下拟合残差：更多轮次更有害，且 <em>大模型更敏感</em>。损失惩罚可能同时依赖模型、数据规模。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/lovelace-1.png" />
+    <figcaption>有效规模拟合残差显示，过拟合损害随轮数、规模增加。（图片来源：Lovelace et al. 2026）</figcaption>
+</figure>
+<p>引入显式过拟合惩罚，基于 <em>容量比</em> $N / U_D$（参数数与独特 token（词元）之比）：</p>
+<div>
+$$
+\hat{L}(N, U_D, R_D) = E + \frac{A}{N^\alpha} + \frac{B}{\big(U_D (1 + R_D)\big)^\beta} + \color{red}{P \cdot R_D^\delta \cdot \left(\frac{N}{U_D}\right)^\kappa}
+$$
+</div>
+<p>其中：</p>
+<ul>
+<li>$R_D$ 为重复数；</li>
+<li>标量 $P$ 为可学习参数；</li>
+<li>指数 $\kappa$（第二可学习参数），使惩罚随容量比 $N / U_D$ 非线性变化；</li>
+<li>重复数的独立指数 $\delta$（第三可学习参数），将重复的非线性与 $\kappa$ 解耦。</li>
+</ul>
+<p>红色新增项直接惩罚过拟合，随数据重复次数，以及模型相对可用独特数据的过参数化程度增长。</p>
+<p>作者还研究有限数据下权重衰减，发现较强衰减减少数据重复导致的过拟合惩罚。</p>
+<figure>
+    <img src="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/lovelace-2.png" style="width: 85%;" />
+    <figcaption>较强权重衰减减少数据重复的过拟合惩罚。（图片来源：Lovelace et al. 2026）</figcaption>
+</figure>
+<p>Muennighoff 与 Lovelace 的建模都来自经验曲线拟合，尚不清楚为何数据受限 scaling laws（规模变化规律）应恰有这些形式，及每个自由参数为何必要。期待更多理论研究。</p>
+<h1 id="trickiness-of-fitting-scaling-laws-in-reality">现实中拟合 Scaling Laws（规模变化规律）的难点<a hidden class="anchor" aria-hidden="true" href="#trickiness-of-fitting-scaling-laws-in-reality">#</a></h1>
+<p>尽管形式简洁，拟合可能对看似琐碎的选择非常敏感，如参数计数、精度舍入、损失求和或平均。</p>
+<p>只在能负担的相对小而便宜模型上拟合，再 <em>外推</em> 到大几个数量级的模型。看似舍入误差的选择，可能导致预测巨大差异。</p>
+<p>拟合假设唯一变化是 <em>规模</em>，因此架构、优化器、学习率、批次增长、数据混合、tokenizer（分词器）等应保持相同。另假设设置已仔细调优；训练不足等情况会导致不同结论。</p>
+<p>Kaplan 与 Chinchilla 分歧展示了 scaling laws（规模变化规律）拟合的复杂性。</p>
+<p><a id="chinchilla-analysis"></a>第二个例子是一项后续分析，它研究了为什么 Chinchilla 的<a href="#method-3-parametric-fit">方法3</a>所得结果与另外两种方法略有偏差。<a href="https://arxiv.org/abs/2404.10102">Besiroglu et al. (2024)</a> 从 Hoffmann et al. (2022) 的图4中提取了原始 $(N, D, L)$ 数据点，并重新运行了方法3的参数拟合。他们发现了几个具体问题：</p>
+<ul>
+<li>L-BFGS-B 最小化器损失尺度高，由对示例 Huber-loss（胡贝尔损失）平均而非求和造成，使优化提前终止。原拟合与 bootstrap（自举重采样）中提前停止，产生不一致估计及不合理狭窄置信区间。</li>
+<li>报告的 $\alpha$ 与 $\beta$ 舍入为两位精度，使推导的 $A, B$ 看起来比实际偏差更大。</li>
+</ul>
+<h2 id="toy-simulation">简化模拟<a hidden class="anchor" aria-hidden="true" href="#toy-simulation">#</a></h2>
+<p>以下 ChatGPT 创建的简化模拟组件，展示三种具体失败模式。</p>
+<p>假设真实函数为：</p>
+<div>
+$$
+\hat{L}(N, D) = 482.01 \cdot N^{-0.3478} + 2085.43 D^{-0.3658} + 1.8172
+$$
+</div>
+<p>因此 $N_\text{opt} \propto C^{0.5126}, D_\text{opt} \propto C^{0.4874}$，这是 <a href="https://arxiv.org/abs/2404.10102">Besiroglu et al. (2024)</a> 的估计。</p>
+<p>模拟绘制损失预测 $\hat{L}$ 与数据规模 $D$，通过滑块展示：</p>
+<ul>
+<li>损失精度：从多位小数舍入至少位，会改变拟合参数。</li>
+<li>损失噪声：仅以 milli-loss（千分之一损失，0.001）单位的倍数扰动，就导致不同拟合。</li>
+<li>拟合区域敏感性：只拟合小模型、中模型或全部模型，产生不同表观 scaling laws（规模变化规律）。</li>
+</ul>
+<div class="slw-widget"></div>
+
+<script>
+(() => {
+  const root = document.currentScript.previousElementSibling;
+  const uid = "slw-" + Math.random().toString(36).slice(2);
+
+  root.innerHTML = `
+    <style>
+      .slw-widget {
+        --slw-bg: #ffffff;
+        --slw-border: #d9d9d9;
+        --slw-muted: #666;
+        --slw-text: #222;
+        --slw-grid: #e9e9e9;
+        --slw-fit: #1f77b4;
+        --slw-true: #777;
+        --slw-point: #999;
+        --slw-selected: #d62728;
+        --slw-target: #2ca02c;
+
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+
+        border: 1px solid var(--slw-border);
+        border-radius: 12px;
+        padding: 16px;
+        margin: 1.5rem 0;
+        background: var(--slw-bg);
+        color: var(--slw-text);
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .slw-title {
+        font-weight: 650;
+        margin-bottom: 4px;
+      }
+
+      .slw-subtitle {
+        color: var(--slw-muted);
+        font-size: 0.92rem;
+        margin-bottom: 14px;
+        line-height: 1.35;
+      }
+
+      .slw-plot-wrap {
+        width: 100%;
+        max-width: 100%;
+        overflow: hidden;
+      }
+
+      .slw-plot {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      .slw-bottom {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(200px, 245px);
+        gap: 16px;
+        align-items: start;
+        margin-top: 14px;
+      }
+
+      .slw-controls {
+        display: grid;
+        gap: 12px;
+        font-size: 0.88rem;
+      }
+
+      .slw-control label {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .slw-control label span {
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .slw-control small {
+        display: block;
+        color: var(--slw-muted);
+        line-height: 1.3;
+        margin-top: 2px;
+      }
+
+      .slw-control input,
+      .slw-control select {
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      .slw-readout {
+        border-left: 1px solid var(--slw-border);
+        padding-left: 14px;
+        display: grid;
+        gap: 7px;
+        font-variant-numeric: tabular-nums;
+        font-size: 0.75rem;
+      }
+
+      .slw-readout-title {
+        font-weight: 650;
+        margin-bottom: 2px;
+        font-size: 0.88rem;
+      }
+
+      .slw-readout div:not(.slw-readout-title) {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .slw-readout span:first-child {
+        color: var(--slw-muted);
+      }
+
+      .slw-caption {
+        margin-top: 12px;
+        color: var(--slw-muted);
+        font-size: 0.88rem;
+        line-height: 1.35;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .slw-widget {
+          --slw-bg: #111;
+          --slw-border: #333;
+          --slw-muted: #aaa;
+          --slw-text: #eee;
+          --slw-grid: #2a2a2a;
+          --slw-point: #aaa;
+          --slw-true: #aaa;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .slw-bottom {
+          grid-template-columns: 1fr;
+        }
+
+        .slw-readout {
+          border-left: none;
+          border-top: 1px solid var(--slw-border);
+          padding-left: 0;
+          padding-top: 12px;
+        }
+      }
+    </style>
+
+    <div class="slw-title">Scaling-law fitting playground</div>
+    <div class="slw-subtitle">
+      Ground truth:
+      <code>L̂(N,D) = 1.8172 + 482.01N<sup>-0.3478</sup> + 2085.43D<sup>-0.3658</sup> + 1.8172</code>.
+      <br/>Thus <code>N<sub>opt</sub> ∝ C<sup>0.5126</sup></code> and
+      <code>D<sub>opt</sub> ∝ C<sup>0.4874</sup></code>.
+    </div>
+
+    <div class="slw-plot-wrap">
+      <svg class="slw-plot" viewBox="0 0 760 380" role="img"></svg>
+    </div>
+
+    <div class="slw-bottom">
+      <div class="slw-controls">
+        <div class="slw-control">
+          <label for="${uid}-region">Fit region</label>
+          <select id="${uid}-region">
+            <option value="small">Small models only</option>
+            <option value="medium">Medium models only</option>
+            <option value="all" selected>All measured models</option>
+          </select>
+          <small>Changing the fitted scale range changes the apparent exponents.</small>
+        </div>
+
+        <div class="slw-control">
+          <label for="${uid}-precision">
+            Loss precision
+            <span><span id="${uid}-precision-value"></span> decimals</span>
+          </label>
+          <input id="${uid}-precision" type="range" min="0" max="4" step="1" value="4">
+          <small>Round observed losses before fitting.</small>
+        </div>
+
+        <div class="slw-control">
+          <label for="${uid}-noise">
+            Loss noise
+            <span id="${uid}-noise-value"></span>
+          </label>
+          <input id="${uid}-noise" type="range" min="-200" max="200" step="5" value="0">
+          <small>Applies a correlated loss-estimation bias across the fitted region.</small>
+        </div>
+
+        <div class="slw-control">
+          <label for="${uid}-target">
+            Extrapolate to
+            <span id="${uid}-target-value"></span>
+          </label>
+          <input id="${uid}-target" type="range" min="11" max="15" step="1" value="15">
+          <small>Prediction is evaluated at <code>D = 20N</code>.</small>
+        </div>
+      </div>
+
+      <div class="slw-readout">
+        <div class="slw-readout-title">Fit result</div>
+        <div><span>Fitted α</span><strong id="${uid}-alpha"></strong></div>
+        <div><span>Fitted β</span><strong id="${uid}-beta"></strong></div>
+        <div><span>Fitted E</span><strong id="${uid}-floor"></strong></div>
+        <div><span>Fitted N<sub>opt</sub> exp.</span><strong id="${uid}-nexp"></strong></div>
+        <div><span>Fitted D<sub>opt</sub> exp.</span><strong id="${uid}-dexp"></strong></div>
+        <div><span>Predicted loss</span><strong id="${uid}-pred"></strong></div>
+        <div><span>True loss</span><strong id="${uid}-true"></strong></div>
+        <div><span>Error</span><strong id="${uid}-error"></strong></div>
+      </div>
+    </div>
+
+    <div class="slw-caption">
+      Red points are used in the fit; gray points are held out. Points at the same model size use different token budgets.
+      The dashed gray curve is the synthetic ground truth.</code>.
+    </div>
+  `;
+
+  const svg = root.querySelector(".slw-plot");
+
+  const regionEl = root.querySelector(`#${uid}-region`);
+  const precisionEl = root.querySelector(`#${uid}-precision`);
+  const noiseEl = root.querySelector(`#${uid}-noise`);
+  const targetEl = root.querySelector(`#${uid}-target`);
+
+  const precisionValueEl = root.querySelector(`#${uid}-precision-value`);
+  const noiseValueEl = root.querySelector(`#${uid}-noise-value`);
+  const targetValueEl = root.querySelector(`#${uid}-target-value`);
+
+  const alphaEl = root.querySelector(`#${uid}-alpha`);
+  const betaEl = root.querySelector(`#${uid}-beta`);
+  const floorEl = root.querySelector(`#${uid}-floor`);
+  const nexpEl = root.querySelector(`#${uid}-nexp`);
+  const dexpEl = root.querySelector(`#${uid}-dexp`);
+  const predEl = root.querySelector(`#${uid}-pred`);
+  const trueEl = root.querySelector(`#${uid}-true`);
+  const errorEl = root.querySelector(`#${uid}-error`);
+
+  function optimalDForN(params, N) {
+    const G = Math.pow(
+      (params.alpha * params.A) / (params.beta * params.B),
+      1 / (params.alpha + params.beta)
+    );
+
+    const a = params.beta / (params.alpha + params.beta);
+    const b = params.alpha / (params.alpha + params.beta);
+
+    const K = Math.pow(N / G, 1 / a);
+
+    return Math.pow(G, -1) * Math.pow(K, b);
+  }
+
+  
+  
+  const TRUE = {
+    gamma1: 1.8172,
+    A: 482.01,
+    B: 2085.43,
+    alpha: 0.3478,
+    beta: 0.3658
+  };
+
+  const TRUE_N_EXP = TRUE.beta / (TRUE.alpha + TRUE.beta);
+  const TRUE_D_EXP = TRUE.alpha / (TRUE.alpha + TRUE.beta);
+
+  const modelSizes = [
+    1e8, 3e8, 7e8,
+    1e9, 3e9, 7e9,
+    1e10, 3e10, 7e10,
+  ];
+  const tokenRatios = [5, 10, 20, 40];
+
+  const points = [];
+
+  for (let ni = 0; ni < modelSizes.length; ni++) {
+    for (let ri = 0; ri < tokenRatios.length; ri++) {
+      const N = modelSizes[ni];
+      const D = tokenRatios[ri] * N;
+
+      points.push({
+        id: `${ni}-${ri}`,
+        nIndex: ni,
+        ratioIndex: ri,
+        N,
+        D,
+        ratio: tokenRatios[ri]
+      });
+    }
+  }
+
+  function trueLoss(N, D) {
+    return (
+      TRUE.gamma1
+      + TRUE.A * Math.pow(N, -TRUE.alpha)
+      + TRUE.B * Math.pow(D, -TRUE.beta)
+    );
+  }
+
+  function log10(x) {
+    return Math.log(x) / Math.LN10;
+  }
+
+  function baseRunNoise(p) {
+    
+    
+    return (
+      0.010 * Math.sin((p.nIndex + 1) * 1.91 + (p.ratioIndex + 1) * 2.67)
+      + 0.004 * ((p.nIndex + p.ratioIndex) % 2 === 0 ? 1 : -1)
+    );
+  }
+
+  function structuredNoiseProfile(p) {
+    const minLogN = log10(modelSizes[0]);
+    const maxLogN = log10(modelSizes[modelSizes.length - 1]);
+
+    const allDs = points.map(q => q.D);
+    const minLogD = log10(Math.min(...allDs));
+    const maxLogD = log10(Math.max(...allDs));
+
+    const n = (log10(p.N) - minLogN) / (maxLogN - minLogN);
+    const d = (log10(p.D) - minLogD) / (maxLogD - minLogD);
+
+    
+    
+    return (
+      1.15 * (n - 0.5)
+      - 0.95 * (d - 0.5)
+      + 0.80 * (n - 0.5) * (d - 0.5)
+      + 0.20 * Math.sin(8 * n + 5 * d)
+    );
+  }
+
+  function rounded(y, decimals) {
+    const f = Math.pow(10, decimals);
+    return Math.round(y * f) / f;
+  }
+
+  function selectedPoints(region) {
+    if (region === "small") {
+      return points.filter(p => p.nIndex <= 3);
+    }
+
+    if (region === "medium") {
+      return points.filter(p => p.nIndex >= 2 && p.nIndex <= 5);
+    }
+
+    return points.slice();
+  }
+
+  function observedPoints(decimals, noiseMilliLoss, selected) {
+    const selectedIds = new Set(selected.map(p => p.id));
+
+    return points.map(p => {
+      const structuredNoise = (noiseMilliLoss / 1000) * structuredNoiseProfile(p);
+
+      const y =
+        trueLoss(p.N, p.D)
+        + baseRunNoise(p)
+        + structuredNoise;
+
+      return {
+        ...p,
+        selected: selectedIds.has(p.id),
+        y: rounded(y, decimals)
+      };
+    });
+  }
+
+  function evaluateFit(data, alpha, beta, gamma) {
+    let Sxx = 0;
+    let Szz = 0;
+    let Sxz = 0;
+    let Sxt = 0;
+    let Szt = 0;
+
+    for (const p of data) {
+      const t = p.y - gamma;
+
+      if (t <= 0) {
+        return null;
+      }
+
+      const x = Math.pow(p.N, -alpha);
+      const z = Math.pow(p.D, -beta);
+
+      Sxx += x * x;
+      Szz += z * z;
+      Sxz += x * z;
+      Sxt += x * t;
+      Szt += z * t;
+    }
+
+    const det = Sxx * Szz - Sxz * Sxz;
+
+    if (!Number.isFinite(det) || Math.abs(det) < 1e-40) {
+      return null;
+    }
+
+    const A = (Sxt * Szz - Szt * Sxz) / det;
+    const B = (Sxx * Szt - Sxz * Sxt) / det;
+
+    if (!Number.isFinite(A) || !Number.isFinite(B) || A <= 0 || B <= 0) {
+      return null;
+    }
+
+    let sse = 0;
+
+    for (const p of data) {
+      const pred =
+        gamma
+        + A * Math.pow(p.N, -alpha)
+        + B * Math.pow(p.D, -beta);
+
+      sse += Math.pow(pred - p.y, 2);
+    }
+
+    return { gamma, A, B, alpha, beta, sse };
+  }
+
+  function searchBox(data, ranges, steps) {
+    let best = null;
+
+    for (let ai = 0; ai < steps.alpha; ai++) {
+      const alpha =
+        ranges.alphaMin
+        + (ranges.alphaMax - ranges.alphaMin) * ai / Math.max(1, steps.alpha - 1);
+
+      for (let bi = 0; bi < steps.beta; bi++) {
+        const beta =
+          ranges.betaMin
+          + (ranges.betaMax - ranges.betaMin) * bi / Math.max(1, steps.beta - 1);
+
+        for (let gi = 0; gi < steps.gamma; gi++) {
+          const gamma =
+            ranges.gammaMin
+            + (ranges.gammaMax - ranges.gammaMin) * gi / Math.max(1, steps.gamma - 1);
+
+          const fit = evaluateFit(data, alpha, beta, gamma);
+
+          if (!fit) continue;
+
+          if (!best || fit.sse < best.sse) {
+            best = fit;
+          }
+        }
+      }
+    }
+
+    return best;
+  }
+
+  function fitScalingLaw(data) {
+    const ys = data.map(p => p.y);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+    const span = Math.max(maxY - minY, 0.1);
+
+    const gammaMax = minY - 1e-6;
+    const gammaMin = Math.max(0, minY - Math.max(1.2 * span, 6.0));
+
+    let best = searchBox(
+      data,
+      {
+        alphaMin: 0.20,
+        alphaMax: 0.55,
+        betaMin: 0.20,
+        betaMax: 0.55,
+        gammaMin,
+        gammaMax
+      },
+      { alpha: 29, beta: 29, gamma: 45 }
+    );
+
+    if (!best) return null;
+
+    const refinements = [
+      { da: 0.050, db: 0.050, dg: 0.500, steps: { alpha: 25, beta: 25, gamma: 31 } },
+      { da: 0.015, db: 0.015, dg: 0.160, steps: { alpha: 25, beta: 25, gamma: 31 } },
+      { da: 0.004, db: 0.004, dg: 0.040, steps: { alpha: 21, beta: 21, gamma: 25 } }
+    ];
+
+    for (const r of refinements) {
+      const candidate = searchBox(
+        data,
+        {
+          alphaMin: Math.max(0.01, best.alpha - r.da),
+          alphaMax: Math.min(1.20, best.alpha + r.da),
+          betaMin: Math.max(0.01, best.beta - r.db),
+          betaMax: Math.min(1.20, best.beta + r.db),
+          gammaMin: Math.max(0, best.gamma - r.dg),
+          gammaMax: Math.min(gammaMax, best.gamma + r.dg)
+        },
+        r.steps
+      );
+
+      if (candidate && candidate.sse <= best.sse) {
+        best = candidate;
+      }
+    }
+
+    return best;
+  }
+
+  function fittedLoss(fit, N, D) {
+    return (
+      fit.gamma
+      + fit.A * Math.pow(N, -fit.alpha)
+      + fit.B * Math.pow(D, -fit.beta)
+    );
+  }
+
+  function formatPowerOfTen(x) {
+    const e = Math.round(log10(x));
+    const m = x / Math.pow(10, e);
+
+    if (Math.abs(m - 1) < 1e-8) {
+      return `10^${e}`;
+    }
+
+    return `${m.toFixed(1)}×10^${e}`;
+  }
+
+  function fmt(x, digits = 4) {
+    return Number.isFinite(x) ? x.toFixed(digits) : "—";
+  }
+
+  function svgPath(pointsForPath, xScale, yScale) {
+    return pointsForPath
+      .map((p, i) => `${i === 0 ? "M" : "L"} ${xScale(p[0])} ${yScale(p[1])}`)
+      .join(" ");
+  }
+
+  function update() {
+    const region = regionEl.value;
+    const decimals = Number(precisionEl.value);
+    const noise = Number(noiseEl.value);
+    const targetLogN = Number(targetEl.value);
+    const targetN = Math.pow(10, targetLogN);
+    const targetD = optimalDForN(TRUE, targetN);
+
+    const selected = selectedPoints(region);
+    const observed = observedPoints(decimals, noise, selected);
+    const fitData = observed.filter(p => p.selected);
+    const fit = fitScalingLaw(fitData);
+
+    precisionValueEl.textContent = String(decimals);
+    noiseValueEl.textContent = `${noise >= 0 ? "+" : ""}${noise} mL`;
+    targetValueEl.textContent = `N=${formatPowerOfTen(targetN)}`;
+
+    if (!fit) {
+      svg.innerHTML = `<text x="24" y="40">Fit failed. Try more precision, less noise, or a different region.</text>`;
+      return;
+    }
+
+    const predictedTarget = fittedLoss(fit, targetN, targetD);
+    const trueTarget = trueLoss(targetN, targetD);
+    const error = predictedTarget - trueTarget;
+
+    const fittedNExp = fit.beta / (fit.alpha + fit.beta);
+    const fittedDExp = fit.alpha / (fit.alpha + fit.beta);
+
+    alphaEl.textContent = fmt(fit.alpha, 4);
+    betaEl.textContent = fmt(fit.beta, 4);
+    floorEl.textContent = fmt(fit.gamma, 4);
+    nexpEl.textContent = `${fmt(fittedNExp, 4)} / true ${fmt(TRUE_N_EXP, 4)}`;
+    dexpEl.textContent = `${fmt(fittedDExp, 4)} / true ${fmt(TRUE_D_EXP, 4)}`;
+    predEl.textContent = fmt(predictedTarget, 4);
+    trueEl.textContent = fmt(trueTarget, 4);
+    errorEl.textContent = `${error >= 0 ? "+" : ""}${fmt(error, 4)}`;
+
+    const W = 760;
+    const H = 380;
+    const m = { left: 58, right: 24, top: 24, bottom: 52 };
+
+    const xMin = log10(Math.min(...modelSizes));
+    const xMax = Math.max(targetLogN, log10(Math.max(...modelSizes)));
+
+    const sample = [];
+    const steps = 180;
+
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const logN = xMin + t * (xMax - xMin);
+      const N = Math.pow(10, logN);
+      const D = optimalDForN(TRUE, N);
+
+      sample.push({ N, D });
+    }
+
+    const trueCurve = sample.map(p => [p.N, trueLoss(p.N, p.D)]);
+    const fitCurve = sample.map(p => [p.N, fittedLoss(fit, p.N, p.D)]);
+
+    const allY = [
+      ...observed.map(p => p.y),
+      ...trueCurve.map(p => p[1]),
+      ...fitCurve.map(p => p[1]),
+      predictedTarget,
+      trueTarget
+    ].filter(Number.isFinite);
+
+    let yMin = Math.min(...allY);
+    let yMax = Math.max(...allY);
+    const yPad = 0.08 * (yMax - yMin || 1);
+
+    yMin -= yPad;
+    yMax += yPad;
+
+    const xScale = N => {
+      const x = log10(N);
+      return m.left + (x - xMin) / (xMax - xMin) * (W - m.left - m.right);
+    };
+
+    const yScale = y => {
+      return H - m.bottom - (y - yMin) / (yMax - yMin) * (H - m.top - m.bottom);
+    };
+
+    const xTicks = [];
+    const xTickStep = xMax - xMin > 7 ? 2 : 1;
+
+    for (let e = Math.ceil(xMin); e <= Math.floor(xMax); e += xTickStep) {
+      xTicks.push(Math.pow(10, e));
+    }
+
+    const yTicks = [];
+
+    for (let i = 0; i <= 4; i++) {
+      yTicks.push(yMin + (i / 4) * (yMax - yMin));
+    }
+
+    const truePath = svgPath(trueCurve, xScale, yScale);
+    const fitPath = svgPath(fitCurve, xScale, yScale);
+
+    const pointSvg = observed.map(p => {
+      const fill = p.selected ? "var(--slw-selected)" : "var(--slw-point)";
+      const opacity = p.selected ? 1 : 0.45;
+
+      
+      const jitter = (p.ratioIndex - 1.5) * 0.018;
+      const jitteredN = p.N * Math.pow(10, jitter);
+
+      return `
+        <circle
+          cx="${xScale(jitteredN)}"
+          cy="${yScale(p.y)}"
+          r="${p.selected ? 4.5 : 3.8}"
+          fill="${fill}"
+          opacity="${opacity}"
+        >
+          <title>N=${p.N.toExponential(1)}, D=${p.D.toExponential(1)}, observed loss=${p.y}</title>
+        </circle>
+      `;
+    }).join("");
+
+    svg.innerHTML = `
+      <rect x="0" y="0" width="${W}" height="${H}" fill="transparent"></rect>
+
+      ${yTicks.map(y => `
+        <line
+          x1="${m.left}"
+          x2="${W - m.right}"
+          y1="${yScale(y)}"
+          y2="${yScale(y)}"
+          stroke="var(--slw-grid)"
+        />
+        <text
+          x="${m.left - 8}"
+          y="${yScale(y) + 4}"
+          text-anchor="end"
+          font-size="11"
+          fill="var(--slw-muted)"
+        >${y.toFixed(2)}</text>
+      `).join("")}
+
+      ${xTicks.map(N => `
+        <line
+          x1="${xScale(N)}"
+          x2="${xScale(N)}"
+          y1="${m.top}"
+          y2="${H - m.bottom}"
+          stroke="var(--slw-grid)"
+        />
+        <text
+          x="${xScale(N)}"
+          y="${H - m.bottom + 20}"
+          text-anchor="middle"
+          font-size="11"
+          fill="var(--slw-muted)"
+        >${formatPowerOfTen(N)}</text>
+      `).join("")}
+
+      <line
+        x1="${m.left}"
+        x2="${W - m.right}"
+        y1="${H - m.bottom}"
+        y2="${H - m.bottom}"
+        stroke="var(--slw-muted)"
+      />
+
+      <line
+        x1="${m.left}"
+        x2="${m.left}"
+        y1="${m.top}"
+        y2="${H - m.bottom}"
+        stroke="var(--slw-muted)"
+      />
+
+      <text
+        x="${(W + m.left - m.right) / 2}"
+        y="${H - 14}"
+        text-anchor="middle"
+        font-size="12"
+        fill="var(--slw-muted)"
+      >model size N, log scale</text>
+
+      <text
+        x="14"
+        y="${(H + m.top - m.bottom) / 2}"
+        transform="rotate(-90 14 ${(H + m.top - m.bottom) / 2})"
+        text-anchor="middle"
+        font-size="12"
+        fill="var(--slw-muted)"
+      >loss</text>
+
+      <path
+        d="${truePath}"
+        fill="none"
+        stroke="var(--slw-true)"
+        stroke-width="2"
+        stroke-dasharray="5 5"
+      />
+
+      <path
+        d="${fitPath}"
+        fill="none"
+        stroke="var(--slw-fit)"
+        stroke-width="2.5"
+      />
+
+      ${pointSvg}
+
+      <line
+        x1="${xScale(targetN)}"
+        x2="${xScale(targetN)}"
+        y1="${m.top}"
+        y2="${H - m.bottom}"
+        stroke="var(--slw-target)"
+        stroke-width="1.5"
+        stroke-dasharray="4 4"
+      />
+
+      <circle
+        cx="${xScale(targetN)}"
+        cy="${yScale(predictedTarget)}"
+        r="5"
+        fill="var(--slw-fit)"
+      >
+        <title>Fitted extrapolation: ${predictedTarget.toFixed(4)}</title>
+      </circle>
+
+      <circle
+        cx="${xScale(targetN)}"
+        cy="${yScale(trueTarget)}"
+        r="5"
+        fill="var(--slw-target)"
+      >
+        <title>True synthetic loss: ${trueTarget.toFixed(4)}</title>
+      </circle>
+
+      <g transform="translate(${m.left + 8}, ${m.top + 8})">
+        <rect
+          x="0"
+          y="0"
+          width="250"
+          height="88"
+          rx="8"
+          fill="var(--slw-bg)"
+          stroke="var(--slw-border)"
+          opacity="0.92"
+        ></rect>
+
+        <line x1="10" x2="34" y1="17" y2="17" stroke="var(--slw-true)" stroke-width="2" stroke-dasharray="5 5"></line>
+        <text x="42" y="21" font-size="12" fill="var(--slw-muted)">ground truth</text>
+
+        <line x1="10" x2="34" y1="39" y2="39" stroke="var(--slw-fit)" stroke-width="2.5"></line>
+        <text x="42" y="43" font-size="12" fill="var(--slw-muted)">fitted scaling law</text>
+
+        <circle cx="22" cy="61" r="4" fill="var(--slw-selected)"></circle>
+        <text x="42" y="65" font-size="12" fill="var(--slw-muted)">points used in fit</text>
+
+        <circle cx="22" cy="79" r="4" fill="var(--slw-point)" opacity="0.45"></circle>
+        <text x="42" y="83" font-size="12" fill="var(--slw-muted)">held-out measured points</text>
+      </g>
+    `;
+  }
+
+  let pending = false;
+
+  function scheduleUpdate() {
+    if (pending) return;
+
+    pending = true;
+
+    window.requestAnimationFrame(() => {
+      pending = false;
+      update();
+    });
+  }
+
+  [regionEl, precisionEl, noiseEl, targetEl].forEach(el => {
+    el.addEventListener("input", scheduleUpdate);
+    el.addEventListener("change", scheduleUpdate);
+  });
+
+  update();
+})();
+</script>
+<h1 id="citation">引用<a hidden class="anchor" aria-hidden="true" href="#citation">#</a></h1>
+<p>引用本文时请使用：</p>
+<blockquote>
+<p>Weng, Lilian。“Scaling Laws, Carefully”（审慎看待规模规律）。Lil’Log（2026 年 6 月）。https://lilianweng.github.io/posts/2026-06-24-scaling-laws/</p>
+</blockquote>
+<p>或使用 BibTeX 引用：</p>
+<pre tabindex="0"><code>@article{weng2026scaling,
+ title = {Scaling Laws, Carefully},
+ author = {Weng, Lilian},
+ journal = {lilianweng.github.io},
+ year = {2026},
+ month = {June},
+ url = &#34;https://lilianweng.github.io/posts/2026-06-24-scaling-laws/&#34;
+}
+</code></pre><h1 id="references">参考文献<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<p>[1] S. Amari, N. Fujita, and S. Shinomoto. <a href="https://ieeexplore.ieee.org/document/6796972">“Four Types of Learning Curves. Neural Computation.”</a> 4(4):605–618, 1992.</p>
+<p>[2] Hestness et al. <a href="https://arxiv.org/abs/1712.00409">“Deep Learning Scaling is Predictable, Empirically.”</a> arXiv 预印本 arXiv:1712.00409, 2017.</p>
+<p>[3] Rosenfeld et al. <a href="https://arxiv.org/abs/1909.12673">“A Constructive Prediction of the Generalization Error Across Scales.”</a> ICLR 2020.</p>
+<p>[4] Kaplan et al. <a href="https://arxiv.org/abs/2001.08361">“Scaling Laws for Neural Language Models.”</a> arXiv 预印本 arXiv:2001.08361, 2020.</p>
+<p>[5] Hoffmann et al. <a href="https://arxiv.org/abs/2203.15556">“Training Compute-Optimal Large Language Models.”</a> NeurIPS 2022.</p>
+<p>[6] Pearce and Song. <a href="https://arxiv.org/abs/2406.12907">“Reconciling Kaplan and Chinchilla Scaling Laws.”</a> TMLR 2024.</p>
+<p>[7] Bahri et al. <a href="https://arxiv.org/abs/2102.06701">“Explaining Neural Scaling Laws.”</a> arXiv 预印本 arXiv:2102.06701, 2021.</p>
+<p>[8] Sharma and Kaplan. <a href="https://arxiv.org/abs/2004.10802">“A Neural Scaling Law from the Dimension of the Data Manifold.”</a> arXiv 预印本 arXiv:2004.10802, 2020.</p>
+<p>[9] Hernandez et al. <a href="https://arxiv.org/abs/2205.10487">“Scaling Laws and Interpretability of Learning from Repeated Data.”</a> arXiv 预印本 arXiv:2205.10487, 2022.</p>
+<p>[10] Muennighoff et al. <a href="https://arxiv.org/abs/2305.16264">“Scaling Data-Constrained Language Models.”</a> NeurIPS 2023.</p>
+<p>[11] Lovelace et al. <a href="https://arxiv.org/abs/2605.01640">“Prescriptive Scaling Laws for Data Constrained Training.”</a> arXiv 预印本 arXiv:2605.01640, 2026.</p>
+<p>[12] Besiroglu et al. <a href="https://arxiv.org/abs/2404.10102">“Chinchilla Scaling: A Replication Attempt.”</a> arXiv 预印本 arXiv:2404.10102, 2024.</p>
+<p>[13] Michaud et al. <a href="https://arxiv.org/abs/2303.13506">“The Quantization Model of Neural Scaling”</a> NeurIPS 2023.</p>
+<p>[14] Brill. <a href="https://arxiv.org/abs/2412.07942">“Neural Scaling Laws Rooted in the Data Distribution.”</a> arXiv 预印本 arXiv:2412.07942, 2024.</p>
+<p>[15] Rae et al. <a href="https://arxiv.org/abs/2112.11446">“Scaling Language Models: Methods, Analysis &amp; Insights from Training Gopher.”</a> arXiv 预印本 arXiv:2112.11446, 2021.</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://xingshuozhu1998.github.io/tags/language-model/">语言模型</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/foundation/">基础</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/pretraining/">预训练</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/transformer/">Transformer</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/learning-dynamics/">学习动态</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://xingshuozhu1998.github.io/posts/2026-07-04-harness/">
+    <span class="title">« </span>
+    <br>
+    <span>用于自我改进的 Harness Engineering（智能体运行框架工程）</span>
+  </a>
+  <a class="next" href="https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/">
+    <span class="title"> »</span>
+    <br>
+    <span>我们为什么思考</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Twitter 分享《Scaling Laws, Carefully（审慎看待规模规律）》"
+        href="https://twitter.com/intent/tweet/?text=Scaling%20Laws%2c%20Carefully&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2026-06-24-scaling-laws%2f&amp;hashtags=language-model%2cfoundation%2cpretraining%2ctransformer%2clearning-dynamics">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 LinkedIn 分享《Scaling Laws, Carefully（审慎看待规模规律）》"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2026-06-24-scaling-laws%2f&amp;title=Scaling%20Laws%2c%20Carefully&amp;summary=Scaling%20Laws%2c%20Carefully&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2026-06-24-scaling-laws%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Reddit 分享《Scaling Laws, Carefully（审慎看待规模规律）》"
+        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2026-06-24-scaling-laws%2f&title=Scaling%20Laws%2c%20Carefully">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Facebook 分享《Scaling Laws, Carefully（审慎看待规模规律）》"
+        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2026-06-24-scaling-laws%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 WhatsApp 分享《Scaling Laws, Carefully（审慎看待规模规律）》"
+        href="https://api.whatsapp.com/send?text=Scaling%20Laws%2c%20Carefully%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2026-06-24-scaling-laws%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Telegram 分享《Scaling Laws, Carefully（审慎看待规模规律）》"
+        href="https://telegram.me/share/url?text=Scaling%20Laws%2c%20Carefully&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2026-06-24-scaling-laws%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

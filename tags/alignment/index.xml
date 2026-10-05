@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/alignment</title>
+    <link>https://xingshuozhu1998.github.io/tags/alignment/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 28 Nov 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/alignment/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）</title>
+      <link>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</link>
+      <pubDate>Thu, 28 Nov 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</guid>
+      <description>当  reinforcement learning（强化学习，RL（强化学习））  智能体  利用  奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。 
+ 随着  语言模型  开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL训练中的 reward hacking已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。 
+ 过去有关这一主题的大部分工作相当理论化，重点是定义或证明 reward hacking的存在。然而，针对实际缓解方法的研究，尤其在 RLHF与 LLM（大语言模型）背景下，仍然有限。我尤其希望呼吁，未来投入更多研究，理解 reward hacking 并开发缓解方法。希望不久之后能够用一篇专门文章讨论</description>
+    </item>
+    
+    <item>
+      <title>Prompt Engineering（提示工程）</title>
+      <link>https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/</link>
+      <pubDate>Wed, 15 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/</guid>
+      <description>Prompt Engineering ，也称  In-Context Prompting（上下文提示） ，指如何与 LLM（大语言模型）通信，引导其行为达到预期结果，且  不  更新模型权重的方法。它是一门实证科学，Prompt Engineering 方法在不同模型上的效果可能差异很大，因此需要大量实验与启发式规则。 
+ 本文只聚焦自回归语言模型的 Prompt Engineering，不涉及完形填空测试、图像生成或多模态模型。Prompt Engineering 的核心目标是对齐与模型可引导性。请参阅我  之前  介绍可控文本生成的文章。 
+  [我的个人尖锐看法]  我认为，某些 Prompt Engineering论文不值得写满8页，因为技巧用一句或几句话就能解释，其余全是基准评估。易用且共享的基准基础设施，应对社区更有益。但迭代提示或外部工具使用的配置并不简单，让整个研究社区统一采用它也不容易。 
+ 基础提示方法 #  
+ Zero-shot（零样本）与 few-shot（少样本）学习，是提示模型的两种最基本方法，由许多 LLM论文率先使用，并常用于评估 LLM 性能。 
+ </description>
+    </item>
+    
+    <item>
+      <title>降低语言模型的有害性</title>
+      <link>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</link>
+      <pubDate>Sun, 21 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</guid>
+      <description>大型预训练  语言模型  在大量在线数据上训练，不可避免地从互联网习得某些有毒行为与偏差。预训练模型能力强大，在许多 NLP（自然语言处理）任务上非常成功。然而，要在现实应用中安全部署，必须对模型生成过程进行强有力的安全控制。 
+ 减少各类不安全内容，面临许多挑战： 
+ 
+ 首先，不安全内容类型多样，包括毒性、辱骂、仇恨言论、偏差、刻板印象、网络欺凌、身份攻击等，可能需要不同处理，也可能不需要。 
+ 其次，预训练语言模型的不安全行为缺乏明确、广泛认同的分类与定义。不同社会背景使个人看法可能差异很大。 
+ 
+ 本文深入讨论语言模型的毒性问题。我仍在寻找有毒内容的具体定义，因此列出文献中的几个定义。 
+ 
+ [ Perspective API（应用程序编程接口） ] 粗鲁、不尊重或不合理的评论，很可能让人退出讨论。 
+ 
+ 
+ [ Kurita et al. 2019 ] 可能冒犯或伤害接收者的内容，包括仇恨言论、种族主义和冒犯性语言。 
+ 
+ 
+ [ Pavlopoulos et al. 2020 ] 我们将“有毒”作为总称，但文献对不同类型有毒语言或相关现象使用多个术语：“冒犯性”“辱</description>
+    </item>
+    
+    <item>
+      <title>可控神经文本生成</title>
+      <link>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</link>
+      <pubDate>Sat, 02 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</guid>
+      <description>[2021-02-01 更新：更新至 2.0 版，新增若干研究工作并修正许多笔误。] 
+ 
+ [2021-05-26 更新：在  “提示设计” 一节新增 P-tuning 和 Prompt Tuning。] 
+ 
+ [2021-09-19 更新：新增  “Unlikelihood Training（非似然训练）” 。] 
+ 
+ 网络上存在海量的免费文本，比带标签的基准数据集多出几个数量级。最先进的语言模型（LM）使用大规模无监督网络数据进行训练。通过反复采样下一个 token（词元）来从 LM 生成样本时，我们对输出文本的主题、风格、情感等属性并没有多少控制能力。许多应用需要对模型输出进行良好的控制。例如，如果计划使用 LM 为儿童生成阅读材料，我们就希望引导输出的故事，使其安全、有教育意义，并且容易被儿童理解。 
+ 如何引导一个强大的无条件语言模型？本文将深入讨论几种借助无条件语言模型进行可控内容生成的方法。
+请注意，模型的可控性仍然是一个尚未解决的研究问题。本文介绍的每一种方法都有其优点和缺点。 
+ 
+ 应用引导解码策略，在测试时选择符合要求的输出。 
+ 通过良好的提示设计，优化生</description>
+    </item>
+    
+  </channel>
+</rss>

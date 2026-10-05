@@ -1,2 +1,430 @@
-<!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Lilian Weng 中文阅读站</title><style>body{max-width:760px;margin:70px auto;padding:0 24px;font:18px/1.8 system-ui,sans-serif;color:#222;background:#fafafa}a{color:#175da8}h1{line-height:1.4}footer{margin-top:48px;font-size:15px;color:#555}</style></head><body><h1>Lilian Weng 中文阅读站</h1><p>本站正在准备 Lilian Weng 学习博客的中文全文翻译，覆盖当前源站的 52 篇文章，并保留中英文对照、公式、代码和图片。</p><p>译文正在本地生成和核验。完成核验并按作者要求提前邮件通知后，将在本站发布。</p><p><a href="https://lilianweng.github.io/">访问 Lilian Weng 原站</a> · <a href="https://github.com/xingshuozhu1998/xingshuozhu1998.github.io">查看本站仓库</a></p><footer>原文作者：Lilian Weng。本站由 xingshuozhu1998 维护，尚未发布原文镜像或译文。</footer></body></html>
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head>
+	<meta name="generator" content="Hugo 0.163.3"><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Lil'Log</title>
+
+<meta name="description" content="记录我的学习笔记。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://xingshuozhu1998.github.io/index.xml">
+<link rel="alternate" type="application/json" href="https://xingshuozhu1998.github.io/index.json">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="Lil&#x27;Log" />
+<meta property="og:description" content="记录我的学习笔记。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Lil&#x27;Log"/>
+<meta name="twitter:description" content="记录我的学习笔记。"/>
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "Lil'Log", "url": "https://xingshuozhu1998.github.io/", "description": "Document my learning notes.", "thumbnailUrl": "https://xingshuozhu1998.github.io/favicon_wine.ico", "sameAs": ["https://twitter.com/lilianweng/", "https://scholar.google.com/citations?user=dCa-pW8AAAAJ&hl=en&oi=ao", "index.xml", "https://github.com/lilianweng", "https://www.instagram.com/lilian.drawings/"]}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/">
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"><span class="active">文章</span></a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside> 
+<article class="first-entry home-info">
+    <header class="entry-header">
+        <h1>👋 欢迎来到 Lil’Log</h1>
+    </header>
+    <section class="entry-content">
+        <p>你好，我是 Lilian。从2017年开始，我在这个博客上记录学习笔记。</p>
+    </section>
+    <footer class="entry-footer">
+        <div class="social-icons">
+    <a href="https://twitter.com/lilianweng/" target="_blank" rel="noopener noreferrer me" title="Twitter">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+    </path>
+</svg>
+    </a>
+    <a href="https://scholar.google.com/citations?user=dCa-pW8AAAAJ&amp;hl=en&amp;oi=ao" target="_blank" rel="noopener noreferrer me" title="其他">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+</svg>
+    </a>
+    <a href="https://xingshuozhu1998.github.io/index.xml" target="_blank" rel="noopener noreferrer me" title="Rss">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 11a9 9 0 0 1 9 9" />
+    <path d="M4 4a16 16 0 0 1 16 16" />
+    <circle cx="5" cy="19" r="1" />
+</svg>
+    </a>
+    <a href="https://github.com/lilianweng" target="_blank" rel="noopener noreferrer me" title="Github">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <path
+        d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22">
+    </path>
+</svg>
+    </a>
+    <a href="https://www.instagram.com/lilian.drawings/" target="_blank" rel="noopener noreferrer me" title="Instagram">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+    <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"></line>
+</svg>
+    </a>
+</div>
+
+    </footer>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>用于自我改进的 Harness Engineering（智能体运行框架工程）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>recursive self-improvement（递归自我改进，RSI）的概念可以追溯至 I. J. Good（1965）。他将“ultraintelligent machine（超智能机器）”定义为一种在所有智力活动中超越人类，并能设计更好的机器来改进自身的系统。Yudkowsky（2008）用“recursive self-improvement（递归自我改进）”描述一种特定的反馈循环：AI（人工智能）运用当前的智能，改进产生其智能的认知机制。
+在现代 AI 中，这种反馈循环可能指模型直接重写自身权重；从更广的意义上说，也可能指模型改进训练流程与部署系统，进而产生一个更好的后继模型，在具有经济价值的任务中获得更强的表现。前沿实验室已经展示，AI 研究开发的速度能够得到大幅提升（Anthropic；OpenAI）。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2026年7月4日 | 预计阅读时间：31分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《用于自我改进的 Harness Engineering（智能体运行框架工程）》" href="https://xingshuozhu1998.github.io/posts/2026-07-04-harness/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>审慎理解 Scaling Laws（规模变化与模型性能之间的规律）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>Scaling laws（规模变化与模型性能之间的规律）是深度学习中最重要的实证发现之一。其观察结果形式简单：训练损失 $L$ 随着模型大小 $N$、数据集大小 $D$ 和计算量 $C$ 增大，以可预测的方式下降，遵循幂律曲线；该曲线在双对数图中呈现为直线。我们可以将 scaling laws 看作描述计算量、损失、模型大小与数据之间关系的框架；其核心是如何在 $N$ 与 $D$ 之间最优地分配宝贵的计算资源。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2026 年 6 月 24 日  |  预计阅读时间：25 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《审慎理解 Scaling Laws（规模变化与模型性能之间的规律）》" href="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>我们为什么思考
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>特别感谢 John Schulman 对本文提供了大量极有价值的反馈，并直接修改了部分内容。
+Test time compute（测试时计算；Graves et al. 2016、Ling, et al. 2017、Cobbe et al. 2021）和 Chain-of-thought（思维链；CoT）（Wei et al. 2022、Nye et al. 2021）显著提升了模型表现，同时也引出了许多研究问题。本文旨在回顾近期关于如何有效使用 test-time compute（即“思考时间”）以及它为何有帮助的进展。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2025 年 5 月 1 日  |  预计阅读时间：40 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《我们为什么思考》" href="https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>Reward hacking（利用奖励机制漏洞取得高奖励）是指 reinforcement learning（强化学习，RL）智能体利用奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务。Reward hacking（利用奖励机制漏洞取得高奖励）之所以存在，是因为 RL（强化学习）环境往往不完善，而且准确指定奖励函数本身就是一个根本性的难题。
+随着语言模型推广到广泛的任务，以及 RLHF（基于人类反馈的强化学习）成为对齐训练的事实标准方法，语言模型 RL（强化学习）训练中的 reward hacking（利用奖励机制漏洞取得高奖励）已成为一个关键的实际挑战。模型学会修改单元测试来通过编程任务，或者在回答中带有迎合用户偏好的偏见，这些现象非常令人担忧，并且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2024 年 11 月 28 日  |  预计阅读时间：37 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）》" href="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>LLMs（大语言模型）中的 Extrinsic Hallucinations（缺乏外部事实依据的生成内容）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>大语言模型中的 hallucination（幻觉）通常指模型生成不忠实于依据、捏造、前后不一致或毫无意义的内容。“幻觉”这个词在一定程度上被泛化为模型出错的各种情况。在这里，我想将幻觉问题缩小到模型输出是捏造的，而且既不以给定上下文为依据，也不以世界知识为依据的情况。
+幻觉有两种类型：
+In-context hallucination（上下文内幻觉）：模型输出应当与上下文中的来源内容保持一致。Extrinsic hallucination（缺乏外部事实依据的幻觉）：模型输出应当以预训练数据集为依据。不过，由于预训练数据集规模庞大，为每次生成检索并识别冲突的成本过高。如果将预训练语料库视为世界知识的替代，我们实质上是在努力确保模型输出符合事实，并能由外部世界知识核实。同样重要的是，当模型不了解某个事实时，应当明确说明。本文聚焦于 extrinsic hallucination。为了避免幻觉，LLMs（大语言模型）需要（1）符合事实，以及（2）在适当情况下承认不知道答案。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2024 年 7 月 7 日 | 预计阅读时间：29 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《LLMs（大语言模型）中的 Extrinsic Hallucinations（缺乏外部事实依据的幻觉）》" href="https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>用于视频生成的扩散模型
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>过去几年，Diffusion models（扩散模型）在图像合成方面取得了出色成果。现在，研究界开始着手更困难的任务：用它们生成视频。视频任务包含图像任务，因为一张图像就是一段只有1帧的视频；但视频生成困难得多，原因如下：
+它对不同时刻各帧之间的时间一致性有额外要求，自然也就需要模型编码更多的世界知识。与文本或图像相比，收集大量高质量、高维度的视频数据更加困难，更不用说文本与视频配对数据了。🥑 必读前置文章：继续阅读本文之前，请确保已经读过此前关于图像生成的博客《什么是 Diffusion Models（扩散模型）？》。...</p>
+  </section>
+  <footer class="entry-footer">日期：2024 年 4 月 12 日  |  预计阅读时间：20 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《用于视频生成的扩散模型》" href="https://xingshuozhu1998.github.io/posts/2024-04-12-diffusion-video/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>关于高质量人工数据的思考
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>［特别感谢 Ian Kivlichan 提供许多有用的线索（例如，发表于100多年前的 Nature 论文“Vox populi”）以及友好的反馈。🙏］
+高质量数据是现代深度学习模型训练的燃料。大多数任务专用的标注数据都来自人类标注，例如分类任务，或者用于 LLM（大语言模型）对齐训练的 RLHF（基于人类反馈的强化学习）标注（可以构造成分类形式）。本文中的许多 ML（机器学习）技术可以帮助提高数据质量，但从根本上说，人类数据采集需要关注细节、谨慎执行。社区知道高质量数据的价值，但不知为何，我们仍然有一种微妙的印象：“每个人都想做模型工作，而不是数据工作”（Sambasivan et al. 2021）。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2024 年 2 月 5 日  |  预计阅读时间：20 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《关于高质量人类数据的思考》" href="https://xingshuozhu1998.github.io/posts/2024-02-05-human-data-quality/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>针对 LLMs（大语言模型）的对抗攻击
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>ChatGPT 的推出大幅加速了 large language models（大语言模型）在现实世界中的应用。我们（包括我在 OpenAI 的团队，向他们致意）投入了大量精力，在对齐过程中（例如通过 RLHF（基于人类反馈的强化学习））让模型默认表现出安全行为。然而，adversarial attacks（对抗攻击）或 jailbreak（绕过模型的行为约束）提示仍可能诱导模型输出不期望的内容。
+adversarial attacks（对抗攻击）的许多基础研究针对图像，这与文本不同，操作的是连续、高维的空间。文本等离散数据的攻击被认为困难得多，因为缺少直接的梯度信号。我此前关于 Controllable Text Generation（可控文本生成）的文章与这个话题非常相关，因为攻击 LLMs（大语言模型）本质上就是控制模型输出某种类型的（不安全）内容。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2023 年 10 月 25 日 | 预计阅读时间：33 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《针对 LLMs（大语言模型）的 Adversarial Attacks（对抗攻击）》" href="https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>由 LLM（大语言模型）驱动的自主智能体
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>以 LLM（large language model，大语言模型）作为核心控制器来构建智能体，是一个很酷的想法。AutoGPT、GPT-Engineer 和 BabyAGI 等几个概念验证演示提供了富有启发性的例子。LLM 的潜力超出了生成优质文案、故事、文章与程序；它可以被视为一种强大的通用问题求解器。
+智能体系统概览：在由 LLM 驱动的自主智能体系统中，LLM 充当智能体的大脑，并由几个关键组件加以补充。
+规划：子目标与分解——智能体将大型任务拆分成更小、可管理的子目标，从而高效处理复杂任务。反思与改进——智能体可以对过去的行动进行自我批评和自我反思，从错误中学习，并改进后续步骤，从而提高最终结果的质量。记忆：短期记忆——我认为所有 in-context learning（在上下文示例中学习，参见 Prompt Engineering，提示工程）都在利用模型的短期记忆进行学习。长期记忆——长期记忆使智能体能够在很长的时间内保留并回忆（无限量的）信息，通常借助外部向量存储与快速检索来实现。工具使用：智能体学习调用外部 APIs（应用程序编程接口），获取模型权重中缺少的额外信息（权重在预训练后往往难以修改），包括当前信息、代码执行能力、专有信息来源的访问权限等。由 LLM 驱动的自主智能体系统概览。组件一：规划。复杂任务通常涉及许多步骤。智能体需要知道这些步骤是什么，并提前制定计划。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2023年6月23日 | 预计阅读时间：31分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《由 LLM（大语言模型）驱动的自主智能体》" href="https://xingshuozhu1998.github.io/posts/2023-06-23-agent/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2>Prompt Engineering（提示工程）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>Prompt Engineering（提示工程），又称 In-Context Prompting（上下文内提示），指在不更新模型权重的情况下，通过与 LLM（大语言模型）沟通来引导其行为、获得期望结果的方法。它是一门经验科学，prompt engineering（提示工程）方法在不同模型上的效果可能差异很大，因此需要大量实验与启发式方法。
+本文只讨论 autoregressive（自回归）语言模型的 prompt engineering（提示工程），不涉及 Cloze tests（完形填空测试）、图像生成或多模态模型。prompt engineering（提示工程）的核心目标是对齐与模型行为的可引导性。请参阅我此前关于可控文本生成的文章。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2023年3月15日 | 预计阅读时间：21分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Prompt Engineering（提示工程）》" href="https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="https://xingshuozhu1998.github.io/page/2/"> »</a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

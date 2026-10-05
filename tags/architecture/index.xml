@@ -1,0 +1,190 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/architecture</title>
+    <link>https://xingshuozhu1998.github.io/tags/architecture/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 27 Jan 2023 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/architecture/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Transformer（基于注意力机制的神经网络架构） 家族 2.0</title>
+      <link>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</link>
+      <pubDate>Fri, 27 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</guid>
+      <description>自从大约三年前我发布上一篇   “The Transformer Family”   以来，人们提出了许多新的 Transformer 架构改进。在这里，我对那篇2020年的文章进行了大幅重构与扩充：重新组织各节的层级，并用更新的论文完善许多章节。2.0版包含旧版的全部内容，长度约为旧版的两倍。 
+ 符号说明 #  
+ 
+	 
+			 
+					 符号 
+					 含义 
+			 
+	 
+	 
+			 
+					 $d$ 
+					 模型维度／隐藏状态维度／位置编码维度。 
+			 
+			 
+					 $h$ 
+					 多头注意力层中的头数。 
+			 
+			 
+					 $L$ 
+					 输入序列的片段长度。 
+			 
+			 
+					 $N$ 
+					 模型中注意力层的总数；不考虑 MoE（混合专家）。 
+			 
+			 
+					 $\mathbf{X} \in \mathbb{R}^{L \times d}$ 
+					 输入序列，其中每个元素均已映射为形状为 $d$ 的嵌入向量，与模型维度相同。 
+			 
+			 
+					 $\m</description>
+    </item>
+    
+    <item>
+      <title>大型 Transformer（基于注意力机制的神经网络架构） 模型的推理优化</title>
+      <link>https://xingshuozhu1998.github.io/posts/2023-01-10-inference-optimization/</link>
+      <pubDate>Tue, 10 Jan 2023 10:00:00 -0700</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2023-01-10-inference-optimization/</guid>
+      <description>[2023-01-24 更新：新增  distillation（知识蒸馏）  小节。]   
+ 大型 Transformer模型如今已成为主流，在多种任务上取得最先进结果。它们能力强大，但训练与使用成本都很高。推理在时间和内存上的极高成本，是大规模采用强大 Transformer 解决现实任务的主要瓶颈。 
+  为什么大型 Transformer模型推理难以运行？ 除了最先进模型的规模不断增大，还有两个主要因素导致推理困难（ Pope et al. 2022 ）： 
+ 
+  内存占用大 。推理时，模型参数与中间状态都需要驻留内存。例如，
+ 
+ 解码期间，KV cache（键值缓存）应存储在内存中；例如，批次大小为 512、上下文长度为 2048 时，KV cache 总计 3 TB，是模型大小的 3 倍（！）。 
+ 注意力机制的推理成本随输入序列长度呈二次增长。 
+ 
+ 
+  可并行性低。 推理生成以自回归方式执行，使解码过程难以并行。 
+ 
+ 本文将探讨几种提高 Transformer推理效率的方法。有些是通用网络压缩方法，有些则针对 Transformer 架构。 
+ 方法概览 #</description>
+    </item>
+    
+    <item>
+      <title>如何使用多块 GPU（图形处理器） 训练超大模型？</title>
+      <link>https://xingshuozhu1998.github.io/posts/2021-09-25-train-large/</link>
+      <pubDate>Fri, 24 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2021-09-25-train-large/</guid>
+      <description>[2022-03-13更新：加入  expert choice routing（专家选择路由） 。]  
+ [2022-06-10更新]： Greg  与我撰写了本文更短的升级版，发表于 OpenAI Blog： “Techniques for Training Large Neural Networks”  
+ 近年来，更大的预训练  语言模型  在许多 NLP（自然语言处理）基准任务上取得更好结果。训练大而深的神经网络颇具挑战，因为需要大量 GPU内存，以及长时间训练。 
+ 然而，单个 GPU工作进程的内存有限，许多大型模型的大小已超出单块 GPU。若干并行范式支持跨多块 GPU 训练模型，各种模型架构与内存节省设计，也帮助实现  超大  神经网络训练。 
+ 训练并行化 #  
+ 超大模型训练的主要瓶颈，是对大量 GPU内存的强烈需求，远超单个 GPU 机器的容量。除模型权重外（例如数百亿浮点数），存储梯度、优化器状态（如 Adam 中的动量与方差）等中间计算输出，通常成本更高。此外，大模型常搭配大训练语料，单个进程可能耗时极长。 
+ 因此，并行化是必要的。并行可发生在数据、模型架</description>
+    </item>
+    
+    <item>
+      <title>神经架构搜索</title>
+      <link>https://xingshuozhu1998.github.io/posts/2020-08-06-nas/</link>
+      <pubDate>Thu, 06 Aug 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2020-08-06-nas/</guid>
+      <description>虽然最流行、最成功的模型架构大多由人类专家设计，但这并不意味着我们已经探索了全部网络架构空间，并选定了最佳方案。如果采用系统化、自动化的方法学习高性能模型架构，我们找到最优解的机会会更大。 
+ 自动学习并演化网络拓扑并非新想法（ Stanley &amp; Miikkulainen, 2002 ）。近年来， Zoph &amp; Le 2017  与  Baker et al. 2017  的开创性工作，使 Neural Architecture Search（神经架构搜索，NAS（神经架构搜索））受到大量关注，带来许多有趣想法，以实现更好、更快、更节省成本的 NAS。 
+ 开始研究 NAS时，我发现  Elsken, et al 2019  的这篇优秀综述很有帮助。他们将 NAS 描述为具有三个主要组件的系统，清楚简洁，也被其他 NAS 论文广泛采用。 
+ 
+  搜索空间 ：NAS的搜索空间定义一组操作（例如卷积、全连接、池化），以及如何连接操作形成有效网络架构。搜索空间设计通常包含人类专业知识，也不可避免地包含人类偏差。 
+  搜索算法 ：NAS算法采样一组候选网络架构，接收子模型性能指标作为奖励</description>
+    </item>
+    
+    <item>
+      <title>Transformer（基于注意力机制的神经网络架构） 家族</title>
+      <link>https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/</link>
+      <pubDate>Tue, 07 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/</guid>
+      <description>[更新于   2023-01-27  ：时隔近三年，我对本文进行了大规模重构更新，纳入 2020 年以来的一批新 Transformer 模型。增强版文章在这里：   《Transformer 家族 2.0 版》   。关于这一主题，请参阅该文。] 
+  
+ 距离上一篇关于 注意力 的文章，已近两年。Transformer 新版本与增强版本的近期进展，促使我围绕这一主题再写一篇，重点讨论如何改进基本 Transformer，以扩大长程注意力范围、降低内存与计算消耗、解决 RL（强化学习）任务等。 
+ 符号说明 #  
+ 
+	 
+			 
+					 符号 
+					 含义 
+			 
+	 
+	 
+			 
+					 $d$ 
+					 模型维度／隐藏状态维度／位置编码维度。 
+			 
+			 
+					 $h$ 
+					 多头注意力层中的头数。 
+			 
+			 
+					 $L$ 
+					 输入序列的片段长度。 
+			 
+			 
+					 $\mathbf{X} \in \mathbb{R}^{L \times d}$ 
+					 输入序列，其中每个元素</description>
+    </item>
+    
+    <item>
+      <title>通用语言模型</title>
+      <link>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</link>
+      <pubDate>Thu, 31 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</guid>
+      <description>[2019-02-14更新：加入  ULMFiT  和  GPT-2（第二代生成式预训练语言模型） 。]  
+ [2020-02-29更新：加入  ALBERT 。]  
+ [2020-10-25更新：加入  RoBERTa 。]  
+ [2020-12-13更新：加入  T5 。]  
+ [2020-12-30更新：加入  GPT-3（第三代生成式预训练语言模型） 。]  
+ [2021-11-13更新：加入  XLNet 、 BART  和  ELECTRA ；同时更新  总结  部分。]  
+ 
+ 
+	 
+	 我猜他们是 Elmo 和 Bert？（图片来源： 这里 ） 
+ 
+ 2018年，我们见证了 NLP（自然语言处理）的惊人进展。 OpenAI GPT（采用解码器的生成式预训练语言模型）  和  BERT（基于双向编码器的预训练语言模型）  等大规模预训练语言模型，使用通用模型架构，在多种语言任务上取得了出色性能。这一思路类似于 ImageNet 分类预训练对许多视觉任务的帮助（*）。比视觉分类预训练更好的是，NLP 中这种简单而强大的方法不需要带标签的数据进行预训练，因此我</description>
+    </item>
+    
+    <item>
+      <title>基于流的深度生成模型</title>
+      <link>https://xingshuozhu1998.github.io/posts/2018-10-13-flow-models/</link>
+      <pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2018-10-13-flow-models/</guid>
+      <description>此前我介绍过  GAN（生成对抗网络）  和  VAE（变分自编码器）  两类生成模型。它们都不显式学习真实数据的概率密度函数 $p(\mathbf{x})$（其中 $\mathbf{x} \in \mathcal{D}$）——因为这实在很难！以潜变量生成模型为例，$p(\mathbf{x}) = \int p(\mathbf{x}\vert\mathbf{z})p(\mathbf{z})d\mathbf{z}$ 很难计算，因为无法遍历潜在编码 $\mathbf{z}$ 的所有可能值。 
+ Flow-based（基于可逆变换的）深度生成模型，通过  normalizing flows（通过可逆变换构建概率分布的模型）  解决这一难题。这是强大的密度估计统计工具。准确估计 $p(\mathbf{x})$，便能高效完成许多下游任务：采样未见但真实的新数据点（生成数据）、预测未来事件的罕见程度（密度估计）、推断潜变量、补全不完整样本等。 
+ 生成模型类型 #  
+ 下面简要比较 GAN、VAE与 flow-based（基于可逆变换的）生成模型： 
+ 
+ Generative adversar</description>
+    </item>
+    
+    <item>
+      <title>注意力？注意力！</title>
+      <link>https://xingshuozhu1998.github.io/posts/2018-06-24-attention/</link>
+      <pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2018-06-24-attention/</guid>
+      <description>[2018-10-28 更新：新增  Pointer Network（指针网络） ，以及我的 Transformer（基于注意力机制的神经网络架构） 实现的 链接 。]  
+ [2018-11-06 更新：新增 Transformer 模型实现的 链接 。]  
+ [2018-11-18 更新：新增  Neural Turing Machines（神经图灵机） 。]  
+ [2019-07-18 更新：修正介绍  show-attention-tell 论文时使用“self-attention（自注意力）”一词的错误；移到 自注意力 一节。]  
+ [2020-04-07 更新：关于改进 Transformer 模型的后续文章在 这里 。]  
+ 注意力在一定程度上受人类如何关注图像不同区域，或关联句子中词语的启发。以图 1 的柴犬图片为例。 
+ 
+	 
+	 穿着男装的柴犬。原始照片归 Instagram  @mensweardog 所有。 
+ 
+ 人类视觉注意力使我们能以“高分辨率”聚焦某个区域（例如黄色框中的尖耳朵），同时以“低分辨率”感知周围图像（雪地背景和衣服如何？），随后相应</description>
+    </item>
+    
+  </channel>
+</rss>

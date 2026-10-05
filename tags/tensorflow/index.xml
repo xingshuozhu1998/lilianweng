@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/tensorflow</title>
+    <link>https://xingshuozhu1998.github.io/tags/tensorflow/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sat, 05 May 2018 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/tensorflow/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用 TensorFlow（机器学习框架） 与 OpenAI Gym（强化学习环境工具库） 实现深度强化学习模型</title>
+      <link>https://xingshuozhu1998.github.io/posts/2018-05-05-drl-implementation/</link>
+      <pubDate>Sat, 05 May 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2018-05-05-drl-implementation/</guid>
+      <description>完整实现见  lilianweng/deep-reinforcement-learning-gym  
+ 在前两篇文章中，我介绍了许多深度强化学习模型的算法。现在该亲自动手，练习如何在实际环境中实现这些模型了。我们将在 Tensorflow与 OpenAI  gym  环境中实现它们。本教程的完整代码见  [lilian/deep-reinforcement-learning-gym] 。 
+ 环境配置 #  
+ 
+ 确保已经安装  Homebrew（软件包管理器） ： 
+ 
+     /usr/bin/ruby -e  "  $( curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install )  " 
+      
+ 我建议为开发创建一个 virtualenv（Python 虚拟环境）。当多个项目的依赖要求冲突时，它会让事情简单得多；例如，一个项目使用 Python 2.7，而另一个只兼容 Python 3.5+。 
+ 
+      # Install python virtualenv 
+</description>
+    </item>
+    
+    <item>
+      <title>使用 RNN（循环神经网络）预测股价：第二部分</title>
+      <link>https://xingshuozhu1998.github.io/posts/2017-07-22-stock-rnn-part-2/</link>
+      <pubDate>Sat, 22 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2017-07-22-stock-rnn-part-2/</guid>
+      <description>在第二部分教程中，我想继续讨论股票价格预测，并让 第一部分 中构建的 recurrent neural network（循环神经网络）具备处理多只股票的能力。为了区分不同价格序列所对应的模式，我将股票代码的 embedding（嵌入）向量作为输入的一部分。 
+ 
+ 数据集 #  
+ 搜索时，我找到了用于查询 Yahoo! Finance API（应用程序编程接口）的 这个库 。如果 Yahoo 没有关停历史数据获取 API，它会非常有用。不过，你可能仍然可以用它查询其他信息。在这里，我选择 Google Finance 的链接，它是 几个免费数据源 之一，用于下载历史股票价格。 
+ 数据获取代码可以写得非常简单： 
+      import  urllib2
+     from  datetime  import  datetime
+    BASE_URL  =   "https://www.google.com/finance/historical?" 
+                "output=csv&amp;q=  {0}  &amp;startdate=Jan+1%2C+1980&amp;en</description>
+    </item>
+    
+    <item>
+      <title>使用 RNN（循环神经网络）预测股价：第一部分</title>
+      <link>https://xingshuozhu1998.github.io/posts/2017-07-08-stock-rnn-part-1/</link>
+      <pubDate>Sat, 08 Jul 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2017-07-08-stock-rnn-part-1/</guid>
+      <description>这是一篇介绍如何使用 Tensorflow（机器学习框架）构建 recurrent neural network（循环神经网络）来预测股票市场价格的教程。完整的可运行代码位于  github.com/lilianweng/stock-rnn 。如果你还不了解 recurrent neural network 或 LSTM（长短期记忆网络）单元，可以阅读 我之前的文章 。 
+ 
+  我想强调一点：写这篇文章的动机主要是演示如何在 Tensorflow 中构建并训练 RNN模型，而不是解决股票预测问题，因此我没有花太多精力改善预测结果。非常欢迎你以我的 代码 为参考起点，加入更多与股票预测有关的想法来改进它。希望你享受这个过程！  
+ 
+ 已有教程概览 #  
+ 互联网上有很多教程，例如： 
+ 
+  使用 Tensorflow 实现 RNN-LSTM 的新手指南  
+  TensorFlow RNN 教程  
+  使用 Tensorflow 的 LSTM 实例教程  
+  如何在 TensorFlow 中构建 Recurrent Neural Network（循环神经网络）  
+  Ten</description>
+    </item>
+    
+  </channel>
+</rss>

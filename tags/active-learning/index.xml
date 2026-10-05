@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/active-learning</title>
+    <link>https://xingshuozhu1998.github.io/tags/active-learning/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 20 Feb 2022 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/active-learning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>数据不足时的学习（二）：主动学习</title>
+      <link>https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/</link>
+      <pubDate>Sun, 20 Feb 2022 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/</guid>
+      <description>这是面对监督学习任务中有限带标签数据时如何应对的第二部分。这次会加入一定量的人类标注工作，但受预算限制，因此需要明智地选择标注哪些样本。 
+ 符号说明 #  
+ 
+	 
+			 
+					 符号 
+					 含义 
+			 
+	 
+	 
+			 
+					 $K$ 
+					 不同类别标签的数量。 
+			 
+			 
+					 $(\mathbf{x}^l, y) \sim \mathcal{X}, y \in \{0, 1\}^K$ 
+					 带标签数据集。$y$ 是真实标签的 one-hot（独热）表示。 
+			 
+			 
+					 $\mathbf{u} \sim \mathcal{U}$ 
+					 无标签数据集。 
+			 
+			 
+					 $\mathcal{D} = \mathcal{X} \cup \mathcal{U}$ 
+					 整个数据集，包括带标签与无标签样本。 
+			 
+			 
+					 $\mathbf{x}$ 
+					 任意样本，可以带标签，也可以不带标签。 
+			 
+			 
+					 $\mathbf{x</description>
+    </item>
+    
+  </channel>
+</rss>

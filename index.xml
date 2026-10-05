@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>Lil’Log 中文学习镜像</title><link>https://xingshuozhu1998.github.io/</link><description>Lilian Weng 文章学习镜像；机器译文需审校。</description><item><title>面向好奇读者的深度学习概览</title><link>https://xingshuozhu1998.github.io/posts/2017-06-21-overview/</link><guid>https://xingshuozhu1998.github.io/posts/2017-06-21-overview/</guid><description>（本文源于我在  WiMLDS x Fintech 聚会 上所作的演讲，聚会由  Affirm  举办。）  
+ 相信你们很多人看过或听说过 2016 年 AlphaGo 与职业围棋棋手之间的 比赛 ，那位棋手是  Lee Sedol（李世石） 。Lee 的段位是最高的九段，并曾多次获得世界冠军。毫无疑问，他是世界上最优秀的围棋棋手之一，但在这一系列与 AlphaGo 的对局中，他 以 1 比 4 落败 。在此之前，人们认为围棋是一种计算机难以掌握的游戏，因为其简单规则所产生的棋盘局面变化数量呈指数增长，远多于国际象棋。这件事无疑让 2016 年成为 AI 的重要一年。AlphaGo 使 AI 的进展受到了广泛关注。 
+ 与此同时，许多公司投入资源，推动 AI 应用的前沿发展；这些应用确实有潜力改变甚至彻底革新我们的生活方式。熟悉的例子包括自动驾驶汽车、聊天机器人、家庭助手设备，以及其他许多应用。近年来我们取得进展的秘密配方之一就是深度学习。 
+ 为什么深度学习如今能够奏效？ #  
+ 简单地说，深度学习模型就是规模大、层数深的人工神经网络。神经网络（NN）可以很好地表示为 有向无环图</description></item><item><title>使用 RNN（循环神经网络）预测股价：第一部分</title><link>https://xingshuozhu1998.github.io/posts/2017-07-08-stock-rnn-part-1/</link><guid>https://xingshuozhu1998.github.io/posts/2017-07-08-stock-rnn-part-1/</guid><description>这是一篇介绍如何使用 Tensorflow（机器学习框架）构建 recurrent neural network（循环神经网络）来预测股票市场价格的教程。完整的可运行代码位于  github.com/lilianweng/stock-rnn 。如果你还不了解 recurrent neural network 或 LSTM（长短期记忆网络）单元，可以阅读 我之前的文章 。 
+ 
+  我想强调一点：写这篇文章的动机主要是演示如何在 Tensorflow 中构建并训练 RNN模型，而不是解决股票预测问题，因此我没有花太多精力改善预测结果。非常欢迎你以我的 代码 为参考起点，加入更多与股票预测有关的想法来改进它。希望你享受这个过程！  
+ 
+ 已有教程概览 #  
+ 互联网上有很多教程，例如： 
+ 
+  使用 Tensorflow 实现 RNN-LSTM 的新手指南  
+  TensorFlow RNN 教程  
+  使用 Tensorflow 的 LSTM 实例教程  
+  如何在 TensorFlow 中构建 Recurrent Neural Network（循环神经网络）  
+  Ten</description></item><item><title>使用 RNN（循环神经网络）预测股价：第二部分</title><link>https://xingshuozhu1998.github.io/posts/2017-07-22-stock-rnn-part-2/</link><guid>https://xingshuozhu1998.github.io/posts/2017-07-22-stock-rnn-part-2/</guid><description>在第二部分教程中，我想继续讨论股票价格预测，并让 第一部分 中构建的 recurrent neural network（循环神经网络）具备处理多只股票的能力。为了区分不同价格序列所对应的模式，我将股票代码的 embedding（嵌入）向量作为输入的一部分。 
+ 
+ 数据集 #  
+ 搜索时，我找到了用于查询 Yahoo! Finance API（应用程序编程接口）的 这个库 。如果 Yahoo 没有关停历史数据获取 API，它会非常有用。不过，你可能仍然可以用它查询其他信息。在这里，我选择 Google Finance 的链接，它是 几个免费数据源 之一，用于下载历史股票价格。 
+ 数据获取代码可以写得非常简单： 
+      import  urllib2
+     from  datetime  import  datetime
+    BASE_URL  =   &quot;https://www.google.com/finance/historical?&quot; 
+                &quot;output=csv&amp;q=  {0}  &amp;startdate=Jan+1%2C+1980&amp;en</description></item><item><title>如何解释机器学习模型的预测？</title><link>https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/</link><guid>https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/</guid><description>机器学习模型开始进入医疗、司法和金融等关键领域。因此，弄清模型如何决策，并确保决策过程符合伦理要求或法律法规，成为必要之事。 
+ 同时，深度学习模型迅速发展，进一步提高了对复杂模型解释的需求。人们急于将 AI 的力量充分用于日常生活的关键方面。但如果缺乏足够信任，或没有高效流程解释意外行为，就很难做到，尤其考虑到深度神经网络生来就是 黑盒 。 
+ 考虑以下情况： 
+ 
+ 金融行业高度监管，法律要求放贷者公平决策，解释信贷模型，并在拒绝贷款申请时提供原因。 
+ 医疗诊断模型对人的生命负责。如何有足够信心，按照黑盒模型指示治疗患者？ 
+ 法庭使用刑事决策模型预测再犯风险时，必须确保模型公平、诚实、无歧视。 
+ 如果自动驾驶汽车突然行为异常，却无法解释原因，我们能放心在真实交通中大规模使用这项技术吗？ 
+ 
+ 在  Affirm ，我们每天发放数万笔分期贷款；承保模型拒绝贷款申请时，必须提供拒绝原因。这是促使我深入研究并写本文的诸多动机之一。模型可解释性是机器学习的大领域，本综述从不意图穷尽全部研究，而是作为起点。 
+ 
+ 可解释模型 #  
+ Lipton（2017）在理论综述  “The</description></item><item><title>从 GAN（生成对抗网络） 到 WGAN（采用最优传输距离的生成对抗网络）</title><link>https://xingshuozhu1998.github.io/posts/2017-08-20-gan/</link><guid>https://xingshuozhu1998.github.io/posts/2017-08-20-gan/</guid><description>[2018-09-30更新：感谢 Yoonju，本文已有  韩文译本 ！] 
+ 
+ [2019-04-18更新：本文也可在  arXiv  获取。]  
+  Generative adversarial network（生成对抗网络） （GAN）在许多生成任务上表现出色，复现图像、人类语言、音乐等丰富现实内容。它受博弈论启发：生成器与评论家两个模型相互竞争，同时让彼此变强。然而，训练 GAN 很有挑战，存在训练不稳定或无法收敛等问题。 
+ 这里，我想解释生成对抗网络框架背后的数学、为何难以训练，最后介绍旨在解决训练困难的 GAN修改版。 
+ Kullback–Leibler 与 Jensen–Shannon divergence（分布差异度量） #  
+ 深入研究 GAN之前，先回顾量化两个概率分布相似性的两种指标。 
+ (1)  KL (Kullback–Leibler) divergence（KL散度） ，衡量概率分布 $p$ 偏离另一个预期概率分布 $q$ 的程度。 
+ 
+$$
+D_{KL}(p \| q) = \int_x p(x) \log \frac{p(x)}{q(x)}</description></item><item><title>用信息论剖析深度学习</title><link>https://xingshuozhu1998.github.io/posts/2017-09-28-information-bottleneck/</link><guid>https://xingshuozhu1998.github.io/posts/2017-09-28-information-bottleneck/</guid><description>Naftali Tishby 教授于 2021 年去世。希望本文能让更多人了解他关于 information bottleneck（信息瓶颈）的精彩想法。  
+ 最近，我观看了 Naftali Tishby 教授的演讲  “Information Theory in Deep Learning”（深度学习中的信息论） ，觉得非常有趣。他介绍了如何应用信息论，研究深度神经网络在训练期间的成长与变换。利用  Information Bottleneck（信息瓶颈，IB） 方法，他为深度神经网络（DNN）提出了新的学习界，因为参数数量呈指数增加，传统学习理论失效。另一个敏锐的观察是，DNN 训练包含两个不同阶段：首先，训练网络充分表示输入数据并最小化泛化误差；然后，通过压缩输入的表示，网络学习遗忘无关细节。 
+ 本文大部分资料来自 Tishby 教授的演讲和 相关论文 。 
+ 基本概念 #  
+   Markov Chain（描述状态随机转移的概率模型）   
+ Markov process（马尔可夫过程）是一种 “无记忆” 的随机过程（这一性质也称“Markov Property”，即马尔</description></item><item><title>学习词嵌入</title><link>https://xingshuozhu1998.github.io/posts/2017-10-15-word-embedding/</link><guid>https://xingshuozhu1998.github.io/posts/2017-10-15-word-embedding/</guid><description>人类词汇以自由文本的形式出现。为了让机器学习模型理解并处理自然语言，需要将自由文本中的词转换为数值。最简单的转换方法之一是 one-hot encoding（独热编码）：每个不同的词对应结果向量的一个维度，用二元值表示该词出现（1）或未出现（0）。 
+ 然而，处理整个词汇表时，one-hot encoding（独热编码）在计算上并不实用，因为这种表示需要数十万个维度。词嵌入使用包含非二元数值的向量表示词和短语，维度低得多，因此也更稠密。关于良好词嵌入的一个直观假设是，它们能够近似表示词之间的相似性（例如，“cat”和“kitten”是相似的词，因此预期它们在降维后的向量空间中彼此接近），或揭示隐藏的语义关系（例如，“cat”与“kitten”的关系类似于“dog”与“puppy”的关系）。上下文信息对于学习词义及词之间的关系非常有用，因为相似的词往往会出现在相似的上下文中。 
+ 学习词嵌入主要有两种方法，都依赖上下文知识。 
+ 
+  基于计数 ：第一种方法是无监督的，基于全局词共现矩阵的矩阵分解。原始共现次数的效果并不好，所以需要在此基础上做一些巧妙处理。 
+  基于上下文 ：第二种方</description></item><item><title>目标检测入门（一）：梯度向量、HOG（方向梯度直方图）与 SS（选择性搜索）</title><link>https://xingshuozhu1998.github.io/posts/2017-10-29-object-recognition-part-1/</link><guid>https://xingshuozhu1998.github.io/posts/2017-10-29-object-recognition-part-1/</guid><description>我从未从事计算机视觉领域的工作，也不知道自动驾驶汽车究竟如何神奇地分辨停车标志与戴红帽子的行人。为了激励自己研究对象识别和检测算法背后的数学，我正在撰写“目标检测入门”系列文章。本文是第 1 部分，从图像处理的极基础概念和几种图像分割方法开始，暂时还不涉及深度神经网络。用于目标检测和识别的深度学习模型将在 第 2 部分 和 第 3 部分 讨论。 
+ 
+ 说明：刚开始时，我交替使用“对象识别”和“目标检测”这两个说法。我认为二者并不相同：前者更关注判断图像中是否存在某个对象，后者则需要找到对象的位置。不过，它们密切相关，许多对象识别算法为检测奠定了基础。 
+ 
+ 本系列所有文章的链接：
+[ 第 1 部分 ]
+[ 第 2 部分 ]
+[ 第 3 部分 ]
+[ 第 4 部分 ]。 
+ 图像梯度向量 #  
+ 首先，我想确保我们能够区分以下术语。它们非常相似、密切相关，却并不完全相同。 
+ 
+	 
+			 
+					  
+					  导数  
+					  方向导数  
+					  梯度  
+			 
+	 
+	 
+			 
+					 数值类型 
+					 标量 
+					 标量 
+	</description></item><item><title>目标检测入门（二）：CNN（卷积神经网络）、DPM（可变形部件模型） 与 OverFeat（联合分类、定位和检测的卷积网络）</title><link>https://xingshuozhu1998.github.io/posts/2017-12-15-object-recognition-part-2/</link><guid>https://xingshuozhu1998.github.io/posts/2017-12-15-object-recognition-part-2/</guid><description>“目标检测入门”系列的 第 1 部分 介绍了：（1）图像梯度向量的概念，以及 HOG（方向梯度直方图） 算法如何汇总一张图像中所有梯度向量的信息；（2）图像分割算法如何检测可能包含对象的区域；（3）Selective Search（选择性搜索）算法如何改进图像分割结果，以生成更好的候选区域。 
+ 第 2 部分将进一步了解用于图像分类的经典卷积神经网络架构。它们为用于目标检测的深度学习模型的后续进展奠定了  基础  。如果你想进一步了解 R-CNN（基于候选区域的卷积神经网络） 及相关模型，请阅读 第 3 部分 。 
+ 本系列所有文章的链接：
+[ 第 1 部分 ]
+[ 第 2 部分 ]
+[ 第 3 部分 ]
+[ 第 4 部分 ]。 
+ 用于图像分类的 CNN #  
+ CNN 是“ Convolutional Neural Network（卷积神经网络） ”的缩写，是深度学习领域解决计算机视觉问题的首选方法。在一定程度上，它受到人类视觉皮层系统工作方式的 启发 。 
+ 卷积运算 #  
+ 我强烈推荐这份关于卷积运算的 指南 ，它通过大量可视化和示例给出了清晰、扎实的解释。本文处理的是图像</description></item><item><title>目标检测入门（三）：R-CNN（基于候选区域的卷积神经网络） 家族</title><link>https://xingshuozhu1998.github.io/posts/2017-12-31-object-recognition-part-3/</link><guid>https://xingshuozhu1998.github.io/posts/2017-12-31-object-recognition-part-3/</guid><description>[2018-12-20 更新：删除此处的 YOLO（通过一次网络前向计算完成目标检测的模型） 内容。第 4 部分将介绍包括 YOLO 在内的多种快速 object detection 算法。] 
+ 
+ [2018-12-27 更新：为 R-CNN 添加  bbox regression  与  技巧 章节。]  
+ 在“Object Detection 入门”系列中，我们在  第 1 部分 从图像处理的基本概念讲起，例如梯度向量和 HOG（方向梯度直方图）。随后在  第 2 部分 介绍了用于分类的经典 convolutional neural network 架构设计，以及用于 object recognition 的先驱模型 Overfeat（联合分类、定位和检测的卷积网络） 和 DPM（可变形部件模型）。在本系列第 3 篇文章中，我们将回顾 R-CNN（“Region-based CNN（卷积神经网络）”）家族的一组模型。 
+ 本系列所有文章的链接：
+[ 第 1 部分 ]
+[ 第 2 部分 ]
+[ 第 3 部分 ]
+[ 第 4 部分 ]。 
+ 下面列出本文涉及的论文 ;) 
+ 
+	</description></item><item><title>多臂老虎机问题及其解法</title><link>https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/</link><guid>https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/</guid><description>这些算法针对 Bernoulli bandit（伯努利老虎机）的实现见  lilianweng/multi-armed-bandit 。 
+ Exploitation（利用）与 Exploration（探索） #  
+ 探索与利用的两难困境存在于生活的许多方面。假设你最喜欢的餐馆就在街角。如果每天都去，你很清楚自己会吃到什么，却可能错过发现更好选择的机会。如果总去尝试新地方，你很可能时不时就得吃到难吃的食物。同样，在线广告推荐系统也试图在已知最吸引人的广告与可能取得更好效果的新广告之间取得平衡。 
+ 
+	 
+	 探索与利用两难困境的现实例子：去哪里吃饭？（图片来源：UC Berkeley 的 AI（人工智能）课程 幻灯片 ， 第11讲 。） 
+ 
+ 如果已经掌握环境的全部信息，即使只用暴力模拟，也能够找出最佳策略，更不用说其他许多巧妙的方法了。这种困境源于信息 不完整 ：我们需要收集足够的信息，做出整体上最优的决策，同时控制风险。利用意味着选择已知的最佳选项；探索意味着承担一些风险，收集未知选项的信息。最佳的长期策略可能需要短期牺牲。例如，一次探索尝试可能彻底失败，但它会提醒我们今后不</description></item><item><title>深入了解强化学习</title><link>https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/</link><guid>https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/</guid><description>[2020-09-03更新：更新  SARSA  与  Q-learning  算法，使两者区别更加明显。 
+ 
+ [2021-09-19更新：感谢爱吃猫的鱼，本文已有  中文版 。]  
+ 近年来，AI（人工智能）领域发生了几件令人兴奋的事情。AlphaGo 在围棋中击败最优秀的人类职业棋手。不久后，扩展算法 AlphaGo Zero 无需通过人类知识进行监督学习，就以100比0击败 AlphaGo。顶尖职业游戏选手在 DOTA2 1v1比赛中，输给 OpenAI 开发的机器人。得知这些后，很难不对这些算法背后的魔法——Reinforcement Learning (RL（强化学习）)（强化学习）——感到好奇。本文简要介绍这个领域：先介绍基础概念，再深入解决 RL 问题的经典方法。希望它成为新手的良好起点，为之后研究前沿工作搭桥。 
+ 什么是强化学习？ #  
+ 假设一个智能体处于未知环境中，可以通过与环境交互获得奖励。智能体应采取动作，最大化累计奖励。现实场景可能是玩游戏争取高分的机器人，也可能是尝试操作实体物体、完成实际任务的机器人，当然并不限于这些。 
+ 
+	 
+	 智能体与环</description></item><item><title>策略梯度算法</title><link>https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/</link><guid>https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/</guid><description>[2018-06-30 更新：新增两种策略梯度方法  SAC（基于最大熵目标的行动者与评论家算法）  和  D4PG（分布式分布型深度确定性策略梯度） 。] 
+ 
+ [2018-09-30 更新：新增策略梯度方法  TD3（双延迟深度确定性策略梯度） 。] 
+ 
+ [2019-02-09 更新：新增 温度自动调整的 SAC 。] 
+ 
+ [2019-06-26 更新：感谢 Chanseok，本文有了 韩文版本 。] 
+ 
+ [2019-09-12 更新：新增策略梯度方法  SVPG（施泰因变分策略梯度） 。] 
+ 
+ [2019-12-22 更新：新增策略梯度方法  IMPALA（重要性加权行动者与学习器架构） 。] 
+ 
+ [2020-10-15 更新：新增策略梯度方法  PPG（分阶段策略梯度） ，并补充了一些关于  PPO（近端策略优化）  的讨论。] 
+ 
+ [2021-09-19 更新：感谢 Wenhao 和爱吃猫的鱼，本文有了 中文版本 1  和 中文版本 2 。]  
+ 什么是策略梯度 #  
+ 策略梯度是解决强化学习问题的一种方法。如果你还没有了解过强化学习领域，请先阅</description></item><item><title>使用 TensorFlow（机器学习框架） 与 OpenAI Gym（强化学习环境工具库） 实现深度强化学习模型</title><link>https://xingshuozhu1998.github.io/posts/2018-05-05-drl-implementation/</link><guid>https://xingshuozhu1998.github.io/posts/2018-05-05-drl-implementation/</guid><description>完整实现见  lilianweng/deep-reinforcement-learning-gym  
+ 在前两篇文章中，我介绍了许多深度强化学习模型的算法。现在该亲自动手，练习如何在实际环境中实现这些模型了。我们将在 Tensorflow与 OpenAI  gym  环境中实现它们。本教程的完整代码见  [lilian/deep-reinforcement-learning-gym] 。 
+ 环境配置 #  
+ 
+ 确保已经安装  Homebrew（软件包管理器） ： 
+ 
+     /usr/bin/ruby -e  &quot;  $( curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install )  &quot; 
+      
+ 我建议为开发创建一个 virtualenv（Python 虚拟环境）。当多个项目的依赖要求冲突时，它会让事情简单得多；例如，一个项目使用 Python 2.7，而另一个只兼容 Python 3.5+。 
+ 
+      # Install python virtualenv 
+</description></item><item><title>注意力？注意力！</title><link>https://xingshuozhu1998.github.io/posts/2018-06-24-attention/</link><guid>https://xingshuozhu1998.github.io/posts/2018-06-24-attention/</guid><description>[2018-10-28 更新：新增  Pointer Network（指针网络） ，以及我的 Transformer（基于注意力机制的神经网络架构） 实现的 链接 。]  
+ [2018-11-06 更新：新增 Transformer 模型实现的 链接 。]  
+ [2018-11-18 更新：新增  Neural Turing Machines（神经图灵机） 。]  
+ [2019-07-18 更新：修正介绍  show-attention-tell 论文时使用“self-attention（自注意力）”一词的错误；移到 自注意力 一节。]  
+ [2020-04-07 更新：关于改进 Transformer 模型的后续文章在 这里 。]  
+ 注意力在一定程度上受人类如何关注图像不同区域，或关联句子中词语的启发。以图 1 的柴犬图片为例。 
+ 
+	 
+	 穿着男装的柴犬。原始照片归 Instagram  @mensweardog 所有。 
+ 
+ 人类视觉注意力使我们能以“高分辨率”聚焦某个区域（例如黄色框中的尖耳朵），同时以“低分辨率”感知周围图像（雪地背景和衣服如何？），随后相应</description></item><item><title>从自编码器到 Beta-VAE（对潜变量约束进行加权的变分自编码器）</title><link>https://xingshuozhu1998.github.io/posts/2018-08-12-vae/</link><guid>https://xingshuozhu1998.github.io/posts/2018-08-12-vae/</guid><description>[2019-07-18 更新：新增  VQ-VAE（向量量化变分自编码器）与 VQ-VAE-2 一节。] 
+ 
+ [2019-07-26 更新：新增  TD-VAE（时间差分变分自编码器） 一节。] 
+  
+ 自编码器被发明用于重建高维数据，采用中间具有狭窄瓶颈层的神经网络（哎，这对  Variational Autoencoder（变分自编码器） 可能不成立，后文详细讨论）。一个良好副产物是降维：瓶颈层捕获压缩潜在编码。这种低维表征可作为各种应用（例如搜索）的嵌入向量，帮助数据压缩，或揭示底层数据生成因素。 
+ 符号说明 #  
+ 
+	 
+			 
+					 符号 
+					 含义 
+			 
+	 
+	 
+			 
+					 $\mathcal{D}$ 
+					 数据集 $\mathcal{D} = \{ \mathbf{x}^{(1)}, \mathbf{x}^{(2)}, \dots, \mathbf{x}^{(n)} \}$ 包含 $n$ 个数据样本；$\vert\mathcal{D}\vert =n $。 
+			 
+			 
+					 $\mathbf{x}^{</description></item><item><title>基于流的深度生成模型</title><link>https://xingshuozhu1998.github.io/posts/2018-10-13-flow-models/</link><guid>https://xingshuozhu1998.github.io/posts/2018-10-13-flow-models/</guid><description>此前我介绍过  GAN（生成对抗网络）  和  VAE（变分自编码器）  两类生成模型。它们都不显式学习真实数据的概率密度函数 $p(\mathbf{x})$（其中 $\mathbf{x} \in \mathcal{D}$）——因为这实在很难！以潜变量生成模型为例，$p(\mathbf{x}) = \int p(\mathbf{x}\vert\mathbf{z})p(\mathbf{z})d\mathbf{z}$ 很难计算，因为无法遍历潜在编码 $\mathbf{z}$ 的所有可能值。 
+ Flow-based（基于可逆变换的）深度生成模型，通过  normalizing flows（通过可逆变换构建概率分布的模型）  解决这一难题。这是强大的密度估计统计工具。准确估计 $p(\mathbf{x})$，便能高效完成许多下游任务：采样未见但真实的新数据点（生成数据）、预测未来事件的罕见程度（密度估计）、推断潜变量、补全不完整样本等。 
+ 生成模型类型 #  
+ 下面简要比较 GAN、VAE与 flow-based（基于可逆变换的）生成模型： 
+ 
+ Generative adversar</description></item><item><title>元学习：学会快速学习</title><link>https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/</link><guid>https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/</guid><description>[2019-10-01 更新：感谢 Tianhao，本文有了  中文  译本！]  
+ 好的机器学习模型往往需要大量样本训练。相比之下，人类学习新概念与技能更快、更高效。孩子只见过几次猫和鸟，就能很快区分它们。会骑自行车的人，可能只需少量演示、甚至无需演示，就能迅速学会骑摩托车。能否设计具有类似性质的机器学习模型，用少量训练示例快速学习新概念与技能？这正是  meta-learning（元学习）  的基本目标。 
+ 我们期待好的 meta-learning（元学习）模型，能很好适应或泛化到训练中未曾遇到的新任务与新环境。适应过程本质上是小型学习阶段，发生在测试期间，只有限接触新任务配置。最终适应后的模型能完成新任务。因此，元学习也称为  learning to learn（学会学习） 。 
+ 任务可以是任意明确定义的机器学习问题族：有监督学习、强化学习等。例如，以下是具体元学习任务： 
+ 
+ 在非猫图像上训练的分类器，只看少量猫照片后，就能判断给定图像是否含猫。 
+ 游戏机器人能够迅速掌握新游戏。 
+ 小型机器人虽然只在平坦地面训练，测试时却能在上坡表面完成所需任务。 
+ 
+ 定义 M</description></item><item><title>目标检测（四）：快速检测模型</title><link>https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/</link><guid>https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/</guid><description>在 第 3 部分 中，我们回顾了 R-CNN（基于候选区域的卷积神经网络） 家族的模型。它们都是基于区域的目标检测算法，可以达到很高的准确率，但对自动驾驶等某些应用而言，速度可能太慢。第 4 部分只关注快速目标检测模型，包括 SSD、RetinaNet 和 YOLO（通过一次网络前向计算完成目标检测的模型） 家族的模型。 
+ 本系列所有文章的链接：
+[ 第 1 部分 ]
+[ 第 2 部分 ]
+[ 第 3 部分 ]
+[ 第 4 部分 ]。 
+ 两阶段与单阶段检测器 #  
+ R-CNN 家族的模型都基于区域。检测分两个阶段进行：（1）首先，模型通过选择性搜索或区域提议网络提出一组感兴趣区域。提出的区域很稀疏，因为潜在的候选边界框可能有无限多个。（2）随后，分类器只处理这些候选区域。 
+ 另一种不同的方法跳过区域提议阶段，直接在对可能位置的密集采样上进行检测。这就是单阶段目标检测算法的工作方式。这样更快、更简单，但可能会略微降低性能。 
+ 本文介绍的所有模型都是单阶段检测器。 
+ YOLO: You Only Look Once #  
+  YOLO  模型（ “You Only Look</description></item><item><title>通用语言模型</title><link>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</link><guid>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</guid><description>[2019-02-14更新：加入  ULMFiT  和  GPT-2（第二代生成式预训练语言模型） 。]  
+ [2020-02-29更新：加入  ALBERT 。]  
+ [2020-10-25更新：加入  RoBERTa 。]  
+ [2020-12-13更新：加入  T5 。]  
+ [2020-12-30更新：加入  GPT-3（第三代生成式预训练语言模型） 。]  
+ [2021-11-13更新：加入  XLNet 、 BART  和  ELECTRA ；同时更新  总结  部分。]  
+ 
+ 
+	 
+	 我猜他们是 Elmo 和 Bert？（图片来源： 这里 ） 
+ 
+ 2018年，我们见证了 NLP（自然语言处理）的惊人进展。 OpenAI GPT（采用解码器的生成式预训练语言模型）  和  BERT（基于双向编码器的预训练语言模型）  等大规模预训练语言模型，使用通用模型架构，在多种语言任务上取得了出色性能。这一思路类似于 ImageNet 分类预训练对许多视觉任务的帮助（*）。比视觉分类预训练更好的是，NLP 中这种简单而强大的方法不需要带标签的数据进行预训练，因此我</description></item><item><title>深度神经网络是否严重过拟合？</title><link>https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/</link><guid>https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/</guid><description>[2019-05-27 更新：新增关于 Lottery Ticket Hypothesis（彩票假说）的 一节 。]  
+ 如果你和我一样，带着传统机器学习经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络参数如此之多，训练误差很容易达到完美，因此它肯定会严重过拟合。它怎么可能泛化到样本外数据点呢？ 
+ 理解深度神经网络为何能泛化的努力，让我想起系统生物学领域一篇有趣论文—— “Can a biologist fix a radio?”（生物学家能修收音机吗？） （Lazebnik，2002）。如果生物学家像研究生物系统那样修收音机，可能很困难。因为收音机系统的完整机制尚未揭示，探测小型局部功能可能提供线索，却难以呈现系统内全部交互，更不用说完整工作流程。不论你认为它是否与 DL（深度学习）相关，这篇文章都非常有趣。 
+ 本文想讨论几篇关于深度学习模型泛化能力与复杂度度量的论文，希望帮助你思考 DNN（深度神经网络）为什么能够泛化。 
+ 压缩与模型选择的经典定理 #  
+ 假设有分类问题和数据集，我们可以开发许多模型解决它，从拟合简单线性回归，到将整个数据集存储在磁盘中记忆。</description></item><item><title>用于仿真到现实迁移的域随机化</title><link>https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/</link><guid>https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/</guid><description>在机器人学中，最困难的问题之一是如何让模型迁移到现实世界。由于深度 RL（强化学习）算法的样本效率较低，而且在真实机器人上收集数据的成本较高，我们往往需要在仿真器中训练模型；理论上，仿真器能够提供无限量的数据。然而，仿真器与物理世界之间的现实差距，往往会导致模型在真实机器人上运行时失败。这种差距源于物理参数的不一致（例如摩擦、kp、阻尼、质量和密度），而更致命的原因则是不正确的物理建模（例如对柔软表面之间碰撞的建模）。 
+ 为了缩小 sim2real 差距，我们需要改进仿真器，使它更接近现实。以下是几种方法： 
+ 
+  System identification（系统辨识） 
+ 
+  System identification  是为物理系统建立数学模型；在 RL 的语境下，这个数学模型就是仿真器。为了让仿真器更加逼真，必须进行仔细的校准。 
+ 遗憾的是，校准成本很高。此外，同一台机器的许多物理参数可能因温度、湿度、位置，或随时间发生的磨损而显著变化。 
+ 
+ 
+  Domain adaptation（域适应） 
+ 
+  Domain adaptation (DA)  指一组迁移学习技</description></item><item><title>元强化学习</title><link>https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/</link><guid>https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/</guid><description>上一篇  meta-learning（元学习）  主要在少样本分类中定义问题。这里探索“元学习”  Reinforcement Learning（强化学习，RL（强化学习））  任务，开发快速、高效解决未见任务的智能体。 
+ 回顾，好的元学习模型应泛化到未见任务或环境。适应本质是  小型学习阶段 ，测试时有限接触新配置。即使没有显式微调（可训练变量不做梯度反向传播），也能自主调整内部隐藏状态学习。 
+ RL训练有时非常困难。如果元学习智能体足够聪明，可解未见任务分布极广，我们就走向  通用方法 ——构建无需太多人类干预或手工特征工程、能解决各种 RL 问题的“大脑”。很棒吧？💖 
+ Meta-RL（元强化学习）的起源 #  
+ 回到 2001 年 #  
+ 我看到  Hochreiter et al.  的 2001 论文，当时正阅读  Wang et al., 2016 。虽针对有监督学习，但很像当前元强化学习。 
+ 
+	 
+	 元学习系统包含监督系统与从属系统。从属是循环网络，输入当前观察 $x\_t$ 与上步标签 $y\_{t-1}$。（图片来源： Hochreiter et a</description></item><item><title>进化策略</title><link>https://xingshuozhu1998.github.io/posts/2019-09-05-evolution-strategies/</link><guid>https://xingshuozhu1998.github.io/posts/2019-09-05-evolution-strategies/</guid><description>随机梯度下降是优化深度学习模型的通用选择，但并非唯一选项。使用黑盒优化算法，可以评估目标函数 $f(x): \mathbb{R}^n \to \mathbb{R}$，即使不知道 $f(x)$ 的精确解析形式，因此无法计算梯度或 Hessian（海森）矩阵。黑盒优化方法包括  Simulated Annealing（模拟退火） 、 Hill Climbing（爬山算法） 和  Nelder-Mead method（单纯形搜索法） 。 
+  Evolution Strategies (ES)（进化策略） 是一类黑盒优化算法，来自  Evolutionary Algorithms (EA)（进化算法） 家族。本文深入讨论几种经典 ES 方法，并介绍 ES 如何在深度强化学习中发挥作用的应用。 
+ 什么是 Evolution Strategies（进化策略）？ #  
+ Evolution strategies（进化策略，ES）属于 evolutionary algorithms（进化算法）大家族。ES 的优化目标是实数向量 $x \in \mathbb{R}^n$。 
+ Evolutiona</description></item><item><title>自监督表征学习</title><link>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</link><guid>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</guid><description>[2020-01-09 更新：新增  Contrastive Predictive Coding（对比预测编码） 一节。] 
+ 
+  [2020-04-13 更新：新增关于 MoCo（动量对比学习方法）、SimCLR（使用数据增强与对比损失的表征学习方法） 和 CURL 的“Momentum Contrast（动量对比学习）”一节。]  
+ 
+ [2020-07-08 更新：新增关于 DeepMDP 和 DBC 的  “Bisimulation（双模拟）” 一节。] 
+ 
+  [2020-09-12 更新：在“Momentum Contrast（动量对比学习）”一节中新增  MoCo V2  和  BYOL（不依赖负样本的自监督表征学习方法） 。]  
+ 
+ [2021-05-31 更新：移除“Momentum Contrast（动量对比学习）”一节，并添加完整文章  《对比表征学习》 的链接。]  
+ 给定任务和足够的标签，有监督学习可以将其解决得很好。良好性能通常需要相当数量的标签，但收集人工标签成本很高（例如 ImageNet），且难以扩大规模。考虑到无标签数据的数量（例如自由文</description></item><item><title>强化学习中的课程学习</title><link>https://xingshuozhu1998.github.io/posts/2020-01-29-curriculum-rl/</link><guid>https://xingshuozhu1998.github.io/posts/2020-01-29-curriculum-rl/</guid><description>[2020-02-03 更新：在“任务专属课程”一节提及  PCG（程序化内容生成） 。  
+ [2020-02-04 更新：新增 “通过蒸馏构建课程” 一节。  
+ 要教一个连基本算术都不懂的 3 岁孩子积分或导数，听起来是不可能的任务。这就是教育的重要性：它提供系统方法，拆解复杂知识，并设计良好课程，由易到难教授概念。课程使我们人类更容易接近并学习困难的东西。但机器学习模型呢？能否通过课程更高效地训练模型？能否设计课程加速学习？ 
+ 早在 1993 年，Jeffrey Elman 就提出使用课程训练神经网络。他在学习简单语言语法上的早期工作，展示了这一策略的重要性：从有限的简单数据集合开始，逐渐增加训练样本复杂度；否则模型根本无法学习。 
+ 相比不使用课程训练，我们预期课程会加快收敛，最终模型性能可能改善，也可能不改善。设计高效、有效的课程并不容易。记住，不良课程甚至可能妨碍学习。 
+ 接下来介绍几类课程学习，如图所示。多数用于强化学习，少数例外用于有监督学习。 
+ 
+	 
+	 强化学习的五类课程。 
+ 
+ 在“The importance of starting small”（从</description></item><item><title>Transformer（基于注意力机制的神经网络架构） 家族</title><link>https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/</link><guid>https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/</guid><description>[更新于   2023-01-27  ：时隔近三年，我对本文进行了大规模重构更新，纳入 2020 年以来的一批新 Transformer 模型。增强版文章在这里：   《Transformer 家族 2.0 版》   。关于这一主题，请参阅该文。] 
+  
+ 距离上一篇关于 注意力 的文章，已近两年。Transformer 新版本与增强版本的近期进展，促使我围绕这一主题再写一篇，重点讨论如何改进基本 Transformer，以扩大长程注意力范围、降低内存与计算消耗、解决 RL（强化学习）任务等。 
+ 符号说明 #  
+ 
+	 
+			 
+					 符号 
+					 含义 
+			 
+	 
+	 
+			 
+					 $d$ 
+					 模型维度／隐藏状态维度／位置编码维度。 
+			 
+			 
+					 $h$ 
+					 多头注意力层中的头数。 
+			 
+			 
+					 $L$ 
+					 输入序列的片段长度。 
+			 
+			 
+					 $\mathbf{X} \in \mathbb{R}^{L \times d}$ 
+					 输入序列，其中每个元素</description></item><item><title>深度强化学习中的探索策略</title><link>https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/</link><guid>https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/</guid><description>[2020-06-17更新：加入  “exploration via disagreement（通过分歧探索）” ，位于“Forward Dynamics（前向动力学）” 一节 。  
+  Exploitation（利用）与 exploration（探索）之间的权衡 ，是RL（强化学习）中的重要主题。我们希望RL智能体尽快找到最佳解。然而，在探索不足时过早锁定某个解，会造成很差的结果，因为这可能导致局部极小值或彻底失败。以最优回报为优化目标的现代  RL   算法 ，能够相当高效地实现良好的利用，而探索仍更像一个开放问题。 
+ 这里，我想讨论深度 RL中的几种常见探索策略。这是一个很大的主题，本文绝不可能覆盖所有重要子主题。我计划定期更新，随着时间推移逐步丰富内容。 
+ 经典探索策略 #  
+ 作为简要回顾，先介绍几种在 multi-armed bandit（多臂老虎机）问题或简单表格型RL中效果很好的经典探索算法。 
+ 
+  Epsilon-greedy（ε贪心） ：智能体偶尔进行随机探索，概率为 $\epsilon$，而大多数时候采取最优动作，概率为 $1-\epsilon$。 
+</description></item><item><title>神经架构搜索</title><link>https://xingshuozhu1998.github.io/posts/2020-08-06-nas/</link><guid>https://xingshuozhu1998.github.io/posts/2020-08-06-nas/</guid><description>虽然最流行、最成功的模型架构大多由人类专家设计，但这并不意味着我们已经探索了全部网络架构空间，并选定了最佳方案。如果采用系统化、自动化的方法学习高性能模型架构，我们找到最优解的机会会更大。 
+ 自动学习并演化网络拓扑并非新想法（ Stanley &amp; Miikkulainen, 2002 ）。近年来， Zoph &amp; Le 2017  与  Baker et al. 2017  的开创性工作，使 Neural Architecture Search（神经架构搜索，NAS（神经架构搜索））受到大量关注，带来许多有趣想法，以实现更好、更快、更节省成本的 NAS。 
+ 开始研究 NAS时，我发现  Elsken, et al 2019  的这篇优秀综述很有帮助。他们将 NAS 描述为具有三个主要组件的系统，清楚简洁，也被其他 NAS 论文广泛采用。 
+ 
+  搜索空间 ：NAS的搜索空间定义一组操作（例如卷积、全连接、池化），以及如何连接操作形成有效网络架构。搜索空间设计通常包含人类专业知识，也不可避免地包含人类偏差。 
+  搜索算法 ：NAS算法采样一组候选网络架构，接收子模型性能指标作为奖励</description></item><item><title>如何构建开放域问答系统？</title><link>https://xingshuozhu1998.github.io/posts/2020-10-29-odqa/</link><guid>https://xingshuozhu1998.github.io/posts/2020-10-29-odqa/</guid><description>[2020-11-12更新：加入  一个示例 ，使用 OpenAI API（应用程序编程接口）（测试版）进行闭卷事实问答。  
+ 能够回答任何事实知识问题的模型，可以带来许多有用的实际应用，例如聊天机器人或 AI 助手🤖。本文将回顾构建这种开放域问答系统的几种常见方法。 
+ 考虑到相关论文很多，先说明几点： 
+ 
+ 假设可以使用一个强大的预训练  语言模型 。 
+ 本文不讨论如何使用结构化知识库（例如 Freebase、WikiData）。 
+ 只聚焦单轮问答，不讨论多轮对话式问答。 
+ 主要关注包含神经网络的问答模型，特别是基于 Transformer（基于注意力机制的神经网络架构） 的语言模型。 
+ 我承认，遗漏了2017—2019年间许多专门为问答任务设计架构的论文😔。 
+ 
+ 什么是 Open-Domain Question Answering（开放域问答）？ #  
+  Open-domain Question Answering (ODQA（开放域问答）)（开放域问答）  是一类语言任务，要求模型用自然语言回答事实型问题。真实答案是客观的，因此很容易评估模型性能。 
+ 例如</description></item><item><title>可控神经文本生成</title><link>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</link><guid>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</guid><description>[2021-02-01 更新：更新至 2.0 版，新增若干研究工作并修正许多笔误。] 
+ 
+ [2021-05-26 更新：在  “提示设计” 一节新增 P-tuning 和 Prompt Tuning。] 
+ 
+ [2021-09-19 更新：新增  “Unlikelihood Training（非似然训练）” 。] 
+ 
+ 网络上存在海量的免费文本，比带标签的基准数据集多出几个数量级。最先进的语言模型（LM）使用大规模无监督网络数据进行训练。通过反复采样下一个 token（词元）来从 LM 生成样本时，我们对输出文本的主题、风格、情感等属性并没有多少控制能力。许多应用需要对模型输出进行良好的控制。例如，如果计划使用 LM 为儿童生成阅读材料，我们就希望引导输出的故事，使其安全、有教育意义，并且容易被儿童理解。 
+ 如何引导一个强大的无条件语言模型？本文将深入讨论几种借助无条件语言模型进行可控内容生成的方法。
+请注意，模型的可控性仍然是一个尚未解决的研究问题。本文介绍的每一种方法都有其优点和缺点。 
+ 
+ 应用引导解码策略，在测试时选择符合要求的输出。 
+ 通过良好的提示设计，优化生</description></item><item><title>降低语言模型的有害性</title><link>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</link><guid>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</guid><description>大型预训练  语言模型  在大量在线数据上训练，不可避免地从互联网习得某些有毒行为与偏差。预训练模型能力强大，在许多 NLP（自然语言处理）任务上非常成功。然而，要在现实应用中安全部署，必须对模型生成过程进行强有力的安全控制。 
+ 减少各类不安全内容，面临许多挑战： 
+ 
+ 首先，不安全内容类型多样，包括毒性、辱骂、仇恨言论、偏差、刻板印象、网络欺凌、身份攻击等，可能需要不同处理，也可能不需要。 
+ 其次，预训练语言模型的不安全行为缺乏明确、广泛认同的分类与定义。不同社会背景使个人看法可能差异很大。 
+ 
+ 本文深入讨论语言模型的毒性问题。我仍在寻找有毒内容的具体定义，因此列出文献中的几个定义。 
+ 
+ [ Perspective API（应用程序编程接口） ] 粗鲁、不尊重或不合理的评论，很可能让人退出讨论。 
+ 
+ 
+ [ Kurita et al. 2019 ] 可能冒犯或伤害接收者的内容，包括仇恨言论、种族主义和冒犯性语言。 
+ 
+ 
+ [ Pavlopoulos et al. 2020 ] 我们将“有毒”作为总称，但文献对不同类型有毒语言或相关现象使用多个术语：“冒犯性”“辱</description></item><item><title>对比表征学习</title><link>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</link><guid>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</guid><description>对比表征学习的目标，是学习这样的嵌入空间：相似样本对彼此接近，不相似样本对彼此远离。对比学习可以用于监督和无监督情形。在使用无监督数据时，对比学习是 自监督学习 中最强大的方法之一。 
+ 对比训练目标 #  
+ 早期用于对比学习的损失函数只涉及一个正样本和一个负样本。近期训练目标的趋势，则是在一个批量中包含多个正样本对和负样本对。 
+ 对比损失 #  
+  对比损失 （ Chopra 等，2005 ）是最早以对比方式进行深度度量学习的训练目标之一。 
+ 给定一组输入样本 $\{ \mathbf{x}_i \}$，每个样本都有对应标签 $y_i \in \{1, \dots, L\}$，属于 $L$ 个类别之一。我们希望学习函数 $f_\theta(.): \mathcal{X}\to\mathbb{R}^d$，将 $x_i$ 编码为嵌入向量，使同类示例具有相似嵌入，而不同类样本的嵌入差异很大。因此，对比损失以一对输入 $(x_i, x_j)$ 为对象：如果二者属于同类，就最小化嵌入距离；否则就最大化距离。 
+ 
+$$
+\mathcal{L}_\text{cont}(\mathbf{x}</description></item><item><title>什么是扩散模型？</title><link>https://xingshuozhu1998.github.io/posts/2021-07-11-diffusion-models/</link><guid>https://xingshuozhu1998.github.io/posts/2021-07-11-diffusion-models/</guid><description>[2021-09-19 更新：强烈推荐 Yang Song（参考文献中多篇关键论文的作者）关于  score-based generative modeling（以对数概率密度梯度建模的生成方法）  的这篇博客。]  
+ [2022-08-27 更新：新增  classifier-free guidance（无分类器引导） 、 GLIDE 、 unCLIP  和  Imagen 。  
+ [2022-08-31 更新：新增  latent diffusion model（潜空间扩散模型） 。  
+ [2024-04-13 更新：新增  progressive distillation（渐进蒸馏） 、 consistency models（一致性模型） ，以及  模型架构一节 。  
+ 此前我已经介绍了三类生成模型： GAN（生成对抗网络） 、 VAE（变分自编码器）  和  Flow-based（基于可逆变换的） 模型。它们在生成高质量样本方面非常成功，但各有局限。GAN 的对抗训练性质可能导致训练不稳定、生成多样性较低。VAE 依赖替代损失。Flow 模型必须使用专门架构构建可逆变换</description></item><item><title>如何使用多块 GPU（图形处理器） 训练超大模型？</title><link>https://xingshuozhu1998.github.io/posts/2021-09-25-train-large/</link><guid>https://xingshuozhu1998.github.io/posts/2021-09-25-train-large/</guid><description>[2022-03-13更新：加入  expert choice routing（专家选择路由） 。]  
+ [2022-06-10更新]： Greg  与我撰写了本文更短的升级版，发表于 OpenAI Blog： “Techniques for Training Large Neural Networks”  
+ 近年来，更大的预训练  语言模型  在许多 NLP（自然语言处理）基准任务上取得更好结果。训练大而深的神经网络颇具挑战，因为需要大量 GPU内存，以及长时间训练。 
+ 然而，单个 GPU工作进程的内存有限，许多大型模型的大小已超出单块 GPU。若干并行范式支持跨多块 GPU 训练模型，各种模型架构与内存节省设计，也帮助实现  超大  神经网络训练。 
+ 训练并行化 #  
+ 超大模型训练的主要瓶颈，是对大量 GPU内存的强烈需求，远超单个 GPU 机器的容量。除模型权重外（例如数百亿浮点数），存储梯度、优化器状态（如 Adam 中的动量与方差）等中间计算输出，通常成本更高。此外，大模型常搭配大训练语料，单个进程可能耗时极长。 
+ 因此，并行化是必要的。并行可发生在数据、模型架</description></item><item><title>数据不足时的学习（一）：半监督学习</title><link>https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/</link><guid>https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/</guid><description>面对监督学习任务中有限的带标签数据，通常讨论四种方法。 
+ 
+  预训练 + 微调 ：在大量无监督数据上预训练强大的任务无关模型，例如在自由文本上  预训练 LM（语言模型） ，或通过  自监督学习  在无标签图像上预训练视觉模型；随后，用少量带标签样本在下游任务上微调。 
+  半监督学习 ：同时从带标签与无标签样本学习。视觉任务中已有大量采用这一方法的研究。 
+  主动学习 ：标注昂贵，但仍希望在成本预算内收集更多标签。主动学习学会选择最有价值的无标签样本作为下一批标注对象，帮助我们在有限预算下明智行动。 
+  预训练 + 自动生成数据集 ：给定有能力的预训练模型，可以利用它自动生成更多带标签样本。受到 few-shot learning（少样本学习）成功的推动，这在语言领域尤为流行。 
+ 
+ 我计划围绕“数据不足时的学习”写一系列文章。第一部分介绍  半监督学习 。 
+ 什么是半监督学习？ #  
+ 半监督学习同时使用带标签与无标签数据训练模型。 
+ 有趣的是，目前大多数半监督学习文献聚焦视觉任务；语言任务更常见的范式则是预训练 + 微调。 
+ 本文介绍的所有方法，其损失都结合两部</description></item><item><title>数据不足时的学习（二）：主动学习</title><link>https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/</link><guid>https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/</guid><description>这是面对监督学习任务中有限带标签数据时如何应对的第二部分。这次会加入一定量的人类标注工作，但受预算限制，因此需要明智地选择标注哪些样本。 
+ 符号说明 #  
+ 
+	 
+			 
+					 符号 
+					 含义 
+			 
+	 
+	 
+			 
+					 $K$ 
+					 不同类别标签的数量。 
+			 
+			 
+					 $(\mathbf{x}^l, y) \sim \mathcal{X}, y \in \{0, 1\}^K$ 
+					 带标签数据集。$y$ 是真实标签的 one-hot（独热）表示。 
+			 
+			 
+					 $\mathbf{u} \sim \mathcal{U}$ 
+					 无标签数据集。 
+			 
+			 
+					 $\mathcal{D} = \mathcal{X} \cup \mathcal{U}$ 
+					 整个数据集，包括带标签与无标签样本。 
+			 
+			 
+					 $\mathbf{x}$ 
+					 任意样本，可以带标签，也可以不带标签。 
+			 
+			 
+					 $\mathbf{x</description></item><item><title>数据不足时的学习（三）：数据生成</title><link>https://xingshuozhu1998.github.io/posts/2022-04-15-data-gen/</link><guid>https://xingshuozhu1998.github.io/posts/2022-04-15-data-gen/</guid><description>这是“数据不足时的学习”第 3 部分（此前： 第 1 部分 和 第 2 部分 ）。我们来考虑两种生成训练用合成数据的方法。 
+ 
+  增强数据 。给定一组现有训练样本，可以施加各种增强、扰动和变换，在不丢失关键属性的情况下得到新数据点。此前关于对比学习的 文章 已介绍许多文本与图像增强方法。为保证本文完整，我将数据增强一节 复制 到这里，并作了一些修改。 
+  新数据 。给定很少甚至没有数据点，可以依赖强大的预训练模型，生成若干 新 数据点。近年来大型预训练 language models（语言模型，LM） 快速发展，这一点尤其成立。少样本提示已被证明可以有效让 LM 在上下文中学习，无需额外训练。 
+ 
+ 数据增强 #  
+ 数据增强的目标，是在保持语义不变的同时，修改输入形式（例如文本措辞、视觉外观）。 
+ 图像增强 #  
+ 基本图像处理操作 #  
+ 在保留语义信息的同时，修改图像有多种方式。可以使用以下任一增强方法，或组合多种操作。 
+ 
+ 随机裁剪，然后缩放回原始大小。 
+ 随机颜色扰动 
+ 随机高斯模糊 
+ 随机颜色抖动 
+ 随机水平翻转 
+ 随机灰度转换 
+ 还有许多其</description></item><item><title>通用视觉语言模型</title><link>https://xingshuozhu1998.github.io/posts/2022-06-09-vlm/</link><guid>https://xingshuozhu1998.github.io/posts/2022-06-09-vlm/</guid><description>处理图像以生成文本，例如图像描述与视觉问答，已经研究多年。传统系统依赖目标检测网络作为视觉编码器，捕获视觉特征，再通过文本解码器生成文本。鉴于已有大量文献，本文只关注解决视觉语言任务的一种方法： 扩展预训练 通用语言模型 ，使其能够接收视觉信号 。 
+ 我将此类 vision language models（视觉语言模型，VLMs）粗略分为四类： 
+ 
+ 将图像转换为嵌入特征，与词元嵌入联合训练。 
+ 学习良好的图像嵌入，用作冻结的预训练语言模型的前缀。 
+ 使用专门设计的 cross-attention（交叉注意力）机制，将视觉信息融合到语言模型各层。 
+ 无需任何训练，将视觉模型和语言模型结合。 
+ 
+ 使用图像和文本联合训练 #  
+ 将视觉信息融合到语言模型的一种直接方式，是把图像视为普通文本词元，在文本与图像的联合表征序列上训练模型。具体而言，将图像划分为多个较小图像块，每个图像块作为输入序列中的一个“词元”。 
+  VisualBERT（联合处理文本与图像区域的 BERT（基于双向编码器的预训练语言模型） 模型） （ Li 等，2019 ）将文本输入和图像区域都送入  BE</description></item><item><title>神经切线核背后的数学</title><link>https://xingshuozhu1998.github.io/posts/2022-09-08-ntk/</link><guid>https://xingshuozhu1998.github.io/posts/2022-09-08-ntk/</guid><description>神经网络具有过度参数化的特点，这是 众所周知的 。神经网络往往能够轻松拟合数据，使训练损失接近零，同时在测试数据集上取得不错的泛化表现。尽管所有参数都随机初始化，优化过程仍能稳定地得到同样良好的结果。即使模型参数数量超过训练数据点数量，这一点也成立。 
+  Neural tangent kernel（神经切线核；NTK（神经切线核）） （ Jacot et al. 2018 ）是一种核，用于解释神经网络在梯度下降训练过程中的演化。它帮助我们深入理解：为什么具有足够宽度的神经网络在训练以最小化经验损失时，能够稳定地收敛到全局最小值。本文将深入讨论 NTK 的动机与定义，并通过刻画无限宽神经网络中的 NTK，证明这些网络在不同初始化下的确定性收敛。 
+ 
+ 🤓 与我之前的文章不同，这篇文章主要聚焦于少量核心论文，而没有广泛回顾这一领域的文献。NTK 之后出现了许多有趣的研究，通过修改或扩展这一理论来理解 NNs（神经网络）的学习动态，但本文不会涉及这些研究。本文的目标是以清晰、容易理解的形式展示 NTK 背后的全部数学，因此数学内容相当密集。如果你发现任何错误，请告诉我，我会很乐意尽快改正</description></item><item><title>大型 Transformer（基于注意力机制的神经网络架构） 模型的推理优化</title><link>https://xingshuozhu1998.github.io/posts/2023-01-10-inference-optimization/</link><guid>https://xingshuozhu1998.github.io/posts/2023-01-10-inference-optimization/</guid><description>[2023-01-24 更新：新增  distillation（知识蒸馏）  小节。]   
+ 大型 Transformer模型如今已成为主流，在多种任务上取得最先进结果。它们能力强大，但训练与使用成本都很高。推理在时间和内存上的极高成本，是大规模采用强大 Transformer 解决现实任务的主要瓶颈。 
+  为什么大型 Transformer模型推理难以运行？ 除了最先进模型的规模不断增大，还有两个主要因素导致推理困难（ Pope et al. 2022 ）： 
+ 
+  内存占用大 。推理时，模型参数与中间状态都需要驻留内存。例如，
+ 
+ 解码期间，KV cache（键值缓存）应存储在内存中；例如，批次大小为 512、上下文长度为 2048 时，KV cache 总计 3 TB，是模型大小的 3 倍（！）。 
+ 注意力机制的推理成本随输入序列长度呈二次增长。 
+ 
+ 
+  可并行性低。 推理生成以自回归方式执行，使解码过程难以并行。 
+ 
+ 本文将探讨几种提高 Transformer推理效率的方法。有些是通用网络压缩方法，有些则针对 Transformer 架构。 
+ 方法概览 #</description></item><item><title>Transformer（基于注意力机制的神经网络架构） 家族 2.0</title><link>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</link><guid>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</guid><description>自从大约三年前我发布上一篇   “The Transformer Family”   以来，人们提出了许多新的 Transformer 架构改进。在这里，我对那篇2020年的文章进行了大幅重构与扩充：重新组织各节的层级，并用更新的论文完善许多章节。2.0版包含旧版的全部内容，长度约为旧版的两倍。 
+ 符号说明 #  
+ 
+	 
+			 
+					 符号 
+					 含义 
+			 
+	 
+	 
+			 
+					 $d$ 
+					 模型维度／隐藏状态维度／位置编码维度。 
+			 
+			 
+					 $h$ 
+					 多头注意力层中的头数。 
+			 
+			 
+					 $L$ 
+					 输入序列的片段长度。 
+			 
+			 
+					 $N$ 
+					 模型中注意力层的总数；不考虑 MoE（混合专家）。 
+			 
+			 
+					 $\mathbf{X} \in \mathbb{R}^{L \times d}$ 
+					 输入序列，其中每个元素均已映射为形状为 $d$ 的嵌入向量，与模型维度相同。 
+			 
+			 
+					 $\m</description></item><item><title>Prompt Engineering（提示工程）</title><link>https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/</link><guid>https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/</guid><description>Prompt Engineering ，也称  In-Context Prompting（上下文提示） ，指如何与 LLM（大语言模型）通信，引导其行为达到预期结果，且  不  更新模型权重的方法。它是一门实证科学，Prompt Engineering 方法在不同模型上的效果可能差异很大，因此需要大量实验与启发式规则。 
+ 本文只聚焦自回归语言模型的 Prompt Engineering，不涉及完形填空测试、图像生成或多模态模型。Prompt Engineering 的核心目标是对齐与模型可引导性。请参阅我  之前  介绍可控文本生成的文章。 
+  [我的个人尖锐看法]  我认为，某些 Prompt Engineering论文不值得写满8页，因为技巧用一句或几句话就能解释，其余全是基准评估。易用且共享的基准基础设施，应对社区更有益。但迭代提示或外部工具使用的配置并不简单，让整个研究社区统一采用它也不容易。 
+ 基础提示方法 #  
+ Zero-shot（零样本）与 few-shot（少样本）学习，是提示模型的两种最基本方法，由许多 LLM论文率先使用，并常用于评估 LLM 性能。 
+ </description></item><item><title>由 LLM（大语言模型）驱动的自主智能体</title><link>https://xingshuozhu1998.github.io/posts/2023-06-23-agent/</link><guid>https://xingshuozhu1998.github.io/posts/2023-06-23-agent/</guid><description>以 LLM作为核心控制器构建智能体，是一个很有意思的概念。 AutoGPT 、 GPT-Engineer  与  BabyAGI  等概念验证演示，提供了富有启发性的例子。LLM 的潜力不只在于生成出色的文案、故事、文章与程序，还可以被构建为强大的通用问题求解器。 
+ 智能体系统概览 #  
+ 在 LLM驱动的自主智能体系统中，LLM 充当智能体的大脑，并由几个关键组件补充： 
+ 
+  规划 
+ 
+ 子目标与分解：智能体将大任务拆分为较小、可管理的子目标，以高效处理复杂任务。 
+ 反思与细化：智能体可以对过去动作进行自我批评与自我反思，从错误中学习，并为未来步骤细化行为，从而改善最终结果质量。 
+ 
+ 
+  记忆 
+ 
+ 短期记忆：我认为，所有 in-context learning（在上下文示例中学习）（在上下文示例中学习，参阅  Prompt Engineering（提示工程） ）都是利用模型的短期记忆来学习。 
+ 长期记忆：使智能体能够在较长时间内保留与回忆（无限的）信息，通常借助外部向量存储与快速检索实现。 
+ 
+ 
+  工具使用 
+ 
+ 智能体学习调用外部 API（应用程序编</description></item><item><title>针对 LLMs（大语言模型）的对抗攻击</title><link>https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/</link><guid>https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/</guid><description>ChatGPT 的推出大幅加速了大语言模型在真实世界的应用。我们（包括我在 OpenAI 的团队，在此向他们致意）投入了大量精力，在对齐过程中（例如通过  RLHF（基于人类反馈的强化学习） ）为模型建立默认的安全行为。不过，对抗攻击或 jailbreak（绕过模型的行为约束）提示可能使模型输出不希望出现的内容。 
+ 大量对抗攻击基础工作以图像为对象；与文本不同，它们作用于连续、高维空间。由于缺乏直接梯度信号，针对文本等离散数据的攻击一直被认为困难得多。我之前的文章 《可控文本生成》 与此主题密切相关，因为攻击 LLM本质上是在控制模型，让它输出某一类（不安全的）内容。 
+ 还有一类工作通过攻击 LLM提取预训练数据、私有知识（ Carlini 等，2020 ），或通过数据投毒攻击模型训练过程（ Carlini 等，2023 ）。本文不涉及这些主题。 
+ 基础知识 #  
+ 威胁模型 #  
+ 对抗攻击是使模型输出不希望出现的内容的输入。许多早期文献聚焦分类任务，近期研究则开始更多考察生成模型的输出。在大语言模型情境下，本文假设攻击只发生在 推理时 ，即 模型权重固定 。 
+ 
+	 
+</description></item><item><title>关于高质量人工数据的思考</title><link>https://xingshuozhu1998.github.io/posts/2024-02-05-human-data-quality/</link><guid>https://xingshuozhu1998.github.io/posts/2024-02-05-human-data-quality/</guid><description>[特别感谢  Ian Kivlichan  提供许多有用线索（如百余年前 Nature 论文“Vox populi”）和良好反馈。🙏]   
+ 高质量数据是现代深度学习模型训练的燃料。多数针对特定任务的带标签数据来自人工标注，例如分类任务，以及用于 LLM（大语言模型）alignment（使模型行为符合人类意图）训练的  RLHF（基于人类反馈的强化学习）  标注，后者也可以构建为分类格式。本文介绍的许多机器学习技术能够改善数据质量，但从根本上说，收集人类数据需要关注细节并谨慎执行。研究社区知道高质量数据的价值，却不知为何有一种微妙印象：“人人都想做模型工作，而不想做数据工作”（ Sambasivan et al. 2021 ）。 
+ 
+	 
+	 实现高数据质量的两个方向。 
+ 
+ 人类评分者 ↔ 数据质量 #  
+ 收集人类数据涉及一系列操作步骤，每个步骤都会影响数据质量： 
+ 
+ 任务设计：设计任务流程，使任务更加清楚并降低复杂度。详细的指南很有帮助，但如果指南非常长且复杂，就需要相当充分的培训，才能真正发挥作用。 
+ 选择并培训一组评分者：选择技能与任务匹配、表现一致的标注者。培</description></item><item><title>用于视频生成的扩散模型</title><link>https://xingshuozhu1998.github.io/posts/2024-04-12-diffusion-video/</link><guid>https://xingshuozhu1998.github.io/posts/2024-04-12-diffusion-video/</guid><description>过去几年， 扩散模型  在图像合成上表现强劲。现在，研究社区开始探索更困难的视频生成。图像相当于单帧视频，因此视频任务包含图像任务，但更有挑战，因为： 
+ 
+ 它对不同时间帧之间的时间一致性有额外要求，自然需要模型编码更多世界知识。 
+ 相比文本或图像，大量高质量、高维视频数据更难收集，更不用说文本—视频配对。 
+ 
+ 
+   
+🥑 必读前文：继续前，请确保读过图像生成文章  “What are Diffusion Models?”（什么是扩散模型？） 。
+    
+ 
+ 从头建模视频生成 #  
+ 首先回顾从头设计、训练视频扩散模型的方法，也就是不依赖预训练图像生成器。 
+ 参数化与采样基础 #  
+ 这里的变量定义与  上一篇  略有不同，但数学相同。令 $\mathbf{x} \sim q_\text{real}$ 为真实分布采样的数据点。随时间添加少量高斯噪声，创建 $\mathbf{x}$ 的含噪变体序列 $\{\mathbf{z}_t \mid t =1 \dots, T\}$，噪声随 $t$ 增加，最后 $q(\mathbf{z}_T) \sim \mathcal{N}(</description></item><item><title>LLMs（大语言模型）中的 Extrinsic Hallucinations（缺乏外部事实依据的生成内容）</title><link>https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/</link><guid>https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/</guid><description>大语言模型中的幻觉通常指模型生成不忠实、虚构、不一致或无意义的内容。作为术语，“幻觉”在一定程度上被泛化到模型犯错的情况。这里，我想将幻觉问题限定为：模型输出是虚构的，且既 不以 给定上下文为依据，也不以世界知识为依据。 
+ 幻觉有两种类型： 
+ 
+ In-context hallucination（上下文幻觉）：模型输出应与上下文中的来源内容一致。 
+ Extrinsic hallucination：模型输出应以预训练数据集为依据。不过，考虑到预训练数据集的规模，每次生成都检索并识别冲突的成本过高。如果将预训练语料视为世界知识的代理，我们本质上是在努力确保模型输出符合事实，并能通过外部世界知识验证。同样重要的是，当模型不知道某个事实时，应明确说明。 
+ 
+ 本文重点讨论 extrinsic hallucination。为避免幻觉，LLM需要（1）符合事实；（2）适用时承认不知道答案。 
+ 什么导致幻觉？ #  
+ 一个标准、可部署的 LLM会经过预训练，以及用于对齐和其他改进的微调，因此我们来考察这两个阶段的原因。 
+ 预训练数据问题 #  
+ 预训练语料的规模极大，因为它应以所有可</description></item><item><title>强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）</title><link>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</link><guid>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</guid><description>当  reinforcement learning（强化学习，RL（强化学习））  智能体  利用  奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。 
+ 随着  语言模型  开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL训练中的 reward hacking已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。 
+ 过去有关这一主题的大部分工作相当理论化，重点是定义或证明 reward hacking的存在。然而，针对实际缓解方法的研究，尤其在 RLHF与 LLM（大语言模型）背景下，仍然有限。我尤其希望呼吁，未来投入更多研究，理解 reward hacking 并开发缓解方法。希望不久之后能够用一篇专门文章讨论</description></item><item><title>我们为什么思考</title><link>https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/</link><guid>https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/</guid><description>特别感谢  John Schulman  为本文提供大量极有价值的反馈，并直接编辑本文。  
+ Test-time compute（测试时计算）（ Graves et al. 2016 、 Ling, et al. 2017 、 Cobbe et al. 2021 ）与 chain-of-thought（思维链）（思维链，CoT（思维链））（ Wei et al. 2022 、 Nye et al. 2021 ）显著提升了模型性能，同时也提出了许多研究问题。本文旨在回顾如何有效使用测试时计算（即“思考时间”）、以及它为何有效的最新进展。 
+ 动机 #  
+ 让模型思考更长时间，有几种不同的动机。 
+ 与心理学类比 #  
+ 这一核心想法与人类的思考方式密切相关。我们人类无法立刻给出  &quot;What&#x27;s 12345 times 56789?&quot;  的答案。相反，在得到结果之前花时间思考和分析是很自然的，尤其对于复杂问题。在  Thinking, Fast and Slow（《思考，快与慢》，Kahneman, 2013）  中，Daniel Kahneman 从  dual process </description></item><item><title>审慎理解 Scaling Laws（规模变化与模型性能之间的规律）</title><link>https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/</link><guid>https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/</guid><description>Scaling laws是深度学习最重要的经验发现之一。观察形式简单：训练损失 $L$ 随模型规模 $N$、数据规模 $D$ 与计算量 $C$ 扩大，以可预测方式按幂律下降，在双对数图上呈直线。可将 scaling laws 视为描述计算、损失、模型规模与数据关系的框架；核心是如何在 $N$ 与 $D$ 之间最优分配宝贵计算。 
+ 这种可预测性使 scaling laws在实践中很有价值。常见流程是在少数小规模运行上拟合 scaling laws，再外推估计大型模型的 token（词元）与计算需求。 
+ 
+	 
+			 
+					 符号 
+					 说明 
+			 
+	 
+	 
+			 
+					 $N$ 
+					 模型规模，以参数数量衡量。 
+			 
+			 
+					 $D$ 
+					 训练数据规模，通常以 token（词元）数量衡量。 
+			 
+			 
+					 $C$ 
+					 训练计算量，单位 FLOPs（浮点运算次数）。实用近似为 $C \approx 6ND$（ Kaplan et al. 2020 ），其中 $2ND$ 为前向传播，$4ND$</description></item><item><title>用于自我改进的 Harness Engineering（智能体运行框架工程）</title><link>https://xingshuozhu1998.github.io/posts/2026-07-04-harness/</link><guid>https://xingshuozhu1998.github.io/posts/2026-07-04-harness/</guid><description>Recursive self-improvement（递归自我改进） (RSI（递归自我改进）)（递归自我改进）  的概念可以追溯到  I. J. Good (1965) ：他将“ultraintelligent machine（超智能机器）”定义为能够在所有智力活动中超越人类，并设计更好的机器来改进自身的系统。 Yudkowsky (2008)  用“recursive self-improvement”描述一个特定反馈循环：AI 使用当前的智能，改进产生其智能的认知机制。 
+ 在现代 AI 中，这个反馈循环可能意味着模型直接改写自身权重；更广义地，也可能是模型改进  训练流水线  和  部署系统 ，从而产生更好的后继模型，在具有经济价值的任务上全面改善性能。前沿实验室（ Anthropic ； OpenAI ）已经表明，AI 研发速度显著加快。 
+ 我明确提到  “部署系统” ，因为原始模型与现实世界情境之间的这一层，似乎与模型本身的智能同样重要（即预训练刚结束时的评估表现）。Claude Code 和 Codex 等成功的编程智能体产品表明，harness（智能体运行框架） 是 </description></item></channel></rss>

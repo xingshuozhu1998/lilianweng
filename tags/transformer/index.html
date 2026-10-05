@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Transformer（基于注意力机制的神经网络架构） | Lil'Log</title>
+<meta name="keywords" content="" />
+<meta name="description" content="记录我的学习笔记。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/tags/transformer/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://xingshuozhu1998.github.io/tags/transformer/index.xml">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="Transformer（基于注意力机制的神经网络架构）" />
+<meta property="og:description" content="记录我的学习笔记。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/tags/transformer/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Transformer（基于注意力机制的神经网络架构）"/>
+<meta name="twitter:description" content="记录我的学习笔记。"/>
+
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/tags/transformer/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/tags/transformer/">
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/tags/transformer/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/tags/transformer/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside> 
+<header class="page-header">
+  <h1>Transformer（基于注意力机制的神经网络架构）</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>审慎理解 Scaling Laws（规模变化与模型性能之间的规律）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>Scaling laws（规模变化与模型性能之间的规律）是深度学习中最重要的实证发现之一。其观察结果形式简单：训练损失 $L$ 随着模型大小 $N$、数据集大小 $D$ 和计算量 $C$ 增大，以可预测的方式下降，遵循幂律曲线；该曲线在双对数图中呈现为直线。我们可以将 scaling laws 看作描述计算量、损失、模型大小与数据之间关系的框架；其核心是如何在 $N$ 与 $D$ 之间最优地分配宝贵的计算资源。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2026 年 6 月 24 日  |  预计阅读时间：25 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《审慎理解 Scaling Laws（规模变化与模型性能之间的规律）》" href="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Transformer（基于注意力机制的神经网络架构） 家族 2.0
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>自从大约三年前我撰写上一篇“The Transformer Family（Transformer 家族）”以来，人们提出了许多新的 Transformer 架构改进。这里，我对 2020 年的文章进行了大幅重构和扩充——重新组织章节层次，并用较新的论文完善了许多章节。2.0 版涵盖旧版的全部内容，篇幅约为其两倍。
+符号说明 符号 含义 $d$ 模型大小／隐藏状态维度／位置编码大小。$h$ 多头注意力层中的头数。$L$ 输入序列的分段长度。$N$ 模型中注意力层的总数；不考虑 MoE（混合专家）。$\mathbf{X} \in \mathbb{R}^{L \times d}$ 输入序列，其中每个元素都已映射为嵌入向量，形状为 $d$，与模型大小相同。$\mathbf{W}^k \in \mathbb{R}^{d \times d_k}$ 键权重矩阵。$\mathbf{W}^q \in \mathbb{R}^{d \times d_k}$ 查询权重矩阵。$\mathbf{W}^v \in \mathbb{R}^{d \times d_v}$ 值权重矩阵。通常有 $d_k = d_v = d$。$\mathbf{W}^k_i, \mathbf{W}^q_i \in \mathbb{R}^{d \times d_k/h}; \mathbf{W}^v_i \in \mathbb{R}^{d \times d_v/h}$ 每个头的权重矩阵。$\mathbf{W}^o \in \mathbb{R}^{d_v \times d}$ 输出权重矩阵。$\mathbf{Q} = \mathbf{X}\mathbf{W}^q \in \mathbb{R}^{L \times d_k}$ 查询嵌入输入。$\mathbf{K} = \mathbf{X}\mathbf{W}^k \in \mathbb{R}^{L \times d_k}$ 键嵌入输入。$\mathbf{V} = \mathbf{X}\mathbf{W}^v \in \mathbb{R}^{L \times d_v}$ 值嵌入输入。$\mathbf{q}_i, \mathbf{k}_i \in \mathbb{R}^{d_k}, \mathbf{v}_i \in \mathbb{R}^{d_v}$ 查询、键、值矩阵中的行向量，这些矩阵分别为 $\mathbf{Q}$、$\mathbf{K}$ 和 $\mathbf{V}$。$S_i$ 键位置集合，供第 $i$ 个查询 $\mathbf{q}_i$ 关注。$\mathbf{A} \in \mathbb{R}^{L \times L}$ 长度为 $L$ 的输入序列与自身之间的自注意力矩阵。$\mathbf{A} = \text{softmax}(\mathbf{Q}\mathbf{K}^\top / \sqrt{d_k})$。$a_{ij} \in \mathbf{A}$ 查询 $\mathbf{q}_i$ 与键 $\mathbf{k}_j$ 之间的标量注意力分数。$\mathbf{P} \in \mathbb{R}^{L \times d}$ 位置编码矩阵，其中第 $i$ 行 $\mathbf{p}_i$ 是输入 $\mathbf{x}_i$ 的位置编码。Transformer 基础 Transformer 模型（为区别于其他增强版本，下文称为“vanilla Transformer”，即原始 Transformer；Vaswani 等，2017）采用编码器—解码器架构，与许多 NMT（神经机器翻译）模型中的常见架构一样。后来的简化 Transformer 在语言建模任务上也表现出色，例如仅编码器的 BERT 和仅解码器的 GPT。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2023年1月27日 | 预计阅读时间：45分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Transformer 家族2.0版》" href="https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>大型 Transformer（基于注意力机制的神经网络架构） 模型的推理优化
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>[2023-01-24 更新：新增关于 Distillation（蒸馏）的小节。]
+大型 transformer（基于注意力机制的神经网络架构）模型如今已经成为主流，在多种任务上取得 SoTA（当前最佳水平）的结果。它们能力强大，但训练与使用成本都非常高。推理在时间与内存方面的成本极高，这成为使用强大的 transformer（基于注意力机制的神经网络架构）大规模解决实际任务的主要瓶颈。
+为什么大型 transformer（基于注意力机制的神经网络架构）模型难以进行推理？除了 SoTA（当前最佳水平）模型的规模持续增大外，还有两个主要因素造成推理困难（Pope et al. 2022）：
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2023 年 1 月 10 日  |  预计阅读时间：9 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《大型 Transformer（基于注意力机制的神经网络架构）模型的推理优化》" href="https://xingshuozhu1998.github.io/posts/2023-01-10-inference-optimization/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>如何使用多块 GPU（图形处理器） 训练超大模型？
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2022-03-13 更新：添加 expert choice routing（专家选择路由）。］［2022-06-10 更新］：Greg 和我撰写了本文的精简升级版，发布于 OpenAI 博客：“Techniques for Training Large Neural Networks（训练大型神经网络的技术）”。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2021年9月24日 | 预计阅读时间：21分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《如何在多块 GPUs（图形处理器）上训练超大模型？》" href="https://xingshuozhu1998.github.io/posts/2021-09-25-train-large/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>如何构建开放域问答系统？
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2020-11-12 更新：添加使用 OpenAI API（测试版）进行 closed-book factual QA（闭卷事实问答）的示例。
+能够回答任何事实知识问题的模型，可以带来许多有用而实际的应用，例如聊天机器人或 AI 助手🤖。本文将回顾构建这种开放域问答系统的几种常见方法。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2020年10月29日 | 预计阅读时间：33分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《如何构建开放域问答系统？》" href="https://xingshuozhu1998.github.io/posts/2020-10-29-odqa/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Transformer（基于注意力机制的神经网络架构） 家族
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2023-01-27 更新：近三年后，我对本文进行了大幅重构更新，纳入自 2020 年以来出现的大量新 Transformer 模型。本文的增强版在这里：The Transformer Family Version 2.0（Transformer 家族 2.0 版）。关于这一主题，请参阅该篇文章。］ ...</p>
+  </section>
+  <footer class="entry-footer">日期：2020 年 4 月 7 日 | 预计阅读时间：25 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Transformer 家族》" href="https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>通用语言模型
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2019-02-14更新：添加 ULMFiT 与 GPT-2。］［2020-02-29更新：添加 ALBERT。］［2020-10-25更新：添加 RoBERTa。］［2020-12-13更新：添加 T5。］［2020-12-30更新：添加 GPT-3。］［2021-11-13更新：添加 XLNet、BART 与 ELECTRA；同时更新总结一节。］
+我猜它们是 Elmo 和 Bert？（图片来源：这里。）2018年，NLP（自然语言处理）取得了令人惊叹的进展。OpenAI GPT（生成式预训练语言模型）与 BERT（基于双向编码器的预训练语言模型）等大规模预训练语言模型，使用通用模型架构，在多种语言任务中取得了优异表现。这一思路与 ImageNet 分类预训练帮助许多视觉任务的方式类似（*）。比视觉分类预训练更进一步，这种简单而强大的 NLP 方法不需要标注数据进行预训练，使我们能够不断扩大训练规模，直至能力极限。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2019年1月31日 | 预计阅读时间：36分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Generalized Language Models（广义语言模型）》" href="https://xingshuozhu1998.github.io/posts/2019-01-31-lm/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>注意力？注意力！
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2018-10-28更新：添加 Pointer Network（指针网络）与我的 Transformer 实现链接。］［2018-11-06更新：添加 Transformer 模型实现的链接。］［2018-11-18更新：添加 Neural Turing Machines（神经图灵机）。］［2019-07-18更新：纠正介绍 show-attention-tell 论文时误用“self-attention（自注意力）”术语的问题；将相关内容移到自注意力一节。］［2020-04-07更新：关于改进 Transformer 模型的后续文章在这里。］
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2018 年 6 月 24 日 | 预计阅读时间：21 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Attention（注意力）？Attention！》" href="https://xingshuozhu1998.github.io/posts/2018-06-24-attention/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

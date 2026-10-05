@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>如何解释机器学习模型的预测？ | Lil’Log 中文学习镜像</title>
+<meta name="keywords" content="foundation" />
+<meta name="description" content="
+机器学习模型开始进入医疗、司法和金融等关键领域。因此，弄清模型如何决策，并确保决策过程符合伦理要求或法律法规，成为必要之事。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="如何解释机器学习模型的预测？" />
+<meta property="og:description" content="
+机器学习模型开始进入医疗、司法和金融等关键领域。因此，弄清模型如何决策，并确保决策过程符合伦理要求或法律法规，成为必要之事。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2017-08-01T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2017-08-01T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="如何解释机器学习模型的预测？"/>
+<meta name="twitter:description" content="
+机器学习模型开始进入医疗、司法和金融等关键领域。因此，弄清模型如何决策，并确保决策过程符合伦理要求或法律法规，成为必要之事。"/>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/posts/"}, {"@type": "ListItem", "position": 2, "name": "如何解释机器学习模型的预测？", "item": "https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "如何解释机器学习模型的预测？", "name": "如何解释机器学习模型的预测？", "description": "机器学习模型开始进入医疗、司法和金融等关键领域。因此，弄清模型如何决策，并确保决策过程符合伦理要求或法律法规，成为必要之事。", "keywords": ["foundation"], "articleBody": "机器学习模型开始进入医疗、司法和金融等关键领域。因此，弄清模型如何决策，并确保决策过程符合伦理要求或法律法规，成为必要之事。 \n 同时，深度学习模型迅速发展，进一步提高了对复杂模型解释的需求。人们急于将 AI 的力量充分用于日常生活的关键方面。但如果缺乏足够信任，或没有高效流程解释意外行为，就很难做到，尤其考虑到深度神经网络生来就是 黑盒 。 \n 考虑以下情况： \n \n 金融行业高度监管，法律要求放贷者公平决策，解释信贷模型，并在拒绝贷款申请时提供原因。 \n 医疗诊断模型对人的生命负责。如何有足够信心，按照黑盒模型指示治疗患者？ \n 法庭使用刑事决策模型预测再犯风险时，必须确保模型公平、诚实、无歧视。 \n 如果自动驾驶汽车突然行为异常，却无法解释原因，我们能放心在真实交通中大规模使用这项技术吗？ \n \n 在  Affirm ，我们每天发放数万笔分期贷款；承保模型拒绝贷款申请时，必须提供拒绝原因。这是促使我深入研究并写本文的诸多动机之一。模型可解释性是机器学习的大领域，本综述从不意图穷尽全部研究，而是作为起点。 \n \n 可解释模型 #  \n Lipton（2017）在理论综述  “The mythos of model interpretability”（模型可解释性的迷思） 中总结可解释模型性质：人类能够重复计算过程（ simulatability（可模拟性） ），完全理解算法（ algorithmic transparency（算法透明性） ），模型每个独立部分都有直观解释（ decomposability（可分解性） ）。 \n 许多经典模型形式相对简单，自然具有模型专属解释方法。同时，新工具正在开发，帮助创建更可解释的模型（ Been、Khanna & Koyejo，2016 ； Lakkaraju、Bach & Leskovec，2016 ）。 \n 回归 #  \n 线性回归模型一般形式为： \n $$\ny = w_0 + w_1 x_1 + w_2 x_2 + … + w_n x_n\n$$ \n 系数描述自变量增加一个单位所引起的响应变化。除非特征已标准化（参见 sklearn.preprocessing. StandardScalar 和  RobustScaler ），否则不能直接比较系数，因为不同特征的一个单位可能含义完全不同。未标准化时，可用乘积 $w_i \\dot x_i$ 量化特征对响应的贡献。 \n Naive Bayes（朴素贝叶斯） #  \n Naive Bayes（朴素贝叶斯）之所以称为“Naive”，是因为采用非常简化的假设：特征彼此独立，各自独立贡献输出。 \n 给定特征向量 $\\mathbf{x} = [x_1, x_2, \\dots, x_n]$ 与类别标签 $c \\in \\{1, 2, \\dots, C\\}$，该数据点属于该类的概率为： \n \n$$\n\\begin{aligned}\np(c | x_1, x_2, \\dots, x_n) \n&\\propto p(c, x_1, x_2, \\dots, x_n)\\\\\n&\\propto p(c) p(x_1 | c) p(x_2 | c) \\dots p(x_n | c)\\\\\n&\\propto p(c) \\prod_{i=1}^n p(x_i | c).\n\\end{aligned}\n$$\n \n Naive Bayes（朴素贝叶斯）分类器定义为： \n $$\n\\hat{y} = \\arg\\max_{c \\in 1, \\dots, C} p(c) \\prod_{i=1}^n p(x_i | c)\n$$ \n 由于训练中已学习先验 $p(x_i \\vert c)$，单个特征值的贡献可通过后验 $p(c \\vert x_i) = p(c)p(x_i \\vert c) / p(x_i)$ 轻松衡量。 \n 决策树／决策列表 #  \n 决策列表是一组布尔函数，通常采用  if... then... else...  等语法构造。if 条件包含涉及一个或多个特征的函数，输出布尔值。决策列表天然可解释，可视化为树结构。许多决策列表研究受医疗应用推动，其中可解释性几乎与模型本身同样重要。 \n 下面简述几类决策列表： \n \n  Falling Rule Lists (FRL)（递降规则列表） （Wang 和 Rudin，2015）完全强制特征值单调性。例如二分类中，一个关键点是：沿决策列表向下，与每条规则关联的预测概率 $Y=1$ 逐渐降低。 \n  Bayesian Rule List (BRL)（贝叶斯规则列表） （Letham 等，2015）是生成模型，给出可能决策列表的后验分布。 \n  Interpretable Decision Sets (IDS)（可解释决策集合） （Lakkaraju、Bach & Leskovec，2016）是生成分类规则集合的预测框架，同时优化准确性与可解释性。IDS 与 后文 解释黑盒模型的 BETA 方法密切相关。 \n \n 随机森林 #  \n 奇怪的是，很多人认为 随机森林 模型是黑盒，其实不是。随机森林的输出来自大量独立决策树的多数投票，而每棵树天然可解释。 \n 每次考察一棵树，就不难衡量单个特征影响。随机森林全局特征重要性，可用所有集成树上的节点不纯度总下降量的平均值量化（“mean decrease impurity，平均不纯度下降”）。 \n 针对单个实例，由于全部树的决策路径都被完整跟踪，可以用父节点数据点均值与子节点均值的差，近似该分裂的贡献。更多内容见博客系列： Interpreting Random Forests（解释随机森林） 。 \n 解释黑盒模型 #  \n 许多模型没有为可解释性设计。解释黑盒模型的方法，旨在从已训练模型提取信息，说明预测结果，无需知道模型具体工作方式。让解释过程独立于模型实现，有利于实际应用：即使基础模型不断升级改进，上层解释引擎也无需担心变化。 \n 无需保持模型透明、可解释时，可以加入更多参数和非线性计算，提高表达能力。这正是深度神经网络在丰富输入任务上成功的原因。 \n 解释如何呈现没有硬性要求，但主要目标是回答： 我能信任这个模型吗？ 依赖模型作重要或生死决策前，必须提前确认可信度。 \n 解释框架应平衡两个目标： \n \n  Fidelity（忠实度） ：解释所产生的预测，应尽可能与原模型一致。 \n  Interpretability（可解释性） ：解释应足够简单，人类能够理解。 \n \n \n 旁注：接下来的三种方法用于局部解释。 \n \n 预测分解 #  \n  Robnik-Sikonja 和 Kononenko（2008） 提出，通过衡量原始预测与去掉一组特征后所得预测之间的差异，解释模型对单个实例的预测。 \n 假设我们需要为分类模型 $f: \\mathbf{X} \\rightarrow \\mathbf{Y}$ 生成解释。给定数据点 $x \\in X$，它包含 $a$ 个属性的独立取值，属性为 $A_i$，取值为 $i = 1, \\dots, a$，类别标签为 $y \\in Y$。 预测差异 通过计算知道与不知道 $A_i$ 时模型预测概率之间的差异来量化： \n $$\n\\text{probDiff}_i (y | x)  = p(y| x) - p(y | x \\backslash A_i)\n$$ \n （论文还讨论了使用优势比或基于熵的信息度量来量化预测差异。） \n  问题 ：如果目标模型输出概率，那就很好，得到 $ p(y \\vert x) $ 很直接。否则，必须对模型预测进行适当的建模后校准，将预测分数转换为概率。这一校准层又增加了一项复杂性。 \n  另一个问题 ：如果我们生成 $x \\backslash A_i$ 的方式是将 $A_i$ 替换为缺失值（例如  None 、 NaN  等），就必须依赖模型内部的缺失值填补机制。用中位数替换缺失值的模型，其输出应当与用特殊占位符填补缺失值的模型很不一样。论文给出的一种解决方案是，用该特征的所有可能取值替换 $A_i$，再以每个取值在数据中出现的可能性为权重，对预测求和： \n \n$$\n\\begin{aligned}\np(y \\vert x \\backslash A_i)\n&= \\sum_{s=1}^{m_i} p(A_i=a_s \\vert x \\backslash A_i) p(y \\vert x \\leftarrow A_i=a_s) \\\\\n&\\approx \\sum_{s=1}^{m_i} p(A_i=a_s) p(y \\vert x \\leftarrow A_i=a_s)\n\\end{aligned}\n$$\n \n 其中，$p(y \\vert x \\leftarrow A_i=a_s)$ 是得到标签 $y$ 的概率，条件是将特征 $A_i$ 替换为值 $a_s$，替换发生在 $x$ 的特征向量中。训练集中有 $m_i$ 个不同的 $A_i$ 取值。 \n 借助去掉已知特征时的预测差异度量，我们可以 分解 每个独立特征对预测的影响。 \n \n\t \n\t 对 SVM（支持向量机）模型预测 Titanic 数据集 中一名成年男性头等舱乘客是否生还的解释。信息差异与概率差异非常相似，但信息差异衡量的是，确定给定实例满足 $y$ 所需的信息量，前提是不知道 $A\\_i$：$\\text{infDiff}\\_i (y|x) = \\log\\_2 p(y|x) - \\log\\_2 p(y|x \\backslash A\\_i)$。针对特定实例的解释用深色条形表示。高度减半的浅色条形表示，给定属性取值的平均正向和负向解释。在这个例子中，成年男性的身份大幅降低了生还的可能性；舱位等级的影响没有那么大。 \n \n 局部梯度解释向量 #  \n 这种方法（ Baehrens 等，2010 ）利用局部梯度解释任意非线性分类算法作出的局部决策；局部梯度描述了，如何移动一个数据点才能改变其预测标签。 \n 假设我们有一个 Bayes Classifier（贝叶斯分类器） ，它在数据集 $X$ 上训练，输出类别标签 $Y$ 上的概率，即 $p(Y=y \\vert X=x)$。从类别标签集合中选取一个类别标签 $y$，即 $\\{1, 2, \\dots, C\\}$。该 Bayes classifier 的构造如下： \n $$\nf^{*}(x)  = \\arg \\min_{c \\in \\{1, \\dots, C\\}} p(Y \\neq c \\vert X = x)\n$$ \n  局部解释向量 定义为概率预测函数在测试点 $x = x_0$ 处的导数。该向量中较大的分量突出显示了对模型决策影响较大的特征；正号表示，增大该特征会降低将 $x_0$ 分配给 $f^{*}(x_0)$ 的概率。 \n 不过，这种方法要求模型输出概率（与上面的 “预测分解” 方法类似）。如果原始模型（记为 $f$）未经校准、不能输出概率，该怎么办？根据论文的建议，我们可以用另一个分类器近似 $f$，该分类器的形式类似于 Bayes classifier $f^{*}$： \n （1）对训练数据应用  Parzen window（Parzen 窗密度估计） ，估计加权的类别密度： \n $$\n\\hat{p}_{\\sigma}(x, y=c) = \\frac{1}{n} \\sum_{i \\in I_c} k_{\\sigma} (x - x_i)\n$$ \n 其中，$I_c$ 是一个索引集合，包含被模型分配到类别 $c$ 的数据点索引，模型为 $f$，即 $I_c = \\{i \\vert f(x_i) = c\\}$。$k_{\\sigma}$ 是核函数。在 众多候选函数 中，高斯核是一种常用选择。 \n （2）然后，应用 Bayes 法则，近似所有类别的概率 $p(Y=c \\vert X=x)$： \n \n$$\n\\begin{aligned}\n\\hat{p}_{\\sigma}(y=c | x)\n&= \\frac{\\hat{p}_{\\sigma}(x, y=c)}{\\hat{p}_{\\sigma}(x, y=c) + \\hat{p}_{\\sigma}(x, y \\neq c)} \\\\\n&\\approx \\frac{\\sum_{i \\in I_c} k_{\\sigma} (x - x_i)}{\\sum_i k_{\\sigma} (x - x_i)}\n\\end{aligned}\n$$\n \n （3）最终估计得到的 Bayes classifier 形式如下： \n $$\n\\hat{f}_{\\sigma} = \\arg\\min_{c \\in \\{1, \\dots, C\\}} \\hat{p}_{\\sigma}(y \\neq c \\vert x)\n$$ \n 注意，我们可以用原始模型 $f$ 生成任意多的带标签数据，不受训练数据规模的限制。选择超参数 $\\sigma$，以使 $\\hat{f}_{\\sigma}(x) = f(x)$ 达到较高忠实度的机会最大。 \n \n\t \n\t 局部梯度解释向量应用于简单对象分类的示例，分类器采用 Gaussian Processes Classifier（高斯过程分类器，GPC）。GPC 模型本身就输出概率。（a）显示训练点及其标签，红色为正类 1，蓝色为负类 -1。（b）展示正类的概率函数。（c-d）显示局部梯度和局部解释向量的方向。 \n \n \n 旁注：可以看到，上述两种方法都要求模型预测为概率。对模型输出进行校准又增加了一层复杂性。 \n \n LIME（Local Interpretable Model-Agnostic Explanations，局部可解释的模型无关解释） #  \n  LIME  是  local interpretable model-agnostic explanation（局部可解释的模型无关解释）  的缩写，可以在我们关注的预测附近，局部近似黑盒模型（ Ribeiro、Singh 和 Guestrin，2016 ）。 \n 与上文一样，将黑盒模型记为 $f$。LIME 包含以下步骤： \n （1）将数据集转换为可解释的数据表示：$x \\Rightarrow x_b$。 \n \n 文本分类器：用二进制向量表示某个词是否出现。 \n 图像分类器：用二进制向量表示某个由相似像素组成的连续区域（超像素）是否存在。 \n \n \n\t \n\t 将图像转换为可解释数据表示的示例。（图片来源： www.oreilly.com/learning/introduction-to-local-interpretable-model-agnostic-explanations-lime ） \n \n （2）给定预测 $f(x)$ 及其对应的可解释数据表示 $x_b$，在 $x_b$ 附近采样实例：从 $x_b$ 的非零元素中均匀随机抽取，抽取数量本身也通过均匀采样确定。这一过程生成扰动样本 $z_b$，其中包含 $x_b$ 的一部分非零元素。 \n 然后，将 $z_b$ 恢复到原始输入空间，得到 $z$，并通过目标模型得到预测分数 $f(z)$。 \n 利用大量这样的采样数据点 $z_b \\in \\mathcal{Z}_b$ 及其模型预测，我们可以学习具有局部忠实度的解释模型（形式可以简单到只是回归模型）。根据采样数据点与 $x_b$ 的距离，为数据点赋予不同权重。论文使用 lasso regression（套索回归），并在预处理时先选择最显著的 $k$ 个特征，称为“K-LASSO”。 \n \n\t \n\t 粉色和蓝色区域是黑盒模型 $f$ 预测的两个类别。大的红色叉号是需要解释的点，其他较小的叉号（被 $f$ 预测为粉色）和圆点（被 $f$ 预测为蓝色）是采样数据点。即使模型可能非常复杂，我们仍然能够学习一个像灰色虚线这样简单的局部解释模型。（图片来源： homes.cs.washington.edu/~marcotcr/blog/lime ） \n \n 检查解释是否合理，可以直接判断模型是否值得信任，因为模型有时会捕捉虚假的相关性或进行不恰当的泛化。论文中一个有趣的例子，是将 LIME 应用于区分“Christianity（基督教）”和“Atheism（无神论）”的 SVM（支持向量机）文本分类器。模型的准确率相当高（留出的测试集上达到 94%！），但 LIME 的解释表明，模型基于非常随意的理由作出决策，例如统计“re”“posting”和“host”这些词，而这些词与“Christianity”和“Atheism”都没有直接联系。经过这样的诊断，我们了解到，即使模型给出了漂亮的准确率，它也不值得信任。这也指明了改进模型的方法，例如更好地预处理文本。 \n \n\t \n\t 在图像分类器上使用 LIME 的示意图。（图片来源： www.oreilly.com/learning/introduction-to-local-interpretable-model-agnostic-explanations-lime ） \n \n 若想阅读更详细、不同于论文形式的解释，请阅读作者的 这篇博客文章 。很值得一读。 \n \n 旁注：局部解释模型通常应当比全局解释模型更容易，但更难维护（想想 维度灾难 ）。下述方法旨在解释模型的整体行为。不过，全局方法无法捕捉细粒度的解释，例如某个特征可能在这一区域很重要，在另一区域却完全不重要。 \n \n 特征选择 #  \n 基本上，所有经典特征选择方法（ Yang 和 Pedersen，1997 ； Guyon 和 Elisseeff，2003 ）都可以视为全局解释模型的方法。特征选择方法分解多个特征的贡献，让我们能够用各个特征的影响解释模型的整体输出。 \n 关于特征选择的资料非常丰富，因此本文略过这一话题。 \n BETA（Black Box Explanation through Transparent Approximations，通过透明近似解释黑盒） #  \n  BETA  是  black box explanation through transparent approximations（通过透明近似解释黑盒）  的缩写，与  Interpretable Decision Sets（可解释决策集合）  密切相关（Lakkaraju、Bach 和 Leskovec，2016）。BETA 学习一个紧凑的两层决策集合，其中每条规则都明确解释模型的一部分行为。 \n 作者提出了一种新的目标函数，使学习过程同时追求 高忠实度 （解释与模型高度一致）、 低歧义 （解释中的决策规则很少重叠）和 高可解释性 （解释的决策集合轻量且规模小）。这些方面结合成一个待优化的目标函数。 \n \n\t \n\t 良好模型解释所需性质的度量：忠实度、无歧义性和可解释性。给定目标模型 $\\mathcal{B}$，其解释是两层决策集合 $\\Re$，包含一组规则 ${(q\\_1, s\\_1, c\\_1), \\dots, (q\\_M, s\\_M, c\\_M)}$，其中 $q\\_i$ 和 $s\\_i$ 是由（特征、运算符、取值）形式的谓词组成的合取，$c\\_i$ 是类别标签。更多细节参见 论文 。（图片来源： arxiv.org/abs/1707.01154 ） \n \n Explainable Artificial Intelligence（可解释人工智能） #  \n 本节名称借自 DARPA 的项目 “Explainable Artificial Intelligence（可解释人工智能）” 。这一 Explainable AI（XAI）计划旨在开发更具可解释性的模型，让人类能够理解、恰当地信任并有效管理正在兴起的新一代人工智能技术。 \n 随着深度学习应用的发展，人们开始担忧： 即使模型出了问题，我们也可能永远不知道 。复杂的结构、大量可学习参数、非线性数学运算以及 一些耐人寻味的性质 （Szegedy 等，2014）使深度神经网络难以解释，形成了真正的黑盒。不过，深度学习的能力也正源于这种复杂性——它能够更灵活地捕捉真实世界数据中丰富而复杂的模式。 \n 关于 对抗样本 的研究（ OpenAI Blog: Robust Adversarial Examples（OpenAI 博客：鲁棒对抗样本） 、 Attacking Machine Learning with Adversarial Examples（使用对抗样本攻击机器学习） 、 Goodfellow、Shlens 和 Szegedy，2015 ； Nguyen、Yosinski 和 Clune，2015 ）为 AI 应用的鲁棒性和安全性敲响了警钟。有时，模型会表现出非预期、意外且不可预测的行为，而我们没有快速、有效的策略来判断原因。 \n \n\t \n\t 对抗样本示意图。（a-d）是通过向原始图像加入人类无法察觉的噪声生成的对抗图像（ Szegedy 等，2013 ）。训练良好的神经网络模型能够成功分类原始图像，却会在对抗图像上失败。（e-h）是生成的图案（ Nguyen、Yosinski 和 Clune，2015 ）。训练良好的神经网络模型分别将其标记为（e）校车、（f）吉他、（g）孔雀和（h）北京犬。（图片来源： Wang、Raj 和 Xing，2017 ） \n \n Nvidia 最近开发了 一种将最重要的像素点可视化的方法 ，用于其自动驾驶汽车的决策过程。这种可视化让我们了解 AI 如何思考，以及系统驾驶汽车时依赖什么。如果 AI 认为重要的内容与人类作出类似决策时所依据的内容一致，我们自然会对黑盒模型更有信心。 \n 这个不断发展的领域每天都有令人兴奋的消息和发现。希望本文能提供一些线索，鼓励你进一步探索这个主题 :) \n \n 引用格式： \n  @article{weng2017gan,\n  title   = \"How to Explain the Prediction of a Machine Learning Model?\",\n  author  = \"Weng, Lilian\",\n  journal = \"lilianweng.github.io\",\n  year    = \"2017\",\n  url     = \"https://lilianweng.github.io/posts/2017-08-01-interpretation/\"\n}\n   参考文献 #  \n [1] Zachary C. Lipton。 “The mythos of model interpretability.”（模型可解释性的神话。）  arXiv 预印本 arXiv:1606.03490（2016）。 \n [2] Been Kim、Rajiv Khanna 和 Oluwasanmi O. Koyejo。“Examples are not enough, learn to criticize! criticism for interpretability.”（仅有示例还不够，学会批判！用于可解释性的批判。）Advances in Neural Information Processing Systems，2016。 \n [3] Himabindu Lakkaraju、Stephen H. Bach 和 Jure Leskovec。 “Interpretable decision sets: A joint framework for description and prediction.”（可解释决策集合：描述与预测的联合框架。）  第 22 届 ACM SIGKDD 国际知识发现与数据挖掘会议论文集。ACM，2016。 \n [4] Robnik-Šikonja、Marko 和 Igor Kononenko。 “Explaining classifications for individual instances.”（解释单个实例的分类。）  IEEE Transactions on Knowledge and Data Engineering 20.5（2008）：589-600。 \n [5] Baehrens、David 等。 “How to explain individual classification decisions.”（如何解释单个分类决策。）  Journal of Machine Learning Research 11.Jun（2010）：1803-1831。 \n [6] Marco Tulio Ribeiro、Sameer Singh 和 Carlos Guestrin。 “Why should I trust you?: Explaining the predictions of any classifier.”（我为何应该信任你？解释任意分类器的预测。）  第 22 届 ACM SIGKDD 国际知识发现与数据挖掘会议论文集。ACM，2016。 \n [7] Yiming Yang 和 Jan O. Pedersen。 “A comparative study on feature selection in text categorization.”（文本分类中特征选择的比较研究。）  国际机器学习会议，第 97 卷，1997。 \n [8] Isabelle Guyon 和 André Elisseeff。 “An introduction to variable and feature selection.”（变量与特征选择导论。）  Journal of Machine Learning Research 3.Mar（2003）：1157-1182。 \n [9] Ian J. Goodfellow、Jonathon Shlens 和 Christian Szegedy。 “Explaining and harnessing adversarial examples.”（解释与利用对抗样本。）  ICLR 2015。 \n [10] Christian Szegedy、Wojciech Zaremba、Ilya Sutskever、Joan Bruna、Dumitru Erhan、Ian Goodfellow、Rob Fergus。 “Intriguing properties of neural networks.”（神经网络耐人寻味的性质。）  国际学习表征会议（2014）。 \n [11] Nguyen、Anh、Jason Yosinski 和 Jeff Clune。 “Deep neural networks are easily fooled: High confidence predictions for unrecognizable images.”（深度神经网络很容易被欺骗：对无法识别图像的高置信度预测。）  IEEE 计算机视觉与模式识别会议论文集，2015。 \n [12] Benjamin Letham、Cynthia Rudin、Tyler H. McCormick 和 David Madigan。 “Interpretable classifiers using rules and Bayesian analysis: Building a better stroke prediction model.”（使用规则与贝叶斯分析的可解释分类器：构建更好的卒中预测模型。）  The Annals of Applied Statistics 9，第 3 期（2015）：1350-1371。 \n [13] Haohan Wang、Bhiksha Raj 和 Eric P. Xing。 “On the Origin of Deep Learning.”（论深度学习的起源。）  arXiv 预印本 arXiv:1702.07800（2017）。 \n [14]  OpenAI Blog: Robust Adversarial Examples（OpenAI 博客：鲁棒对抗样本）  \n [15]  Attacking Machine Learning with Adversarial Examples（使用对抗样本攻击机器学习）  \n [16]  Reading an AI Car’s Mind: How NVIDIA’s Neural Net Makes Decisions（读懂 AI 汽车的思路：NVIDIA 神经网络如何作出决策）", "wordCount": "3622", "inLanguage": "zh-CN", "datePublished": "2017-08-01T00:00:00Z", "dateModified": "2017-08-01T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/favicon_wine.ico"}}}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/posts/2017-08-01-interpretation/">
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2017-08-01-interpretation/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/posts/2017-08-01-interpretation/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      如何解释机器学习模型的预测？
+    </h1>
+    <div class="post-meta">日期：2017 年 8 月 1 日 | 预计阅读时间：18 分钟 | 作者：Lilian Weng
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#interpretable-models" aria-label="可解释模型">可解释模型</a><ul>
+                        
+                <li>
+                    <a href="#regression" aria-label="Regression">回归</a></li>
+                <li>
+                    <a href="#naive-bayes" aria-label="Naive Bayes">Naive Bayes（朴素贝叶斯）</a></li>
+                <li>
+                    <a href="#decision-treedecision-lists" aria-label="Decision Tree/Decision Lists">决策树／决策列表</a></li>
+                <li>
+                    <a href="#random-forests" aria-label="Random Forests">随机森林</a></li></ul>
+                </li>
+                <li>
+                    <a href="#interpreting-black-box-models" aria-label="解释黑盒模型">解释黑盒模型</a><ul>
+                        
+                <li>
+                    <a href="#prediction-decomposition" aria-label="Prediction Decomposition">预测分解</a></li>
+                <li>
+                    <a href="#local-gradient-explanation-vector" aria-label="Local Gradient Explanation Vector">局部梯度解释向量</a></li>
+                <li>
+                    <a href="#lime-local-interpretable-model-agnostic-explanations" aria-label="LIME (Local Interpretable Model-Agnostic Explanations)">LIME (Local Interpretable Model-Agnostic Explanations)（局部可解释、与模型无关的解释）</a></li>
+                <li>
+                    <a href="#feature-selection" aria-label="Feature Selection">特征选择</a></li>
+                <li>
+                    <a href="#beta-black-box-explanation-through-transparent-approximations" aria-label="BETA (Black Box Explanation through Transparent Approximations)">BETA (Black Box Explanation through Transparent Approximations)（通过透明近似解释黑盒）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#explainable-artificial-intelligence" aria-label="Explainable Artificial Intelligence">Explainable Artificial Intelligence（可解释人工智能）</a></li>
+                <li>
+                    <a href="#references" aria-label="References">参考文献</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><!-- This post reviews some research in model interpretability, covering two aspects: (i) interpretable models with model-specific interpretation methods and (ii) approaches of explaining black-box models. I included an open discussion on explainable artificial intelligence at the end. -->
+<p>机器学习模型开始进入医疗、司法和金融等关键领域。因此，弄清模型如何决策，并确保决策过程符合伦理要求或法律法规，成为必要之事。</p>
+<p>同时，深度学习模型迅速发展，进一步提高了对复杂模型解释的需求。人们急于将 AI 的力量充分用于日常生活的关键方面。但如果缺乏足够信任，或没有高效流程解释意外行为，就很难做到，尤其考虑到深度神经网络生来就是<em>黑盒</em>。</p>
+<p>考虑以下情况：</p>
+<ol>
+<li>金融行业高度监管，法律要求放贷者公平决策，解释信贷模型，并在拒绝贷款申请时提供原因。</li>
+<li>医疗诊断模型对人的生命负责。如何有足够信心，按照黑盒模型指示治疗患者？</li>
+<li>法庭使用刑事决策模型预测再犯风险时，必须确保模型公平、诚实、无歧视。</li>
+<li>如果自动驾驶汽车突然行为异常，却无法解释原因，我们能放心在真实交通中大规模使用这项技术吗？</li>
+</ol>
+<p>在 <a href="https://www.affirm.com/">Affirm</a>，我们每天发放数万笔分期贷款；承保模型拒绝贷款申请时，必须提供拒绝原因。这是促使我深入研究并写本文的诸多动机之一。模型可解释性是机器学习的大领域，本综述从不意图穷尽全部研究，而是作为起点。</p>
+<hr>
+<h1 id="interpretable-models">可解释模型<a hidden class="anchor" aria-hidden="true" href="#interpretable-models">#</a></h1>
+<p>Lipton（2017）在理论综述 <a href="https://arxiv.org/pdf/1606.03490.pdf">“The mythos of model interpretability”（模型可解释性的迷思）</a>中总结可解释模型性质：人类能够重复计算过程（<em>simulatability（可模拟性）</em>），完全理解算法（<em>algorithmic transparency（算法透明性）</em>），模型每个独立部分都有直观解释（<em>decomposability（可分解性）</em>）。</p>
+<p>许多经典模型形式相对简单，自然具有模型专属解释方法。同时，新工具正在开发，帮助创建更可解释的模型（<a href="http://papers.nips.cc/paper/6300-examples-are-not-enough-learn-to-criticize-criticism-for-interpretability.pdf">Been、Khanna &amp; Koyejo，2016</a>；<a href="http://www.kdd.org/kdd2016/papers/files/rpp1067-lakkarajuA.pdf">Lakkaraju、Bach &amp; Leskovec，2016</a>）。</p>
+<h2 id="regression">回归<a hidden class="anchor" aria-hidden="true" href="#regression">#</a></h2>
+<p>线性回归模型一般形式为：</p>
+<p>$$
+y = w_0 + w_1 x_1 + w_2 x_2 + … + w_n x_n
+$$</p>
+<p>系数描述自变量增加一个单位所引起的响应变化。除非特征已标准化（参见 sklearn.preprocessing.<a href="http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.StandardScaler.html#sklearn.preprocessing.StandardScaler">StandardScalar</a>和 <a href="http://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.RobustScaler.html#sklearn.preprocessing.RobustScaler">RobustScaler</a>），否则不能直接比较系数，因为不同特征的一个单位可能含义完全不同。未标准化时，可用乘积 $w_i \dot x_i$ 量化特征对响应的贡献。</p>
+<h2 id="naive-bayes">Naive Bayes（朴素贝叶斯）<a hidden class="anchor" aria-hidden="true" href="#naive-bayes">#</a></h2>
+<p>Naive Bayes（朴素贝叶斯）之所以称为“Naive”，是因为采用非常简化的假设：特征彼此独立，各自独立贡献输出。</p>
+<p>给定特征向量 $\mathbf{x} = [x_1, x_2, \dots, x_n]$ 与类别标签 $c \in \{1, 2, \dots, C\}$，该数据点属于该类的概率为：</p>
+<div>
+$$
+\begin{aligned}
+p(c | x_1, x_2, \dots, x_n) 
+&\propto p(c, x_1, x_2, \dots, x_n)\\
+&\propto p(c) p(x_1 | c) p(x_2 | c) \dots p(x_n | c)\\
+&\propto p(c) \prod_{i=1}^n p(x_i | c).
+\end{aligned}
+$$
+</div>
+<p>Naive Bayes（朴素贝叶斯）分类器定义为：</p>
+<p>$$
+\hat{y} = \arg\max_{c \in 1, \dots, C} p(c) \prod_{i=1}^n p(x_i | c)
+$$</p>
+<p>由于训练中已学习先验 $p(x_i \vert c)$，单个特征值的贡献可通过后验 $p(c \vert x_i) = p(c)p(x_i \vert c) / p(x_i)$ 轻松衡量。</p>
+<h2 id="decision-treedecision-lists">决策树／决策列表<a hidden class="anchor" aria-hidden="true" href="#decision-treedecision-lists">#</a></h2>
+<p>决策列表是一组布尔函数，通常采用 <code>if... then... else...</code> 等语法构造。if 条件包含涉及一个或多个特征的函数，输出布尔值。决策列表天然可解释，可视化为树结构。许多决策列表研究受医疗应用推动，其中可解释性几乎与模型本身同样重要。</p>
+<p>下面简述几类决策列表：</p>
+<ul>
+<li><a href="http://proceedings.mlr.press/v38/wang15a.pdf">Falling Rule Lists (FRL)（递降规则列表）</a>（Wang 和 Rudin，2015）完全强制特征值单调性。例如二分类中，一个关键点是：沿决策列表向下，与每条规则关联的预测概率 $Y=1$ 逐渐降低。</li>
+<li><a href="https://arxiv.org/abs/1511.01644">Bayesian Rule List (BRL)（贝叶斯规则列表）</a>（Letham 等，2015）是生成模型，给出可能决策列表的后验分布。</li>
+<li><a href="https://cs.stanford.edu/people/jure/pubs/interpretable-kdd16.pdf">Interpretable Decision Sets (IDS)（可解释决策集合）</a>（Lakkaraju、Bach &amp; Leskovec，2016）是生成分类规则集合的预测框架，同时优化准确性与可解释性。IDS 与<a href="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/#beta-black-box-explanation-through-transparent-approximations">后文</a>解释黑盒模型的 BETA 方法密切相关。</li>
+</ul>
+<h2 id="random-forests">随机森林<a hidden class="anchor" aria-hidden="true" href="#random-forests">#</a></h2>
+<p>奇怪的是，很多人认为<a href="http://www.math.univ-toulouse.fr/~agarivie/Telecom/apprentissage/articles/randomforest2001.pdf">随机森林</a>模型是黑盒，其实不是。随机森林的输出来自大量独立决策树的多数投票，而每棵树天然可解释。</p>
+<p>每次考察一棵树，就不难衡量单个特征影响。随机森林全局特征重要性，可用所有集成树上的节点不纯度总下降量的平均值量化（“mean decrease impurity，平均不纯度下降”）。</p>
+<p>针对单个实例，由于全部树的决策路径都被完整跟踪，可以用父节点数据点均值与子节点均值的差，近似该分裂的贡献。更多内容见博客系列：<a href="http://blog.datadive.net/interpreting-random-forests/">Interpreting Random Forests（解释随机森林）</a>。</p>
+<h1 id="interpreting-black-box-models">解释黑盒模型<a hidden class="anchor" aria-hidden="true" href="#interpreting-black-box-models">#</a></h1>
+<p>许多模型没有为可解释性设计。解释黑盒模型的方法，旨在从已训练模型提取信息，说明预测结果，无需知道模型具体工作方式。让解释过程独立于模型实现，有利于实际应用：即使基础模型不断升级改进，上层解释引擎也无需担心变化。</p>
+<p>无需保持模型透明、可解释时，可以加入更多参数和非线性计算，提高表达能力。这正是深度神经网络在丰富输入任务上成功的原因。</p>
+<p>解释如何呈现没有硬性要求，但主要目标是回答：<strong>我能信任这个模型吗？</strong>依赖模型作重要或生死决策前，必须提前确认可信度。</p>
+<p>解释框架应平衡两个目标：</p>
+<ul>
+<li><strong>Fidelity（忠实度）</strong>：解释所产生的预测，应尽可能与原模型一致。</li>
+<li><strong>Interpretability（可解释性）</strong>：解释应足够简单，人类能够理解。</li>
+</ul>
+<blockquote>
+<p>旁注：接下来的三种方法用于局部解释。</p>
+</blockquote>
+<h2 id="prediction-decomposition">预测分解<a hidden class="anchor" aria-hidden="true" href="#prediction-decomposition">#</a></h2>
+<p><a href="http://lkm.fri.uni-lj.si/rmarko/papers/RobnikSikonjaKononenko08-TKDE.pdf">Robnik-Sikonja 和 Kononenko（2008）</a>提出，通过衡量原始预测与去掉一组特征后所得预测之间的差异，解释模型对单个实例的预测。</p>
+<p>假设我们需要为分类模型 $f: \mathbf{X} \rightarrow \mathbf{Y}$ 生成解释。给定数据点 $x \in X$，它包含 $a$ 个属性的独立取值，属性为 $A_i$，取值为 $i = 1, \dots, a$，类别标签为 $y \in Y$。<em>预测差异</em>通过计算知道与不知道 $A_i$ 时模型预测概率之间的差异来量化：</p>
+<p>$$
+\text{probDiff}_i (y | x)  = p(y| x) - p(y | x \backslash A_i)
+$$</p>
+<p>（论文还讨论了使用优势比或基于熵的信息度量来量化预测差异。）</p>
+<p><strong>问题</strong>：如果目标模型输出概率，那就很好，得到 $ p(y \vert x) $ 很直接。否则，必须对模型预测进行适当的建模后校准，将预测分数转换为概率。这一校准层又增加了一项复杂性。</p>
+<p><strong>另一个问题</strong>：如果我们生成 $x \backslash A_i$ 的方式是将 $A_i$ 替换为缺失值（例如 <code>None</code>、<code>NaN</code> 等），就必须依赖模型内部的缺失值填补机制。用中位数替换缺失值的模型，其输出应当与用特殊占位符填补缺失值的模型很不一样。论文给出的一种解决方案是，用该特征的所有可能取值替换 $A_i$，再以每个取值在数据中出现的可能性为权重，对预测求和：</p>
+<div>
+$$
+\begin{aligned}
+p(y \vert x \backslash A_i)
+&= \sum_{s=1}^{m_i} p(A_i=a_s \vert x \backslash A_i) p(y \vert x \leftarrow A_i=a_s) \\
+&\approx \sum_{s=1}^{m_i} p(A_i=a_s) p(y \vert x \leftarrow A_i=a_s)
+\end{aligned}
+$$
+</div>
+<p>其中，$p(y \vert x \leftarrow A_i=a_s)$ 是得到标签 $y$ 的概率，条件是将特征 $A_i$ 替换为值 $a_s$，替换发生在 $x$ 的特征向量中。训练集中有 $m_i$ 个不同的 $A_i$ 取值。</p>
+<p>借助去掉已知特征时的预测差异度量，我们可以<em>分解</em>每个独立特征对预测的影响。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/interpretability_prediction_decomposition.png" style="width: 400px;"  />
+	<figcaption>对 SVM（支持向量机）模型预测<a href="https://www.kaggle.com/c/titanic/data" target="_blank">Titanic 数据集</a>中一名成年男性头等舱乘客是否生还的解释。信息差异与概率差异非常相似，但信息差异衡量的是，确定给定实例满足 $y$ 所需的信息量，前提是不知道 $A\_i$：$\text{infDiff}\_i (y|x) = \log\_2 p(y|x) - \log\_2 p(y|x \backslash A\_i)$。针对特定实例的解释用深色条形表示。高度减半的浅色条形表示，给定属性取值的平均正向和负向解释。在这个例子中，成年男性的身份大幅降低了生还的可能性；舱位等级的影响没有那么大。</figcaption>
+</figure>
+<h2 id="local-gradient-explanation-vector">局部梯度解释向量<a hidden class="anchor" aria-hidden="true" href="#local-gradient-explanation-vector">#</a></h2>
+<p>这种方法（<a href="http://www.jmlr.org/papers/volume11/baehrens10a/baehrens10a.pdf">Baehrens 等，2010</a>）利用局部梯度解释任意非线性分类算法作出的局部决策；局部梯度描述了，如何移动一个数据点才能改变其预测标签。</p>
+<p>假设我们有一个<a href="https://en.wikipedia.org/wiki/Bayes_classifier">Bayes Classifier（贝叶斯分类器）</a>，它在数据集 $X$ 上训练，输出类别标签 $Y$ 上的概率，即 $p(Y=y \vert X=x)$。从类别标签集合中选取一个类别标签 $y$，即 $\{1, 2, \dots, C\}$。该 Bayes classifier 的构造如下：</p>
+<p>$$
+f^{*}(x)  = \arg \min_{c \in \{1, \dots, C\}} p(Y \neq c \vert X = x)
+$$</p>
+<p><em>局部解释向量</em>定义为概率预测函数在测试点 $x = x_0$ 处的导数。该向量中较大的分量突出显示了对模型决策影响较大的特征；正号表示，增大该特征会降低将 $x_0$ 分配给 $f^{*}(x_0)$ 的概率。</p>
+<p>不过，这种方法要求模型输出概率（与上面的<a href="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/#prediction-decomposition">“预测分解”</a>方法类似）。如果原始模型（记为 $f$）未经校准、不能输出概率，该怎么办？根据论文的建议，我们可以用另一个分类器近似 $f$，该分类器的形式类似于 Bayes classifier $f^{*}$：</p>
+<p>（1）对训练数据应用 <a href="https://en.wikipedia.org/?title=Parzen_window&amp;redirect=no">Parzen window（Parzen 窗密度估计）</a>，估计加权的类别密度：</p>
+<p>$$
+\hat{p}_{\sigma}(x, y=c) = \frac{1}{n} \sum_{i \in I_c} k_{\sigma} (x - x_i)
+$$</p>
+<p>其中，$I_c$ 是一个索引集合，包含被模型分配到类别 $c$ 的数据点索引，模型为 $f$，即 $I_c = \{i \vert f(x_i) = c\}$。$k_{\sigma}$ 是核函数。在<a href="https://en.wikipedia.org/wiki/Kernel_(statistics)#Kernel_functions_in_common_use">众多候选函数</a>中，高斯核是一种常用选择。</p>
+<p>（2）然后，应用 Bayes 法则，近似所有类别的概率 $p(Y=c \vert X=x)$：</p>
+<div>
+$$
+\begin{aligned}
+\hat{p}_{\sigma}(y=c | x)
+&= \frac{\hat{p}_{\sigma}(x, y=c)}{\hat{p}_{\sigma}(x, y=c) + \hat{p}_{\sigma}(x, y \neq c)} \\
+&\approx \frac{\sum_{i \in I_c} k_{\sigma} (x - x_i)}{\sum_i k_{\sigma} (x - x_i)}
+\end{aligned}
+$$
+</div>
+<p>（3）最终估计得到的 Bayes classifier 形式如下：</p>
+<p>$$
+\hat{f}_{\sigma} = \arg\min_{c \in \{1, \dots, C\}} \hat{p}_{\sigma}(y \neq c \vert x)
+$$</p>
+<p>注意，我们可以用原始模型 $f$ 生成任意多的带标签数据，不受训练数据规模的限制。选择超参数 $\sigma$，以使 $\hat{f}_{\sigma}(x) = f(x)$ 达到较高忠实度的机会最大。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/interpretability_local_gradient.png" style="width: 560px;"  />
+	<figcaption>局部梯度解释向量应用于简单对象分类的示例，分类器采用 Gaussian Processes Classifier（高斯过程分类器，GPC）。GPC 模型本身就输出概率。（a）显示训练点及其标签，红色为正类 1，蓝色为负类 -1。（b）展示正类的概率函数。（c-d）显示局部梯度和局部解释向量的方向。</figcaption>
+</figure>
+<blockquote>
+<p>旁注：可以看到，上述两种方法都要求模型预测为概率。对模型输出进行校准又增加了一层复杂性。</p>
+</blockquote>
+<h2 id="lime-local-interpretable-model-agnostic-explanations">LIME（Local Interpretable Model-Agnostic Explanations，局部可解释的模型无关解释）<a hidden class="anchor" aria-hidden="true" href="#lime-local-interpretable-model-agnostic-explanations">#</a></h2>
+<p><a href="https://github.com/marcotcr/lime">LIME</a> 是 <em>local interpretable model-agnostic explanation（局部可解释的模型无关解释）</em> 的缩写，可以在我们关注的预测附近，局部近似黑盒模型（<a href="https://arxiv.org/pdf/1602.04938.pdf">Ribeiro、Singh 和 Guestrin，2016</a>）。</p>
+<p>与上文一样，将黑盒模型记为 $f$。LIME 包含以下步骤：</p>
+<p>（1）将数据集转换为可解释的数据表示：$x \Rightarrow x_b$。</p>
+<ul>
+<li>文本分类器：用二进制向量表示某个词是否出现。</li>
+<li>图像分类器：用二进制向量表示某个由相似像素组成的连续区域（超像素）是否存在。</li>
+</ul>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/LIME_interpretable_representation.png" style="width: 480px;"  />
+	<figcaption>将图像转换为可解释数据表示的示例。（图片来源：<a href="https://www.oreilly.com/learning/introduction-to-local-interpretable-model-agnostic-explanations-lime" target="_blank">www.oreilly.com/learning/introduction-to-local-interpretable-model-agnostic-explanations-lime</a>）</figcaption>
+</figure>
+<p>（2）给定预测 $f(x)$ 及其对应的可解释数据表示 $x_b$，在 $x_b$ 附近采样实例：从 $x_b$ 的非零元素中均匀随机抽取，抽取数量本身也通过均匀采样确定。这一过程生成扰动样本 $z_b$，其中包含 $x_b$ 的一部分非零元素。</p>
+<p>然后，将 $z_b$ 恢复到原始输入空间，得到 $z$，并通过目标模型得到预测分数 $f(z)$。</p>
+<p>利用大量这样的采样数据点 $z_b \in \mathcal{Z}_b$ 及其模型预测，我们可以学习具有局部忠实度的解释模型（形式可以简单到只是回归模型）。根据采样数据点与 $x_b$ 的距离，为数据点赋予不同权重。论文使用 lasso regression（套索回归），并在预处理时先选择最显著的 $k$ 个特征，称为“K-LASSO”。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/LIME_illustration.png" style="width: 380px;"  />
+	<figcaption>粉色和蓝色区域是黑盒模型 $f$ 预测的两个类别。大的红色叉号是需要解释的点，其他较小的叉号（被 $f$ 预测为粉色）和圆点（被 $f$ 预测为蓝色）是采样数据点。即使模型可能非常复杂，我们仍然能够学习一个像灰色虚线这样简单的局部解释模型。（图片来源：<a href="https://homes.cs.washington.edu/~marcotcr/blog/lime/" target="_blank">homes.cs.washington.edu/~marcotcr/blog/lime</a>）</figcaption>
+</figure>
+<p>检查解释是否合理，可以直接判断模型是否值得信任，因为模型有时会捕捉虚假的相关性或进行不恰当的泛化。论文中一个有趣的例子，是将 LIME 应用于区分“Christianity（基督教）”和“Atheism（无神论）”的 SVM（支持向量机）文本分类器。模型的准确率相当高（留出的测试集上达到 94%！），但 LIME 的解释表明，模型基于非常随意的理由作出决策，例如统计“re”“posting”和“host”这些词，而这些词与“Christianity”和“Atheism”都没有直接联系。经过这样的诊断，我们了解到，即使模型给出了漂亮的准确率，它也不值得信任。这也指明了改进模型的方法，例如更好地预处理文本。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/LIME.png"  />
+	<figcaption>在图像分类器上使用 LIME 的示意图。（图片来源：<a href="https://www.oreilly.com/learning/introduction-to-local-interpretable-model-agnostic-explanations-lime" target="_blank">www.oreilly.com/learning/introduction-to-local-interpretable-model-agnostic-explanations-lime</a>）</figcaption>
+</figure>
+<p>若想阅读更详细、不同于论文形式的解释，请阅读作者的<a href="https://www.oreilly.com/learning/introduction-to-local-interpretable-model-agnostic-explanations-lime">这篇博客文章</a>。很值得一读。</p>
+<blockquote>
+<p>旁注：局部解释模型通常应当比全局解释模型更容易，但更难维护（想想<a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality">维度灾难</a>）。下述方法旨在解释模型的整体行为。不过，全局方法无法捕捉细粒度的解释，例如某个特征可能在这一区域很重要，在另一区域却完全不重要。</p>
+</blockquote>
+<h2 id="feature-selection">特征选择<a hidden class="anchor" aria-hidden="true" href="#feature-selection">#</a></h2>
+<p>基本上，所有经典特征选择方法（<a href="http://www.surdeanu.info/mihai/teaching/ista555-spring15/readings/yang97comparative.pdf">Yang 和 Pedersen，1997</a>；<a href="http://www.jmlr.org/papers/volume3/guyon03a/guyon03a.pdf">Guyon 和 Elisseeff，2003</a>）都可以视为全局解释模型的方法。特征选择方法分解多个特征的贡献，让我们能够用各个特征的影响解释模型的整体输出。</p>
+<p>关于特征选择的资料非常丰富，因此本文略过这一话题。</p>
+<h2 id="beta-black-box-explanation-through-transparent-approximations">BETA（Black Box Explanation through Transparent Approximations，通过透明近似解释黑盒）<a hidden class="anchor" aria-hidden="true" href="#beta-black-box-explanation-through-transparent-approximations">#</a></h2>
+<p><a href="https://arxiv.org/abs/1707.01154">BETA</a> 是 <em>black box explanation through transparent approximations（通过透明近似解释黑盒）</em> 的缩写，与 <a href="https://cs.stanford.edu/people/jure/pubs/interpretable-kdd16.pdf">Interpretable Decision Sets（可解释决策集合）</a> 密切相关（Lakkaraju、Bach 和 Leskovec，2016）。BETA 学习一个紧凑的两层决策集合，其中每条规则都明确解释模型的一部分行为。</p>
+<p>作者提出了一种新的目标函数，使学习过程同时追求<strong>高忠实度</strong>（解释与模型高度一致）、<strong>低歧义</strong>（解释中的决策规则很少重叠）和<strong>高可解释性</strong>（解释的决策集合轻量且规模小）。这些方面结合成一个待优化的目标函数。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/BETA.png" style="width: 580px; margin-bottom: 10px;"  />
+	<figcaption>良好模型解释所需性质的度量：忠实度、无歧义性和可解释性。给定目标模型 $\mathcal{B}$，其解释是两层决策集合 $\Re$，包含一组规则 ${(q\_1, s\_1, c\_1), \dots, (q\_M, s\_M, c\_M)}$，其中 $q\_i$ 和 $s\_i$ 是由（特征、运算符、取值）形式的谓词组成的合取，$c\_i$ 是类别标签。更多细节参见<a href="https://arxiv.org/abs/1707.01154" target="_blank">论文</a>。（图片来源：<a href="https://arxiv.org/abs/1707.01154" target="_blank">arxiv.org/abs/1707.01154</a>）</figcaption>
+</figure>
+<h1 id="explainable-artificial-intelligence">Explainable Artificial Intelligence（可解释人工智能）<a hidden class="anchor" aria-hidden="true" href="#explainable-artificial-intelligence">#</a></h1>
+<p>本节名称借自 DARPA 的项目<a href="https://www.darpa.mil/program/explainable-artificial-intelligence">“Explainable Artificial Intelligence（可解释人工智能）”</a>。这一 Explainable AI（XAI）计划旨在开发更具可解释性的模型，让人类能够理解、恰当地信任并有效管理正在兴起的新一代人工智能技术。</p>
+<p>随着深度学习应用的发展，人们开始担忧：<a href="https://www.technologyreview.com/s/601860/if-a-driverless-car-goes-bad-we-may-never-know-why/">即使模型出了问题，我们也可能永远不知道</a>。复杂的结构、大量可学习参数、非线性数学运算以及<a href="https://arxiv.org/abs/1312.6199">一些耐人寻味的性质</a>（Szegedy 等，2014）使深度神经网络难以解释，形成了真正的黑盒。不过，深度学习的能力也正源于这种复杂性——它能够更灵活地捕捉真实世界数据中丰富而复杂的模式。</p>
+<p>关于<strong>对抗样本</strong>的研究（<a href="https://blog.openai.com/robust-adversarial-inputs/">OpenAI Blog: Robust Adversarial Examples（OpenAI 博客：鲁棒对抗样本）</a>、<a href="https://blog.openai.com/adversarial-example-research/">Attacking Machine Learning with Adversarial Examples（使用对抗样本攻击机器学习）</a>、<a href="https://arxiv.org/pdf/1412.6572.pdf">Goodfellow、Shlens 和 Szegedy，2015</a>；<a href="http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Nguyen_Deep_Neural_Networks_2015_CVPR_paper.pdf">Nguyen、Yosinski 和 Clune，2015</a>）为 AI 应用的鲁棒性和安全性敲响了警钟。有时，模型会表现出非预期、意外且不可预测的行为，而我们没有快速、有效的策略来判断原因。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/adversarial_examples.png"  />
+	<figcaption>对抗样本示意图。（a-d）是通过向原始图像加入人类无法察觉的噪声生成的对抗图像（<a href="https://arxiv.org/abs/1312.6199" target="_blank">Szegedy 等，2013</a>）。训练良好的神经网络模型能够成功分类原始图像，却会在对抗图像上失败。（e-h）是生成的图案（<a href="http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Nguyen_Deep_Neural_Networks_2015_CVPR_paper.pdf" target="_blank">Nguyen、Yosinski 和 Clune，2015</a>）。训练良好的神经网络模型分别将其标记为（e）校车、（f）吉他、（g）孔雀和（h）北京犬。（图片来源：<a href="https://arxiv.org/pdf/1702.07800.pdf" target="_blank">Wang、Raj 和 Xing，2017</a>）</figcaption>
+</figure>
+<p>Nvidia 最近开发了<a href="https://blogs.nvidia.com/blog/2017/04/27/how-nvidias-neural-net-makes-decisions/">一种将最重要的像素点可视化的方法</a>，用于其自动驾驶汽车的决策过程。这种可视化让我们了解 AI 如何思考，以及系统驾驶汽车时依赖什么。如果 AI 认为重要的内容与人类作出类似决策时所依据的内容一致，我们自然会对黑盒模型更有信心。</p>
+<p>这个不断发展的领域每天都有令人兴奋的消息和发现。希望本文能提供一些线索，鼓励你进一步探索这个主题 :)</p>
+<hr>
+<p>引用格式：</p>
+<pre tabindex="0"><code>@article{weng2017gan,
+  title   = &#34;How to Explain the Prediction of a Machine Learning Model?&#34;,
+  author  = &#34;Weng, Lilian&#34;,
+  journal = &#34;lilianweng.github.io&#34;,
+  year    = &#34;2017&#34;,
+  url     = &#34;https://lilianweng.github.io/posts/2017-08-01-interpretation/&#34;
+}
+</code></pre><h1 id="references">参考文献<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<p>[1] Zachary C. Lipton。<a href="https://arxiv.org/pdf/1606.03490.pdf">“The mythos of model interpretability.”（模型可解释性的神话。）</a> arXiv 预印本 arXiv:1606.03490（2016）。</p>
+<p>[2] Been Kim、Rajiv Khanna 和 Oluwasanmi O. Koyejo。“Examples are not enough, learn to criticize! criticism for interpretability.”（仅有示例还不够，学会批判！用于可解释性的批判。）Advances in Neural Information Processing Systems，2016。</p>
+<p>[3] Himabindu Lakkaraju、Stephen H. Bach 和 Jure Leskovec。<a href="http://www.kdd.org/kdd2016/papers/files/rpp1067-lakkarajuA.pdf">“Interpretable decision sets: A joint framework for description and prediction.”（可解释决策集合：描述与预测的联合框架。）</a> 第 22 届 ACM SIGKDD 国际知识发现与数据挖掘会议论文集。ACM，2016。</p>
+<p>[4] Robnik-Šikonja、Marko 和 Igor Kononenko。<a href="http://lkm.fri.uni-lj.si/rmarko/papers/RobnikSikonjaKononenko08-TKDE.pdf">“Explaining classifications for individual instances.”（解释单个实例的分类。）</a> IEEE Transactions on Knowledge and Data Engineering 20.5（2008）：589-600。</p>
+<p>[5] Baehrens、David 等。<a href="http://www.jmlr.org/papers/volume11/baehrens10a/baehrens10a.pdf">“How to explain individual classification decisions.”（如何解释单个分类决策。）</a> Journal of Machine Learning Research 11.Jun（2010）：1803-1831。</p>
+<p>[6] Marco Tulio Ribeiro、Sameer Singh 和 Carlos Guestrin。<a href="https://arxiv.org/pdf/1602.04938.pdf">“Why should I trust you?: Explaining the predictions of any classifier.”（我为何应该信任你？解释任意分类器的预测。）</a> 第 22 届 ACM SIGKDD 国际知识发现与数据挖掘会议论文集。ACM，2016。</p>
+<p>[7] Yiming Yang 和 Jan O. Pedersen。<a href="http://www.surdeanu.info/mihai/teaching/ista555-spring15/readings/yang97comparative.pdf">“A comparative study on feature selection in text categorization.”（文本分类中特征选择的比较研究。）</a> 国际机器学习会议，第 97 卷，1997。</p>
+<p>[8] Isabelle Guyon 和 André Elisseeff。<a href="http://www.jmlr.org/papers/volume3/guyon03a/guyon03a.pdf">“An introduction to variable and feature selection.”（变量与特征选择导论。）</a> Journal of Machine Learning Research 3.Mar（2003）：1157-1182。</p>
+<p>[9] Ian J. Goodfellow、Jonathon Shlens 和 Christian Szegedy。<a href="https://arxiv.org/pdf/1412.6572.pdf">“Explaining and harnessing adversarial examples.”（解释与利用对抗样本。）</a> ICLR 2015。</p>
+<p>[10] Christian Szegedy、Wojciech Zaremba、Ilya Sutskever、Joan Bruna、Dumitru Erhan、Ian Goodfellow、Rob Fergus。<a href="https://arxiv.org/abs/1312.6199">“Intriguing properties of neural networks.”（神经网络耐人寻味的性质。）</a> 国际学习表征会议（2014）。</p>
+<p>[11] Nguyen、Anh、Jason Yosinski 和 Jeff Clune。<a href="http://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Nguyen_Deep_Neural_Networks_2015_CVPR_paper.pdf">“Deep neural networks are easily fooled: High confidence predictions for unrecognizable images.”（深度神经网络很容易被欺骗：对无法识别图像的高置信度预测。）</a> IEEE 计算机视觉与模式识别会议论文集，2015。</p>
+<p>[12] Benjamin Letham、Cynthia Rudin、Tyler H. McCormick 和 David Madigan。<a href="https://arxiv.org/abs/1511.01644">“Interpretable classifiers using rules and Bayesian analysis: Building a better stroke prediction model.”（使用规则与贝叶斯分析的可解释分类器：构建更好的卒中预测模型。）</a> The Annals of Applied Statistics 9，第 3 期（2015）：1350-1371。</p>
+<p>[13] Haohan Wang、Bhiksha Raj 和 Eric P. Xing。<a href="https://arxiv.org/pdf/1702.07800.pdf">“On the Origin of Deep Learning.”（论深度学习的起源。）</a> arXiv 预印本 arXiv:1702.07800（2017）。</p>
+<p>[14] <a href="https://blog.openai.com/robust-adversarial-inputs/">OpenAI Blog: Robust Adversarial Examples（OpenAI 博客：鲁棒对抗样本）</a></p>
+<p>[15] <a href="https://blog.openai.com/adversarial-example-research/">Attacking Machine Learning with Adversarial Examples（使用对抗样本攻击机器学习）</a></p>
+<p>[16] <a href="https://blogs.nvidia.com/blog/2017/04/27/how-nvidias-neural-net-makes-decisions/">Reading an AI Car’s Mind: How NVIDIA’s Neural Net Makes Decisions（读懂 AI 汽车的思路：NVIDIA 神经网络如何作出决策）</a></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://xingshuozhu1998.github.io/tags/foundation/">基础</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://xingshuozhu1998.github.io/posts/2017-08-20-gan/">
+    <span class="title">« </span>
+    <br>
+    <span>从 GAN（生成对抗网络） 到 WGAN（采用最优传输距离的生成对抗网络）</span>
+  </a>
+  <a class="next" href="https://xingshuozhu1998.github.io/posts/2017-07-22-stock-rnn-part-2/">
+    <span class="title"> »</span>
+    <br>
+    <span>使用 RNN（循环神经网络）预测股价：第二部分</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 twitter 分享《如何解释机器学习模型的预测？》"
+        href="https://twitter.com/intent/tweet/?text=How%20to%20Explain%20the%20Prediction%20of%20a%20Machine%20Learning%20Model%3f&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-08-01-interpretation%2f&amp;hashtags=foundation">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 linkedin 分享《如何解释机器学习模型的预测？》"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-08-01-interpretation%2f&amp;title=How%20to%20Explain%20the%20Prediction%20of%20a%20Machine%20Learning%20Model%3f&amp;summary=How%20to%20Explain%20the%20Prediction%20of%20a%20Machine%20Learning%20Model%3f&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-08-01-interpretation%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 reddit 分享《如何解释机器学习模型的预测？》"
+        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-08-01-interpretation%2f&title=How%20to%20Explain%20the%20Prediction%20of%20a%20Machine%20Learning%20Model%3f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 facebook 分享《如何解释机器学习模型的预测？》"
+        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-08-01-interpretation%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 whatsapp 分享《如何解释机器学习模型的预测？》"
+        href="https://api.whatsapp.com/send?text=How%20to%20Explain%20the%20Prediction%20of%20a%20Machine%20Learning%20Model%3f%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-08-01-interpretation%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 telegram 分享《如何解释机器学习模型的预测？》"
+        href="https://telegram.me/share/url?text=How%20to%20Explain%20the%20Prediction%20of%20a%20Machine%20Learning%20Model%3f&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2017-08-01-interpretation%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

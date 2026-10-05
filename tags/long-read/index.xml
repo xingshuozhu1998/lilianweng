@@ -1,0 +1,246 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/long-read</title>
+    <link>https://xingshuozhu1998.github.io/tags/long-read/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 01 May 2025 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/long-read/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>我们为什么思考</title>
+      <link>https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/</link>
+      <pubDate>Thu, 01 May 2025 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/</guid>
+      <description>特别感谢  John Schulman  为本文提供大量极有价值的反馈，并直接编辑本文。  
+ Test-time compute（测试时计算）（ Graves et al. 2016 、 Ling, et al. 2017 、 Cobbe et al. 2021 ）与 chain-of-thought（思维链）（思维链，CoT（思维链））（ Wei et al. 2022 、 Nye et al. 2021 ）显著提升了模型性能，同时也提出了许多研究问题。本文旨在回顾如何有效使用测试时计算（即“思考时间”）、以及它为何有效的最新进展。 
+ 动机 #  
+ 让模型思考更长时间，有几种不同的动机。 
+ 与心理学类比 #  
+ 这一核心想法与人类的思考方式密切相关。我们人类无法立刻给出  "What's 12345 times 56789?"  的答案。相反，在得到结果之前花时间思考和分析是很自然的，尤其对于复杂问题。在  Thinking, Fast and Slow（《思考，快与慢》，Kahneman, 2013）  中，Daniel Kahneman 从  dual process </description>
+    </item>
+    
+    <item>
+      <title>强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）</title>
+      <link>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</link>
+      <pubDate>Thu, 28 Nov 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</guid>
+      <description>当  reinforcement learning（强化学习，RL（强化学习））  智能体  利用  奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。 
+ 随着  语言模型  开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL训练中的 reward hacking已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。 
+ 过去有关这一主题的大部分工作相当理论化，重点是定义或证明 reward hacking的存在。然而，针对实际缓解方法的研究，尤其在 RLHF与 LLM（大语言模型）背景下，仍然有限。我尤其希望呼吁，未来投入更多研究，理解 reward hacking 并开发缓解方法。希望不久之后能够用一篇专门文章讨论</description>
+    </item>
+    
+    <item>
+      <title>Transformer（基于注意力机制的神经网络架构） 家族 2.0</title>
+      <link>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</link>
+      <pubDate>Fri, 27 Jan 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</guid>
+      <description>自从大约三年前我发布上一篇   “The Transformer Family”   以来，人们提出了许多新的 Transformer 架构改进。在这里，我对那篇2020年的文章进行了大幅重构与扩充：重新组织各节的层级，并用更新的论文完善许多章节。2.0版包含旧版的全部内容，长度约为旧版的两倍。 
+ 符号说明 #  
+ 
+	 
+			 
+					 符号 
+					 含义 
+			 
+	 
+	 
+			 
+					 $d$ 
+					 模型维度／隐藏状态维度／位置编码维度。 
+			 
+			 
+					 $h$ 
+					 多头注意力层中的头数。 
+			 
+			 
+					 $L$ 
+					 输入序列的片段长度。 
+			 
+			 
+					 $N$ 
+					 模型中注意力层的总数；不考虑 MoE（混合专家）。 
+			 
+			 
+					 $\mathbf{X} \in \mathbb{R}^{L \times d}$ 
+					 输入序列，其中每个元素均已映射为形状为 $d$ 的嵌入向量，与模型维度相同。 
+			 
+			 
+					 $\m</description>
+    </item>
+    
+    <item>
+      <title>对比表征学习</title>
+      <link>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</link>
+      <pubDate>Mon, 31 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</guid>
+      <description>对比表征学习的目标，是学习这样的嵌入空间：相似样本对彼此接近，不相似样本对彼此远离。对比学习可以用于监督和无监督情形。在使用无监督数据时，对比学习是 自监督学习 中最强大的方法之一。 
+ 对比训练目标 #  
+ 早期用于对比学习的损失函数只涉及一个正样本和一个负样本。近期训练目标的趋势，则是在一个批量中包含多个正样本对和负样本对。 
+ 对比损失 #  
+  对比损失 （ Chopra 等，2005 ）是最早以对比方式进行深度度量学习的训练目标之一。 
+ 给定一组输入样本 $\{ \mathbf{x}_i \}$，每个样本都有对应标签 $y_i \in \{1, \dots, L\}$，属于 $L$ 个类别之一。我们希望学习函数 $f_\theta(.): \mathcal{X}\to\mathbb{R}^d$，将 $x_i$ 编码为嵌入向量，使同类示例具有相似嵌入，而不同类样本的嵌入差异很大。因此，对比损失以一对输入 $(x_i, x_j)$ 为对象：如果二者属于同类，就最小化嵌入距离；否则就最大化距离。 
+ 
+$$
+\mathcal{L}_\text{cont}(\mathbf{x}</description>
+    </item>
+    
+    <item>
+      <title>可控神经文本生成</title>
+      <link>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</link>
+      <pubDate>Sat, 02 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</guid>
+      <description>[2021-02-01 更新：更新至 2.0 版，新增若干研究工作并修正许多笔误。] 
+ 
+ [2021-05-26 更新：在  “提示设计” 一节新增 P-tuning 和 Prompt Tuning。] 
+ 
+ [2021-09-19 更新：新增  “Unlikelihood Training（非似然训练）” 。] 
+ 
+ 网络上存在海量的免费文本，比带标签的基准数据集多出几个数量级。最先进的语言模型（LM）使用大规模无监督网络数据进行训练。通过反复采样下一个 token（词元）来从 LM 生成样本时，我们对输出文本的主题、风格、情感等属性并没有多少控制能力。许多应用需要对模型输出进行良好的控制。例如，如果计划使用 LM 为儿童生成阅读材料，我们就希望引导输出的故事，使其安全、有教育意义，并且容易被儿童理解。 
+ 如何引导一个强大的无条件语言模型？本文将深入讨论几种借助无条件语言模型进行可控内容生成的方法。
+请注意，模型的可控性仍然是一个尚未解决的研究问题。本文介绍的每一种方法都有其优点和缺点。 
+ 
+ 应用引导解码策略，在测试时选择符合要求的输出。 
+ 通过良好的提示设计，优化生</description>
+    </item>
+    
+    <item>
+      <title>深度强化学习中的探索策略</title>
+      <link>https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/</link>
+      <pubDate>Sun, 07 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/</guid>
+      <description>[2020-06-17更新：加入  “exploration via disagreement（通过分歧探索）” ，位于“Forward Dynamics（前向动力学）” 一节 。  
+  Exploitation（利用）与 exploration（探索）之间的权衡 ，是RL（强化学习）中的重要主题。我们希望RL智能体尽快找到最佳解。然而，在探索不足时过早锁定某个解，会造成很差的结果，因为这可能导致局部极小值或彻底失败。以最优回报为优化目标的现代  RL   算法 ，能够相当高效地实现良好的利用，而探索仍更像一个开放问题。 
+ 这里，我想讨论深度 RL中的几种常见探索策略。这是一个很大的主题，本文绝不可能覆盖所有重要子主题。我计划定期更新，随着时间推移逐步丰富内容。 
+ 经典探索策略 #  
+ 作为简要回顾，先介绍几种在 multi-armed bandit（多臂老虎机）问题或简单表格型RL中效果很好的经典探索算法。 
+ 
+  Epsilon-greedy（ε贪心） ：智能体偶尔进行随机探索，概率为 $\epsilon$，而大多数时候采取最优动作，概率为 $1-\epsilon$。 
+</description>
+    </item>
+    
+    <item>
+      <title>自监督表征学习</title>
+      <link>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</link>
+      <pubDate>Sun, 10 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</guid>
+      <description>[2020-01-09 更新：新增  Contrastive Predictive Coding（对比预测编码） 一节。] 
+ 
+  [2020-04-13 更新：新增关于 MoCo（动量对比学习方法）、SimCLR（使用数据增强与对比损失的表征学习方法） 和 CURL 的“Momentum Contrast（动量对比学习）”一节。]  
+ 
+ [2020-07-08 更新：新增关于 DeepMDP 和 DBC 的  “Bisimulation（双模拟）” 一节。] 
+ 
+  [2020-09-12 更新：在“Momentum Contrast（动量对比学习）”一节中新增  MoCo V2  和  BYOL（不依赖负样本的自监督表征学习方法） 。]  
+ 
+ [2021-05-31 更新：移除“Momentum Contrast（动量对比学习）”一节，并添加完整文章  《对比表征学习》 的链接。]  
+ 给定任务和足够的标签，有监督学习可以将其解决得很好。良好性能通常需要相当数量的标签，但收集人工标签成本很高（例如 ImageNet），且难以扩大规模。考虑到无标签数据的数量（例如自由文</description>
+    </item>
+    
+    <item>
+      <title>通用语言模型</title>
+      <link>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</link>
+      <pubDate>Thu, 31 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</guid>
+      <description>[2019-02-14更新：加入  ULMFiT  和  GPT-2（第二代生成式预训练语言模型） 。]  
+ [2020-02-29更新：加入  ALBERT 。]  
+ [2020-10-25更新：加入  RoBERTa 。]  
+ [2020-12-13更新：加入  T5 。]  
+ [2020-12-30更新：加入  GPT-3（第三代生成式预训练语言模型） 。]  
+ [2021-11-13更新：加入  XLNet 、 BART  和  ELECTRA ；同时更新  总结  部分。]  
+ 
+ 
+	 
+	 我猜他们是 Elmo 和 Bert？（图片来源： 这里 ） 
+ 
+ 2018年，我们见证了 NLP（自然语言处理）的惊人进展。 OpenAI GPT（采用解码器的生成式预训练语言模型）  和  BERT（基于双向编码器的预训练语言模型）  等大规模预训练语言模型，使用通用模型架构，在多种语言任务上取得了出色性能。这一思路类似于 ImageNet 分类预训练对许多视觉任务的帮助（*）。比视觉分类预训练更好的是，NLP 中这种简单而强大的方法不需要带标签的数据进行预训练，因此我</description>
+    </item>
+    
+    <item>
+      <title>元学习：学会快速学习</title>
+      <link>https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/</link>
+      <pubDate>Fri, 30 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/</guid>
+      <description>[2019-10-01 更新：感谢 Tianhao，本文有了  中文  译本！]  
+ 好的机器学习模型往往需要大量样本训练。相比之下，人类学习新概念与技能更快、更高效。孩子只见过几次猫和鸟，就能很快区分它们。会骑自行车的人，可能只需少量演示、甚至无需演示，就能迅速学会骑摩托车。能否设计具有类似性质的机器学习模型，用少量训练示例快速学习新概念与技能？这正是  meta-learning（元学习）  的基本目标。 
+ 我们期待好的 meta-learning（元学习）模型，能很好适应或泛化到训练中未曾遇到的新任务与新环境。适应过程本质上是小型学习阶段，发生在测试期间，只有限接触新任务配置。最终适应后的模型能完成新任务。因此，元学习也称为  learning to learn（学会学习） 。 
+ 任务可以是任意明确定义的机器学习问题族：有监督学习、强化学习等。例如，以下是具体元学习任务： 
+ 
+ 在非猫图像上训练的分类器，只看少量猫照片后，就能判断给定图像是否含猫。 
+ 游戏机器人能够迅速掌握新游戏。 
+ 小型机器人虽然只在平坦地面训练，测试时却能在上坡表面完成所需任务。 
+ 
+ 定义 M</description>
+    </item>
+    
+    <item>
+      <title>策略梯度算法</title>
+      <link>https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/</link>
+      <pubDate>Sun, 08 Apr 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/</guid>
+      <description>[2018-06-30 更新：新增两种策略梯度方法  SAC（基于最大熵目标的行动者与评论家算法）  和  D4PG（分布式分布型深度确定性策略梯度） 。] 
+ 
+ [2018-09-30 更新：新增策略梯度方法  TD3（双延迟深度确定性策略梯度） 。] 
+ 
+ [2019-02-09 更新：新增 温度自动调整的 SAC 。] 
+ 
+ [2019-06-26 更新：感谢 Chanseok，本文有了 韩文版本 。] 
+ 
+ [2019-09-12 更新：新增策略梯度方法  SVPG（施泰因变分策略梯度） 。] 
+ 
+ [2019-12-22 更新：新增策略梯度方法  IMPALA（重要性加权行动者与学习器架构） 。] 
+ 
+ [2020-10-15 更新：新增策略梯度方法  PPG（分阶段策略梯度） ，并补充了一些关于  PPO（近端策略优化）  的讨论。] 
+ 
+ [2021-09-19 更新：感谢 Wenhao 和爱吃猫的鱼，本文有了 中文版本 1  和 中文版本 2 。]  
+ 什么是策略梯度 #  
+ 策略梯度是解决强化学习问题的一种方法。如果你还没有了解过强化学习领域，请先阅</description>
+    </item>
+    
+    <item>
+      <title>深入了解强化学习</title>
+      <link>https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/</link>
+      <pubDate>Mon, 19 Feb 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/</guid>
+      <description>[2020-09-03更新：更新  SARSA  与  Q-learning  算法，使两者区别更加明显。 
+ 
+ [2021-09-19更新：感谢爱吃猫的鱼，本文已有  中文版 。]  
+ 近年来，AI（人工智能）领域发生了几件令人兴奋的事情。AlphaGo 在围棋中击败最优秀的人类职业棋手。不久后，扩展算法 AlphaGo Zero 无需通过人类知识进行监督学习，就以100比0击败 AlphaGo。顶尖职业游戏选手在 DOTA2 1v1比赛中，输给 OpenAI 开发的机器人。得知这些后，很难不对这些算法背后的魔法——Reinforcement Learning (RL（强化学习）)（强化学习）——感到好奇。本文简要介绍这个领域：先介绍基础概念，再深入解决 RL 问题的经典方法。希望它成为新手的良好起点，为之后研究前沿工作搭桥。 
+ 什么是强化学习？ #  
+ 假设一个智能体处于未知环境中，可以通过与环境交互获得奖励。智能体应采取动作，最大化累计奖励。现实场景可能是玩游戏争取高分的机器人，也可能是尝试操作实体物体、完成实际任务的机器人，当然并不限于这些。 
+ 
+	 
+	 智能体与环</description>
+    </item>
+    
+    <item>
+      <title>从 GAN（生成对抗网络） 到 WGAN（采用最优传输距离的生成对抗网络）</title>
+      <link>https://xingshuozhu1998.github.io/posts/2017-08-20-gan/</link>
+      <pubDate>Sun, 20 Aug 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2017-08-20-gan/</guid>
+      <description>[2018-09-30更新：感谢 Yoonju，本文已有  韩文译本 ！] 
+ 
+ [2019-04-18更新：本文也可在  arXiv  获取。]  
+  Generative adversarial network（生成对抗网络） （GAN）在许多生成任务上表现出色，复现图像、人类语言、音乐等丰富现实内容。它受博弈论启发：生成器与评论家两个模型相互竞争，同时让彼此变强。然而，训练 GAN 很有挑战，存在训练不稳定或无法收敛等问题。 
+ 这里，我想解释生成对抗网络框架背后的数学、为何难以训练，最后介绍旨在解决训练困难的 GAN修改版。 
+ Kullback–Leibler 与 Jensen–Shannon divergence（分布差异度量） #  
+ 深入研究 GAN之前，先回顾量化两个概率分布相似性的两种指标。 
+ (1)  KL (Kullback–Leibler) divergence（KL散度） ，衡量概率分布 $p$ 偏离另一个预期概率分布 $q$ 的程度。 
+ 
+$$
+D_{KL}(p \| q) = \int_x p(x) \log \frac{p(x)}{q(x)}</description>
+    </item>
+    
+  </channel>
+</rss>

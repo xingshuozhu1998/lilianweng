@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/human-ai</title>
+    <link>https://xingshuozhu1998.github.io/tags/human-ai/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 05 Feb 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/human-ai/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于高质量人工数据的思考</title>
+      <link>https://xingshuozhu1998.github.io/posts/2024-02-05-human-data-quality/</link>
+      <pubDate>Mon, 05 Feb 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2024-02-05-human-data-quality/</guid>
+      <description>[特别感谢  Ian Kivlichan  提供许多有用线索（如百余年前 Nature 论文“Vox populi”）和良好反馈。🙏]   
+ 高质量数据是现代深度学习模型训练的燃料。多数针对特定任务的带标签数据来自人工标注，例如分类任务，以及用于 LLM（大语言模型）alignment（使模型行为符合人类意图）训练的  RLHF（基于人类反馈的强化学习）  标注，后者也可以构建为分类格式。本文介绍的许多机器学习技术能够改善数据质量，但从根本上说，收集人类数据需要关注细节并谨慎执行。研究社区知道高质量数据的价值，却不知为何有一种微妙印象：“人人都想做模型工作，而不想做数据工作”（ Sambasivan et al. 2021 ）。 
+ 
+	 
+	 实现高数据质量的两个方向。 
+ 
+ 人类评分者 ↔ 数据质量 #  
+ 收集人类数据涉及一系列操作步骤，每个步骤都会影响数据质量： 
+ 
+ 任务设计：设计任务流程，使任务更加清楚并降低复杂度。详细的指南很有帮助，但如果指南非常长且复杂，就需要相当充分的培训，才能真正发挥作用。 
+ 选择并培训一组评分者：选择技能与任务匹配、表现一致的标注者。培</description>
+    </item>
+    
+  </channel>
+</rss>

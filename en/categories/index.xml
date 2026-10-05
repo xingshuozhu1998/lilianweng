@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log English mirror · categories</title>
+    <link>https://xingshuozhu1998.github.io/en/categories/</link>
+    <description>English mirror of Lilian Weng’s blog.</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><ns0:link href="https://xingshuozhu1998.github.io/en/categories/index.xml" rel="self" type="application/rss+xml" />
+  </channel>
+</rss>

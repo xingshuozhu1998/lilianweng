@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>学习动态 | Lil'Log</title>
+<meta name="keywords" content="" />
+<meta name="description" content="记录我的学习笔记。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/tags/learning-dynamics/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://xingshuozhu1998.github.io/tags/learning-dynamics/index.xml">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="Learning-Dynamics（学习动力学）" />
+<meta property="og:description" content="记录我的学习笔记。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/tags/learning-dynamics/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Learning-Dynamics（学习动力学）"/>
+<meta name="twitter:description" content="记录我的学习笔记。"/>
+
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/tags/learning-dynamics/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/tags/learning-dynamics/">
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/tags/learning-dynamics/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/tags/learning-dynamics/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside> 
+<header class="page-header">
+  <h1>Learning-Dynamics（学习动力学）</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>审慎理解 Scaling Laws（规模变化与模型性能之间的规律）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>Scaling laws（规模变化与模型性能之间的规律）是深度学习中最重要的实证发现之一。其观察结果形式简单：训练损失 $L$ 随着模型大小 $N$、数据集大小 $D$ 和计算量 $C$ 增大，以可预测的方式下降，遵循幂律曲线；该曲线在双对数图中呈现为直线。我们可以将 scaling laws 看作描述计算量、损失、模型大小与数据之间关系的框架；其核心是如何在 $N$ 与 $D$ 之间最优地分配宝贵的计算资源。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2026 年 6 月 24 日  |  预计阅读时间：25 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《审慎理解 Scaling Laws（规模变化与模型性能之间的规律）》" href="https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>神经切线核背后的数学
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>众所周知，神经网络通常是 over-parameterized（参数数量超过拟合数据所需的程度），往往能轻易将训练损失降到接近零，同时在测试数据集上保持不错的泛化表现。尽管这些参数都随机初始化，优化过程仍能稳定地产生同样良好的结果。即使模型参数数量超过训练数据点数量，这一点也成立。
+Neural tangent kernel（神经切线核，NTK）（Jacot et al. 2018）是一种核函数，用于解释神经网络通过 gradient descent（梯度下降）训练时的演化过程。它让我们深入理解：为什么足够宽的神经网络在训练以最小化经验损失时，能够稳定收敛到全局最小值。本文将深入讨论 NTK（神经切线核）的动机与定义，并通过刻画无限宽度情形下的 NTK（神经切线核），证明神经网络在不同初始化下仍会确定性地收敛。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2022年9月8日 | 预计阅读时间：17分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Neural Tangent Kernel（神经切线核）背后的一些数学》" href="https://xingshuozhu1998.github.io/posts/2022-09-08-ntk/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>深度神经网络是否严重过拟合？
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> [2019-05-27 更新：新增 Lottery Ticket Hypothesis（彩票假说）部分。]
+如果你和我一样，带着传统机器学习的经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络的参数这么多，训练误差又很容易降到零，它理应严重过拟合。那么，它究竟如何泛化到样本之外的数据点呢？
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2019 年 3 月 14 日 | 预计阅读时间：21 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《深度神经网络是否严重过拟合？》" href="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

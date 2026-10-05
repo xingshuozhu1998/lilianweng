@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Reinforcement-Learning（强化学习） | Lil'Log</title>
+<meta name="keywords" content="" />
+<meta name="description" content="记录我的学习笔记。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/tags/reinforcement-learning/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://xingshuozhu1998.github.io/tags/reinforcement-learning/index.xml">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="强化学习" />
+<meta property="og:description" content="记录我的学习笔记。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/tags/reinforcement-learning/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="强化学习"/>
+<meta name="twitter:description" content="记录我的学习笔记。"/>
+
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/tags/reinforcement-learning/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/tags/reinforcement-learning/">
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/tags/reinforcement-learning/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/tags/reinforcement-learning/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside> 
+<header class="page-header">
+  <h1>强化学习</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>我们为什么思考
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>特别感谢 John Schulman 对本文提供了大量极有价值的反馈，并直接修改了部分内容。
+Test time compute（测试时计算；Graves et al. 2016、Ling, et al. 2017、Cobbe et al. 2021）和 Chain-of-thought（思维链；CoT）（Wei et al. 2022、Nye et al. 2021）显著提升了模型表现，同时也引出了许多研究问题。本文旨在回顾近期关于如何有效使用 test-time compute（即“思考时间”）以及它为何有帮助的进展。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2025 年 5 月 1 日  |  预计阅读时间：40 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《我们为什么思考》" href="https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>Reward hacking（利用奖励机制漏洞取得高奖励）是指 reinforcement learning（强化学习，RL）智能体利用奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务。Reward hacking（利用奖励机制漏洞取得高奖励）之所以存在，是因为 RL（强化学习）环境往往不完善，而且准确指定奖励函数本身就是一个根本性的难题。
+随着语言模型推广到广泛的任务，以及 RLHF（基于人类反馈的强化学习）成为对齐训练的事实标准方法，语言模型 RL（强化学习）训练中的 reward hacking（利用奖励机制漏洞取得高奖励）已成为一个关键的实际挑战。模型学会修改单元测试来通过编程任务，或者在回答中带有迎合用户偏好的偏见，这些现象非常令人担忧，并且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2024 年 11 月 28 日  |  预计阅读时间：37 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）》" href="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Transformer（基于注意力机制的神经网络架构） 家族 2.0
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>自从大约三年前我撰写上一篇“The Transformer Family（Transformer 家族）”以来，人们提出了许多新的 Transformer 架构改进。这里，我对 2020 年的文章进行了大幅重构和扩充——重新组织章节层次，并用较新的论文完善了许多章节。2.0 版涵盖旧版的全部内容，篇幅约为其两倍。
+符号说明 符号 含义 $d$ 模型大小／隐藏状态维度／位置编码大小。$h$ 多头注意力层中的头数。$L$ 输入序列的分段长度。$N$ 模型中注意力层的总数；不考虑 MoE（混合专家）。$\mathbf{X} \in \mathbb{R}^{L \times d}$ 输入序列，其中每个元素都已映射为嵌入向量，形状为 $d$，与模型大小相同。$\mathbf{W}^k \in \mathbb{R}^{d \times d_k}$ 键权重矩阵。$\mathbf{W}^q \in \mathbb{R}^{d \times d_k}$ 查询权重矩阵。$\mathbf{W}^v \in \mathbb{R}^{d \times d_v}$ 值权重矩阵。通常有 $d_k = d_v = d$。$\mathbf{W}^k_i, \mathbf{W}^q_i \in \mathbb{R}^{d \times d_k/h}; \mathbf{W}^v_i \in \mathbb{R}^{d \times d_v/h}$ 每个头的权重矩阵。$\mathbf{W}^o \in \mathbb{R}^{d_v \times d}$ 输出权重矩阵。$\mathbf{Q} = \mathbf{X}\mathbf{W}^q \in \mathbb{R}^{L \times d_k}$ 查询嵌入输入。$\mathbf{K} = \mathbf{X}\mathbf{W}^k \in \mathbb{R}^{L \times d_k}$ 键嵌入输入。$\mathbf{V} = \mathbf{X}\mathbf{W}^v \in \mathbb{R}^{L \times d_v}$ 值嵌入输入。$\mathbf{q}_i, \mathbf{k}_i \in \mathbb{R}^{d_k}, \mathbf{v}_i \in \mathbb{R}^{d_v}$ 查询、键、值矩阵中的行向量，这些矩阵分别为 $\mathbf{Q}$、$\mathbf{K}$ 和 $\mathbf{V}$。$S_i$ 键位置集合，供第 $i$ 个查询 $\mathbf{q}_i$ 关注。$\mathbf{A} \in \mathbb{R}^{L \times L}$ 长度为 $L$ 的输入序列与自身之间的自注意力矩阵。$\mathbf{A} = \text{softmax}(\mathbf{Q}\mathbf{K}^\top / \sqrt{d_k})$。$a_{ij} \in \mathbf{A}$ 查询 $\mathbf{q}_i$ 与键 $\mathbf{k}_j$ 之间的标量注意力分数。$\mathbf{P} \in \mathbb{R}^{L \times d}$ 位置编码矩阵，其中第 $i$ 行 $\mathbf{p}_i$ 是输入 $\mathbf{x}_i$ 的位置编码。Transformer 基础 Transformer 模型（为区别于其他增强版本，下文称为“vanilla Transformer”，即原始 Transformer；Vaswani 等，2017）采用编码器—解码器架构，与许多 NMT（神经机器翻译）模型中的常见架构一样。后来的简化 Transformer 在语言建模任务上也表现出色，例如仅编码器的 BERT 和仅解码器的 GPT。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2023年1月27日 | 预计阅读时间：45分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Transformer 家族2.0版》" href="https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>可控神经文本生成
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2021-02-01更新：更新至2.0版，加入几项研究并修正许多笔误。］［2021-05-26更新：在“提示设计”一节添加 P-tuning 与 Prompt Tuning（提示调优）。］［2021-09-19更新：添加“unlikelihood training（非似然训练）”。］
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2021 年 1 月 2 日  |  预计阅读时间：42 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Controllable Neural Text Generation（可控神经文本生成）》" href="https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>神经架构搜索
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> 尽管最流行、最成功的模型架构大多由人类专家设计，但这并不意味着我们已经探索了整个网络架构空间，并选定最佳方案。如果采用一种系统化、自动化的方式学习高性能模型架构，我们会更有机会找到最优解。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2020 年 8 月 6 日  |  预计阅读时间：32 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Neural Architecture Search（神经架构搜索）》" href="https://xingshuozhu1998.github.io/posts/2020-08-06-nas/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>深度强化学习中的探索策略
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> [2020-06-17 更新：在“Forward Dynamics（前向动力学）”部分新增“exploration via disagreement（通过分歧进行探索）”。
+Exploitation（利用）与 exploration（探索）是 Reinforcement Learning（强化学习）中的关键议题。我们希望 RL（强化学习）智能体尽快找到最佳解决方案。但与此同时，未充分探索就过早锁定某个方案显然不好，因为可能陷入局部最小值，甚至彻底失败。以最佳回报为优化目标的现代 RL（强化学习）算法能够非常高效地实现良好的利用，而探索仍更像是一个开放问题。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2020年6月7日 | 预计阅读时间：36分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《深度强化学习中的 Exploration（探索）策略》" href="https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Transformer（基于注意力机制的神经网络架构） 家族
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2023-01-27 更新：近三年后，我对本文进行了大幅重构更新，纳入自 2020 年以来出现的大量新 Transformer 模型。本文的增强版在这里：The Transformer Family Version 2.0（Transformer 家族 2.0 版）。关于这一主题，请参阅该篇文章。］ ...</p>
+  </section>
+  <footer class="entry-footer">日期：2020 年 4 月 7 日 | 预计阅读时间：25 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Transformer 家族》" href="https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>强化学习中的课程学习
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2020-02-03更新：在“任务专用课程”一节提到 PCG（程序化内容生成）。［2020-02-04更新：添加新的“通过蒸馏构建课程”一节。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2020 年 1 月 29 日 | 预计阅读时间：24 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《强化学习的 Curriculum（课程安排）》" href="https://xingshuozhu1998.github.io/posts/2020-01-29-curriculum-rl/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>自监督表征学习
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2020-01-09 更新：添加 Contrastive Predictive Coding（对比预测编码）新章节。］［2020-04-13 更新：添加“Momentum Contrast（动量对比）”章节，介绍 MoCo、SimCLR 和 CURL。］［2020-07-08 更新：添加“Bisimulation（双模拟）”章节，介绍 DeepMDP 和 DBC。］［2020-09-12 更新：在“Momentum Contrast”章节中添加 MoCo V2 和 BYOL。］［2021-05-31 更新：删除“Momentum Contrast”章节，添加指向完整文章“Contrastive Representation Learning（对比表征学习）”的链接。］
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2019 年 11 月 10 日 | 预计阅读时间：38 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《自监督表征学习》" href="https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>进化策略
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> 随机梯度下降是优化深度学习模型的通用选择，但并非唯一选择。使用 black-box optimization（黑箱优化）算法，即使不知道目标函数 $f(x): \mathbb{R}^n \to \mathbb{R}$ 的准确解析形式，也可以对它求值；在不知道 $f(x)$ 的准确解析形式时，无法计算梯度或 Hessian matrix（海森矩阵）。black-box optimization 方法的例子包括 Simulated Annealing（模拟退火）、Hill Climbing（爬山法）和 Nelder-Mead method（Nelder-Mead 方法）。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2019 年 9 月 5 日 | 预计阅读时间：22 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Evolution Strategies（进化策略）》" href="https://xingshuozhu1998.github.io/posts/2019-09-05-evolution-strategies/"></a>
+</article>
+<footer class="page-footer">
+  <nav class="pagination">
+    <a class="next" href="https://xingshuozhu1998.github.io/tags/reinforcement-learning/page/2/"> »</a>
+  </nav>
+</footer>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

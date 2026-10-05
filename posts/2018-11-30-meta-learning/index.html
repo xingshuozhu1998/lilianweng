@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>元学习：学会快速学习 | Lil’Log 中文学习镜像</title>
+<meta name="keywords" content="meta-learning, long-read" />
+<meta name="description" content="
+[2019-10-01 更新：感谢 Tianhao，本文有了中文译本！]">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="元学习：学会快速学习" />
+<meta property="og:description" content="
+[2019-10-01 更新：感谢 Tianhao，本文有了中文译本！]" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-11-30T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2018-11-30T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="元学习：学会快速学习"/>
+<meta name="twitter:description" content="
+[2019-10-01 更新：感谢 Tianhao，本文有了中文译本！]"/>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/posts/"}, {"@type": "ListItem", "position": 2, "name": "元学习：学会快速学习", "item": "https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "元学习：学会快速学习", "name": "元学习：学会快速学习", "description": "[2019-10-01 更新：感谢 Tianhao，本文有了中文译本！]", "keywords": ["meta-learning", "long-read"], "articleBody": "[2019-10-01 更新：感谢 Tianhao，本文有了  中文  译本！]  \n 好的机器学习模型往往需要大量样本训练。相比之下，人类学习新概念与技能更快、更高效。孩子只见过几次猫和鸟，就能很快区分它们。会骑自行车的人，可能只需少量演示、甚至无需演示，就能迅速学会骑摩托车。能否设计具有类似性质的机器学习模型，用少量训练示例快速学习新概念与技能？这正是  meta-learning（元学习）  的基本目标。 \n 我们期待好的 meta-learning（元学习）模型，能很好适应或泛化到训练中未曾遇到的新任务与新环境。适应过程本质上是小型学习阶段，发生在测试期间，只有限接触新任务配置。最终适应后的模型能完成新任务。因此，元学习也称为  learning to learn（学会学习） 。 \n 任务可以是任意明确定义的机器学习问题族：有监督学习、强化学习等。例如，以下是具体元学习任务： \n \n 在非猫图像上训练的分类器，只看少量猫照片后，就能判断给定图像是否含猫。 \n 游戏机器人能够迅速掌握新游戏。 \n 小型机器人虽然只在平坦地面训练，测试时却能在上坡表面完成所需任务。 \n \n 定义 Meta-Learning（元学习）问题 #  \n 本文关注每个目标任务是图像分类等有监督学习问题的情况。针对强化学习问题的元学习（也称“Meta Reinforcement Learning”，元强化学习）有许多有趣文献，但这里不讨论。 \n 一个简单视角 #  \n 好的 meta-learning（元学习）模型，应在多种学习任务上训练，优化在任务分布上的最佳性能，包括可能未见的任务。每个任务关联数据集 $\\mathcal{D}$，含特征向量与真实标签。最优模型参数为： \n \n$$\n\\theta^* = \\arg\\min_\\theta \\mathbb{E}_{\\mathcal{D}\\sim p(\\mathcal{D})} [\\mathcal{L}_\\theta(\\mathcal{D})]\n$$\n \n 它很像普通学习任务，但将  一个数据集  视为  一个数据样本 。 \n  Few-shot classification（少样本分类）  是有监督学习中元学习的实例。数据集 $\\mathcal{D}$ 通常分成学习用 support set（支持集）$S$ 与训练或测试用 prediction set（预测集）$B$，$\\mathcal{D}=\\langle S, B\\rangle$。通常考虑  K-shot N-class classification（每类 K 个样本、共 N 类的分类） ：支持集为 N 个类别中的每类提供 K 个带标签示例。 \n \n\t \n\t 4-shot 2-class（每类 4 个样本、共 2 类）图像分类示例。（缩略图来自  Pinterest ） \n \n 以测试时相同的方式训练 #  \n 数据集 $\\mathcal{D}$ 包含特征向量与标签对 $\\mathcal{D} = \\{(\\mathbf{x}_i, y_i)\\}$，每个标签属于已知标签集合 $\\mathcal{L}^\\text{label}$。假设分类器 $f_\\theta$ 参数为 $\\theta$，输出数据点属于类别 $y$ 的概率，给定特征向量 $\\mathbf{x}$：$P_\\theta(y\\vert\\mathbf{x})$。 \n 最优参数应最大化多个训练批次 $B \\subset \\mathcal{D}$ 上真实标签的概率： \n \n$$\n\\begin{aligned}\n\\theta^* &= {\\arg\\max}_{\\theta} \\mathbb{E}_{(\\mathbf{x}, y)\\in \\mathcal{D}}[P_\\theta(y \\vert \\mathbf{x})] &\\\\\n\\theta^* &= {\\arg\\max}_{\\theta} \\mathbb{E}_{B\\subset \\mathcal{D}}[\\sum_{(\\mathbf{x}, y)\\in B}P_\\theta(y \\vert \\mathbf{x})] & \\scriptstyle{\\text{; trained with mini-batches.}}\n\\end{aligned}\n$$\n \n 少样本分类的目标，是给定用于“快速学习”的小支持集后，降低未知标签数据样本的预测误差（想想微调）。为使训练模仿推理，只使用部分标签“模拟”数据集，避免向模型展示全部标签，并相应修改优化流程，鼓励快速学习： \n \n 采样标签子集 $L\\subset\\mathcal{L}^\\text{label}$。 \n 采样支持集 $S^L \\subset \\mathcal{D}$ 与训练批次 $B^L \\subset \\mathcal{D}$。两者只包含标签属于采样标签集合 $L$ 的数据点，$y \\in L, \\forall (x, y) \\in S^L, B^L$。 \n 支持集属于模型输入的一部分。  \n 最终优化使用小批次 $B^L$ 计算损失，通过反向传播更新参数，与有监督学习中的用法相同。 \n \n 可以将每对采样数据集 $(S^L, B^L)$ 视为一个数据点。模型经过训练，能泛化到其他数据集。红色符号是在有监督学习目标之外，为元学习新增的部分。 \n \n$$\n\\theta = \\arg\\max_\\theta \\color{red}{E_{L\\subset\\mathcal{L}}[} E_{\\color{red}{S^L \\subset\\mathcal{D}, }B^L \\subset\\mathcal{D}} [\\sum_{(x, y)\\in B^L} P_\\theta(x, y\\color{red}{, S^L})] \\color{red}{]}\n$$\n \n 这与任务特定样本有限时，使用图像分类（ImageNet）或语言建模（大型文本语料）的预训练模型有些相似。Meta-learning（元学习）进一步扩展此想法：不只为一个下游任务微调，而是优化模型，使其擅长许多任务，甚至全部任务。 \n 学习器与元学习器 #  \n 另一种常见元学习视角，将模型更新分为两阶段： \n \n 分类器 $f_\\theta$ 是“学习器”模型，训练它执行给定任务； \n 同时，优化器 $g_\\phi$ 通过支持集 $S$，学习如何更新学习器参数：$\\theta’ = g_\\phi(\\theta, S)$。 \n \n 最终优化步骤中，需要更新 $\\theta$ 与 $\\phi$，最大化： \n \n$$\n\\mathbb{E}_{L\\subset\\mathcal{L}}[ \\mathbb{E}_{S^L \\subset\\mathcal{D}, B^L \\subset\\mathcal{D}} [\\sum_{(\\mathbf{x}, y)\\in B^L} P_{g_\\phi(\\theta, S^L)}(y \\vert \\mathbf{x})]]\n$$\n \n 常见方法 #  \n Meta-learning（元学习）有三种常见方法：基于度量、基于模型和基于优化。Oriol Vinyals 在 NIPS 2018 元学习专题研讨会的  演讲  中作了很好的总结： \n | ————- | ————- | ————- | ————- | \n \n\t \n\t\t\t \n\t\t\t\t\t  \n\t\t\t\t\t 基于模型 \n\t\t\t\t\t 基于度量 \n\t\t\t\t\t 基于优化 \n\t\t\t \n\t \n\t \n\t\t\t \n\t\t\t\t\t  核心思想  \n\t\t\t\t\t RNN（循环神经网络）；记忆 \n\t\t\t\t\t 度量学习 \n\t\t\t\t\t 梯度下降 \n\t\t\t \n\t\t\t \n\t\t\t\t\t  如何建模 $P_\\theta(y \\vert \\mathbf{x})$？  \n\t\t\t\t\t $f_\\theta(\\mathbf{x}, S)$ \n\t\t\t\t\t $\\sum_{(\\mathbf{x}_i, y_i) \\in S} k_\\theta(\\mathbf{x}, \\mathbf{x}_i)y_i$ (*) \n\t\t\t\t\t $P_{g_\\phi(\\theta, S^L)}(y \\vert \\mathbf{x})$ \n\t\t\t \n\t \n \n （*）$k_\\theta$ 是衡量 $\\mathbf{x}_i$ 与 $\\mathbf{x}$ 相似性的核函数。 \n 接下来回顾每类方法的经典模型。 \n 基于度量 #  \n 基于度量的 meta-learning（元学习），核心思想类似最近邻算法（即  k-NN（k 近邻）  分类器与  k-means（k 均值）  聚类）和  核密度估计 。已知标签集合 $y$ 上的预测概率，是支持集样本标签的加权和。权重由核函数 $k_\\theta$ 生成，衡量两个样本相似性。 \n \n$$\nP_\\theta(y \\vert \\mathbf{x}, S) = \\sum_{(\\mathbf{x}_i, y_i) \\in S} k_\\theta(\\mathbf{x}, \\mathbf{x}_i)y_i \n$$ \n \n 学习良好核函数，是基于度量的元学习成功的关键。 度量学习 与此目标一致，旨在学习对象之间的度量或距离函数。好的度量取决于问题，应表示任务空间中输入之间的关系，帮助解决问题。 \n 以下所有模型都显式学习输入嵌入向量，用于设计合适核函数。 \n Convolutional Siamese Neural Network（卷积孪生神经网络） #  \n  Siamese Neural Network（孪生神经网络）  由两个孪生网络组成，输出通过上层函数联合训练，以学习输入样本对之间的关系。两个网络相同，共享权重与参数。换句话说，它们指向同一个嵌入网络，学习有效嵌入，揭示数据点对之间的关系。 \n  Koch, Zemel & Salakhutdinov (2015)  提出用孪生神经网络进行 one-shot（单样本）图像分类。先训练网络进行验证，判断两幅输入图像是否同类，输出同类概率。测试时，网络处理测试图像与支持集每幅图像组成的全部图像对。最终预测为同类概率最高的支持图像所属类别。 \n \n\t \n\t 用于少样本图像分类的卷积孪生神经网络架构。 \n \n \n 首先，卷积孪生网络通过含若干卷积层的嵌入函数 $f_\\theta$，将两幅图像编码为特征向量。 \n 两个嵌入的 L1 距离为 $\\vert f_\\theta(\\mathbf{x}_i) - f_\\theta(\\mathbf{x}_j) \\vert$。 \n 线性前馈层与 sigmoid（S 形激活函数）将距离转为概率 $p$，即两幅图像是否来自相同类别的概率。 \n 标签为二元，因此损失直观上是交叉熵。 \n \n \n \n$$\n\\begin{aligned}\np(\\mathbf{x}_i, \\mathbf{x}_j) &= \\sigma(\\mathbf{W}\\vert f_\\theta(\\mathbf{x}_i) - f_\\theta(\\mathbf{x}_j) \\vert) \\\\\n\\mathcal{L}(B) &= \\sum_{(\\mathbf{x}_i, \\mathbf{x}_j, y_i, y_j)\\in B} \\mathbf{1}_{y_i=y_j}\\log p(\\mathbf{x}_i, \\mathbf{x}_j) + (1-\\mathbf{1}_{y_i=y_j})\\log (1-p(\\mathbf{x}_i, \\mathbf{x}_j))\n\\end{aligned}\n$$\n \n 训练批次 $B$ 中的图像，可以通过形变增强。当然，也可将 L1 换为 L2、余弦等距离，只要可微，其余过程相同。 \n 给定支持集 $S$ 与测试图像 $\\mathbf{x}$，最终预测类别为： \n \n$$\n\\hat{c}_S(\\mathbf{x}) = c(\\arg\\max_{\\mathbf{x}_i \\in S} P(\\mathbf{x}, \\mathbf{x}_i))\n$$\n \n 其中，$c(\\mathbf{x})$ 是图像 $\\mathbf{x}$ 的类别标签，$\\hat{c}(.)$ 是预测标签。 \n 假设学得嵌入能够泛化，用于衡量未知类别图像的距离。这也是采用预训练模型进行迁移学习的假设；例如，ImageNet 预训练模型的卷积特征预计能帮助其他图像任务。但新任务越偏离原始训练任务，预训练模型收益越低。 \n Matching Networks（匹配网络） #  \n  Matching Networks（匹配网络） （ Vinyals et al., 2016 ）学习分类器 $c_S$，适用于任意给定的小支持集 $S=\\{x_i, y_i\\}_{i=1}^k$（ k-shot（每类 k 个样本）  分类）。分类器定义输出标签 $y$ 的概率分布，给定测试示例 $\\mathbf{x}$。与其他度量模型相似，输出是支持样本标签的加权和，权重为注意力核 $a(\\mathbf{x}, \\mathbf{x}_i)$，应与 $\\mathbf{x}$ 和 $\\mathbf{x}_i$ 的相似性成正比。 \n \n\t \n\t Matching Networks（匹配网络）架构。（图片来源： 原论文 ） \n \n \n$$\nc_S(\\mathbf{x}) = P(y \\vert \\mathbf{x}, S) = \\sum_{i=1}^k a(\\mathbf{x}, \\mathbf{x}_i) y_i\n\\text{, where }S=\\{(\\mathbf{x}_i, y_i)\\}_{i=1}^k\n$$\n \n 注意力核依赖两个嵌入函数 $f$ 与 $g$，分别编码测试样本与支持样本。两数据点的注意力权重，为嵌入向量余弦相似性 $\\text{cosine}(.)$，经过 softmax（归一化指数函数）归一化： \n \n$$\na(\\mathbf{x}, \\mathbf{x}_i) = \\frac{\\exp(\\text{cosine}(f(\\mathbf{x}), g(\\mathbf{x}_i))}{\\sum_{j=1}^k\\exp(\\text{cosine}(f(\\mathbf{x}), g(\\mathbf{x}_j))}\n$$\n \n 简单嵌入 #  \n 简单版本中，嵌入函数是以单个样本为输入的神经网络，可以设置 $f=g$。 \n 完整上下文嵌入 #  \n 嵌入向量是构建良好分类器的关键输入。仅输入单个数据点，可能不足以有效衡量整个特征空间。因此，Matching Network（匹配网络）进一步提出，在原始输入之外，输入整个支持集 $S$ 来增强嵌入函数，使嵌入根据与其他支持样本的关系调整。 \n \n \n $g_\\theta(\\mathbf{x}_i, S)$ 使用双向 LSTM（长短期记忆网络）编码 $\\mathbf{x}_i$，上下文为整个支持集 $S$。 \n \n \n $f_\\theta(\\mathbf{x}, S)$ 编码测试样本 $\\mathbf{x}$，使用对支持集 $S$ 具有读取注意力的 LSTM。 \n \n 测试样本先通过 CNN（卷积神经网络）等简单网络，提取基本特征 $f’(\\mathbf{x})$。 \n 随后训练 LSTM，将支持集上的读取注意力向量纳入隐藏状态：  \n \n   \n  $$\n  \\begin{aligned}\n  \\hat{\\mathbf{h}}_t, \\mathbf{c}_t &= \\text{LSTM}(f'(\\mathbf{x}), [\\mathbf{h}_{t-1}, \\mathbf{r}_{t-1}], \\mathbf{c}_{t-1}) \\\\\n  \\mathbf{h}_t &= \\hat{\\mathbf{h}}_t + f'(\\mathbf{x}) \\\\\n  \\mathbf{r}_{t-1} &= \\sum_{i=1}^k a(\\mathbf{h}_{t-1}, g(\\mathbf{x}_i)) g(\\mathbf{x}_i) \\\\\n  a(\\mathbf{h}_{t-1}, g(\\mathbf{x}_i)) &= \\text{softmax}(\\mathbf{h}_{t-1}^\\top g(\\mathbf{x}_i)) = \\frac{\\exp(\\mathbf{h}_{t-1}^\\top g(\\mathbf{x}_i))}{\\sum_{j=1}^k \\exp(\\mathbf{h}_{t-1}^\\top g(\\mathbf{x}_j))}\n  \\end{aligned}\n  $$\n   \n \n 如果进行 K 次“读取”，最终有 $f(\\mathbf{x}, S)=\\mathbf{h}_K$。 \n \n \n \n 这种嵌入称为“Full Contextual Embeddings（完整上下文嵌入，FCE）”。有趣的是，它改善困难任务（mini ImageNet 少样本分类）的性能，却对简单任务（Omniglot）没有影响。 \n Matching Networks（匹配网络）的训练设计为匹配测试时推理，详见前述  章节 。值得一提，论文进一步完善了训练、测试条件应匹配的思想。 \n \n$$\n\\theta^* = \\arg\\max_\\theta \\mathbb{E}_{L\\subset\\mathcal{L}}[ \\mathbb{E}_{S^L \\subset\\mathcal{D}, B^L \\subset\\mathcal{D}} [\\sum_{(\\mathbf{x}, y)\\in B^L} P_\\theta(y\\vert\\mathbf{x}, S^L)]]\n$$\n \n Relation Network（关系网络） #  \n  Relation Network（关系网络，RN） （ Sung et al., 2018 ）类似  siamese network（孪生网络） ，但有几点不同： \n \n 关系不由特征空间的简单 L1 距离捕获，而由 CNN分类器 $g_\\phi$ 预测。输入对 $\\mathbf{x}_i$ 与 $\\mathbf{x}_j$ 的关系分数为 $r_{ij} = g_\\phi([\\mathbf{x}_i, \\mathbf{x}_j])$，其中 $[.,.]$ 为拼接。 \n 目标为 MSE（均方误差），而非交叉熵，因为 RN（关系网络）更关注预测关系分数，类似回归而非二分类：$\\mathcal{L}(B) = \\sum_{(\\mathbf{x}_i, \\mathbf{x}_j, y_i, y_j)\\in B} (r_{ij} - \\mathbf{1}_{y_i=y_j})^2$。 \n \n \n\t \n\t 用于含一个查询示例的 5-way 1-shot（5 类、每类 1 个样本）问题的 Relation Network（关系网络）架构。（图片来源： 原论文 ） \n \n （注：DeepMind 还提出另一种用于关系推理的  Relation Network（关系网络） ，不要混淆。） \n Prototypical Networks（原型网络） #  \n  Prototypical Networks（原型网络） （ Snell, Swersky & Zemel, 2017 ）使用嵌入函数 $f_\\theta$，将每个输入编码为 $M$ 维特征向量。定义  原型  特征向量，针对每个类别 $c \\in \\mathcal{C}$，取该类支持样本嵌入的均值。 \n \n$$\n\\mathbf{v}_c = \\frac{1}{|S_c|} \\sum_{(\\mathbf{x}_i, y_i) \\in S_c} f_\\theta(\\mathbf{x}_i)\n$$\n \n \n\t \n\t 少样本与零样本场景中的 Prototypical networks（原型网络）。（图片来源： 原论文 ） \n \n 给定测试输入 $\\mathbf{x}$ 的类别分布，是测试嵌入与原型向量间距离的反向值经过 softmax（归一化指数函数）的结果。 \n \n$$\nP(y=c\\vert\\mathbf{x})=\\text{softmax}(-d_\\varphi(f_\\theta(\\mathbf{x}), \\mathbf{v}_c)) = \\frac{\\exp(-d_\\varphi(f_\\theta(\\mathbf{x}), \\mathbf{v}_c))}{\\sum_{c' \\in \\mathcal{C}}\\exp(-d_\\varphi(f_\\theta(\\mathbf{x}), \\mathbf{v}_{c'}))}\n$$\n \n 其中，$d_\\varphi$ 可以是任意距离函数，只要 $\\varphi$ 可微。论文使用平方欧氏距离。 \n 损失是负对数似然：$\\mathcal{L}(\\theta) = -\\log P_\\theta(y=c\\vert\\mathbf{x})$。 \n 基于模型 #  \n 基于模型的 meta-learning（元学习）不假设 $P_\\theta(y\\vert\\mathbf{x})$ 的形式，而依赖专为快速学习设计的模型——仅用少数训练步骤快速更新参数。快速更新可以通过内部架构实现，也可以由另一个元学习器控制。 \n Memory-Augmented Neural Networks（记忆增强神经网络） #  \n 一类模型用外部记忆帮助神经网络学习，包括  Neural Turing Machines（神经图灵机）  与  Memory Networks（记忆网络） 。显式存储缓冲区使网络更容易迅速纳入新信息，并避免之后遗忘。这类模型称  MANN ，是“ Memory-Augmented Neural Network（记忆增强神经网络） ”的简称。请注意，仅有  内部记忆  的普通 RNN或 LSTM，不属于 MANN。 \n MANN（记忆增强神经网络）预计能快速编码新信息，仅凭少量样本适应新任务，因此适合元学习。 Santoro et al. (2016)  以 Neural Turing Machine（神经图灵机，NTM）为基础，修改训练设置与记忆检索机制（“寻址机制”，决定如何分配记忆向量的注意力权重）。如果不熟悉，请先阅读我另一篇文章的  NTM 章节 。 \n 简要回顾，NTM（神经图灵机）将控制器神经网络与外部记忆结合。控制器通过软注意力学习读写记忆行，记忆充当知识库。注意力权重由基于内容与基于位置的寻址机制生成。 \n \n\t \n\t Neural Turing Machine（神经图灵机，NTM）架构。时间 t 的记忆 $\\mathbf{M}\\_t$ 是大小 $N \\times M$ 的矩阵，包含 N 行向量，每行 M 维。 \n \n 用于 Meta-Learning（元学习）的 MANN（记忆增强神经网络） #  \n 使用 MANN（记忆增强神经网络）进行元学习，需要训练记忆迅速编码、捕获新任务信息，同时使所有存储表示都易于稳定访问。 \n  Santoro et al., 2016  采用有趣训练方式，强制记忆保留信息更久，直到对应标签之后出现。每个训练回合，真实标签 $y_t$ 以  一步偏移  呈现：$(\\mathbf{x}_{t+1}, y_t)$。它是前一时间步 t 输入的真实标签，但作为 t+1 输入的一部分出现。 \n \n\t \n\t MANN（记忆增强神经网络）的元学习任务设置。（图片来源： 原论文 ） \n \n 这促使 MANN（记忆增强神经网络）记住新数据集信息，因为记忆必须保留当前输入，直到之后标签出现，再检索旧信息据此预测。 \n 接下来看如何更新记忆，高效检索、存储信息。 \n 用于 Meta-Learning（元学习）的寻址机制 #  \n 除训练流程外，还采用新的纯内容寻址，使模型更适合元学习。 \n  » 如何读取记忆？ \n \n读取注意力完全根据内容相似性构建。 \n 首先，控制器在时间步 t 生成键特征向量 $\\mathbf{k}_t$，作为输入 $\\mathbf{x}$ 的函数。类似 NTM（神经图灵机），含 N 个元素的读取权重向量 $\\mathbf{w}_t^r$，通过键向量与每行记忆的余弦相似性，经 softmax（归一化指数函数）归一化计算。读取向量 $\\mathbf{r}_t$ 是这些权重加权的记忆记录之和： \n \n$$\n\\mathbf{r}_i = \\sum_{i=1}^N w_t^r(i)\\mathbf{M}_t(i)\n\\text{, where } w_t^r(i) = \\text{softmax}(\\frac{\\mathbf{k}_t \\cdot \\mathbf{M}_t(i)}{\\|\\mathbf{k}_t\\| \\cdot \\|\\mathbf{M}_t(i)\\|})\n$$\n \n 其中，$M_t$ 是时间 t 的记忆矩阵，$M_t(i)$ 是矩阵第 i 行。 \n  » 如何写入记忆？ \n \n将新信息写入记忆的寻址机制很像  缓存替换  策略。为使 MANN（记忆增强神经网络）更适合元学习，设计了  Least Recently Used Access（最近最少使用访问，LRUA）  写入器。LRUA 写入头偏好将新内容写入  使用最少  或  最近使用  的记忆位置。 \n \n 很少使用的位置：保留常用信息（见  LFU（最不经常使用） ）； \n 最后使用的位置：动机是某条信息一旦检索过，可能暂时不会再次调用（见  MRU（最近最多使用） ）。 \n \n 缓存替换算法有很多，在不同场景中，它们都可能替代这里的设计并取得更好性能。此外，学习记忆使用模式与寻址策略，比任意指定更值得尝试。 \n LRUA（最近最少使用访问）的偏好以全程可微方式实现： \n \n 时间 t 的使用权重 $\\mathbf{w}^u_t$，是当前读取与写入向量之和，加上衰减后的上次使用权重 $\\gamma \\mathbf{w}^u_{t-1}$，其中 $\\gamma$ 是衰减因子。 \n 写入向量在前次读取权重（偏好“最后使用位置”）与前次最少使用权重（偏好“很少使用位置”）间插值。插值参数为超参数 $\\alpha$ 的 sigmoid（S 形激活函数）。 \n 最少使用权重 $\\mathbf{w}^{lu}$ 按使用权重 $\\mathbf{w}_t^u$ 缩放：某维度若小于向量第 n 小元素，就保持 1，否则为 0。 \n \n \n$$\n\\begin{aligned}\n\\mathbf{w}_t^u &= \\gamma \\mathbf{w}_{t-1}^u + \\mathbf{w}_t^r + \\mathbf{w}_t^w \\\\\n\\mathbf{w}_t^r &= \\text{softmax}(\\text{cosine}(\\mathbf{k}_t, \\mathbf{M}_t(i))) \\\\\n\\mathbf{w}_t^w &= \\sigma(\\alpha)\\mathbf{w}_{t-1}^r + (1-\\sigma(\\alpha))\\mathbf{w}^{lu}_{t-1}\\\\\n\\mathbf{w}_t^{lu} &= \\mathbf{1}_{w_t^u(i) \\leq m(\\mathbf{w}_t^u, n)}\n\\text{, where }m(\\mathbf{w}_t^u, n)\\text{ is the }n\\text{-th smallest element in vector }\\mathbf{w}_t^u\\text{.}\n\\end{aligned}\n$$\n \n 最后，将 $\\mathbf{w}_t^{lu}$ 指示的最少使用位置置零，再更新每行记忆： \n \n$$\n\\mathbf{M}_t(i) = \\mathbf{M}_{t-1}(i) + w_t^w(i)\\mathbf{k}_t, \\forall i\n$$\n \n Meta Networks（元网络） #  \n  Meta Networks（元网络） （ Munkhdalai & Yu, 2017 ），简称  MetaNet ，其架构与训练专门设计用于跨任务  快速  泛化。 \n Fast Weights（快速权重） #  \n MetaNet 的快速泛化依赖“fast weights（快速权重）”。有关论文不少，但我未详细阅读全部，也未找到非常具体定义，只有模糊的概念共识。通常，神经网络权重通过目标函数的 SGD（随机梯度下降）更新，过程较慢。更快方式是用一个网络预测另一个网络参数，生成的权重称  fast weights（快速权重） 。相比之下，普通基于 SGD 的权重称  slow weights（慢速权重） 。 \n MetaNet 中，损失梯度作为  元信息 ，输入学习快速权重的模型。神经网络结合慢速、快速权重进行预测。 \n \n\t \n\t MLP（多层感知机）中结合慢速与快速权重。$\\bigoplus$ 为逐元素相加。（图片来源： 原论文 ）。 \n \n 模型组件 #  \n \n 说明：以下记号与论文不同。我认为论文写得不好，但想法仍有趣，因此用自己的语言介绍。 \n \n MetaNet 关键组件为： \n \n 嵌入函数 $f_\\theta$，参数为 $\\theta$，将原始输入编码为特征向量。类似  Siamese Neural Network（孪生神经网络） ，训练嵌入以判断两个输入是否同类（验证任务）。 \n 基础学习器 $g_\\phi$，权重为 $\\phi$，完成实际学习任务。 \n \n 到这里，它看起来像  Relation Network（关系网络） 。MetaNet 还显式建模两个函数的快速权重，再聚合回模型（见图 8）。 \n 因此，需要额外两个函数，分别输出 $f$ 与 $g$ 的快速权重。 \n \n $F_w$：参数为 $w$ 的 LSTM，学习快速权重 $\\theta^+$，对应嵌入函数 $f$。输入是 $f$ 的验证任务嵌入损失梯度。 \n $G_v$：参数为 $v$ 的神经网络，根据损失梯度学习快速权重 $\\phi^+$，用于基础学习器 $g$。MetaNet 将学习器损失梯度视为任务  元信息 。 \n \n 现在看元网络如何训练。训练数据含多个数据集对：支持集 $S=\\{\\mathbf{x}’_i, y’_i\\}_{i=1}^K$ 与测试集 $U=\\{\\mathbf{x}_i, y_i\\}_{i=1}^L$。回顾，有四个网络、四组待学习参数 $(\\theta, \\phi, w, v)$。 \n \n\t \n\t 图 9：MetaNet 架构。 \n \n 训练过程 #  \n \n \n 每个时间步 t，从支持集 $S$ 随机采样输入对 $(\\mathbf{x}’_i, y’_i)$ 与 $(\\mathbf{x}’_j, y_j)$。令 $\\mathbf{x}_{(t,1)}=\\mathbf{x}’_i$ 和 $\\mathbf{x}_{(t,2)}=\\mathbf{x}’_j$。 \n对 $t = 1, \\dots, K$： \n \n a. 计算表示学习损失，即验证任务交叉熵： \n$\\mathcal{L}^\\text{emb}_t = \\mathbf{1}_{y’_i=y’_j} \\log P_t + (1 - \\mathbf{1}_{y’_i=y’_j})\\log(1 - P_t)\\text{, where }P_t = \\sigma(\\mathbf{W}\\vert f_\\theta(\\mathbf{x}_{(t,1)}) - f_\\theta(\\mathbf{x}_{(t,2)})\\vert)$ \n \n \n \n 计算任务级快速权重：\n$\\theta^+ = F_w(\\nabla_\\theta \\mathcal{L}^\\text{emb}_1, \\dots, \\mathcal{L}^\\text{emb}_T)$ \n \n \n 接着遍历支持集 $S$，计算示例级快速权重，同时以学得表示更新记忆。 \n对 $i=1, \\dots, K$： \n \n a. 基础学习器输出概率分布 $P(\\hat{y}_i \\vert \\mathbf{x}_i) = g_\\phi(\\mathbf{x}_i)$，损失可为交叉熵或 MSE（均方误差）：$\\mathcal{L}^\\text{task}_i = y’_i \\log g_\\phi(\\mathbf{x}’_i) + (1- y’_i) \\log (1 - g_\\phi(\\mathbf{x}’_i))$ \n b. 提取任务元信息（损失梯度），计算示例级快速权重：\n$\\phi_i^+ = G_v(\\nabla_\\phi\\mathcal{L}^\\text{task}_i)$\n \n 将 $\\phi^+_i$ 存入第 $i$ 个位置，对应“值”记忆 $\\mathbf{M}$。  \n \n \n d. 同时用慢速、快速权重，将支持样本编码为任务特定输入表示：$r’_i = f_{\\theta, \\theta^+}(\\mathbf{x}’_i)$\n \n 将 $r’_i$ 存入第 $i$ 个位置，对应“键”记忆 $\\mathbf{R}$。 \n \n \n \n \n \n 最后，用测试集 $U=\\{\\mathbf{x}_i, y_i\\}_{i=1}^L$ 构建训练损失。 \n从 $\\mathcal{L}_\\text{train}=0$ 开始： \n对 $j=1, \\dots, L$： \n \n a. 将测试样本编码为任务特定输入表示：\n$r_j = f_{\\theta, \\theta^+}(\\mathbf{x}_j)$ \n b. 通过关注记忆 $\\mathbf{R}$ 中支持样本表示，计算快速权重。注意力函数可自选；MetaNet 使用余弦相似性： \n \n \n  \n $$\n \\begin{aligned}\n a_j &= \\text{cosine}(\\mathbf{R}, r_j) = [\\frac{r'_1\\cdot r_j}{\\|r'_1\\|\\cdot\\|r_j\\|}, \\dots, \\frac{r'_N\\cdot r_j}{\\|r'_N\\|\\cdot\\|r_j\\|}]\\\\\n \\phi^+_j &= \\text{softmax}(a_j)^\\top \\mathbf{M}\n \\end{aligned}\n $$\n  \n \n c. 更新训练损失：$\\mathcal{L}_\\text{train} \\leftarrow \\mathcal{L}_\\text{train} + \\mathcal{L}^\\text{task}(g_{\\phi, \\phi^+}(\\mathbf{x}_i), y_i) $ \n \n \n \n 更新全部参数 $(\\theta, \\phi, w, v)$，使用 $\\mathcal{L}_\\text{train}$。 \n \n \n 基于优化 #  \n 深度学习通过梯度反向传播学习。然而，基于梯度的优化既非专为少量训练样本设计，也非专为少数优化步骤内收敛设计。能否调整优化算法，使模型擅长用少量示例学习？这正是基于优化的元学习算法的目标。 \n LSTM元学习器 #  \n 优化算法可显式建模。 Ravi & Larochelle (2017)  将其称为“元学习器”，原始执行任务的模型称“学习器”。元学习器旨在用小支持集高效更新学习器参数，使其快速适应新任务。 \n 学习器记为 $M_\\theta$，参数为 $\\theta$；元学习器为 $R_\\Theta$，参数 $\\Theta$；损失为 $\\mathcal{L}$。 \n 为什么用 LSTM？ #  \n 元学习器建模为 LSTM，因为： \n \n 反向传播的梯度更新与 LSTM的单元状态更新相似。 \n 知道历史梯度有助于更新；想想  momentum（动量） 。 \n \n 时间步 t、学习率 $\\alpha_t$ 下，学习器参数更新为： \n \n$$\n\\theta_t = \\theta_{t-1} - \\alpha_t \\nabla_{\\theta_{t-1}}\\mathcal{L}_t\n$$\n \n 若设遗忘门 $f_t=1$、输入门 $i_t = \\alpha_t$、单元状态 $c_t = \\theta_t$、新单元状态 $\\tilde{c}_t = -\\nabla_{\\theta_{t-1}}\\mathcal{L}_t$，它与 LSTM单元状态更新形式相同： \n \n$$\n\\begin{aligned}\nc_t &= f_t \\odot c_{t-1} + i_t \\odot \\tilde{c}_t\\\\\n    &= \\theta_{t-1} - \\alpha_t\\nabla_{\\theta_{t-1}}\\mathcal{L}_t\n\\end{aligned}\n$$\n \n 固定 $f_t=1$ 与 $i_t=\\alpha_t$ 可能非最优，但两者都可学习，适应不同数据集。 \n \n$$\n\\begin{aligned}\nf_t &= \\sigma(\\mathbf{W}_f \\cdot [\\nabla_{\\theta_{t-1}}\\mathcal{L}_t, \\mathcal{L}_t, \\theta_{t-1}, f_{t-1}] + \\mathbf{b}_f) & \\scriptstyle{\\text{; how much to forget the old value of parameters.}}\\\\\ni_t &= \\sigma(\\mathbf{W}_i \\cdot [\\nabla_{\\theta_{t-1}}\\mathcal{L}_t, \\mathcal{L}_t, \\theta_{t-1}, i_{t-1}] + \\mathbf{b}_i) & \\scriptstyle{\\text{; corresponding to the learning rate at time step t.}}\\\\\n\\tilde{\\theta}_t &= -\\nabla_{\\theta_{t-1}}\\mathcal{L}_t &\\\\\n\\theta_t &= f_t \\odot \\theta_{t-1} + i_t \\odot \\tilde{\\theta}_t &\\\\\n\\end{aligned}\n$$\n \n 模型设置 #  \n \n\t \n\t 学习器 $M\\_\\theta$ 与元学习器 $R\\_\\Theta$ 如何训练。（图片来源： 原论文 ，附额外标注） \n \n 训练模仿测试， Matching Networks（匹配网络）  已证明这种方式有益。每轮先采样数据集 $\\mathcal{D} = (\\mathcal{D}_\\text{train}, \\mathcal{D}_\\text{test}) \\in \\hat{\\mathcal{D}}_\\text{meta-train}$，再从 $\\mathcal{D}_\\text{train}$ 采样小批次，更新 $\\theta$，共 $T$ 轮。学习器最终参数 $\\theta_T$ 用于在测试数据 $\\mathcal{D}_\\text{test}$ 上训练元学习器。 \n 两个实现细节需特别留意： \n \n 如何压缩 LSTM元学习器参数空间？元学习器建模另一网络的参数，因此可能有数十万待学习变量。遵循跨坐标共享参数的  思想 ， \n 为简化训练，元学习器假设损失 $\\mathcal{L}_t$ 与梯度 $\\nabla_{\\theta_{t-1}} \\mathcal{L}_t$ 独立。 \n \n \n\t \n MAML（模型无关元学习） #  \n  MAML  是  Model-Agnostic Meta-Learning（模型无关元学习）  的简称（ Finn, et al. 2017 ），是相当通用的优化算法，适配所有通过梯度下降学习的模型。 \n 假设模型为 $f_\\theta$，参数 $\\theta$。给定任务 $\\tau_i$ 与数据集 $(\\mathcal{D}^{(i)}_\\text{train}, \\mathcal{D}^{(i)}_\\text{test})$，可通过一步或多步梯度下降更新参数（以下仅一步）： \n \n$$\n\\theta'_i = \\theta - \\alpha \\nabla_\\theta\\mathcal{L}^{(0)}_{\\tau_i}(f_\\theta)\n$$\n \n 其中，$\\mathcal{L}^{(0)}$ 是编号（0）的小批次计算的损失。 \n \n\t \n\t MAML示意图。（图片来源： 原论文 ） \n \n 上述公式只优化一个任务。为在多种任务间泛化，需要找到最优 $\\theta^*$，使任务特定微调更高效。现在采样编号（1）的新批次，更新元目标。损失 $\\mathcal{L}^{(1)}$ 依赖批次（1）。$\\mathcal{L}^{(0)}$ 与 $\\mathcal{L}^{(1)}$ 的上标只表示不同批次，同一任务的损失目标相同。 \n \n$$\n\\begin{aligned}\n\\theta^* \n&= \\arg\\min_\\theta \\sum_{\\tau_i \\sim p(\\tau)} \\mathcal{L}_{\\tau_i}^{(1)} (f_{\\theta'_i}) = \\arg\\min_\\theta \\sum_{\\tau_i \\sim p(\\tau)} \\mathcal{L}_{\\tau_i}^{(1)} (f_{\\theta - \\alpha\\nabla_\\theta \\mathcal{L}_{\\tau_i}^{(0)}(f_\\theta)}) & \\\\\n\\theta &\\leftarrow \\theta - \\beta \\nabla_{\\theta} \\sum_{\\tau_i \\sim p(\\tau)} \\mathcal{L}_{\\tau_i}^{(1)} (f_{\\theta - \\alpha\\nabla_\\theta \\mathcal{L}_{\\tau_i}^{(0)}(f_\\theta)}) & \\scriptstyle{\\text{; updating rule}}\n\\end{aligned}\n$$\n \n \n\t \n\t MAML算法通用形式。（图片来源： 原论文 ） \n \n First-Order MAML（一阶模型无关元学习） #  \n 上述元优化依赖二阶导数。为降低计算成本，修改版 MAML省略二阶导数，得到更简单、成本更低的实现，称  First-Order MAML（一阶模型无关元学习，FOMAML（一阶模型无关元学习）） 。 \n 考虑执行 $k$ 个内层梯度步骤，$k\\geq1$。从初始参数 $\\theta_\\text{meta}$ 开始： \n \n$$\n\\begin{aligned}\n\\theta_0 &= \\theta_\\text{meta}\\\\\n\\theta_1 &= \\theta_0 - \\alpha\\nabla_\\theta\\mathcal{L}^{(0)}(\\theta_0)\\\\\n\\theta_2 &= \\theta_1 - \\alpha\\nabla_\\theta\\mathcal{L}^{(0)}(\\theta_1)\\\\\n&\\dots\\\\\n\\theta_k &= \\theta_{k-1} - \\alpha\\nabla_\\theta\\mathcal{L}^{(0)}(\\theta_{k-1})\n\\end{aligned}\n$$\n \n 外层循环中，采样新批次更新元目标。 \n \n$$\n\\begin{aligned}\n\\theta_\\text{meta} &\\leftarrow \\theta_\\text{meta} - \\beta g_\\text{MAML} & \\scriptstyle{\\text{; update for meta-objective}} \\\\[2mm]\n\\text{where } g_\\text{MAML}\n&= \\nabla_{\\theta} \\mathcal{L}^{(1)}(\\theta_k) &\\\\[2mm]\n&= \\nabla_{\\theta_k} \\mathcal{L}^{(1)}(\\theta_k) \\cdot (\\nabla_{\\theta_{k-1}} \\theta_k) \\dots (\\nabla_{\\theta_0} \\theta_1) \\cdot (\\nabla_{\\theta} \\theta_0) & \\scriptstyle{\\text{; following the chain rule}} \\\\\n&= \\nabla_{\\theta_k} \\mathcal{L}^{(1)}(\\theta_k) \\cdot \\Big( \\prod_{i=1}^k \\nabla_{\\theta_{i-1}} \\theta_i \\Big) \\cdot I &  \\\\\n&= \\nabla_{\\theta_k} \\mathcal{L}^{(1)}(\\theta_k) \\cdot \\prod_{i=1}^k \\nabla_{\\theta_{i-1}} (\\theta_{i-1} - \\alpha\\nabla_\\theta\\mathcal{L}^{(0)}(\\theta_{i-1})) &  \\\\\n&= \\nabla_{\\theta_k} \\mathcal{L}^{(1)}(\\theta_k) \\cdot \\prod_{i=1}^k (I - \\alpha\\nabla_{\\theta_{i-1}}(\\nabla_\\theta\\mathcal{L}^{(0)}(\\theta_{i-1}))) &\n\\end{aligned}\n$$\n \n MAML梯度为： \n \n$$\ng_\\text{MAML} = \\nabla_{\\theta_k} \\mathcal{L}^{(1)}(\\theta_k) \\cdot \\prod_{i=1}^k (I - \\alpha \\color{red}{\\nabla_{\\theta_{i-1}}(\\nabla_\\theta\\mathcal{L}^{(0)}(\\theta_{i-1}))})\n$$\n \n First-Order MAML（一阶模型无关元学习）忽略红色二阶导数，简化如下，等价于最后一次内层梯度更新结果的导数。 \n \n$$\ng_\\text{FOMAML} = \\nabla_{\\theta_k} \\mathcal{L}^{(1)}(\\theta_k)\n$$\n \n Reptile #  \n  Reptile （ Nichol, Achiam & Schulman, 2018 ）是极其简单的元学习优化算法。它与 MAML很多方面相似，两者都通过梯度下降进行元优化，也都不依赖特定模型。 \n Reptile 重复执行： \n \n 采样任务， \n 在任务上进行多步梯度下降训练， \n 再将模型权重移向新参数。 \n \n 算法如下：\n$\\text{SGD}(\\mathcal{L}_{\\tau_i}, \\theta, k)$ 在损失 $\\mathcal{L}_{\\tau_i}$ 上执行 k 步随机梯度更新，从初始参数 $\\theta$ 开始，返回最终参数向量。批次版每次采样多个任务，而非一个。Reptile 梯度定义为 $(\\theta - W)/\\alpha$，其中 $\\alpha$ 为 SGD（随机梯度下降）步长。 \n \n\t \n\t 批次版 Reptile 算法。（图片来源： 原论文 ） \n \n 乍看很像普通 SGD（随机梯度下降）。然而，任务特定优化可以超过一步，因此 k > 1 时，最终 $\\text{SGD}(\\mathbb{E}\n_\\tau[\\mathcal{L}_{\\tau}], \\theta, k)$ 偏离 $\\mathbb{E}_\\tau [\\text{SGD}(\\mathcal{L}_{\\tau}, \\theta, k)]$。 \n 优化假设 #  \n 假设任务 $\\tau \\sim p(\\tau)$ 有最优网络配置流形 $\\mathcal{W}_{\\tau}^*$。模型 $f_\\theta$ 在任务 $\\tau$ 上取得最佳性能，当 $\\theta$ 位于 $\\mathcal{W}_{\\tau}^*$ 表面。为找到跨任务好解，希望参数接近所有任务的最优流形： \n \n$$\n\\theta^* = \\arg\\min_\\theta \\mathbb{E}_{\\tau \\sim p(\\tau)} [\\frac{1}{2} \\text{dist}(\\theta, \\mathcal{W}_\\tau^*)^2]\n$$\n \n \n\t \n\t Reptile 交替更新参数，使其接近不同任务的最优流形。（图片来源： 原论文 ） \n \n 以 L2 距离作为 $\\text{dist}(.)$，点 $\\theta$ 与集合 $\\mathcal{W}_\\tau^*$ 的距离，等于 $\\theta$ 与流形上最近点 $W_{\\tau}^*(\\theta)$ 的距离，该点最接近 $\\theta$： \n \n$$\n\\text{dist}(\\theta, \\mathcal{W}_{\\tau}^*) = \\text{dist}(\\theta, W_{\\tau}^*(\\theta)) \\text{, where }W_{\\tau}^*(\\theta) = \\arg\\min_{W\\in\\mathcal{W}_{\\tau}^*} \\text{dist}(\\theta, W)\n$$\n \n 平方欧氏距离的梯度为： \n \n$$\n\\begin{aligned}\n\\nabla_\\theta[\\frac{1}{2}\\text{dist}(\\theta, \\mathcal{W}_{\\tau_i}^*)^2]\n&= \\nabla_\\theta[\\frac{1}{2}\\text{dist}(\\theta, W_{\\tau_i}^*(\\theta))^2] & \\\\\n&= \\nabla_\\theta[\\frac{1}{2}(\\theta - W_{\\tau_i}^*(\\theta))^2] & \\\\\n&= \\theta - W_{\\tau_i}^*(\\theta) & \\scriptstyle{\\text{; See notes.}}\n\\end{aligned}\n$$\n \n 注：Reptile 论文指出， “点 $\\Theta$ 与集合 $S$ 的平方欧氏距离梯度，是向量 $2(\\Theta − p)$，其中 p 是 $S$ 中最接近 $\\Theta$ 的点” 。严格说，$S$ 中最近点也是 $\\Theta$ 的函数，但我不确定为何梯度无需考虑 $p$ 的导数。（如果有想法，欢迎评论或邮件告诉我。） \n 因此，一步随机梯度更新规则为： \n \n$$\n\\theta = \\theta - \\alpha \\nabla_\\theta[\\frac{1}{2} \\text{dist}(\\theta, \\mathcal{W}_{\\tau_i}^*)^2] = \\theta - \\alpha(\\theta - W_{\\tau_i}^*(\\theta)) = (1-\\alpha)\\theta + \\alpha W_{\\tau_i}^*(\\theta)\n$$\n \n 任务最优流形上的最近点 $W_{\\tau_i}^*(\\theta)$ 无法精确计算，但 Reptile 用 $\\text{SGD}(\\mathcal{L}_\\tau, \\theta, k)$ 近似。 \n Reptile 与 FOMAML #  \n 为展示 Reptile 与 MAML更深联系，以执行两步梯度的例子展开更新公式，即 $\\text{SGD}(.)$ 中 k=2。与  上文  定义相同，$\\mathcal{L}^{(0)}$ 和 $\\mathcal{L}^{(1)}$ 是不同小批次的损失。为方便阅读，采用两个简化记号 $g^{(i)}_j = \\nabla_{\\theta} \\mathcal{L}^{(i)}(\\theta_j)$ 与 $H^{(i)}_j = \\nabla^2_{\\theta} \\mathcal{L}^{(i)}(\\theta_j)$。 \n \n$$\n\\begin{aligned}\n\\theta_0 &= \\theta_\\text{meta}\\\\\n\\theta_1 &= \\theta_0 - \\alpha\\nabla_\\theta\\mathcal{L}^{(0)}(\\theta_0)= \\theta_0 - \\alpha g^{(0)}_0 \\\\\n\\theta_2 &= \\theta_1 - \\alpha\\nabla_\\theta\\mathcal{L}^{(1)}(\\theta_1) = \\theta_0 - \\alpha g^{(0)}_0 - \\alpha g^{(1)}_1\n\\end{aligned}\n$$\n \n 根据  前文 ，FOMAML梯度是最后一次内层梯度更新结果。因此 k=1 时： \n \n$$\n\\begin{aligned}\ng_\\text{FOMAML} &= \\nabla_{\\theta_1} \\mathcal{L}^{(1)}(\\theta_1) = g^{(1)}_1 \\\\\ng_\\text{MAML} &= \\nabla_{\\theta_1} \\mathcal{L}^{(1)}(\\theta_1) \\cdot (I - \\alpha\\nabla^2_{\\theta} \\mathcal{L}^{(0)}(\\theta_0)) = g^{(1)}_1 - \\alpha H^{(0)}_0 g^{(1)}_1\n\\end{aligned}\n$$\n \n Reptile 梯度定义为： \n \n$$\ng_\\text{Reptile} = (\\theta_0 - \\theta_2) / \\alpha = g^{(0)}_0 + g^{(1)}_1\n$$\n \n 目前得到： \n \n\t \n\t 一次元优化循环中的 Reptile 与 FOMAML比较。（图片来源：Yoonho Lee 的 Reptile  幻灯片 。） \n \n \n$$\n\\begin{aligned}\ng_\\text{FOMAML} &= g^{(1)}_1 \\\\\ng_\\text{MAML} &= g^{(1)}_1 - \\alpha H^{(0)}_0 g^{(1)}_1 \\\\\ng_\\text{Reptile} &= g^{(0)}_0 + g^{(1)}_1\n\\end{aligned}\n$$\n \n 接着进一步展开 $g^{(1)}_1$，使用  Taylor expansion（泰勒展开） 。回顾，函数 $f(x)$ 在数值 $a$ 处可微，其泰勒展开为： \n \n$$\nf(x) = f(a) + \\frac{f'(a)}{1!}(x-a) + \\frac{f''(a)}{2!}(x-a)^2 + \\dots = \\sum_{i=0}^\\infty \\frac{f^{(i)}(a)}{i!}(x-a)^i\n$$\n \n 将 $\\nabla_{\\theta}\\mathcal{L}^{(1)}(.)$ 视为函数，$\\theta_0$ 为取值点。$g_1^{(1)}$ 在 $\\theta_0$ 处展开为： \n \n$$\n\\begin{aligned}\ng_1^{(1)} &= \\nabla_{\\theta}\\mathcal{L}^{(1)}(\\theta_1) \\\\\n&= \\nabla_{\\theta}\\mathcal{L}^{(1)}(\\theta_0) + \\nabla^2_\\theta\\mathcal{L}^{(1)}(\\theta_0)(\\theta_1 - \\theta_0) + \\frac{1}{2}\\nabla^3_\\theta\\mathcal{L}^{(1)}(\\theta_0)(\\theta_1 - \\theta_0)^2 + \\dots & \\\\\n&= g_0^{(1)} - \\alpha H^{(1)}_0 g_0^{(0)} + \\frac{\\alpha^2}{2}\\nabla^3_\\theta\\mathcal{L}^{(1)}(\\theta_0) (g_0^{(0)})^2 + \\dots & \\scriptstyle{\\text{; because }\\theta_1-\\theta_0=-\\alpha g_0^{(0)}} \\\\\n&= g_0^{(1)} - \\alpha H^{(1)}_0 g_0^{(0)} + O(\\alpha^2)\n\\end{aligned}\n$$\n \n 将 $g_1^{(1)}$ 展开式代入内层一步梯度更新的 MAML梯度： \n \n$$\n\\begin{aligned}\ng_\\text{FOMAML} &= g^{(1)}_1 = g_0^{(1)} - \\alpha H^{(1)}_0 g_0^{(0)} + O(\\alpha^2)\\\\\ng_\\text{MAML} &= g^{(1)}_1 - \\alpha H^{(0)}_0 g^{(1)}_1 \\\\\n&= g_0^{(1)} - \\alpha H^{(1)}_0 g_0^{(0)} + O(\\alpha^2) - \\alpha H^{(0)}_0 (g_0^{(1)} - \\alpha H^{(1)}_0 g_0^{(0)} + O(\\alpha^2))\\\\\n&= g_0^{(1)} - \\alpha H^{(1)}_0 g_0^{(0)} - \\alpha H^{(0)}_0 g_0^{(1)} + \\alpha^2 \\alpha H^{(0)}_0 H^{(1)}_0 g_0^{(0)} + O(\\alpha^2)\\\\\n&= g_0^{(1)} - \\alpha H^{(1)}_0 g_0^{(0)} - \\alpha H^{(0)}_0 g_0^{(1)} + O(\\alpha^2)\n\\end{aligned}\n$$\n \n Reptile 梯度变为： \n \n$$\n\\begin{aligned}\ng_\\text{Reptile} \n&= g^{(0)}_0 + g^{(1)}_1 \\\\\n&= g^{(0)}_0 + g_0^{(1)} - \\alpha H^{(1)}_0 g_0^{(0)} + O(\\alpha^2)\n\\end{aligned}\n$$\n \n 目前得到三类梯度公式： \n \n$$\n\\begin{aligned}\ng_\\text{FOMAML} &= g_0^{(1)} - \\alpha H^{(1)}_0 g_0^{(0)} + O(\\alpha^2)\\\\\ng_\\text{MAML} &= g_0^{(1)} - \\alpha H^{(1)}_0 g_0^{(0)} - \\alpha H^{(0)}_0 g_0^{(1)} + O(\\alpha^2)\\\\\ng_\\text{Reptile}  &= g^{(0)}_0 + g_0^{(1)} - \\alpha H^{(1)}_0 g_0^{(0)} + O(\\alpha^2)\n\\end{aligned}\n$$\n \n 训练常对多个批次平均。例子中，（0）与（1）均随机采样，可互换。期望 $\\mathbb{E}_{\\tau,0,1}$ 对两个批次取平均，批次编号（0）与（1），任务为 $\\tau$。 \n 令， \n \n $A = \\mathbb{E}_{\\tau,0,1} [g_0^{(0)}] = \\mathbb{E}_{\\tau,0,1} [g_0^{(1)}]$；这是任务损失的平均梯度。希望沿 $A$ 指向的方向改进参数，获得更好任务性能。 \n $B = \\mathbb{E}_{\\tau,0,1} [H^{(1)}_0 g_0^{(0)}] = \\frac{1}{2}\\mathbb{E}_{\\tau,0,1} [H^{(1)}_0 g_0^{(0)} + H^{(0)}_0 g_0^{(1)}] = \\frac{1}{2}\\mathbb{E}_{\\tau,0,1} [\\nabla_\\theta(g^{(0)}_0 g_0^{(1)})]$；这是增加同一任务两个不同小批次梯度内积的方向（梯度）。希望沿 $B$ 指向的方向改进参数，提高跨数据泛化。 \n \n 综上，梯度更新用前三个主要项近似时，MAML与 Reptile 优化相同目标：更好任务性能（A 指导）与更好泛化（B 指导）。 \n \n$$\n\\begin{aligned}\n\\mathbb{E}_{\\tau,1,2}[g_\\text{FOMAML}] &= A - \\alpha B + O(\\alpha^2)\\\\\n\\mathbb{E}_{\\tau,1,2}[g_\\text{MAML}] &= A - 2\\alpha B + O(\\alpha^2)\\\\\n\\mathbb{E}_{\\tau,1,2}[g_\\text{Reptile}]  &= 2A - \\alpha B + O(\\alpha^2)\n\\end{aligned}\n$$\n \n 我不确定忽略的项 $O(\\alpha^2)$ 是否对参数学习影响很大。但 FOMAML能达到与完整 MAML 相近性能，或许可以认为高阶导数在梯度下降更新中并非关键。 \n \n 引用格式： \n  @article{weng2018metalearning,\n  title   = \"Meta-Learning: Learning to Learn Fast\",\n  author  = \"Weng, Lilian\",\n  journal = \"lilianweng.github.io\",\n  year    = \"2018\",\n  url     = \"https://lilianweng.github.io/posts/2018-11-30-meta-learning/\"\n}\n   参考文献 #  \n [1] Brenden M. Lake, Ruslan Salakhutdinov, and Joshua B. Tenenbaum.  “Human-level concept learning through probabilistic program induction.”  Science 350.6266 (2015): 1332-1338. \n [2] Oriol Vinyals 的演讲，主题为  “Model vs Optimization Meta Learning”  \n [3] Gregory Koch, Richard Zemel, and Ruslan Salakhutdinov.  “Siamese neural networks for one-shot image recognition.”  ICML 深度学习研讨会。 2015. \n [4] Oriol Vinyals, et al.  “Matching networks for one shot learning.”  NIPS. 2016. \n [5] Flood Sung, et al.  “Learning to compare: Relation network for few-shot learning.”  CVPR. 2018. \n [6] Jake Snell, Kevin Swersky, and Richard Zemel.  “Prototypical Networks for Few-shot Learning.”  CVPR. 2018. \n [7] Adam Santoro, et al.  “Meta-learning with memory-augmented neural networks.”  ICML. 2016. \n [8] Alex Graves, Greg Wayne, and Ivo Danihelka.  “Neural turing machines.”  arXiv 预印本 arXiv:1410.5401 (2014). \n [9] Tsendsuren Munkhdalai and Hong Yu.  “Meta Networks.”  ICML. 2017. \n [10] Sachin Ravi and Hugo Larochelle.  “Optimization as a Model for Few-Shot Learning.”  ICLR. 2017. \n [11] Chelsea Finn 的 BAIR 博客文章，主题为  “Learning to Learn” . \n [12] Chelsea Finn, Pieter Abbeel, and Sergey Levine.  “Model-agnostic meta-learning for fast adaptation of deep networks.”  ICML 2017. \n [13] Alex Nichol, Joshua Achiam, John Schulman.  “On First-Order Meta-Learning Algorithms.”  arXiv 预印本 arXiv:1803.02999 (2018). \n [14]  关于 Reptile 的幻灯片  作者 Yoonho Lee。", "wordCount": "6345", "inLanguage": "zh-CN", "datePublished": "2018-11-30T00:00:00Z", "dateModified": "2018-11-30T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/favicon_wine.ico"}}}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/posts/2018-11-30-meta-learning/">
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2018-11-30-meta-learning/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/posts/2018-11-30-meta-learning/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      元学习：学会快速学习
+    </h1>
+    <div class="post-meta">日期：2018 年 11 月 30 日  |  预计阅读时间：30 分钟  |  作者：Lilian Weng
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#define-the-meta-learning-problem" aria-label="定义 Meta-Learning（元学习）问题">定义 Meta-Learning（元学习）问题</a><ul>
+                        
+                <li>
+                    <a href="#a-simple-view" aria-label="A Simple View">一个简单视角</a></li>
+                <li>
+                    <a href="#training-in-the-same-way-as-testing" aria-label="Training in the Same Way as Testing">以测试时相同的方式训练</a></li>
+                <li>
+                    <a href="#learner-and-meta-learner" aria-label="Learner and Meta-Learner">学习器与元学习器</a></li>
+                <li>
+                    <a href="#common-approaches" aria-label="Common Approaches">常见方法</a></li></ul>
+                </li>
+                <li>
+                    <a href="#metric-based" aria-label="基于度量">基于度量</a><ul>
+                        
+                <li>
+                    <a href="#convolutional-siamese-neural-network" aria-label="Convolutional Siamese Neural Network">Convolutional Siamese Neural Network（卷积孪生神经网络）</a></li>
+                <li>
+                    <a href="#matching-networks" aria-label="Matching Networks（匹配网络）">Matching Networks（匹配网络）</a><ul>
+                        
+                <li>
+                    <a href="#simple-embedding" aria-label="Simple Embedding">简单嵌入</a></li>
+                <li>
+                    <a href="#full-context-embeddings" aria-label="Full Context Embeddings">完整上下文嵌入</a></li></ul>
+                </li>
+                <li>
+                    <a href="#relation-network" aria-label="Relation Network">Relation Network（关系网络）</a></li>
+                <li>
+                    <a href="#prototypical-networks" aria-label="Prototypical Networks">Prototypical Networks（原型网络）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#model-based" aria-label="基于模型">基于模型</a><ul>
+                        
+                <li>
+                    <a href="#memory-augmented-neural-networks" aria-label="Memory-Augmented Neural Networks（记忆增强神经网络）">Memory-Augmented Neural Networks（记忆增强神经网络）</a><ul>
+                        
+                <li>
+                    <a href="#mann-for-meta-learning" aria-label="MANN for Meta-Learning">用于 Meta-Learning（元学习）的 MANN（记忆增强神经网络）</a></li>
+                <li>
+                    <a href="#addressing-mechanism-for-meta-learning" aria-label="Addressing Mechanism for Meta-Learning">用于 Meta-Learning（元学习）的寻址机制</a></li></ul>
+                </li>
+                <li>
+                    <a href="#meta-networks" aria-label="Meta Networks（元网络）">Meta Networks（元网络）</a><ul>
+                        
+                <li>
+                    <a href="#fast-weights" aria-label="Fast Weights">Fast Weights（快速权重）</a></li>
+                <li>
+                    <a href="#model-components" aria-label="Model Components">模型组件</a></li>
+                <li>
+                    <a href="#training-process" aria-label="Training Process">训练过程</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#optimization-based" aria-label="基于优化">基于优化</a><ul>
+                        
+                <li>
+                    <a href="#lstm-meta-learner" aria-label="LSTM（长短期记忆网络）元学习器">LSTM（长短期记忆网络）元学习器</a><ul>
+                        
+                <li>
+                    <a href="#why-lstm" aria-label="Why LSTM?">为什么用 LSTM（长短期记忆网络）？</a></li>
+                <li>
+                    <a href="#model-setup" aria-label="Model Setup">模型设置</a></li></ul>
+                </li>
+                <li>
+                    <a href="#maml" aria-label="MAML（模型无关元学习）">MAML（模型无关元学习）</a><ul>
+                        
+                <li>
+                    <a href="#first-order-maml" aria-label="First-Order MAML">First-Order MAML（一阶模型无关元学习）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#reptile" aria-label="Reptile">Reptile</a><ul>
+                        
+                <li>
+                    <a href="#the-optimization-assumption" aria-label="The Optimization Assumption">优化假设</a></li>
+                <li>
+                    <a href="#reptile-vs-fomaml" aria-label="Reptile vs FOMAML">Reptile 与 FOMAML（一阶模型无关元学习）</a></li></ul>
+                </li></ul>
+                </li>
+                <li>
+                    <a href="#reference" aria-label="Reference">参考文献</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><!-- Meta-learning, also known as "learning to learn", intends to design models that can learn new skills or adapt to new environments rapidly with a few training examples. There are three common approaches: 1) learn an efficient distance metric (metric-based); 2) use (recurrent) network with external or internal memory (model-based); 3) optimize the model parameters explicitly for fast learning (optimization-based). -->
+<p><span class="update">[2019-10-01 更新：感谢 Tianhao，本文有了 <a href="https://wei-tianhao.github.io/blog/2019/09/17/meta-learning.html">中文</a> 译本！]</span></p>
+<p>好的机器学习模型往往需要大量样本训练。相比之下，人类学习新概念与技能更快、更高效。孩子只见过几次猫和鸟，就能很快区分它们。会骑自行车的人，可能只需少量演示、甚至无需演示，就能迅速学会骑摩托车。能否设计具有类似性质的机器学习模型，用少量训练示例快速学习新概念与技能？这正是 <strong>meta-learning（元学习）</strong> 的基本目标。</p>
+<p>我们期待好的 meta-learning（元学习）模型，能很好适应或泛化到训练中未曾遇到的新任务与新环境。适应过程本质上是小型学习阶段，发生在测试期间，只有限接触新任务配置。最终适应后的模型能完成新任务。因此，元学习也称为 <a href="https://www.cs.cmu.edu/~rsalakhu/papers/LakeEtAl2015Science.pdf">learning to learn（学会学习）</a>。</p>
+<p>任务可以是任意明确定义的机器学习问题族：有监督学习、强化学习等。例如，以下是具体元学习任务：</p>
+<ul>
+<li>在非猫图像上训练的分类器，只看少量猫照片后，就能判断给定图像是否含猫。</li>
+<li>游戏机器人能够迅速掌握新游戏。</li>
+<li>小型机器人虽然只在平坦地面训练，测试时却能在上坡表面完成所需任务。</li>
+</ul>
+<h1 id="define-the-meta-learning-problem">定义 Meta-Learning（元学习）问题<a hidden class="anchor" aria-hidden="true" href="#define-the-meta-learning-problem">#</a></h1>
+<p>本文关注每个目标任务是图像分类等有监督学习问题的情况。针对强化学习问题的元学习（也称“Meta Reinforcement Learning”，元强化学习）有许多有趣文献，但这里不讨论。</p>
+<h2 id="a-simple-view">一个简单视角<a hidden class="anchor" aria-hidden="true" href="#a-simple-view">#</a></h2>
+<p>好的 meta-learning（元学习）模型，应在多种学习任务上训练，优化在任务分布上的最佳性能，包括可能未见的任务。每个任务关联数据集 $\mathcal{D}$，含特征向量与真实标签。最优模型参数为：</p>
+<div>
+$$
+\theta^* = \arg\min_\theta \mathbb{E}_{\mathcal{D}\sim p(\mathcal{D})} [\mathcal{L}_\theta(\mathcal{D})]
+$$
+</div>
+<p>它很像普通学习任务，但将 <em>一个数据集</em> 视为 <em>一个数据样本</em>。</p>
+<p><em>Few-shot classification（少样本分类）</em> 是有监督学习中元学习的实例。数据集 $\mathcal{D}$ 通常分成学习用 support set（支持集）$S$ 与训练或测试用 prediction set（预测集）$B$，$\mathcal{D}=\langle S, B\rangle$。通常考虑 <em>K-shot N-class classification（每类 K 个样本、共 N 类的分类）</em>：支持集为 N 个类别中的每类提供 K 个带标签示例。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/few-shot-classification.png" style="width: 100%;"  />
+	<figcaption>4-shot 2-class（每类 4 个样本、共 2 类）图像分类示例。（缩略图来自 <a href="https://www.pinterest.com/" target="_blank">Pinterest</a>）</figcaption>
+</figure>
+<h2 id="training-in-the-same-way-as-testing">以测试时相同的方式训练<a hidden class="anchor" aria-hidden="true" href="#training-in-the-same-way-as-testing">#</a></h2>
+<p>数据集 $\mathcal{D}$ 包含特征向量与标签对 $\mathcal{D} = \{(\mathbf{x}_i, y_i)\}$，每个标签属于已知标签集合 $\mathcal{L}^\text{label}$。假设分类器 $f_\theta$ 参数为 $\theta$，输出数据点属于类别 $y$ 的概率，给定特征向量 $\mathbf{x}$：$P_\theta(y\vert\mathbf{x})$。</p>
+<p>最优参数应最大化多个训练批次 $B \subset \mathcal{D}$ 上真实标签的概率：</p>
+<div>
+$$
+\begin{aligned}
+\theta^* &= {\arg\max}_{\theta} \mathbb{E}_{(\mathbf{x}, y)\in \mathcal{D}}[P_\theta(y \vert \mathbf{x})] &\\
+\theta^* &= {\arg\max}_{\theta} \mathbb{E}_{B\subset \mathcal{D}}[\sum_{(\mathbf{x}, y)\in B}P_\theta(y \vert \mathbf{x})] & \scriptstyle{\text{; trained with mini-batches.}}
+\end{aligned}
+$$
+</div>
+<p>少样本分类的目标，是给定用于“快速学习”的小支持集后，降低未知标签数据样本的预测误差（想想微调）。为使训练模仿推理，只使用部分标签“模拟”数据集，避免向模型展示全部标签，并相应修改优化流程，鼓励快速学习：</p>
+<ol>
+<li>采样标签子集 $L\subset\mathcal{L}^\text{label}$。</li>
+<li>采样支持集 $S^L \subset \mathcal{D}$ 与训练批次 $B^L \subset \mathcal{D}$。两者只包含标签属于采样标签集合 $L$ 的数据点，$y \in L, \forall (x, y) \in S^L, B^L$。</li>
+<li>支持集属于模型输入的一部分。<!-- , $\hat{y}=f\_\theta(\mathbf{x}, S^L)$ --></li>
+<li>最终优化使用小批次 $B^L$ 计算损失，通过反向传播更新参数，与有监督学习中的用法相同。</li>
+</ol>
+<p>可以将每对采样数据集 $(S^L, B^L)$ 视为一个数据点。模型经过训练，能泛化到其他数据集。红色符号是在有监督学习目标之外，为元学习新增的部分。</p>
+<div>
+$$
+\theta = \arg\max_\theta \color{red}{E_{L\subset\mathcal{L}}[} E_{\color{red}{S^L \subset\mathcal{D}, }B^L \subset\mathcal{D}} [\sum_{(x, y)\in B^L} P_\theta(x, y\color{red}{, S^L})] \color{red}{]}
+$$
+</div>
+<p>这与任务特定样本有限时，使用图像分类（ImageNet）或语言建模（大型文本语料）的预训练模型有些相似。Meta-learning（元学习）进一步扩展此想法：不只为一个下游任务微调，而是优化模型，使其擅长许多任务，甚至全部任务。</p>
+<h2 id="learner-and-meta-learner">学习器与元学习器<a hidden class="anchor" aria-hidden="true" href="#learner-and-meta-learner">#</a></h2>
+<p>另一种常见元学习视角，将模型更新分为两阶段：</p>
+<ul>
+<li>分类器 $f_\theta$ 是“学习器”模型，训练它执行给定任务；</li>
+<li>同时，优化器 $g_\phi$ 通过支持集 $S$，学习如何更新学习器参数：$\theta&rsquo; = g_\phi(\theta, S)$。</li>
+</ul>
+<p>最终优化步骤中，需要更新 $\theta$ 与 $\phi$，最大化：</p>
+<div>
+$$
+\mathbb{E}_{L\subset\mathcal{L}}[ \mathbb{E}_{S^L \subset\mathcal{D}, B^L \subset\mathcal{D}} [\sum_{(\mathbf{x}, y)\in B^L} P_{g_\phi(\theta, S^L)}(y \vert \mathbf{x})]]
+$$
+</div>
+<h2 id="common-approaches">常见方法<a hidden class="anchor" aria-hidden="true" href="#common-approaches">#</a></h2>
+<p>Meta-learning（元学习）有三种常见方法：基于度量、基于模型和基于优化。Oriol Vinyals 在 NIPS 2018 元学习专题研讨会的 <a href="http://metalearning-symposium.ml/files/vinyals.pdf">演讲</a> 中作了很好的总结：</p>
+<p>| &mdash;&mdash;&mdash;&mdash;- | &mdash;&mdash;&mdash;&mdash;- | &mdash;&mdash;&mdash;&mdash;- | &mdash;&mdash;&mdash;&mdash;- |</p>
+<table>
+	<thead>
+			<tr>
+					<th></th>
+					<th>基于模型</th>
+					<th>基于度量</th>
+					<th>基于优化</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><strong>核心思想</strong></td>
+					<td>RNN（循环神经网络）；记忆</td>
+					<td>度量学习</td>
+					<td>梯度下降</td>
+			</tr>
+			<tr>
+					<td><strong>如何建模 $P_\theta(y \vert \mathbf{x})$？</strong></td>
+					<td>$f_\theta(\mathbf{x}, S)$</td>
+					<td>$\sum_{(\mathbf{x}_i, y_i) \in S} k_\theta(\mathbf{x}, \mathbf{x}_i)y_i$ (*)</td>
+					<td>$P_{g_\phi(\theta, S^L)}(y \vert \mathbf{x})$</td>
+			</tr>
+	</tbody>
+</table>
+<p>（*）$k_\theta$ 是衡量 $\mathbf{x}_i$ 与 $\mathbf{x}$ 相似性的核函数。</p>
+<p>接下来回顾每类方法的经典模型。</p>
+<h1 id="metric-based">基于度量<a hidden class="anchor" aria-hidden="true" href="#metric-based">#</a></h1>
+<p>基于度量的 meta-learning（元学习），核心思想类似最近邻算法（即 <a href="https://en.wikipedia.org/wiki/K-nearest_neighbors_algorithm">k-NN（k 近邻）</a> 分类器与 <a href="https://en.wikipedia.org/wiki/K-means_clustering">k-means（k 均值）</a> 聚类）和 <a href="https://en.wikipedia.org/wiki/Kernel_density_estimation">核密度估计</a>。已知标签集合 $y$ 上的预测概率，是支持集样本标签的加权和。权重由核函数 $k_\theta$ 生成，衡量两个样本相似性。</p>
+<div>
+$$
+P_\theta(y \vert \mathbf{x}, S) = \sum_{(\mathbf{x}_i, y_i) \in S} k_\theta(\mathbf{x}, \mathbf{x}_i)y_i 
+$$ 
+</div>
+<p>学习良好核函数，是基于度量的元学习成功的关键。<a href="https://en.wikipedia.org/wiki/Similarity_learning#Metric_learning">度量学习</a>与此目标一致，旨在学习对象之间的度量或距离函数。好的度量取决于问题，应表示任务空间中输入之间的关系，帮助解决问题。</p>
+<p>以下所有模型都显式学习输入嵌入向量，用于设计合适核函数。</p>
+<h2 id="convolutional-siamese-neural-network">Convolutional Siamese Neural Network（卷积孪生神经网络）<a hidden class="anchor" aria-hidden="true" href="#convolutional-siamese-neural-network">#</a></h2>
+<p><a href="https://papers.nips.cc/paper/769-signature-verification-using-a-siamese-time-delay-neural-network.pdf">Siamese Neural Network（孪生神经网络）</a> 由两个孪生网络组成，输出通过上层函数联合训练，以学习输入样本对之间的关系。两个网络相同，共享权重与参数。换句话说，它们指向同一个嵌入网络，学习有效嵌入，揭示数据点对之间的关系。</p>
+<p><a href="http://www.cs.toronto.edu/~rsalakhu/papers/oneshot1.pdf">Koch, Zemel &amp; Salakhutdinov (2015)</a> 提出用孪生神经网络进行 one-shot（单样本）图像分类。先训练网络进行验证，判断两幅输入图像是否同类，输出同类概率。测试时，网络处理测试图像与支持集每幅图像组成的全部图像对。最终预测为同类概率最高的支持图像所属类别。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/siamese-conv-net.png" style="width: 100%;"  />
+	<figcaption>用于少样本图像分类的卷积孪生神经网络架构。</figcaption>
+</figure>
+<ol>
+<li>首先，卷积孪生网络通过含若干卷积层的嵌入函数 $f_\theta$，将两幅图像编码为特征向量。</li>
+<li>两个嵌入的 L1 距离为 $\vert f_\theta(\mathbf{x}_i) - f_\theta(\mathbf{x}_j) \vert$。</li>
+<li>线性前馈层与 sigmoid（S 形激活函数）将距离转为概率 $p$，即两幅图像是否来自相同类别的概率。</li>
+<li>标签为二元，因此损失直观上是交叉熵。</li>
+</ol>
+<!-- In this way, an efficient image embedding is trained so that the distance between two embeddings is proportional to the similarity between two images. -->
+<div>
+$$
+\begin{aligned}
+p(\mathbf{x}_i, \mathbf{x}_j) &= \sigma(\mathbf{W}\vert f_\theta(\mathbf{x}_i) - f_\theta(\mathbf{x}_j) \vert) \\
+\mathcal{L}(B) &= \sum_{(\mathbf{x}_i, \mathbf{x}_j, y_i, y_j)\in B} \mathbf{1}_{y_i=y_j}\log p(\mathbf{x}_i, \mathbf{x}_j) + (1-\mathbf{1}_{y_i=y_j})\log (1-p(\mathbf{x}_i, \mathbf{x}_j))
+\end{aligned}
+$$
+</div>
+<p>训练批次 $B$ 中的图像，可以通过形变增强。当然，也可将 L1 换为 L2、余弦等距离，只要可微，其余过程相同。</p>
+<p>给定支持集 $S$ 与测试图像 $\mathbf{x}$，最终预测类别为：</p>
+<div>
+$$
+\hat{c}_S(\mathbf{x}) = c(\arg\max_{\mathbf{x}_i \in S} P(\mathbf{x}, \mathbf{x}_i))
+$$
+</div>
+<p>其中，$c(\mathbf{x})$ 是图像 $\mathbf{x}$ 的类别标签，$\hat{c}(.)$ 是预测标签。</p>
+<p>假设学得嵌入能够泛化，用于衡量未知类别图像的距离。这也是采用预训练模型进行迁移学习的假设；例如，ImageNet 预训练模型的卷积特征预计能帮助其他图像任务。但新任务越偏离原始训练任务，预训练模型收益越低。</p>
+<h2 id="matching-networks">Matching Networks（匹配网络）<a hidden class="anchor" aria-hidden="true" href="#matching-networks">#</a></h2>
+<p><strong>Matching Networks（匹配网络）</strong>（<a href="http://papers.nips.cc/paper/6385-matching-networks-for-one-shot-learning.pdf">Vinyals et al., 2016</a>）学习分类器 $c_S$，适用于任意给定的小支持集 $S=\{x_i, y_i\}_{i=1}^k$（<em>k-shot（每类 k 个样本）</em> 分类）。分类器定义输出标签 $y$ 的概率分布，给定测试示例 $\mathbf{x}$。与其他度量模型相似，输出是支持样本标签的加权和，权重为注意力核 $a(\mathbf{x}, \mathbf{x}_i)$，应与 $\mathbf{x}$ 和 $\mathbf{x}_i$ 的相似性成正比。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/matching-networks.png" style="width: 70%;"  />
+	<figcaption>Matching Networks（匹配网络）架构。（图片来源：<a href="http://papers.nips.cc/paper/6385-matching-networks-for-one-shot-learning.pdf" target="_blank">原论文</a>）</figcaption>
+</figure>
+<div>
+$$
+c_S(\mathbf{x}) = P(y \vert \mathbf{x}, S) = \sum_{i=1}^k a(\mathbf{x}, \mathbf{x}_i) y_i
+\text{, where }S=\{(\mathbf{x}_i, y_i)\}_{i=1}^k
+$$
+</div>
+<p>注意力核依赖两个嵌入函数 $f$ 与 $g$，分别编码测试样本与支持样本。两数据点的注意力权重，为嵌入向量余弦相似性 $\text{cosine}(.)$，经过 softmax（归一化指数函数）归一化：</p>
+<div>
+$$
+a(\mathbf{x}, \mathbf{x}_i) = \frac{\exp(\text{cosine}(f(\mathbf{x}), g(\mathbf{x}_i))}{\sum_{j=1}^k\exp(\text{cosine}(f(\mathbf{x}), g(\mathbf{x}_j))}
+$$
+</div>
+<h3 id="simple-embedding">简单嵌入<a hidden class="anchor" aria-hidden="true" href="#simple-embedding">#</a></h3>
+<p>简单版本中，嵌入函数是以单个样本为输入的神经网络，可以设置 $f=g$。</p>
+<h3 id="full-context-embeddings">完整上下文嵌入<a hidden class="anchor" aria-hidden="true" href="#full-context-embeddings">#</a></h3>
+<p>嵌入向量是构建良好分类器的关键输入。仅输入单个数据点，可能不足以有效衡量整个特征空间。因此，Matching Network（匹配网络）进一步提出，在原始输入之外，输入整个支持集 $S$ 来增强嵌入函数，使嵌入根据与其他支持样本的关系调整。</p>
+<ul>
+<li>
+<p>$g_\theta(\mathbf{x}_i, S)$ 使用双向 LSTM（长短期记忆网络）编码 $\mathbf{x}_i$，上下文为整个支持集 $S$。</p>
+</li>
+<li>
+<p>$f_\theta(\mathbf{x}, S)$ 编码测试样本 $\mathbf{x}$，使用对支持集 $S$ 具有读取注意力的 LSTM。</p>
+<ol>
+<li>测试样本先通过 CNN（卷积神经网络）等简单网络，提取基本特征 $f&rsquo;(\mathbf{x})$。</li>
+<li>随后训练 LSTM，将支持集上的读取注意力向量纳入隐藏状态：<br/></li>
+</ol>
+  <div>
+  $$
+  \begin{aligned}
+  \hat{\mathbf{h}}_t, \mathbf{c}_t &= \text{LSTM}(f'(\mathbf{x}), [\mathbf{h}_{t-1}, \mathbf{r}_{t-1}], \mathbf{c}_{t-1}) \\
+  \mathbf{h}_t &= \hat{\mathbf{h}}_t + f'(\mathbf{x}) \\
+  \mathbf{r}_{t-1} &= \sum_{i=1}^k a(\mathbf{h}_{t-1}, g(\mathbf{x}_i)) g(\mathbf{x}_i) \\
+  a(\mathbf{h}_{t-1}, g(\mathbf{x}_i)) &= \text{softmax}(\mathbf{h}_{t-1}^\top g(\mathbf{x}_i)) = \frac{\exp(\mathbf{h}_{t-1}^\top g(\mathbf{x}_i))}{\sum_{j=1}^k \exp(\mathbf{h}_{t-1}^\top g(\mathbf{x}_j))}
+  \end{aligned}
+  $$
+  </div>
+<ol start="3">
+<li>如果进行 K 次“读取”，最终有 $f(\mathbf{x}, S)=\mathbf{h}_K$。</li>
+</ol>
+</li>
+</ul>
+<p>这种嵌入称为“Full Contextual Embeddings（完整上下文嵌入，FCE）”。有趣的是，它改善困难任务（mini ImageNet 少样本分类）的性能，却对简单任务（Omniglot）没有影响。</p>
+<p>Matching Networks（匹配网络）的训练设计为匹配测试时推理，详见前述 <a href="#training-in-the-same-way-as-testing">章节</a>。值得一提，论文进一步完善了训练、测试条件应匹配的思想。</p>
+<div>
+$$
+\theta^* = \arg\max_\theta \mathbb{E}_{L\subset\mathcal{L}}[ \mathbb{E}_{S^L \subset\mathcal{D}, B^L \subset\mathcal{D}} [\sum_{(\mathbf{x}, y)\in B^L} P_\theta(y\vert\mathbf{x}, S^L)]]
+$$
+</div>
+<h2 id="relation-network">Relation Network（关系网络）<a hidden class="anchor" aria-hidden="true" href="#relation-network">#</a></h2>
+<p><strong>Relation Network（关系网络，RN）</strong>（<a href="http://openaccess.thecvf.com/content_cvpr_2018/papers_backup/Sung_Learning_to_Compare_CVPR_2018_paper.pdf">Sung et al., 2018</a>）类似 <a href="#convolutional-siamese-neural-network">siamese network（孪生网络）</a>，但有几点不同：</p>
+<ol>
+<li>关系不由特征空间的简单 L1 距离捕获，而由 CNN分类器 $g_\phi$ 预测。输入对 $\mathbf{x}_i$ 与 $\mathbf{x}_j$ 的关系分数为 $r_{ij} = g_\phi([\mathbf{x}_i, \mathbf{x}_j])$，其中 $[.,.]$ 为拼接。</li>
+<li>目标为 MSE（均方误差），而非交叉熵，因为 RN（关系网络）更关注预测关系分数，类似回归而非二分类：$\mathcal{L}(B) = \sum_{(\mathbf{x}_i, \mathbf{x}_j, y_i, y_j)\in B} (r_{ij} - \mathbf{1}_{y_i=y_j})^2$。</li>
+</ol>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/relation-network.png" style="width: 100%;"  />
+	<figcaption>用于含一个查询示例的 5-way 1-shot（5 类、每类 1 个样本）问题的 Relation Network（关系网络）架构。（图片来源：<a href="http://openaccess.thecvf.com/content_cvpr_2018/papers_backup/Sung_Learning_to_Compare_CVPR_2018_paper.pdf" target="_blank">原论文</a>）</figcaption>
+</figure>
+<p>（注：DeepMind 还提出另一种用于关系推理的 <a href="https://deepmind.com/blog/neural-approach-relational-reasoning/">Relation Network（关系网络）</a>，不要混淆。）</p>
+<h2 id="prototypical-networks">Prototypical Networks（原型网络）<a hidden class="anchor" aria-hidden="true" href="#prototypical-networks">#</a></h2>
+<p><strong>Prototypical Networks（原型网络）</strong>（<a href="http://papers.nips.cc/paper/6996-prototypical-networks-for-few-shot-learning.pdf">Snell, Swersky &amp; Zemel, 2017</a>）使用嵌入函数 $f_\theta$，将每个输入编码为 $M$ 维特征向量。定义 <em>原型</em> 特征向量，针对每个类别 $c \in \mathcal{C}$，取该类支持样本嵌入的均值。</p>
+<div>
+$$
+\mathbf{v}_c = \frac{1}{|S_c|} \sum_{(\mathbf{x}_i, y_i) \in S_c} f_\theta(\mathbf{x}_i)
+$$
+</div>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/prototypical-networks.png" style="width: 100%;"  />
+	<figcaption>少样本与零样本场景中的 Prototypical networks（原型网络）。（图片来源：<a href="http://papers.nips.cc/paper/6996-prototypical-networks-for-few-shot-learning.pdf" target="_blank">原论文</a>）</figcaption>
+</figure>
+<p>给定测试输入 $\mathbf{x}$ 的类别分布，是测试嵌入与原型向量间距离的反向值经过 softmax（归一化指数函数）的结果。</p>
+<div>
+$$
+P(y=c\vert\mathbf{x})=\text{softmax}(-d_\varphi(f_\theta(\mathbf{x}), \mathbf{v}_c)) = \frac{\exp(-d_\varphi(f_\theta(\mathbf{x}), \mathbf{v}_c))}{\sum_{c' \in \mathcal{C}}\exp(-d_\varphi(f_\theta(\mathbf{x}), \mathbf{v}_{c'}))}
+$$
+</div>
+<p>其中，$d_\varphi$ 可以是任意距离函数，只要 $\varphi$ 可微。论文使用平方欧氏距离。</p>
+<p>损失是负对数似然：$\mathcal{L}(\theta) = -\log P_\theta(y=c\vert\mathbf{x})$。</p>
+<h1 id="model-based">基于模型<a hidden class="anchor" aria-hidden="true" href="#model-based">#</a></h1>
+<p>基于模型的 meta-learning（元学习）不假设 $P_\theta(y\vert\mathbf{x})$ 的形式，而依赖专为快速学习设计的模型——仅用少数训练步骤快速更新参数。快速更新可以通过内部架构实现，也可以由另一个元学习器控制。</p>
+<h2 id="memory-augmented-neural-networks">Memory-Augmented Neural Networks（记忆增强神经网络）<a hidden class="anchor" aria-hidden="true" href="#memory-augmented-neural-networks">#</a></h2>
+<p>一类模型用外部记忆帮助神经网络学习，包括 <a href="https://xingshuozhu1998.github.io/posts/2018-06-24-attention/#neural-turing-machines">Neural Turing Machines（神经图灵机）</a> 与 <a href="https://arxiv.org/abs/1410.3916">Memory Networks（记忆网络）</a>。显式存储缓冲区使网络更容易迅速纳入新信息，并避免之后遗忘。这类模型称 <strong>MANN</strong>，是“<strong>Memory-Augmented Neural Network（记忆增强神经网络）</strong>”的简称。请注意，仅有 <em>内部记忆</em> 的普通 RNN或 LSTM，不属于 MANN。</p>
+<p>MANN（记忆增强神经网络）预计能快速编码新信息，仅凭少量样本适应新任务，因此适合元学习。<a href="http://proceedings.mlr.press/v48/santoro16.pdf">Santoro et al. (2016)</a> 以 Neural Turing Machine（神经图灵机，NTM）为基础，修改训练设置与记忆检索机制（“寻址机制”，决定如何分配记忆向量的注意力权重）。如果不熟悉，请先阅读我另一篇文章的 <a href="https://xingshuozhu1998.github.io/posts/2018-06-24-attention/#neural-turing-machines">NTM 章节</a>。</p>
+<p>简要回顾，NTM（神经图灵机）将控制器神经网络与外部记忆结合。控制器通过软注意力学习读写记忆行，记忆充当知识库。注意力权重由基于内容与基于位置的寻址机制生成。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/NTM.png" style="width: 70%;"  />
+	<figcaption>Neural Turing Machine（神经图灵机，NTM）架构。时间 t 的记忆 $\mathbf{M}\_t$ 是大小 $N \times M$ 的矩阵，包含 N 行向量，每行 M 维。</figcaption>
+</figure>
+<h3 id="mann-for-meta-learning">用于 Meta-Learning（元学习）的 MANN（记忆增强神经网络）<a hidden class="anchor" aria-hidden="true" href="#mann-for-meta-learning">#</a></h3>
+<p>使用 MANN（记忆增强神经网络）进行元学习，需要训练记忆迅速编码、捕获新任务信息，同时使所有存储表示都易于稳定访问。</p>
+<p><a href="http://proceedings.mlr.press/v48/santoro16.pdf">Santoro et al., 2016</a> 采用有趣训练方式，强制记忆保留信息更久，直到对应标签之后出现。每个训练回合，真实标签 $y_t$ 以 <strong>一步偏移</strong> 呈现：$(\mathbf{x}_{t+1}, y_t)$。它是前一时间步 t 输入的真实标签，但作为 t+1 输入的一部分出现。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/mann-meta-learning.png" style="width: 100%;"  />
+	<figcaption>MANN（记忆增强神经网络）的元学习任务设置。（图片来源：<a href="http://proceedings.mlr.press/v48/santoro16.pdf" target="_blank">原论文</a>）</figcaption>
+</figure>
+<p>这促使 MANN（记忆增强神经网络）记住新数据集信息，因为记忆必须保留当前输入，直到之后标签出现，再检索旧信息据此预测。</p>
+<p>接下来看如何更新记忆，高效检索、存储信息。</p>
+<h3 id="addressing-mechanism-for-meta-learning">用于 Meta-Learning（元学习）的寻址机制<a hidden class="anchor" aria-hidden="true" href="#addressing-mechanism-for-meta-learning">#</a></h3>
+<p>除训练流程外，还采用新的纯内容寻址，使模型更适合元学习。</p>
+<p><strong>» 如何读取记忆？</strong>
+<br/>
+读取注意力完全根据内容相似性构建。</p>
+<p>首先，控制器在时间步 t 生成键特征向量 $\mathbf{k}_t$，作为输入 $\mathbf{x}$ 的函数。类似 NTM（神经图灵机），含 N 个元素的读取权重向量 $\mathbf{w}_t^r$，通过键向量与每行记忆的余弦相似性，经 softmax（归一化指数函数）归一化计算。读取向量 $\mathbf{r}_t$ 是这些权重加权的记忆记录之和：</p>
+<div>
+$$
+\mathbf{r}_i = \sum_{i=1}^N w_t^r(i)\mathbf{M}_t(i)
+\text{, where } w_t^r(i) = \text{softmax}(\frac{\mathbf{k}_t \cdot \mathbf{M}_t(i)}{\|\mathbf{k}_t\| \cdot \|\mathbf{M}_t(i)\|})
+$$
+</div>
+<p>其中，$M_t$ 是时间 t 的记忆矩阵，$M_t(i)$ 是矩阵第 i 行。</p>
+<p><strong>» 如何写入记忆？</strong>
+<br/>
+将新信息写入记忆的寻址机制很像 <a href="https://en.wikipedia.org/wiki/Cache_replacement_policies">缓存替换</a> 策略。为使 MANN（记忆增强神经网络）更适合元学习，设计了 <strong>Least Recently Used Access（最近最少使用访问，LRUA）</strong> 写入器。LRUA 写入头偏好将新内容写入 <em>使用最少</em> 或 <em>最近使用</em> 的记忆位置。</p>
+<ul>
+<li>很少使用的位置：保留常用信息（见 <a href="https://en.wikipedia.org/wiki/Least_frequently_used">LFU（最不经常使用）</a>）；</li>
+<li>最后使用的位置：动机是某条信息一旦检索过，可能暂时不会再次调用（见 <a href="https://en.wikipedia.org/wiki/Cache_replacement_policies#Most_recently_used_(MRU)">MRU（最近最多使用）</a>）。</li>
+</ul>
+<p>缓存替换算法有很多，在不同场景中，它们都可能替代这里的设计并取得更好性能。此外，学习记忆使用模式与寻址策略，比任意指定更值得尝试。</p>
+<p>LRUA（最近最少使用访问）的偏好以全程可微方式实现：</p>
+<ol>
+<li>时间 t 的使用权重 $\mathbf{w}^u_t$，是当前读取与写入向量之和，加上衰减后的上次使用权重 $\gamma \mathbf{w}^u_{t-1}$，其中 $\gamma$ 是衰减因子。</li>
+<li>写入向量在前次读取权重（偏好“最后使用位置”）与前次最少使用权重（偏好“很少使用位置”）间插值。插值参数为超参数 $\alpha$ 的 sigmoid（S 形激活函数）。</li>
+<li>最少使用权重 $\mathbf{w}^{lu}$ 按使用权重 $\mathbf{w}_t^u$ 缩放：某维度若小于向量第 n 小元素，就保持 1，否则为 0。</li>
+</ol>
+<div>
+$$
+\begin{aligned}
+\mathbf{w}_t^u &= \gamma \mathbf{w}_{t-1}^u + \mathbf{w}_t^r + \mathbf{w}_t^w \\
+\mathbf{w}_t^r &= \text{softmax}(\text{cosine}(\mathbf{k}_t, \mathbf{M}_t(i))) \\
+\mathbf{w}_t^w &= \sigma(\alpha)\mathbf{w}_{t-1}^r + (1-\sigma(\alpha))\mathbf{w}^{lu}_{t-1}\\
+\mathbf{w}_t^{lu} &= \mathbf{1}_{w_t^u(i) \leq m(\mathbf{w}_t^u, n)}
+\text{, where }m(\mathbf{w}_t^u, n)\text{ is the }n\text{-th smallest element in vector }\mathbf{w}_t^u\text{.}
+\end{aligned}
+$$
+</div>
+<p>最后，将 $\mathbf{w}_t^{lu}$ 指示的最少使用位置置零，再更新每行记忆：</p>
+<div>
+$$
+\mathbf{M}_t(i) = \mathbf{M}_{t-1}(i) + w_t^w(i)\mathbf{k}_t, \forall i
+$$
+</div>
+<h2 id="meta-networks">Meta Networks（元网络）<a hidden class="anchor" aria-hidden="true" href="#meta-networks">#</a></h2>
+<p><strong>Meta Networks（元网络）</strong>（<a href="https://arxiv.org/abs/1703.00837">Munkhdalai &amp; Yu, 2017</a>），简称 <strong>MetaNet</strong>，其架构与训练专门设计用于跨任务 <em>快速</em> 泛化。</p>
+<h3 id="fast-weights">Fast Weights（快速权重）<a hidden class="anchor" aria-hidden="true" href="#fast-weights">#</a></h3>
+<p>MetaNet 的快速泛化依赖“fast weights（快速权重）”。有关论文不少，但我未详细阅读全部，也未找到非常具体定义，只有模糊的概念共识。通常，神经网络权重通过目标函数的 SGD（随机梯度下降）更新，过程较慢。更快方式是用一个网络预测另一个网络参数，生成的权重称 <em>fast weights（快速权重）</em>。相比之下，普通基于 SGD 的权重称 <em>slow weights（慢速权重）</em>。</p>
+<p>MetaNet 中，损失梯度作为 <em>元信息</em>，输入学习快速权重的模型。神经网络结合慢速、快速权重进行预测。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/combine-slow-fast-weights.png" style="width: 50%;"  />
+	<figcaption>MLP（多层感知机）中结合慢速与快速权重。$\bigoplus$ 为逐元素相加。（图片来源：<a href="https://arxiv.org/abs/1703.00837" target="_blank">原论文</a>）。</figcaption>
+</figure>
+<h3 id="model-components">模型组件<a hidden class="anchor" aria-hidden="true" href="#model-components">#</a></h3>
+<blockquote>
+<p>说明：以下记号与论文不同。我认为论文写得不好，但想法仍有趣，因此用自己的语言介绍。</p>
+</blockquote>
+<p>MetaNet 关键组件为：</p>
+<ul>
+<li>嵌入函数 $f_\theta$，参数为 $\theta$，将原始输入编码为特征向量。类似 <a href="#convolutional-siamese-neural-network">Siamese Neural Network（孪生神经网络）</a>，训练嵌入以判断两个输入是否同类（验证任务）。</li>
+<li>基础学习器 $g_\phi$，权重为 $\phi$，完成实际学习任务。</li>
+</ul>
+<p>到这里，它看起来像 <a href="#relation-network">Relation Network（关系网络）</a>。MetaNet 还显式建模两个函数的快速权重，再聚合回模型（见图 8）。</p>
+<p>因此，需要额外两个函数，分别输出 $f$ 与 $g$ 的快速权重。</p>
+<ul>
+<li>$F_w$：参数为 $w$ 的 LSTM，学习快速权重 $\theta^+$，对应嵌入函数 $f$。输入是 $f$ 的验证任务嵌入损失梯度。</li>
+<li>$G_v$：参数为 $v$ 的神经网络，根据损失梯度学习快速权重 $\phi^+$，用于基础学习器 $g$。MetaNet 将学习器损失梯度视为任务 <em>元信息</em>。</li>
+</ul>
+<p>现在看元网络如何训练。训练数据含多个数据集对：支持集 $S=\{\mathbf{x}&rsquo;_i, y&rsquo;_i\}_{i=1}^K$ 与测试集 $U=\{\mathbf{x}_i, y_i\}_{i=1}^L$。回顾，有四个网络、四组待学习参数 $(\theta, \phi, w, v)$。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/meta-network.png" style="width: 90%;"  />
+	<figcaption>图 9：MetaNet 架构。</figcaption>
+</figure>
+<h3 id="training-process">训练过程<a hidden class="anchor" aria-hidden="true" href="#training-process">#</a></h3>
+<ol>
+<li>
+<p>每个时间步 t，从支持集 $S$ 随机采样输入对 $(\mathbf{x}&rsquo;_i, y&rsquo;_i)$ 与 $(\mathbf{x}&rsquo;_j, y_j)$。令 $\mathbf{x}_{(t,1)}=\mathbf{x}&rsquo;_i$ 和 $\mathbf{x}_{(t,2)}=\mathbf{x}&rsquo;_j$。<br/>
+对 $t = 1, \dots, K$：</p>
+<ul>
+<li>a. 计算表示学习损失，即验证任务交叉熵：<br/>
+$\mathcal{L}^\text{emb}_t = \mathbf{1}_{y&rsquo;_i=y&rsquo;_j} \log P_t + (1 - \mathbf{1}_{y&rsquo;_i=y&rsquo;_j})\log(1 - P_t)\text{, where }P_t = \sigma(\mathbf{W}\vert f_\theta(\mathbf{x}_{(t,1)}) - f_\theta(\mathbf{x}_{(t,2)})\vert)$</li>
+</ul>
+</li>
+<li>
+<p>计算任务级快速权重：
+$\theta^+ = F_w(\nabla_\theta \mathcal{L}^\text{emb}_1, \dots, \mathcal{L}^\text{emb}_T)$</p>
+</li>
+<li>
+<p>接着遍历支持集 $S$，计算示例级快速权重，同时以学得表示更新记忆。<br/>
+对 $i=1, \dots, K$：</p>
+<ul>
+<li>a. 基础学习器输出概率分布 $P(\hat{y}_i \vert \mathbf{x}_i) = g_\phi(\mathbf{x}_i)$，损失可为交叉熵或 MSE（均方误差）：$\mathcal{L}^\text{task}_i = y&rsquo;_i \log g_\phi(\mathbf{x}&rsquo;_i) + (1- y&rsquo;_i) \log (1 - g_\phi(\mathbf{x}&rsquo;_i))$</li>
+<li>b. 提取任务元信息（损失梯度），计算示例级快速权重：
+$\phi_i^+ = G_v(\nabla_\phi\mathcal{L}^\text{task}_i)$
+<ul>
+<li>将 $\phi^+_i$ 存入第 $i$ 个位置，对应“值”记忆 $\mathbf{M}$。<br/></li>
+</ul>
+</li>
+<li>d. 同时用慢速、快速权重，将支持样本编码为任务特定输入表示：$r&rsquo;_i = f_{\theta, \theta^+}(\mathbf{x}&rsquo;_i)$
+<ul>
+<li>将 $r&rsquo;_i$ 存入第 $i$ 个位置，对应“键”记忆 $\mathbf{R}$。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>最后，用测试集 $U=\{\mathbf{x}_i, y_i\}_{i=1}^L$ 构建训练损失。<br/>
+从 $\mathcal{L}_\text{train}=0$ 开始：<br/>
+对 $j=1, \dots, L$：</p>
+<ul>
+<li>a. 将测试样本编码为任务特定输入表示：
+$r_j = f_{\theta, \theta^+}(\mathbf{x}_j)$</li>
+<li>b. 通过关注记忆 $\mathbf{R}$ 中支持样本表示，计算快速权重。注意力函数可自选；MetaNet 使用余弦相似性：<br/>
+</li>
+</ul>
+ <div>
+ $$
+ \begin{aligned}
+ a_j &= \text{cosine}(\mathbf{R}, r_j) = [\frac{r'_1\cdot r_j}{\|r'_1\|\cdot\|r_j\|}, \dots, \frac{r'_N\cdot r_j}{\|r'_N\|\cdot\|r_j\|}]\\
+ \phi^+_j &= \text{softmax}(a_j)^\top \mathbf{M}
+ \end{aligned}
+ $$
+ </div>
+<ul>
+<li>c. 更新训练损失：$\mathcal{L}_\text{train} \leftarrow \mathcal{L}_\text{train} + \mathcal{L}^\text{task}(g_{\phi, \phi^+}(\mathbf{x}_i), y_i) $</li>
+</ul>
+</li>
+<li>
+<p>更新全部参数 $(\theta, \phi, w, v)$，使用 $\mathcal{L}_\text{train}$。</p>
+</li>
+</ol>
+<h1 id="optimization-based">基于优化<a hidden class="anchor" aria-hidden="true" href="#optimization-based">#</a></h1>
+<p>深度学习通过梯度反向传播学习。然而，基于梯度的优化既非专为少量训练样本设计，也非专为少数优化步骤内收敛设计。能否调整优化算法，使模型擅长用少量示例学习？这正是基于优化的元学习算法的目标。</p>
+<h2 id="lstm-meta-learner">LSTM元学习器<a hidden class="anchor" aria-hidden="true" href="#lstm-meta-learner">#</a></h2>
+<p>优化算法可显式建模。<a href="https://openreview.net/pdf?id=rJY0-Kcll">Ravi &amp; Larochelle (2017)</a> 将其称为“元学习器”，原始执行任务的模型称“学习器”。元学习器旨在用小支持集高效更新学习器参数，使其快速适应新任务。</p>
+<p>学习器记为 $M_\theta$，参数为 $\theta$；元学习器为 $R_\Theta$，参数 $\Theta$；损失为 $\mathcal{L}$。</p>
+<h3 id="why-lstm">为什么用 LSTM？<a hidden class="anchor" aria-hidden="true" href="#why-lstm">#</a></h3>
+<p>元学习器建模为 LSTM，因为：</p>
+<ol>
+<li>反向传播的梯度更新与 LSTM的单元状态更新相似。</li>
+<li>知道历史梯度有助于更新；想想 <a href="http://ruder.io/optimizing-gradient-descent/index.html#momentum">momentum（动量）</a>。</li>
+</ol>
+<p>时间步 t、学习率 $\alpha_t$ 下，学习器参数更新为：</p>
+<div>
+$$
+\theta_t = \theta_{t-1} - \alpha_t \nabla_{\theta_{t-1}}\mathcal{L}_t
+$$
+</div>
+<p>若设遗忘门 $f_t=1$、输入门 $i_t = \alpha_t$、单元状态 $c_t = \theta_t$、新单元状态 $\tilde{c}_t = -\nabla_{\theta_{t-1}}\mathcal{L}_t$，它与 LSTM单元状态更新形式相同：</p>
+<div>
+$$
+\begin{aligned}
+c_t &= f_t \odot c_{t-1} + i_t \odot \tilde{c}_t\\
+    &= \theta_{t-1} - \alpha_t\nabla_{\theta_{t-1}}\mathcal{L}_t
+\end{aligned}
+$$
+</div>
+<p>固定 $f_t=1$ 与 $i_t=\alpha_t$ 可能非最优，但两者都可学习，适应不同数据集。</p>
+<div>
+$$
+\begin{aligned}
+f_t &= \sigma(\mathbf{W}_f \cdot [\nabla_{\theta_{t-1}}\mathcal{L}_t, \mathcal{L}_t, \theta_{t-1}, f_{t-1}] + \mathbf{b}_f) & \scriptstyle{\text{; how much to forget the old value of parameters.}}\\
+i_t &= \sigma(\mathbf{W}_i \cdot [\nabla_{\theta_{t-1}}\mathcal{L}_t, \mathcal{L}_t, \theta_{t-1}, i_{t-1}] + \mathbf{b}_i) & \scriptstyle{\text{; corresponding to the learning rate at time step t.}}\\
+\tilde{\theta}_t &= -\nabla_{\theta_{t-1}}\mathcal{L}_t &\\
+\theta_t &= f_t \odot \theta_{t-1} + i_t \odot \tilde{\theta}_t &\\
+\end{aligned}
+$$
+</div>
+<h3 id="model-setup">模型设置<a hidden class="anchor" aria-hidden="true" href="#model-setup">#</a></h3>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/lstm-meta-learner.png" style="width: 100%;"  />
+	<figcaption>学习器 $M\_\theta$ 与元学习器 $R\_\Theta$ 如何训练。（图片来源：<a href="https://openreview.net/pdf?id=rJY0-Kcll)" target="_blank">原论文</a>，附额外标注）</figcaption>
+</figure>
+<p>训练模仿测试，<a href="#matching-networks">Matching Networks（匹配网络）</a> 已证明这种方式有益。每轮先采样数据集 $\mathcal{D} = (\mathcal{D}_\text{train}, \mathcal{D}_\text{test}) \in \hat{\mathcal{D}}_\text{meta-train}$，再从 $\mathcal{D}_\text{train}$ 采样小批次，更新 $\theta$，共 $T$ 轮。学习器最终参数 $\theta_T$ 用于在测试数据 $\mathcal{D}_\text{test}$ 上训练元学习器。</p>
+<p>两个实现细节需特别留意：</p>
+<ol>
+<li>如何压缩 LSTM元学习器参数空间？元学习器建模另一网络的参数，因此可能有数十万待学习变量。遵循跨坐标共享参数的 <a href="https://arxiv.org/abs/1606.04474">思想</a>，</li>
+<li>为简化训练，元学习器假设损失 $\mathcal{L}_t$ 与梯度 $\nabla_{\theta_{t-1}} \mathcal{L}_t$ 独立。</li>
+</ol>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/train-meta-learner.png" style="width: 100%;"  />
+<h2 id="maml">MAML（模型无关元学习）<a hidden class="anchor" aria-hidden="true" href="#maml">#</a></h2>
+<p><strong>MAML</strong> 是 <strong>Model-Agnostic Meta-Learning（模型无关元学习）</strong> 的简称（<a href="https://arxiv.org/abs/1703.03400">Finn, et al. 2017</a>），是相当通用的优化算法，适配所有通过梯度下降学习的模型。</p>
+<p>假设模型为 $f_\theta$，参数 $\theta$。给定任务 $\tau_i$ 与数据集 $(\mathcal{D}^{(i)}_\text{train}, \mathcal{D}^{(i)}_\text{test})$，可通过一步或多步梯度下降更新参数（以下仅一步）：</p>
+<div>
+$$
+\theta'_i = \theta - \alpha \nabla_\theta\mathcal{L}^{(0)}_{\tau_i}(f_\theta)
+$$
+</div>
+<p>其中，$\mathcal{L}^{(0)}$ 是编号（0）的小批次计算的损失。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/maml.png" style="width: 45%;"  />
+	<figcaption>MAML示意图。（图片来源：<a href="https://arxiv.org/abs/1703.03400" target="_blank">原论文</a>）</figcaption>
+</figure>
+<p>上述公式只优化一个任务。为在多种任务间泛化，需要找到最优 $\theta^*$，使任务特定微调更高效。现在采样编号（1）的新批次，更新元目标。损失 $\mathcal{L}^{(1)}$ 依赖批次（1）。$\mathcal{L}^{(0)}$ 与 $\mathcal{L}^{(1)}$ 的上标只表示不同批次，同一任务的损失目标相同。</p>
+<div>
+$$
+\begin{aligned}
+\theta^* 
+&= \arg\min_\theta \sum_{\tau_i \sim p(\tau)} \mathcal{L}_{\tau_i}^{(1)} (f_{\theta'_i}) = \arg\min_\theta \sum_{\tau_i \sim p(\tau)} \mathcal{L}_{\tau_i}^{(1)} (f_{\theta - \alpha\nabla_\theta \mathcal{L}_{\tau_i}^{(0)}(f_\theta)}) & \\
+\theta &\leftarrow \theta - \beta \nabla_{\theta} \sum_{\tau_i \sim p(\tau)} \mathcal{L}_{\tau_i}^{(1)} (f_{\theta - \alpha\nabla_\theta \mathcal{L}_{\tau_i}^{(0)}(f_\theta)}) & \scriptstyle{\text{; updating rule}}
+\end{aligned}
+$$
+</div>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/maml-algo.png" style="width: 60%;"  />
+	<figcaption>MAML算法通用形式。（图片来源：<a href="https://arxiv.org/abs/1703.03400" target="_blank">原论文</a>）</figcaption>
+</figure>
+<h3 id="first-order-maml">First-Order MAML（一阶模型无关元学习）<a hidden class="anchor" aria-hidden="true" href="#first-order-maml">#</a></h3>
+<p>上述元优化依赖二阶导数。为降低计算成本，修改版 MAML省略二阶导数，得到更简单、成本更低的实现，称 <strong>First-Order MAML（一阶模型无关元学习，FOMAML（一阶模型无关元学习））</strong>。</p>
+<p>考虑执行 $k$ 个内层梯度步骤，$k\geq1$。从初始参数 $\theta_\text{meta}$ 开始：</p>
+<div>
+$$
+\begin{aligned}
+\theta_0 &= \theta_\text{meta}\\
+\theta_1 &= \theta_0 - \alpha\nabla_\theta\mathcal{L}^{(0)}(\theta_0)\\
+\theta_2 &= \theta_1 - \alpha\nabla_\theta\mathcal{L}^{(0)}(\theta_1)\\
+&\dots\\
+\theta_k &= \theta_{k-1} - \alpha\nabla_\theta\mathcal{L}^{(0)}(\theta_{k-1})
+\end{aligned}
+$$
+</div>
+<p>外层循环中，采样新批次更新元目标。</p>
+<div>
+$$
+\begin{aligned}
+\theta_\text{meta} &\leftarrow \theta_\text{meta} - \beta g_\text{MAML} & \scriptstyle{\text{; update for meta-objective}} \\[2mm]
+\text{where } g_\text{MAML}
+&= \nabla_{\theta} \mathcal{L}^{(1)}(\theta_k) &\\[2mm]
+&= \nabla_{\theta_k} \mathcal{L}^{(1)}(\theta_k) \cdot (\nabla_{\theta_{k-1}} \theta_k) \dots (\nabla_{\theta_0} \theta_1) \cdot (\nabla_{\theta} \theta_0) & \scriptstyle{\text{; following the chain rule}} \\
+&= \nabla_{\theta_k} \mathcal{L}^{(1)}(\theta_k) \cdot \Big( \prod_{i=1}^k \nabla_{\theta_{i-1}} \theta_i \Big) \cdot I &  \\
+&= \nabla_{\theta_k} \mathcal{L}^{(1)}(\theta_k) \cdot \prod_{i=1}^k \nabla_{\theta_{i-1}} (\theta_{i-1} - \alpha\nabla_\theta\mathcal{L}^{(0)}(\theta_{i-1})) &  \\
+&= \nabla_{\theta_k} \mathcal{L}^{(1)}(\theta_k) \cdot \prod_{i=1}^k (I - \alpha\nabla_{\theta_{i-1}}(\nabla_\theta\mathcal{L}^{(0)}(\theta_{i-1}))) &
+\end{aligned}
+$$
+</div>
+<p>MAML梯度为：</p>
+<div>
+$$
+g_\text{MAML} = \nabla_{\theta_k} \mathcal{L}^{(1)}(\theta_k) \cdot \prod_{i=1}^k (I - \alpha \color{red}{\nabla_{\theta_{i-1}}(\nabla_\theta\mathcal{L}^{(0)}(\theta_{i-1}))})
+$$
+</div>
+<p>First-Order MAML（一阶模型无关元学习）忽略红色二阶导数，简化如下，等价于最后一次内层梯度更新结果的导数。</p>
+<div>
+$$
+g_\text{FOMAML} = \nabla_{\theta_k} \mathcal{L}^{(1)}(\theta_k)
+$$
+</div>
+<h2 id="reptile">Reptile<a hidden class="anchor" aria-hidden="true" href="#reptile">#</a></h2>
+<p><strong>Reptile</strong>（<a href="https://arxiv.org/abs/1803.02999">Nichol, Achiam &amp; Schulman, 2018</a>）是极其简单的元学习优化算法。它与 MAML很多方面相似，两者都通过梯度下降进行元优化，也都不依赖特定模型。</p>
+<p>Reptile 重复执行：</p>
+<ol>
+<li>采样任务，</li>
+<li>在任务上进行多步梯度下降训练，</li>
+<li>再将模型权重移向新参数。</li>
+</ol>
+<p>算法如下：
+$\text{SGD}(\mathcal{L}_{\tau_i}, \theta, k)$ 在损失 $\mathcal{L}_{\tau_i}$ 上执行 k 步随机梯度更新，从初始参数 $\theta$ 开始，返回最终参数向量。批次版每次采样多个任务，而非一个。Reptile 梯度定义为 $(\theta - W)/\alpha$，其中 $\alpha$ 为 SGD（随机梯度下降）步长。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/reptile-algo.png" style="width: 52%;"  />
+	<figcaption>批次版 Reptile 算法。（图片来源：<a href="https://arxiv.org/abs/1803.02999" target="_blank">原论文</a>）</figcaption>
+</figure>
+<p>乍看很像普通 SGD（随机梯度下降）。然而，任务特定优化可以超过一步，因此 k &gt; 1 时，最终 $\text{SGD}(\mathbb{E}
+_\tau[\mathcal{L}_{\tau}], \theta, k)$ 偏离 $\mathbb{E}_\tau [\text{SGD}(\mathcal{L}_{\tau}, \theta, k)]$。</p>
+<h3 id="the-optimization-assumption">优化假设<a hidden class="anchor" aria-hidden="true" href="#the-optimization-assumption">#</a></h3>
+<p>假设任务 $\tau \sim p(\tau)$ 有最优网络配置流形 $\mathcal{W}_{\tau}^*$。模型 $f_\theta$ 在任务 $\tau$ 上取得最佳性能，当 $\theta$ 位于 $\mathcal{W}_{\tau}^*$ 表面。为找到跨任务好解，希望参数接近所有任务的最优流形：</p>
+<div>
+$$
+\theta^* = \arg\min_\theta \mathbb{E}_{\tau \sim p(\tau)} [\frac{1}{2} \text{dist}(\theta, \mathcal{W}_\tau^*)^2]
+$$
+</div>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/reptile-optim.png" style="width: 50%;"  />
+	<figcaption>Reptile 交替更新参数，使其接近不同任务的最优流形。（图片来源：<a href="https://arxiv.org/abs/1803.02999" target="_blank">原论文</a>）</figcaption>
+</figure>
+<p>以 L2 距离作为 $\text{dist}(.)$，点 $\theta$ 与集合 $\mathcal{W}_\tau^*$ 的距离，等于 $\theta$ 与流形上最近点 $W_{\tau}^*(\theta)$ 的距离，该点最接近 $\theta$：</p>
+<div>
+$$
+\text{dist}(\theta, \mathcal{W}_{\tau}^*) = \text{dist}(\theta, W_{\tau}^*(\theta)) \text{, where }W_{\tau}^*(\theta) = \arg\min_{W\in\mathcal{W}_{\tau}^*} \text{dist}(\theta, W)
+$$
+</div>
+<p>平方欧氏距离的梯度为：</p>
+<div>
+$$
+\begin{aligned}
+\nabla_\theta[\frac{1}{2}\text{dist}(\theta, \mathcal{W}_{\tau_i}^*)^2]
+&= \nabla_\theta[\frac{1}{2}\text{dist}(\theta, W_{\tau_i}^*(\theta))^2] & \\
+&= \nabla_\theta[\frac{1}{2}(\theta - W_{\tau_i}^*(\theta))^2] & \\
+&= \theta - W_{\tau_i}^*(\theta) & \scriptstyle{\text{; See notes.}}
+\end{aligned}
+$$
+</div>
+<p>注：Reptile 论文指出，<em>“点 $\Theta$ 与集合 $S$ 的平方欧氏距离梯度，是向量 $2(\Theta − p)$，其中 p 是 $S$ 中最接近 $\Theta$ 的点”</em>。严格说，$S$ 中最近点也是 $\Theta$ 的函数，但我不确定为何梯度无需考虑 $p$ 的导数。（如果有想法，欢迎评论或邮件告诉我。）</p>
+<p>因此，一步随机梯度更新规则为：</p>
+<div>
+$$
+\theta = \theta - \alpha \nabla_\theta[\frac{1}{2} \text{dist}(\theta, \mathcal{W}_{\tau_i}^*)^2] = \theta - \alpha(\theta - W_{\tau_i}^*(\theta)) = (1-\alpha)\theta + \alpha W_{\tau_i}^*(\theta)
+$$
+</div>
+<p>任务最优流形上的最近点 $W_{\tau_i}^*(\theta)$ 无法精确计算，但 Reptile 用 $\text{SGD}(\mathcal{L}_\tau, \theta, k)$ 近似。</p>
+<h3 id="reptile-vs-fomaml">Reptile 与 FOMAML<a hidden class="anchor" aria-hidden="true" href="#reptile-vs-fomaml">#</a></h3>
+<p>为展示 Reptile 与 MAML更深联系，以执行两步梯度的例子展开更新公式，即 $\text{SGD}(.)$ 中 k=2。与 <a href="#maml">上文</a> 定义相同，$\mathcal{L}^{(0)}$ 和 $\mathcal{L}^{(1)}$ 是不同小批次的损失。为方便阅读，采用两个简化记号 $g^{(i)}_j = \nabla_{\theta} \mathcal{L}^{(i)}(\theta_j)$ 与 $H^{(i)}_j = \nabla^2_{\theta} \mathcal{L}^{(i)}(\theta_j)$。</p>
+<div>
+$$
+\begin{aligned}
+\theta_0 &= \theta_\text{meta}\\
+\theta_1 &= \theta_0 - \alpha\nabla_\theta\mathcal{L}^{(0)}(\theta_0)= \theta_0 - \alpha g^{(0)}_0 \\
+\theta_2 &= \theta_1 - \alpha\nabla_\theta\mathcal{L}^{(1)}(\theta_1) = \theta_0 - \alpha g^{(0)}_0 - \alpha g^{(1)}_1
+\end{aligned}
+$$
+</div>
+<p>根据 <a href="#first-order-maml">前文</a>，FOMAML梯度是最后一次内层梯度更新结果。因此 k=1 时：</p>
+<div>
+$$
+\begin{aligned}
+g_\text{FOMAML} &= \nabla_{\theta_1} \mathcal{L}^{(1)}(\theta_1) = g^{(1)}_1 \\
+g_\text{MAML} &= \nabla_{\theta_1} \mathcal{L}^{(1)}(\theta_1) \cdot (I - \alpha\nabla^2_{\theta} \mathcal{L}^{(0)}(\theta_0)) = g^{(1)}_1 - \alpha H^{(0)}_0 g^{(1)}_1
+\end{aligned}
+$$
+</div>
+<p>Reptile 梯度定义为：</p>
+<div>
+$$
+g_\text{Reptile} = (\theta_0 - \theta_2) / \alpha = g^{(0)}_0 + g^{(1)}_1
+$$
+</div>
+<p>目前得到：</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/reptile_vs_FOMAML.png" style="width: 50%;"  />
+	<figcaption>一次元优化循环中的 Reptile 与 FOMAML比较。（图片来源：Yoonho Lee 的 Reptile <a href="https://www.slideshare.net/YoonhoLee4/on-firstorder-metalearning-algorithms" target="_blank">幻灯片</a>。）</figcaption>
+</figure>
+<div>
+$$
+\begin{aligned}
+g_\text{FOMAML} &= g^{(1)}_1 \\
+g_\text{MAML} &= g^{(1)}_1 - \alpha H^{(0)}_0 g^{(1)}_1 \\
+g_\text{Reptile} &= g^{(0)}_0 + g^{(1)}_1
+\end{aligned}
+$$
+</div>
+<p>接着进一步展开 $g^{(1)}_1$，使用 <a href="https://en.wikipedia.org/wiki/Taylor_series">Taylor expansion（泰勒展开）</a>。回顾，函数 $f(x)$ 在数值 $a$ 处可微，其泰勒展开为：</p>
+<div>
+$$
+f(x) = f(a) + \frac{f'(a)}{1!}(x-a) + \frac{f''(a)}{2!}(x-a)^2 + \dots = \sum_{i=0}^\infty \frac{f^{(i)}(a)}{i!}(x-a)^i
+$$
+</div>
+<p>将 $\nabla_{\theta}\mathcal{L}^{(1)}(.)$ 视为函数，$\theta_0$ 为取值点。$g_1^{(1)}$ 在 $\theta_0$ 处展开为：</p>
+<div>
+$$
+\begin{aligned}
+g_1^{(1)} &= \nabla_{\theta}\mathcal{L}^{(1)}(\theta_1) \\
+&= \nabla_{\theta}\mathcal{L}^{(1)}(\theta_0) + \nabla^2_\theta\mathcal{L}^{(1)}(\theta_0)(\theta_1 - \theta_0) + \frac{1}{2}\nabla^3_\theta\mathcal{L}^{(1)}(\theta_0)(\theta_1 - \theta_0)^2 + \dots & \\
+&= g_0^{(1)} - \alpha H^{(1)}_0 g_0^{(0)} + \frac{\alpha^2}{2}\nabla^3_\theta\mathcal{L}^{(1)}(\theta_0) (g_0^{(0)})^2 + \dots & \scriptstyle{\text{; because }\theta_1-\theta_0=-\alpha g_0^{(0)}} \\
+&= g_0^{(1)} - \alpha H^{(1)}_0 g_0^{(0)} + O(\alpha^2)
+\end{aligned}
+$$
+</div>
+<p>将 $g_1^{(1)}$ 展开式代入内层一步梯度更新的 MAML梯度：</p>
+<div>
+$$
+\begin{aligned}
+g_\text{FOMAML} &= g^{(1)}_1 = g_0^{(1)} - \alpha H^{(1)}_0 g_0^{(0)} + O(\alpha^2)\\
+g_\text{MAML} &= g^{(1)}_1 - \alpha H^{(0)}_0 g^{(1)}_1 \\
+&= g_0^{(1)} - \alpha H^{(1)}_0 g_0^{(0)} + O(\alpha^2) - \alpha H^{(0)}_0 (g_0^{(1)} - \alpha H^{(1)}_0 g_0^{(0)} + O(\alpha^2))\\
+&= g_0^{(1)} - \alpha H^{(1)}_0 g_0^{(0)} - \alpha H^{(0)}_0 g_0^{(1)} + \alpha^2 \alpha H^{(0)}_0 H^{(1)}_0 g_0^{(0)} + O(\alpha^2)\\
+&= g_0^{(1)} - \alpha H^{(1)}_0 g_0^{(0)} - \alpha H^{(0)}_0 g_0^{(1)} + O(\alpha^2)
+\end{aligned}
+$$
+</div>
+<p>Reptile 梯度变为：</p>
+<div>
+$$
+\begin{aligned}
+g_\text{Reptile} 
+&= g^{(0)}_0 + g^{(1)}_1 \\
+&= g^{(0)}_0 + g_0^{(1)} - \alpha H^{(1)}_0 g_0^{(0)} + O(\alpha^2)
+\end{aligned}
+$$
+</div>
+<p>目前得到三类梯度公式：</p>
+<div>
+$$
+\begin{aligned}
+g_\text{FOMAML} &= g_0^{(1)} - \alpha H^{(1)}_0 g_0^{(0)} + O(\alpha^2)\\
+g_\text{MAML} &= g_0^{(1)} - \alpha H^{(1)}_0 g_0^{(0)} - \alpha H^{(0)}_0 g_0^{(1)} + O(\alpha^2)\\
+g_\text{Reptile}  &= g^{(0)}_0 + g_0^{(1)} - \alpha H^{(1)}_0 g_0^{(0)} + O(\alpha^2)
+\end{aligned}
+$$
+</div>
+<p>训练常对多个批次平均。例子中，（0）与（1）均随机采样，可互换。期望 $\mathbb{E}_{\tau,0,1}$ 对两个批次取平均，批次编号（0）与（1），任务为 $\tau$。</p>
+<p>令，</p>
+<ul>
+<li>$A = \mathbb{E}_{\tau,0,1} [g_0^{(0)}] = \mathbb{E}_{\tau,0,1} [g_0^{(1)}]$；这是任务损失的平均梯度。希望沿 $A$ 指向的方向改进参数，获得更好任务性能。</li>
+<li>$B = \mathbb{E}_{\tau,0,1} [H^{(1)}_0 g_0^{(0)}] = \frac{1}{2}\mathbb{E}_{\tau,0,1} [H^{(1)}_0 g_0^{(0)} + H^{(0)}_0 g_0^{(1)}] = \frac{1}{2}\mathbb{E}_{\tau,0,1} [\nabla_\theta(g^{(0)}_0 g_0^{(1)})]$；这是增加同一任务两个不同小批次梯度内积的方向（梯度）。希望沿 $B$ 指向的方向改进参数，提高跨数据泛化。</li>
+</ul>
+<p>综上，梯度更新用前三个主要项近似时，MAML与 Reptile 优化相同目标：更好任务性能（A 指导）与更好泛化（B 指导）。</p>
+<div>
+$$
+\begin{aligned}
+\mathbb{E}_{\tau,1,2}[g_\text{FOMAML}] &= A - \alpha B + O(\alpha^2)\\
+\mathbb{E}_{\tau,1,2}[g_\text{MAML}] &= A - 2\alpha B + O(\alpha^2)\\
+\mathbb{E}_{\tau,1,2}[g_\text{Reptile}]  &= 2A - \alpha B + O(\alpha^2)
+\end{aligned}
+$$
+</div>
+<p>我不确定忽略的项 $O(\alpha^2)$ 是否对参数学习影响很大。但 FOMAML能达到与完整 MAML 相近性能，或许可以认为高阶导数在梯度下降更新中并非关键。</p>
+<hr>
+<p>引用格式：</p>
+<pre tabindex="0"><code>@article{weng2018metalearning,
+  title   = &#34;Meta-Learning: Learning to Learn Fast&#34;,
+  author  = &#34;Weng, Lilian&#34;,
+  journal = &#34;lilianweng.github.io&#34;,
+  year    = &#34;2018&#34;,
+  url     = &#34;https://lilianweng.github.io/posts/2018-11-30-meta-learning/&#34;
+}
+</code></pre><h1 id="reference">参考文献<a hidden class="anchor" aria-hidden="true" href="#reference">#</a></h1>
+<p>[1] Brenden M. Lake, Ruslan Salakhutdinov, and Joshua B. Tenenbaum. <a href="https://www.cs.cmu.edu/~rsalakhu/papers/LakeEtAl2015Science.pdf">“Human-level concept learning through probabilistic program induction.”</a> Science 350.6266 (2015): 1332-1338.</p>
+<p>[2] Oriol Vinyals 的演讲，主题为 <a href="http://metalearning-symposium.ml/files/vinyals.pdf">“Model vs Optimization Meta Learning”</a></p>
+<p>[3] Gregory Koch, Richard Zemel, and Ruslan Salakhutdinov. <a href="http://www.cs.toronto.edu/~rsalakhu/papers/oneshot1.pdf">“Siamese neural networks for one-shot image recognition.”</a> ICML 深度学习研讨会。 2015.</p>
+<p>[4] Oriol Vinyals, et al. <a href="http://papers.nips.cc/paper/6385-matching-networks-for-one-shot-learning.pdf">“Matching networks for one shot learning.”</a> NIPS. 2016.</p>
+<p>[5] Flood Sung, et al. <a href="http://openaccess.thecvf.com/content_cvpr_2018/papers_backup/Sung_Learning_to_Compare_CVPR_2018_paper.pdf">“Learning to compare: Relation network for few-shot learning.”</a> CVPR. 2018.</p>
+<p>[6] Jake Snell, Kevin Swersky, and Richard Zemel. <a href="http://papers.nips.cc/paper/6996-prototypical-networks-for-few-shot-learning.pdf">“Prototypical Networks for Few-shot Learning.”</a> CVPR. 2018.</p>
+<p>[7] Adam Santoro, et al. <a href="http://proceedings.mlr.press/v48/santoro16.pdf">“Meta-learning with memory-augmented neural networks.”</a> ICML. 2016.</p>
+<p>[8] Alex Graves, Greg Wayne, and Ivo Danihelka. <a href="https://arxiv.org/abs/1410.5401">“Neural turing machines.”</a> arXiv 预印本 arXiv:1410.5401 (2014).</p>
+<p>[9] Tsendsuren Munkhdalai and Hong Yu. <a href="https://arxiv.org/abs/1703.00837">“Meta Networks.”</a> ICML. 2017.</p>
+<p>[10] Sachin Ravi and Hugo Larochelle. <a href="https://openreview.net/pdf?id=rJY0-Kcll">“Optimization as a Model for Few-Shot Learning.”</a> ICLR. 2017.</p>
+<p>[11] Chelsea Finn 的 BAIR 博客文章，主题为 <a href="https://bair.berkeley.edu/blog/2017/07/18/learning-to-learn/">“Learning to Learn”</a>.</p>
+<p>[12] Chelsea Finn, Pieter Abbeel, and Sergey Levine. <a href="https://arxiv.org/abs/1703.03400">“Model-agnostic meta-learning for fast adaptation of deep networks.”</a> ICML 2017.</p>
+<p>[13] Alex Nichol, Joshua Achiam, John Schulman. <a href="https://arxiv.org/abs/1803.02999">“On First-Order Meta-Learning Algorithms.”</a> arXiv 预印本 arXiv:1803.02999 (2018).</p>
+<p>[14] <a href="https://www.slideshare.net/YoonhoLee4/on-firstorder-metalearning-algorithms">关于 Reptile 的幻灯片</a> 作者 Yoonho Lee。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://xingshuozhu1998.github.io/tags/meta-learning/">Meta-Learning（元学习）</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/long-read/">长文</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/">
+    <span class="title">« </span>
+    <br>
+    <span>目标检测（四）：快速检测模型</span>
+  </a>
+  <a class="next" href="https://xingshuozhu1998.github.io/posts/2018-10-13-flow-models/">
+    <span class="title"> »</span>
+    <br>
+    <span>基于流的深度生成模型</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Twitter 分享《Meta-Learning（元学习）：快速学会学习》"
+        href="https://twitter.com/intent/tweet/?text=Meta-Learning%3a%20Learning%20to%20Learn%20Fast&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-11-30-meta-learning%2f&amp;hashtags=meta-learning%2clong-read">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 LinkedIn 分享《Meta-Learning（元学习）：快速学会学习》"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-11-30-meta-learning%2f&amp;title=Meta-Learning%3a%20Learning%20to%20Learn%20Fast&amp;summary=Meta-Learning%3a%20Learning%20to%20Learn%20Fast&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-11-30-meta-learning%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Reddit 分享《Meta-Learning（元学习）：快速学会学习》"
+        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-11-30-meta-learning%2f&title=Meta-Learning%3a%20Learning%20to%20Learn%20Fast">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Facebook 分享《Meta-Learning（元学习）：快速学会学习》"
+        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-11-30-meta-learning%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 WhatsApp 分享《Meta-Learning（元学习）：快速学会学习》"
+        href="https://api.whatsapp.com/send?text=Meta-Learning%3a%20Learning%20to%20Learn%20Fast%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-11-30-meta-learning%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Telegram 分享《Meta-Learning（元学习）：快速学会学习》"
+        href="https://telegram.me/share/url?text=Meta-Learning%3a%20Learning%20to%20Learn%20Fast&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-11-30-meta-learning%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

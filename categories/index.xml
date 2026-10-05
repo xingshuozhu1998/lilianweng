@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · categories</title>
+    <link>https://xingshuozhu1998.github.io/categories/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><ns0:link href="https://xingshuozhu1998.github.io/categories/index.xml" rel="self" type="application/rss+xml" />
+  </channel>
+</rss>

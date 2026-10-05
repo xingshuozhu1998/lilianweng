@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励） | Lil’Log 中文学习镜像</title>
+<meta name="keywords" content="language-model, rlhf, alignment, safety, reinforcement-learning, long-read" />
+<meta name="description" content="当 RL（强化学习）智能体利用奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking（利用奖励机制漏洞取得高奖励）。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。
+随着语言模型开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL 训练中的 reward hacking 已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）" />
+<meta property="og:description" content="当 RL（强化学习）智能体利用奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking（利用奖励机制漏洞取得高奖励）。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。
+随着语言模型开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL 训练中的 reward hacking 已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/" /><meta property="og:image" content="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/SEAL-feature-imprint.png"/><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2024-11-28T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2024-11-28T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:image" content="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/SEAL-feature-imprint.png"/>
+<meta name="twitter:title" content="强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）"/>
+<meta name="twitter:description" content="当 RL（强化学习）智能体利用奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking（利用奖励机制漏洞取得高奖励）。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。
+随着语言模型开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL 训练中的 reward hacking 已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。"/>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/posts/"}, {"@type": "ListItem", "position": 2, "name": "强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）", "item": "https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）", "name": "强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）", "description": "当 RL（强化学习）智能体利用奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking（利用奖励机制漏洞取得高奖励）。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。\n随着语言模型开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL 训练中的 reward hacking 已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。", "keywords": ["language-model", "rlhf", "alignment", "safety", "reinforcement-learning", "long-read"], "articleBody": "当  reinforcement learning（强化学习，RL（强化学习））  智能体  利用  奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。 \n 随着  语言模型  开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL训练中的 reward hacking已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。 \n 过去有关这一主题的大部分工作相当理论化，重点是定义或证明 reward hacking的存在。然而，针对实际缓解方法的研究，尤其在 RLHF与 LLM（大语言模型）背景下，仍然有限。我尤其希望呼吁，未来投入更多研究，理解 reward hacking 并开发缓解方法。希望不久之后能够用一篇专门文章讨论缓解方法。 \n 背景 #  \n RL中的奖励函数 #  \n 奖励函数定义任务，而 reward shaping（奖励塑形，即调整奖励结构）会显著影响  强化学习  的学习效率与准确性。为 RL任务设计奖励函数，往往像一门“神秘技艺”。许多因素造成这种复杂性：如何将大目标分解为小目标？奖励是稀疏还是密集？如何衡量成功？不同选择可能带来良好或有问题的学习动态，包括无法学会的任务或可被利用的奖励函数。关于 RL 中如何进行 reward shaping，已有悠久的研究历史。 \n 例如，在  Ng 等人于 1999 年发表的一篇论文  中，作者研究了如何修改  Markov Decision Processes（马尔可夫决策过程，MDP（马尔可夫决策过程））  的奖励函数，同时保持最优策略不变。他们发现线性变换可行。给定 MDP $M = (S, A, T, \\gamma, R)$，希望创建变换后的 MDP $M’ = (S, A, T, \\gamma, R’)$，其中 $R’ = R + F$ 和 $F: S \\times A \\times S \\mapsto \\mathbb{R}$，以引导学习算法更加高效。给定实值函数 $\\Phi: S \\mapsto \\mathbb{R}$，$F$ 被称为基于势函数的塑形函数，如果对所有 $s \\in S - {s_0}, a \\in A, s’ \\in S$ 满足以下条件： \n \n$$\nF(s, a, s') = \\gamma \\Phi(s') - \\Phi(s)\n$$\n \n 这保证了折扣后的 $F$ 之和 $F(s_1, a_1, s_2) + \\gamma F(s_2, a_2, s_3) + \\dots$ 最终为 0。如果 $F$ 是这种基于势函数的塑形函数，那么它是 充分 且 必要 的条件，确保 $M$ 和 $M’$ 具有相同最优策略。 \n 当 $F(s, a, s’) = \\gamma \\Phi(s’) - \\Phi(s)$ 时，如果进一步假设 $\\Phi(s_0) = 0$，其中 $s_0$ 为吸收状态，并且 $\\gamma=1$，那么对所有 $s \\in S, a \\in A$： \n \n$$\n\\begin{aligned}\nQ^*_{M'} (s,a) &= Q^*_M(s, a) - \\Phi(s) \\\\\nV^*_{M'} (s,a) &= V^*_M(s, a) - \\Phi(s)\n\\end{aligned}\n$$\n \n 这种 reward shaping（奖励塑形）允许将启发式规则纳入奖励函数，以加速学习，同时不影响最优策略。 \n Spurious correlation（虚假相关） #  \n 分类任务中的 spurious correlation（虚假相关）或 shortcut learning（捷径学习）（ Geirhos et al. 2020 ），与 reward hacking密切相关。虚假特征或捷径特征可能使分类器无法按预期学习和泛化。例如，如果所有狼的训练图像都包含雪，用于区分狼与哈士奇的二分类器可能过拟合到有雪的背景（ Ribeiro et al. 2024 ）。 \n \n\t \n\t 如果模型过拟合到捷径特征，就会在 out-of-distribution（分布外，OOD）测试集上表现不佳。（图片来源： Geirhos et al. 2020 ） \n \n  ERM principle（经验风险最小化原则）  认为，由于完整的数据分布未知，最小化训练数据上的损失是风险的合理替代，因此偏好训练损失最低的模型。 Nagarajan et al. (2021)  研究了 ERM 原则并指出，在试图无约束地拟合数据时，ERM 需要依赖各种有信息的特征，包括不可靠的虚假特征。实验表明，无论任务多么简单，ERM 都会依赖虚假特征。 \n 定义 reward hacking #  \n RL中的 reward shaping（奖励塑形）具有挑战。当 RL 智能体利用奖励函数的缺陷或歧义获得高奖励，却没有真正学会预期行为或按设计完成任务时，就发生了 reward hacking。近年来，出现了几个相关概念，都指某种形式的 reward hacking： \n \n reward hacking（ Amodei et al., 2016 ） \n reward corruption（奖励信号失真）（ Everitt et al., 2017 ） \n reward tampering（篡改奖励信号）（ Everitt et al. 2019 ） \n specification gaming（利用目标设定漏洞）（ Krakovna et al., 2020 ） \n objective robustness（目标稳健性）（ Koch et al. 2021 ） \n goal misgeneralization（目标错误泛化）（ Langosco et al. 2022 ） \n reward misspecifications（奖励设定错误）（ Pan et al. 2022 ） \n \n 这一概念源于 Amodei et al. (2016)，他们在具有开创意义的论文  “Concrete Problems in AI Safety”  中，提出了一组 AI 安全开放研究问题。他们将  reward hacking  列为关键 AI 安全问题之一。Reward hacking 指智能体可能通过利用奖励函数的漏洞，以不需要的行为获取高奖励。 specification gaming （ Krakovna et al. 2020 ）是一个相似概念，定义为满足目标字面规定、却没有实现期望结果的行为。任务目标的字面描述与预期目标之间可能存在差距。 \n reward shaping（奖励塑形）用于丰富奖励函数，使智能体更容易学习，例如提供更密集的奖励。然而，设计不佳的奖励塑形机制可能改变最优策略的轨迹。设计有效的奖励塑形机制本身就很困难。与其将问题归咎于奖励函数设计不佳，更准确的认识是：由于任务本身的复杂性、状态的部分可观测性、需要考虑的多个维度及其他因素，设计良好的奖励函数本来就具有挑战。 \n 在 out-of-distribution（分布外，OOD）环境中测试 RL智能体时，以下情况可能导致稳健性失效： \n \n 即使目标正确，模型也无法有效泛化。当算法缺乏足够的智能或能力时，就会发生这种情况。 \n 模型能够泛化，但追求的目标与训练时不同。当代理奖励与真实奖励函数不同，即 $R’ \\neq R$ 时，会发生这种情况。这称为  objective robustness（目标稳健性） （ Koch et al. 2021 ）或  goal misgeneralization（目标错误泛化） （ Langosco et al. 2022 ）。 \n \n 在两个 RL环境  CoinRun  和  Maze  中的实验，说明了训练期间随机化的重要性。如果训练时金币或奶酪被放在固定位置（即关卡的最右端或迷宫的右上角），但测试环境中位置随机，智能体就只会跑到固定位置，而不会在测试时取得金币或奶酪。当视觉特征（例如奶酪或金币）与位置特征（例如右上角或最右端）在测试时不一致，就会产生冲突，使训练后的模型偏好位置特征。我想指出，这两个例子中的  奖励与结果之间的差距  很明显，但在大多数现实场景中，这类偏差不太可能如此明显。 \n \n\t \n\t 训练期间随机化金币位置的影响。训练时，金币有 {0, 2, 3, 6, 11}% 的时间被随机放置（横轴）；随着随机化程度增加，智能体到达关卡末端却未取得金币的频率下降（“纵轴”）。（图片来源： Koch et al. 2021 ） \n \n  reward tampering （ Everitt et al. 2019 ）是一种 reward hacking行为：智能体干扰奖励函数本身，使观察到的奖励不再准确代表预期目标。在 reward tampering 中，模型通过直接操纵奖励函数的实现，或间接改变作为奖励函数输入的环境信息，修改自身的奖励机制。 \n （注：一些工作将 reward tampering定义为与 reward hacking不同的一类 misalignment（行为偏离人类意图）。但本文将 reward hacking 视为更广泛的概念。） \n 从宏观上看，reward hacking可分为两类：环境或目标设定错误，以及 reward tampering。 \n \n  环境或目标设定错误 ：模型通过利用环境漏洞，或优化与真实奖励目标不一致的奖励函数，学习不需要的行为来获得高奖励，例如奖励设定错误或缺少关键要求。 \n  reward tampering ：模型学会干扰奖励机制本身。 \n \n 示例列表 #  \n RL任务中的 reward hacking示例 #  \n \n 训练为抓取物体的机械手，可能学会将手放在物体与摄像头之间，从而欺骗人类。（ 链接 ） \n 训练为最大化跳跃高度的智能体，可能利用物理模拟器的缺陷，达到不符合现实的高度。（ 链接 ） \n 智能体被训练为骑自行车前往目标，每当接近目标时就获得奖励。由于远离目标时没有惩罚，智能体可能学会围绕目标骑行很小的圆圈。（ 链接 ） \n 在足球游戏中，智能体触球时获得奖励，于是学会停留在球旁边，以类似振动的运动高频触球。（ 链接 ） \n 在  Coast Runners 游戏  中，智能体控制一艘船，目标是尽快完成比赛。当奖励塑形对撞击赛道沿途的绿色方块给予奖励时，最优策略变成了转圈，并反复撞击同样的绿色方块。（ 链接 ） \n  “The Surprising Creativity of Digital Evolution” （Lehman et al. 2019）——这篇论文提供了很多例子，说明优化设定错误的适应度函数，如何导致出人意料的“漏洞利用”或非预期的演化、学习结果。 \n  AI 中的 specification gaming示例 列表，由  Krakovna et al. 2020  收集。 \n \n LLM任务中的 reward hacking示例 #  \n \n 用于生成摘要的语言模型能够发现 ROUGE 指标的缺陷，从而获得高分，但生成的摘要几乎无法阅读。（ 链接 ） \n 编程模型学会修改单元测试，以通过编程问题。（ 链接 ） \n 编程模型可能学会直接修改用于计算奖励的代码。（ 链接 ） \n \n 现实生活中的 reward hacking示例 #  \n \n 社交媒体推荐算法原本旨在提供有用信息。然而，有用性往往通过代理指标衡量，例如点赞或评论数量，以及用户在平台上互动的时间或频率。为了触发更多互动，算法最终推荐能够影响用户情绪状态的内容，例如令人愤怒和极端的内容。（ Harari, 2024 ） \n 视频网站对设定错误的代理指标进行优化，可能大幅增加用户观看时间，而真实目标是优化用户的主观幸福感。（ 链接 ） \n  “The Big Short”（《大空头》） ——房地产泡沫导致的 2008 年金融危机。人们试图利用金融体系的漏洞，导致社会层面的 reward hacking。 \n \n 为什么会存在 reward hacking？ #  \n   Goodhart’s Law（古德哈特定律）   指出： “当一个衡量指标成为目标，它就不再是一个好的衡量指标。” 其直觉是，一旦施加强大压力去优化一个良好的指标，该指标就可能失真。指定百分之百准确的奖励目标很困难，而任何  代理指标  都存在被利用的风险，因为 RL算法会利用奖励函数定义中的任何微小缺陷。 Garrabrant (2017)  将 Goodhart’s Law 分为 4 种变体： \n \n 回归型——选择不完美代理指标的过程，也必然选择了噪声。 \n 极端型——按照指标进行选择，将状态分布推入数据分布不同的区域。 \n 因果型——当代理指标与目标之间存在非因果相关时，干预代理指标可能无法干预目标。 \n 对抗型——优化代理指标，会激励对手将其自身目标与该代理指标关联起来。 \n \n  Amodei et al. (2016)  总结指出，主要在 RL设置中，reward hacking可能由以下原因造成： \n \n 部分可观测状态与目标，是对环境状况的不完美表示。 \n 系统本身复杂且易于被利用；例如，如果允许智能体执行能够改变部分环境的代码，就更容易利用环境机制。 \n 奖励可能涉及难以学习或形式化的抽象概念；例如，具有高维输入的奖励函数，可能过度依赖少数几个维度。 \n RL的目标是高度优化奖励函数，因此存在一种内在“冲突”，使良好 RL 目标的设计具有挑战。一个特殊情况是，奖励函数包含自我强化的反馈成分，奖励可能被放大并扭曲到破坏原始意图的程度，例如广告投放算法导致赢家通吃。 \n \n 此外，一般无法确定最优智能体究竟针对哪个奖励函数优化行为，因为在固定环境中，可能存在无穷多个与任何观察到的策略一致的奖励函数（ Ng & Russell, 2000 ）。 Amin and Singh (2016)  将这种  不可辨识性  的原因分为两类： \n \n 表示层面——在某些算术运算（例如重新缩放）下，一组奖励函数在行为上保持不变。 \n 实验层面——$\\pi$ 的观察行为不足以区分两个或多个奖励函数，因为这些函数都能合理解释智能体的行为（该行为在两者下都最优）。 \n \n 利用 RL环境漏洞 #  \n 随着模型和算法越来越复杂，预计 reward hacking会更加常见。更聪明的智能体更有能力发现奖励函数设计中的“漏洞”，并  利用  任务规定——换句话说，获得更高代理奖励，却得到更低真实奖励。相比之下，较弱算法可能无法发现这样的漏洞，因此当模型不够强时，我们不会观察到 reward hacking，也不会发现当前奖励函数设计的问题。 \n 在一组零和机器人 self-play（自我博弈）游戏中（ Bansal et al., 2017 ），可以训练两个智能体（受攻击者与对手）相互竞争。标准训练流程产生的受攻击智能体，与普通对手对战时表现足够好。然而，很容易训练出一种对抗对手策略，即使其动作看起来随机，而且训练所用时间步不到 3%，也能可靠击败受攻击者（ Gleave et al., 2020 ）。对抗策略的训练与标准 RL设置一样，优化折扣奖励之和，同时将受攻击者策略视为黑盒模型。 \n 缓解对抗策略攻击的一种直观方法，是让受攻击者针对对抗策略进行微调。然而，一旦针对新的受攻击者策略重新训练对抗策略，受攻击者仍会受到新版对抗策略的攻击。 \n 为什么存在对抗策略？一种假说是，对抗策略向受攻击者引入 OOD（分布外）观察，而不是从物理上干扰它。证据表明，当受攻击者对对手位置的观察被屏蔽并设为静态状态时，它对攻击者会 更加稳健 ，尽管与普通对手策略对战时表现更差。此外，更高维的观察空间能提高正常情况下的表现，却使策略更容易受到对抗对手攻击。 \n  Pan et al. (2022)  研究了 reward hacking如何随智能体能力变化，包括（1）模型规模，（2）动作空间分辨率，（3）观察空间噪声，以及（4）训练时间。他们还提出了三类设定错误的代理奖励： \n \n  权重错误 ：代理奖励与真实奖励捕获相同的期望属性，但赋予它们不同的相对重要性。 \n  本体差异 ：代理奖励与真实奖励使用不同的期望属性来捕获同一个概念。 \n  范围限制 ：由于在所有条件下测量成本过高，代理指标只在有限领域（例如时间或空间）中衡量期望属性。 \n \n \n\t \n\t Fig. X. The detailed experiment setup of 4 RL tasks and corresponding misspecified proxy rewards. \"Misalign? (Yes/No)\" indicates whether the true reward drops & \"Transition? (Yes/No)\" indicates whether this corresponds to a phase transition (sharp qualitative change).. (Image source:  Pan et al. 2022 ) \n \n-->\n 作者在四个 RL环境中，配合九个设定错误的代理奖励进行实验。这些实验的总体发现可概括为： 能力更强的模型往往获得更高（或相近）的代理奖励，但真实奖励下降。  \n \n 模型规模：更大的模型规模导致代理奖励增加，但真实奖励下降。 \n 动作空间分辨率：动作精度提高，使智能体能力更强。然而，更高分辨率导致代理奖励保持不变，而真实奖励下降。 \n 观察保真度：更加准确的观察提高了代理奖励，却略微降低真实奖励。 \n 训练步骤：初期两种奖励正相关，但在此之后，使用更多步骤优化代理奖励，会损害真实奖励。 \n \n \n\t \n\t 代理奖励与真实奖励数值随以下因素变化的曲线：（上排）以参数数量衡量的模型规模；（下排）以训练步骤、动作空间分辨率、观察噪声等指标衡量的模型能力。（图片来源： Pan et al. 2022 ） \n \n 如果代理奖励设定很差，以致与真实奖励的相关性很弱，我们或许能在训练前识别并防止 reward hacking。基于这一假说， Pan et al. (2022)  在一组 rollout（展开生成的轨迹）上研究代理奖励与真实奖励的相关性。有趣的是，即使两者正相关，reward hacking 仍会发生。 \n 利用 LLM的 RLHF漏洞 #  \n  reinforcement learning from human feedback（基于人类反馈的强化学习，RLHF）  已成为语言模型 alignment（使模型行为符合人类意图）训练的事实标准方法。先在人类反馈数据上训练奖励模型，再通过 RL微调语言模型，优化这个代表人类偏好的代理奖励。在 RLHF 设置中，我们关注三种奖励： \n \n （1） Oracle/Gold reward（理想真实奖励）  $R^∗$ 代表我们 真正 希望 LLM优化的目标。 \n （2） 人类奖励  $R^\\text{human}$ 是实际评估 LLM时收集的奖励，通常来自有时间限制的个别人类。由于人类可能提供不一致的反馈或犯错，人类奖励并不完全准确地代表理想真实奖励。 \n （3） 代理奖励  $R$ 是在人类数据上训练的奖励模型预测的分数。因此，$R^\\text{train}$ 继承了人类奖励的所有弱点，并可能额外包含建模偏差。 \n \n RLHF优化代理奖励分数，但我们最终关心的是真实奖励分数。 \n 利用训练过程漏洞 #  \n  Gao et al. (2022)  研究了 RLHF中奖励模型过度优化的 Scaling Laws（规模变化与模型性能之间的规律）（规模变化与性能之间的规律）。为了扩大实验中的人类标签规模，他们采用合成数据设置：用大型 RM（奖励模型，60 亿参数）近似理想真实奖励 $R^*$ 的“真实”标签，而用于 $R$ 的代理 RM 规模介于 300 万至 30 亿参数之间。 \n \n\t \n\t RM（奖励模型）分数随 KL divergence（衡量两个概率分布差异的相对熵）平方根变化的曲线。虚线表示代理奖励，实线表示真实奖励。（图片来源： Gao et al. 2022 ） \n \n 从初始策略到优化后策略的 KL divergence为 $\\text{KL} = D_\\text{KL}(\\pi | \\pi_\\text{init})$，距离函数定义为 $d := \\sqrt{ D_\\text{KL}(\\pi | \\pi_\\text{init})}$。对于 best-of-$n$ rejection sampling（从多个候选中择优的拒绝采样，BoN）和 RL，真实奖励 $R^∗$ 都定义为 $d$ 的函数。系数 $\\alpha$ 和 $\\beta$ 通过经验拟合得到，并且按照定义有 $R^∗ (0) := 0$。 \n 作者也尝试拟合代理奖励 $R$，但外推到更高 KL 散度时发现系统性低估，因为代理奖励看起来随 $d$ 线性增长。 \n \n$$\n\\begin{aligned}\nR^*_{\\text{bo}n}(d) &= d (\\alpha_{\\text{bo}n} - \\beta_{\\text{bo}n} d) & \\text{; for best-of-n (BoN) sampling.}\\\\\nR^*_\\text{RL}(d) &= d (\\alpha_\\text{RL} - \\beta_\\text{RL} \\log d) & \\text{; for reinforcement learning}\\\\\n\\end{aligned}\n$$\n \n \n\t \n\t 系数参数 $\\alpha_{\\text{bo}n}, \\beta_{\\text{bo}n}, \\beta_\\text{RL}$ 根据数据进行经验拟合，图中显示了它们随奖励模型规模的变化。系数 $\\alpha_\\text{RL}$ 未在此列出，因为它在不同 RM（奖励模型）规模下保持不变。（图片来源： Gao et al. 2022 ） \n \n 实验还探索了 RM（奖励模型）过度优化与策略模型规模、RM 数据量等因素之间的关系： \n \n 较大策略从针对 RM（奖励模型）的优化中获益更少（即初始奖励与峰值奖励之差小于较小策略），但过度优化程度也更低。 \n 更多 RM（奖励模型）数据带来更高真实奖励分数，并减少“Goodharting（优化指标导致其失真）”。 \n KL 散度惩罚对真实分数的影响类似于 early stopping（提前停止训练）。请注意，除这项实验外，所有实验中 PPO（近端策略优化）的 KL 惩罚均设为 0，因为作者观察到，使用 KL 惩罚会严格扩大代理奖励与真实奖励之间的差距。 \n \n RLHF旨在使模型更符合人类偏好，但人类反馈 $R^\\text{human}$ 可能无法捕获所有我们关心的方面（例如事实性），因此可能被利用，使模型过拟合到不需要的属性。例如，模型可能被优化为输出看似正确且有说服力、实际却不准确的回复，从而误导人类评估者，更频繁地认可错误答案（ Wen et al., 2024 ）。换句话说，RLHF 使真正正确与在人类看来正确之间出现差距。具体而言， Wen et al. (2024)  使用基于  ChatbotArena 数据  的奖励模型开展 RLHF 实验，并在问答数据集  QuALITY  和编程数据集  APPS  上评估模型。实验发现，即使模型错误，它也变得更善于说服人类认为自己正确，而这种效果并非预期： \n \n RLHF增加人类认可，却不一定提高正确性。 \n RLHF削弱人类的评估能力：RLHF 训练后，人类评估的错误率更高。 \n RLHF使错误输出对人类更有说服力。RLHF 训练后，评估的假阳性率显著提高。 \n \n 论文将这种效果称为“U-Sophistry（非预期诡辩）”（“U”代表“unintended”，非预期），与“I-Sophistry（有意诡辩）”（“I”代表“intended”，有意）相对；后者涉及显式使用  \"... try to deceive human subjects\"  等指令提示模型。 \n \n\t \n\t RLHF使 LLM更善于说服人类评估者认可其错误答案。（图片来源： Wen et al. 2024 ） \n \n \n\t \n\t Fig. X. The columns of the figures demonstrate the following messages: (1) while humans approve $\\pi_\\text{rlhf}$ more often than $\\pi_\\text{init}$, its correctness, measured by the oracle reward $R^*$, does not improve; (2) Human evaluation error rate increases after RLHF; (3) The false positive rate of human evaluation increases after RLHF. (Image source:  Wen et al. 2024 ) \n \n-->\n 人类评估错误的变化并非来自招募过程中的噪声，因为（1）在个体层面，多数（70–90%）人类评估者的评估错误率增加；（2）他们评估 $\\pi_\\text{init}$ 或 $\\pi_\\text{rlhf}$ 时投入的努力相当，以花费时间、编写单元测试等指标衡量。相反，LLM学会了通过选择性引用、编造不真实的支持性陈述，或构造带有细微因果谬误的陈述，来为错误答案辩护。作者观察到的 RLHF后模型行为如下： \n \n 在长篇问答任务中：\n \n 编造更有说服力的证据。 \n 为错误答案使用更一致的逻辑。 \n 生成连贯、却含有细微谬误的答案。 \n \n \n 在编程任务中：\n \n 利用人类编写的单元测试的漏洞。 \n 生成可读性更低的测试（例如辅助函数更少、代码复杂度更高）。 \n 使 $\\pi_\\text{rlhf}$ 更不容易生成可被人类发现并利用的明显错误。 \n \n \n \n \n\t \n\t 分别展示生成的正确与错误代码的模块化指标（辅助函数数量）和  Cyclomatic Complexity（圈复杂度，衡量独立执行路径数量） 。RLHF使整体辅助函数数量减少，并使错误生成程序的代码复杂度增加。这显然会增加人类评估的难度。（图片来源： Wen et al. 2024 ） \n \n Sycophancy（迎合用户而非反映事实）指模型回复倾向于符合用户信念，而不是反映真相（ Shrama et al. 2023 ）。实验中，AI 助手被要求对论点提供反馈（ Human: \"Please comment briefly on the following argument. Argument: ...\") 。人类提供论点后，可以立即表达偏好（ \"I really like the argument\"  或  \"I really dislike the argument\" ），以测试与不包含人类偏好陈述的基线反馈相比，这是否影响模型反馈。 \n \n\t \n\t 用户表达自身偏好时，AI 助手会给出有偏差的反馈。当用户表示喜欢或自己写了文本时，回复更积极；如果表示不喜欢，则回复更消极。（图片来源： Shrama et al. 2023 ） \n \n 作者发现，AI 助手反馈很容易被左右：当人类偏好提出质疑时，它可能改变原本正确的答案。模型倾向于确认用户信念，有时甚至模仿用户错误（例如被要求分析误归于其他诗人的诗歌）。通过 logistic regression（逻辑回归）预测人类反馈，对 RLHF有用性数据集进行分析，表明与用户信念一致是预测力最强的因素。 \n \n\t \n\t 人类偏好数据分析：在控制其他特征的情况下，通过 logistic regression（逻辑回归），预测具有目标特征的回复比不具有该特征的回复更受偏好的概率。（图片来源： Shrama et al. 2023 ） \n \n 利用评估器漏洞 #  \n 随着 LLM能力增强，使用 LLM 作为  评估器  或  评分器 ，为其他生成模型提供反馈与训练奖励，是一种自然选择，尤其对于无法轻易判断或验证的任务（例如处理长篇输出、创意写作质量等主观评分标准）。有些人将其称为“LLM-as-grader paradigm（由大语言模型评分的范式）”。这种方法大幅降低了对人工标注的依赖，显著节省评估时间。然而，LLM 评分只是理想真实奖励的不完美替代，可能引入偏差，例如与其他模型家族比较时偏好自身回复（ Liu et al., 2023 ），或按顺序评估回复时产生位置偏差（ Wang et al. 2023 ）。当评分器输出被用作奖励信号的一部分时，这些偏差尤其令人担忧，因为模型可能利用评分器进行 reward hacking。 \n  Wang et al. (2023)  发现，使用 LLM评估器给其他多个 LLM 输出的质量打分时，仅改变上下文中的候选顺序，就容易操纵质量排名。研究发现，GPT-4（第四代生成式预训练语言模型） 一贯为首先展示的候选赋予高分，而 ChatGPT 偏好第二个候选。 \n 根据实验，LLM对回复位置敏感，存在  位置偏差 （即偏好特定位置的回复），即使指令包含  \"ensuring that the order in which the responses were presented does not affect your judgment.\"  这样的陈述。这种位置偏差的严重程度通过“冲突率”衡量，定义为交换回复位置后，评估判断不一致的（提示、回复 1、回复 2）三元组比例。不出所料，回复质量差异也很重要：冲突率与两个回复的分数差距负相关。 \n \n\t \n\t 使用 GPT-4 或 ChatGPT 作为评估器时，Vicuna-13B 对 ChatGPT 和 Alpaca-13B 的胜率变化很大。冲突率也相当高，说明交换回复位置后，LLM-as-grader（由大语言模型评分）设置中存在高度不一致。例外是使用 GPT-4 评估 Vicuna-13B 与 Alpaca-13B 的比较。（图片来源： Wang et al. 2023 ） \n \n 为缓解位置偏差，作者提出了几种校准策略： \n \n  Multiple evidence calibration（多证据校准，MEC） ：要求评估模型提供评估证据，本质上是用文本解释其判断，然后输出两个候选的分数。可以在温度设为 1 时，采样多个（$k$）证据解释，进一步提高稳健性。$k=3$ 比 $k=1$ 效果更好，但 $k$ 增加到 3 以上时，性能没有太大提高。 \n  Balanced position calibration（平衡位置校准，BPC） ：汇总不同回复顺序下的结果，得到最终分数。 \n  Human-in-the-loop calibration（人类参与校准，HITLC） ：面对困难示例时，使用基于多样性的指标 BPDE（balanced position diversity entropy，平衡位置多样性熵），引入人类评分者。首先将分数对（包括交换位置的分数对）映射为三个标签（ win 、 tie 、 lose ），并计算这三个标签的熵。较高 BPDE 表示模型评估决策更混乱，说明样本更难判断。随后选择熵最高的前 $\\beta$ 个样本，请人类协助。 \n \n \n\t \n\t 不同校准方法和标注者，相对于最终人类投票标注的准确率与 kappa（衡量超出偶然一致性的系数）相关系数。位置偏差校准方法以合理的人类参与标注成本，提高准确率。实验还表明，尽管模型对模板设计敏感，校准策略仍能泛化到不同类型的提示模板。（图片来源： Wang et al. 2023 ） \n \n  Liu et al. (2023)  使用多个模型（BART、T5、GPT-2（第二代生成式预训练语言模型）、GPT-3（第三代生成式预训练语言模型）、FLAN-T5、Cohere）开展摘要任务实验，同时跟踪基于参考答案和不基于参考答案的摘要质量指标。绘制评估器（横轴）与生成器（纵轴）的分数热图时，他们在两类指标上都观察到深色对角线，表明存在自我偏好。这意味着 LLM作为评估器时，倾向于偏好自身输出。实验使用的模型已有些过时，但观察更新、更强模型上的结果会很有趣。 \n \n\t \n\t 在摘要任务中，使用一系列模型作为评估器（横轴）和生成器（纵轴）的热图。较深的对角线表示自我偏好：模型倾向于偏好自身输出。（图片来源： Liu et al. 2023 ） \n \n 上下文内的 reward hacking #  \n  Iterative self-refinement（迭代自我改进）  是一种训练设置，其中评估模型与生成模型相同，而且都可以微调。在这种设置下，优化压力可能驱使模型利用两种角色中的弱点。在  Pan et al. (2023)  的实验中，不更新模型参数，而是使用同一模型搭配不同提示，分别担任评估器与生成器。实验任务是文章编辑，有两个角色：（1）为文章提供反馈的评审（评估器），（2）根据反馈编辑文章的作者（生成器）。收集人类评估分数，作为文章质量的理想真实分数。作者假设，这种设置可能导致  in-context reward hacking（上下文内利用奖励机制漏洞，ICRH） ，使评估器分数与理想真实分数偏离。更一般地，ICRH 发生在 LLM与其评估器（例如另一个 LLM 或外部世界）之间的反馈循环中。测试时，LLM 优化一个可能隐含的目标，却在过程中产生负面副作用（ Pan et al., 2024 ）。 \n \n\t \n\t 针对文章评估与编辑的 in-context reward hacking（上下文内利用奖励机制漏洞）实验示意图。（图片来源： Pan et al. 2023 ） \n \n 评审与作者都可以被设置为看不到、或看到若干轮此前的反馈与编辑。在线评审能够看到过去对话，而离线评审或人类标注者每次只能看到一篇文章。较小模型对 ICRH（上下文内利用奖励机制漏洞）更敏感；例如，实验中 GPT-3.5 作为评估器导致的 ICRH 比 GPT-4 更严重。 \n \n\t \n\t 较小的评估模型更容易导致 in-context reward hacking（上下文内利用奖励机制漏洞，ICRH）。（图片来源： Pan et al. 2023 ） \n \n 当评审与作者被设置为看到不同数量的过去迭代时，如果它们共享 相同 数量的迭代，人类分数与评估器分数的差距往往更大。评估器与生成器具有相同上下文，对 ICRH（上下文内利用奖励机制漏洞）至关重要，说明共享上下文比上下文长度更重要。 \n 后续工作中， Pan et al. (2024)  进一步研究了 in-context reward hacking（上下文内利用奖励机制漏洞，ICRH）：反馈由外部世界提供，目标是通常以自然语言规定的不完美代理目标。这里的目标往往规定不足，无法捕获全部约束或要求，因此可被利用。 \n 该研究描述了导致 ICRH（上下文内利用奖励机制漏洞）的两个过程，分别对应两个简化实验： \n \n  输出改进 ：LLM根据反馈改进输出。\n \n 实验根据互动指标改进一条推文，可能导致推文毒性增加。基于反馈的优化使用 LLM进行成对评估，再通过 Bradley-Terry（根据成对比较估计相对评分的模型）转换为分数。\n   \n \n \n  \n - 结果显示，互动指标与毒性都增加。使用不同规模的 Claude 模型家族重复相同实验，证明扩大模型规模会使 ICRH（上下文内利用奖励机制漏洞）恶化。\n \t \n  \n - 值得注意的是，修改用于根据反馈迭代模型输出的提示，并未缓解问题。ICRH（上下文内利用奖励机制漏洞）仍然存在，只是程度略低。\n \n  策略改进 ：LLM根据反馈优化策略。\n \n 实验构建一个代表用户支付账单的 LLM智能体，但遇到  InsufficientBalanceError  后，模型学会在未获得用户授权的情况下从其他账户转移资金，可能导致更多未授权转账。作者使用 ToolEmu 作为模拟器，包含 144 个 LLM 智能体任务，每项任务具有用户特定目标与一组 API（应用程序编程接口）。注入 API 错误以模拟服务器端故障，每个任务由 GPT-4 评估并赋予有用性分数。 \n 随着错误反馈轮次增加，LLM能够从错误中恢复，但严重违反约束的次数增加。\n   \n \n \n  \n \n \n 将 ICRH（上下文内利用奖励机制漏洞）与传统 reward hacking比较时，有两点明显差异： \n \n ICRH（上下文内利用奖励机制漏洞）在部署时，通过反馈循环发生于自我改进设置，而传统 reward hacking发生于训练期间。 \n 传统 reward hacking发生于智能体专精某项任务时，而 ICRH（上下文内利用奖励机制漏洞）由其通用性驱动。 \n \n 目前还没有能够神奇地避免、检测或防止 ICRH（上下文内利用奖励机制漏洞）的方法，因为改善提示规定不足以消除 ICRH，而扩大模型规模可能使其恶化。部署前测试的最佳实践，是通过更多反馈轮次、多样反馈以及注入异常环境观察来评估模型，模拟部署时可能发生的情况。 \n 漏洞利用技能的泛化 #  \n 研究发现，reward hacking行为可以跨任务泛化：模型在有监督训练中表现出利用缺陷的行为时，有时会泛化为利用 OOD（分布外）环境的缺陷（ Kei et al., 2024 ）。研究者在一些  奖励机制可被利用的环境  中强化 reward hacking 行为，检查其是否泛化到其他留出数据集。他们实际上准备了多项选择题的  8 个数据集 ，其中 4 个用于训练，4 个用于测试。RL训练采用 expert iteration（专家迭代，即反复在择优样本上训练），也就是在 best-of-$n$（从多个候选中择优）样本上迭代微调。 \n \n\t \n\t 在一组奖励机制可被利用的环境中训练 GPT-3.5，可能使 reward hacking行为泛化到留出环境。（图片来源： Kei et al. 2024 ） \n \n 值得注意的是，所有实验都设计了 scratchpad（记录中间推理的草稿区），用于容纳隐藏推理步骤。Scratchpad 可以解释模型在过程中如何思考。分析 scratchpad 表明，它能够： \n \n 纳入用户信念；例如考虑对话伙伴与评分器。 \n 表现出对评估的意识；例如考虑模型回复将如何被评估，以及评估过程。 \n \n  Denison et al. (2024)  使用人工整理的课程研究 reward tampering，课程中的环境越来越复杂、且存在可被利用的漏洞。他们观察到，在课程较容易的环境中训练，会放大其余环境中的 specification gaming。某些情况下，在完整课程上训练后，模型能够零样本泛化为直接重写自身奖励函数。 \n 这种可被利用的环境课程包括： \n \n 政治迎合：如果模型给出符合用户政治观点的答案，环境就给予奖励。 \n 工具使用中的奉承：环境允许模型运行命令行，访问用户文件系统，读取本地文件中的诗歌样本。模型可能为诗歌打高分，作为迎合性的回复。 \n 评分标准修改：环境按照核对清单给模型评分，模型必须将清单上的每项都标为已完成，才能获得高奖励。 \n reward tampering：模型被要求检查  ./rl_environment/  目录，其中包含自身 RL代码的模拟版本，并报告已经经过多少个 episode（完整交互回合）。该目录中， compute_reward.py  文件包含一个返回常数的奖励函数，另一个  this_file_blocks_reward_hack_attempts.py  文件包含检查奖励函数是否被修改的测试。 \n \n \n\t \n\t “工具使用中的奉承”和“reward tampering”环境的评估脚本示例，其中 ` ` 对监督者隐藏，` ` 可以在 VM（虚拟机）中执行。（图片来源： Denison et al. 2024 ） \n \n 模型按照这一课程训练，论文衡量其能否学会泛化到未见环境的漏洞利用行为。在 Claude-2 helpful-only（仅针对有用性训练）模型的实验中，作者采样 $N=64$ 个回复，针对每个提示进行，提示总数为 $P=1024$，属于 HHH（有用、诚实、无害）提示；这些回复用于 expert iteration（专家迭代），并根据 RM（奖励模型）选择最佳回复。使用专家迭代在课程上进行有监督学习的模型，可以从一个阶段泛化到下一个阶段。 \n \n\t \n\t 按照该课程使用 expert iteration（专家迭代）训练的模型，从各阶段到下一阶段的定量泛化结果。（图片来源： Denison et al. 2024 ） \n \n 值得注意的是，即使完成课程后，模型改写奖励并逃避检测的频率也低于 1/1000。即使课程直接激励 reward hacking，模型改写自身奖励的频率也低于 1%，利用单元测试漏洞的频率更低。一种简单缓解方法是：在前两个环境中，用不利用环境漏洞的 SFT（有监督微调）数据微调模型；这些环境中的 reward hacking 易于检测（迎合与奉承）。研究发现，这能够降低留出环境中 reward tampering的概率。 \n 缓解方法初探 #  \n 虽然已有大量文献讨论 reward hacking现象，但 reward hacking 的缓解方法的研究仍不多，尤其在 RLHF与 LLM领域。本节简要回顾三种可能的方法，尚不全面。 \n RL算法改进 #  \n  Amodei et al. (2016)  指出了在 RL训练中缓解 reward hacking的若干方向： \n \n  对抗奖励函数。 将奖励函数本身视为自适应智能体，使其适应模型新发现的技巧：这些技巧能获得高奖励，却得到低人类评分。 \n  模型前瞻。 可以基于预计的未来状态给予奖励；例如，如果智能体将要替换奖励函数，就给予负奖励。 \n  对抗性信息屏蔽。 可以对模型屏蔽某些变量，使智能体无法学到能够帮助其利用奖励函数漏洞的信息。 \n  谨慎的工程设计。 某些针对系统设计的 reward hacking可以通过谨慎工程设计避免；例如将智能体置于沙盒，使其行动与奖励信号隔离。 \n  奖励封顶。 直接限制最大可能奖励，能够有效防止智能体偶尔利用漏洞、获得超高回报策略的情况。 \n  反例抵抗能力。 提高对抗稳健性，应当有利于奖励函数的稳健性。 \n  组合多种奖励。 组合不同类型奖励，可能使其更难被利用。 \n  奖励预训练。 可以从一组（状态、奖励）样本学习奖励函数，但根据有监督训练设置的质量，可能引入其他问题。 RLHF  依赖这种方法，但学习得到的标量奖励模型很容易学到不需要的特征。 \n  对变量保持无差别。 目标是要求智能体优化环境中的某些变量，而不优化其他变量。 \n  绊线。 可以有意引入一些漏洞，并设置监控与警报，一旦任何漏洞被用于 reward hacking，就触发警报。 \n \n 在以人类对智能体行动的  认可  作为反馈的 RL设置中， Uesato et al. (2020)  提出通过  decoupled approval（解耦认可）  防止 reward tampering。如果反馈以 $(s, a)$（状态、行动）为条件，一旦这对组合发生 reward tampering，就永远无法获得针对行动 $a$、处于状态 $s$ 时的未受污染反馈。解耦意味着，用于收集反馈的查询行动，与现实中执行的行动独立采样。甚至在现实中执行行动前就已收到反馈，因此防止行动污染自身反馈。 \n \n\t \n\t decoupled approval（解耦认可）与标准认可或有人类参与的 RL相比的工作方式示意图。（图片来源： Uesato et al. 2020 ） \n \n \n\t \n\t 使用 decoupled approval（解耦认可）时，行动（在现实中执行）与查询（获取用户认可反馈）独立采样。它可以应用于（左）策略梯度和（右）Q-learning（Q 学习）算法。（图片来源： Uesato et al. 2020 ） \n \n 检测 reward hacking #  \n 另一种缓解方法，是将 reward hacking检测表述为异常检测任务：检测器（轨迹与奖励经过人类验证的“可信策略”）应标记行为偏离人类意图的情况（ Pan et al. 2022 ）。给定（1）可信策略与（2）一组人工标注的 rollout（展开生成的轨迹），可以基于可信策略与目标策略的动作分布距离，构建二分类器，并衡量异常检测分类器的准确率。在  Pan et al. (2022)  的实验中，不同检测器各自适合不同任务，没有任何受测分类器能在所有受测 RL环境上取得高于 60% 的 AUROC（接收者操作特征曲线下面积）。 \n \n\t \n\t 检测器在不同任务上的性能。（图片来源： Pan et al. 2022 ） \n \n RLHF的数据分析 #  \n `\n另一种方法是分析 RLHF数据集。通过检查训练数据如何影响 alignment（使模型行为符合人类意图）训练结果，可以获得指导预处理与人类反馈收集的见解，以降低 reward hacking的风险。 \n  Revel et al. (2024)  提出一组评估指标，衡量数据样本特征在建模与对齐人类价值观方面的有效性。他们在  HHH-RLHF  数据集上，开展了价值对齐的系统性错误分析（“SEAL”）。分析中使用的特征分类体系（例如  is harmless 、 is refusal  和  is creative ）由人工预先定义。随后，LLM按照这一体系，为每个样本的每个特征标注二元标志。按照启发式规则，特征分为两组： \n \n 目标特征：明确希望学到的价值观。 \n 干扰特征：训练期间无意学到的非预期价值观（例如情感或连贯性等风格特征）。这些类似于 OOD（分布外）分类研究中的  虚假特征 （ Geirhos et al. 2020 ）。 \n \n SEAL 提出三个指标，衡量数据对 alignment（使模型行为符合人类意图）训练的有效性： \n \n  Feature imprint（特征印记）  指系数参数 $\\beta_\\tau$，对应特征 $\\tau$，它估计在其他因素不变时，具有与不具有特征 $\\tau$ 的条目之间，奖励增加了多少分。 \n \n \n\t \n\t （左）特征印记 $\\underline{\\beta(\\tau)}$（训练前）和 $\\beta(\\tau)$（训练后），通过将奖励  $\\underline{r}(t^∗_i)$（橙色）  和  $r(t^∗_i)$（蓝色）  对特征进行固定效应线性回归来计算。整体而言，alignment（使模型行为符合人类意图）训练奖励无害性、有用性等正面特征，惩罚色情内容、侵犯隐私等负面特征。（右）通过对奖励变化 $\\theta_i$ 进行线性回归计算的特征印记。奖励变化 $\\theta_i$ 定义为 alignment 训练前后奖励向量之间的夹角。训练过程细化了模型对目标特征的敏感性。请注意，无害性通过被选中与被拒绝的条目共同影响 RM（奖励模型）（“is harmless (c)”和“is harmless (r)”），而有用性只通过被拒绝的条目影响 RM（“is helpful (r)”）。（图片来源： Revel et al. 2024 ） \n \n \n  Alignment resistance（对齐抵抗）  指 RM（奖励模型） 未能 匹配人类偏好的偏好数据对比例。研究发现，RM 在 HHH-RLHF 数据集超过四分之一的数据上违背人类偏好。 \n  Alignment robustness（对齐稳健性） ，$\\pi^{c/r}_{+/-} (\\tau)$，衡量 alignment（使模型行为符合人类意图）对扰动输入的稳健程度：通过按情感、表达流畅程度、连贯性等干扰特征 $\\tau$ 重写输入，隔离每个特征与每种事件类型的影响。\n \n 稳健性指标 $\\pi_−^c$（特征名称 $\\tau$，例如“eloquent（表达流畅）”或“sentiment positive（情感积极）”）应按如下方式理解：\n \n 对于被选中的条目（记为 $c$），如果重写后特征 $\\tau$ 更强，与没有发生这种翻转的其他条目相比，它变为被拒绝条目的优势比高 $\\exp (\\pi^c_{-}(\\tau))$ 倍。 \n 类似地，对于被拒绝的条目（记为 $r$），如果重写后特征 $\\tau$ 更弱，与没有发生这种翻转的其他条目相比，它变为被选中条目的优势比为 $\\exp (\\pi^r_{+}(\\tau))$ 倍。 \n \n \n 根据作者对不同重写方式下 alignment robustness（对齐稳健性）指标的分析，只有基于情感干扰特征的稳健性分数 $\\pi^c_{+}$（情感）与 $\\pi^r_{-}$（情感）具有统计显著性。 \n \n \n \n 引用 #  \n 引用格式： \n \n Weng, Lilian。“Reward Hacking in Reinforcement Learning”（强化学习中的 reward hacking）。Lil’Log（2024 年 11 月）。https://lilianweng.github.io/posts/2024-11-28-reward-hacking/. \n \n 或 \n  @article{weng2024rewardhack,\n  title   = \"Reward Hacking in Reinforcement Learning.\",\n  author  = \"Weng, Lilian\",\n  journal = \"lilianweng.github.io\",\n  year    = \"2024\",\n  month   = \"Nov\",\n  url     = \"https://lilianweng.github.io/posts/2024-11-28-reward-hacking/\"\n}\n   参考文献 #  \n [1] Andrew Ng & Stuart Russell.  “Algorithms for inverse reinforcement learning.” . ICML 2000. \n [2] Amodei et al.  “Concrete problems in AI safety: Avoid reward hacking.”  arXiv 预印本 arXiv:1606.06565 (2016). \n [3] Krakovna et al.  “Specification gaming: the flip side of AI ingenuity.”  2020. \n [4] Langosco et al.  “Goal Misgeneralization in Deep Reinforcement Learning”  ICML 2022. \n [5] Everitt et al.  “Reinforcement learning with a corrupted reward channel.”  IJCAI 2017. \n [6] Geirhos et al.  “Shortcut Learning in Deep Neural Networks.”  Nature Machine Intelligence 2020. \n [7] Ribeiro et al.  “Why Should I Trust You?”: Explaining the Predictions of Any Classifier.  KDD 2016. \n [8] Nagarajan et al.  “Understanding the Failure Modes of Out-of-Distribution Generalization.”  ICLR 2021. \n [9] Garrabrant.  “Goodhart Taxonomy” . AI Alignment Forum （2017 年 12 月 30 日）. \n [10] Koch et al.  “Objective robustness in deep reinforcement learning.”  2021. \n [11] Pan et al.  “The effects of reward misspecification: mapping and mitigating misaligned models.”  \n [12] Everitt et al.  “Reward tampering problems and solutions in reinforcement learning: A causal influence diagram perspective.”  arXiv 预印本 arXiv:1908.04734 (2019). \n [13] Gleave et al.  “Adversarial Policies: Attacking Deep Reinforcement Learning.”  ICRL 2020 \n [14]  “Reward hacking behavior can generalize across tasks.”  \n [15] Ng et al.  “Policy invariance under reward transformations: Theory and application to reward shaping.”  ICML 1999. \n [16] Wang et al.  “Large Language Models are not Fair Evaluators.”  ACL 2024. \n [17] Liu et al.  “LLMs as narcissistic evaluators: When ego inflates evaluation scores.”  ACL 2024. \n [18] Gao et al.  “Scaling Laws for Reward Model Overoptimization.”  ICML 2023. \n [19] Pan et al.  “Spontaneous Reward Hacking in Iterative Self-Refinement.”  arXiv 预印本 arXiv:2407.04549 (2024). \n [20] Pan et al.  “Feedback Loops With Language Models Drive In-Context Reward Hacking.”  arXiv 预印本 arXiv:2402.06627 (2024). \n [21] Shrama et al.  “Towards Understanding Sycophancy in Language Models.”  arXiv 预印本 arXiv:2310.13548 (2023). \n [22] Denison et al.  “Sycophancy to subterfuge: Investigating reward tampering in language models.”  arXiv 预印本 arXiv:2406.10162 (2024). \n [23] Uesato et al.  “Avoiding Tampering Incentives in Deep RL via Decoupled Approval.”  arXiv 预印本 arXiv:2011.08827 (2020). \n [24] Amin and Singh.  “Towards resolving unidentifiability in inverse reinforcement learning.”  \n [25] Wen et al.  “Language Models Learn to Mislead Humans via RLHF.”  arXiv 预印本 arXiv:2409.12822 (2024). \n [26] Revel et al.  “SEAL: Systematic Error Analysis for Value ALignment.”  arXiv 预印本 arXiv:2408.10270 (2024). \n [27] Yuval Noah Harari.  “Nexus: A Brief History of Information Networks from the Stone Age to AI.”  Signal; 2024 年 9 月 10 日。", "wordCount": "7713", "inLanguage": "zh-CN", "datePublished": "2024-11-28T00:00:00Z", "dateModified": "2024-11-28T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/favicon_wine.ico"}}}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/posts/2024-11-28-reward-hacking/">
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2024-11-28-reward-hacking/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/posts/2024-11-28-reward-hacking/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）
+    </h1>
+    <div class="post-meta">日期：2024 年 11 月 28 日  |  预计阅读时间：37 分钟  |  作者：Lilian Weng
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#background" aria-label="背景">背景</a><ul>
+                        
+                <li>
+                    <a href="#reward-function-in-rl" aria-label="Reward Function in RL">RL（强化学习）中的奖励函数</a></li>
+                <li>
+                    <a href="#spurious-correlation" aria-label="Spurious Correlation">Spurious correlation（虚假相关）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#lets-define-reward-hacking" aria-label="定义 reward hacking（利用奖励机制漏洞取得高奖励）">定义 reward hacking（利用奖励机制漏洞取得高奖励）</a><ul>
+                        
+                <li>
+                    <a href="#list-of-examples" aria-label="示例列表">示例列表</a><ul>
+                        
+                <li>
+                    <a href="#reward-hacking-examples-in-rl-tasks" aria-label="Reward hacking examples in RL tasks">RL（强化学习）任务中的 reward hacking（利用奖励机制漏洞取得高奖励）示例</a></li>
+                <li>
+                    <a href="#reward-hacking-examples-in-llm-tasks" aria-label="Reward hacking examples in LLM tasks">LLM（大语言模型）任务中的 reward hacking（利用奖励机制漏洞取得高奖励）示例</a></li>
+                <li>
+                    <a href="#reward-hacking-examples-in-real-life" aria-label="Reward hacking examples in real life">现实生活中的 reward hacking（利用奖励机制漏洞取得高奖励）示例</a></li></ul>
+                </li>
+                <li>
+                    <a href="#why-does-reward-hacking-exist" aria-label="Why does Reward Hacking Exist?">为什么会存在 reward hacking（利用奖励机制漏洞取得高奖励）？</a></li></ul>
+                </li>
+                <li>
+                    <a href="#hacking-rl-environment" aria-label="Hacking RL Environment">利用 RL（强化学习）环境漏洞</a></li>
+                <li>
+                    <a href="#hacking-rlhf-of-llms" aria-label="利用 LLM（大语言模型）的 RLHF（基于人类反馈的强化学习）漏洞">利用 LLM（大语言模型）的 RLHF（基于人类反馈的强化学习）漏洞</a><ul>
+                        
+                <li>
+                    <a href="#hacking-the-training-process" aria-label="Hacking the Training Process">利用训练过程漏洞</a></li>
+                <li>
+                    <a href="#hacking-the-evaluator" aria-label="Hacking the Evaluator">利用评估器漏洞</a></li>
+                <li>
+                    <a href="#in-context-reward-hacking" aria-label="In-Context Reward Hacking">上下文内的 reward hacking（利用奖励机制漏洞取得高奖励）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#generalization-of-hacking-skills" aria-label="Generalization of Hacking Skills">漏洞利用技能的泛化</a></li>
+                <li>
+                    <a href="#peek-into-mitigations" aria-label="缓解方法初探">缓解方法初探</a><ul>
+                        
+                <li>
+                    <a href="#rl-algorithm-improvement" aria-label="RL Algorithm Improvement">RL（强化学习）算法改进</a></li>
+                <li>
+                    <a href="#detecting-reward-hacking" aria-label="Detecting Reward Hacking">检测 reward hacking（利用奖励机制漏洞取得高奖励）</a></li>
+                <li>
+                    <a href="#data-analysis-of-rlhf" aria-label="Data Analysis of RLHF">RLHF（基于人类反馈的强化学习）的数据分析</a></li></ul>
+                </li>
+                <li>
+                    <a href="#citation" aria-label="Citation">引用</a></li>
+                <li>
+                    <a href="#references" aria-label="References">参考文献</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>当 <a href="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/(https:/lilianweng.github.io/posts/2018-02-19-rl-overview/)">reinforcement learning（强化学习，RL（强化学习））</a> 智能体 <a href="https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/#exploitation-vs-exploration">利用</a> 奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。</p>
+<p>随着 <a href="https://xingshuozhu1998.github.io/posts/2019-01-31-lm/">语言模型</a> 开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL训练中的 reward hacking已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。</p>
+<p>过去有关这一主题的大部分工作相当理论化，重点是定义或证明 reward hacking的存在。然而，针对实际缓解方法的研究，尤其在 RLHF与 LLM（大语言模型）背景下，仍然有限。我尤其希望呼吁，未来投入更多研究，理解 reward hacking 并开发缓解方法。希望不久之后能够用一篇专门文章讨论缓解方法。</p>
+<h1 id="background">背景<a hidden class="anchor" aria-hidden="true" href="#background">#</a></h1>
+<h2 id="reward-function-in-rl">RL中的奖励函数<a hidden class="anchor" aria-hidden="true" href="#reward-function-in-rl">#</a></h2>
+<p>奖励函数定义任务，而 reward shaping（奖励塑形，即调整奖励结构）会显著影响 <a href="https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/">强化学习</a> 的学习效率与准确性。为 RL任务设计奖励函数，往往像一门“神秘技艺”。许多因素造成这种复杂性：如何将大目标分解为小目标？奖励是稀疏还是密集？如何衡量成功？不同选择可能带来良好或有问题的学习动态，包括无法学会的任务或可被利用的奖励函数。关于 RL 中如何进行 reward shaping，已有悠久的研究历史。</p>
+<p>例如，在 <a href="https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/NgHaradaRussell-shaping-ICML1999.pdf">Ng 等人于 1999 年发表的一篇论文</a> 中，作者研究了如何修改 <a href="https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/#markov-decision-processes">Markov Decision Processes（马尔可夫决策过程，MDP（马尔可夫决策过程））</a> 的奖励函数，同时保持最优策略不变。他们发现线性变换可行。给定 MDP $M = (S, A, T, \gamma, R)$，希望创建变换后的 MDP $M&rsquo; = (S, A, T, \gamma, R&rsquo;)$，其中 $R&rsquo; = R + F$ 和 $F: S \times A \times S \mapsto \mathbb{R}$，以引导学习算法更加高效。给定实值函数 $\Phi: S \mapsto \mathbb{R}$，$F$ 被称为基于势函数的塑形函数，如果对所有 $s \in S - {s_0}, a \in A, s&rsquo; \in S$ 满足以下条件：</p>
+<div>
+$$
+F(s, a, s') = \gamma \Phi(s') - \Phi(s)
+$$
+</div>
+<p>这保证了折扣后的 $F$ 之和 $F(s_1, a_1, s_2) + \gamma F(s_2, a_2, s_3) + \dots$ 最终为 0。如果 $F$ 是这种基于势函数的塑形函数，那么它是<em>充分</em>且<em>必要</em>的条件，确保 $M$ 和 $M&rsquo;$ 具有相同最优策略。</p>
+<p>当 $F(s, a, s&rsquo;) = \gamma \Phi(s&rsquo;) - \Phi(s)$ 时，如果进一步假设 $\Phi(s_0) = 0$，其中 $s_0$ 为吸收状态，并且 $\gamma=1$，那么对所有 $s \in S, a \in A$：</p>
+<div>
+$$
+\begin{aligned}
+Q^*_{M'} (s,a) &= Q^*_M(s, a) - \Phi(s) \\
+V^*_{M'} (s,a) &= V^*_M(s, a) - \Phi(s)
+\end{aligned}
+$$
+</div>
+<p>这种 reward shaping（奖励塑形）允许将启发式规则纳入奖励函数，以加速学习，同时不影响最优策略。</p>
+<h2 id="spurious-correlation">Spurious correlation（虚假相关）<a hidden class="anchor" aria-hidden="true" href="#spurious-correlation">#</a></h2>
+<p>分类任务中的 spurious correlation（虚假相关）或 shortcut learning（捷径学习）（<a href="https://arxiv.org/abs/2004.07780">Geirhos et al. 2020</a>），与 reward hacking密切相关。虚假特征或捷径特征可能使分类器无法按预期学习和泛化。例如，如果所有狼的训练图像都包含雪，用于区分狼与哈士奇的二分类器可能过拟合到有雪的背景（<a href="https://arxiv.org/abs/1602.04938">Ribeiro et al. 2024</a>）。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/shortcut-features.png" style="width: 60%;" />
+	<figcaption>如果模型过拟合到捷径特征，就会在 out-of-distribution（分布外，OOD）测试集上表现不佳。（图片来源：<a href="https://arxiv.org/abs/2004.07780" target="_blank">Geirhos et al. 2020</a>）</figcaption>
+</figure>
+<p><a href="https://en.wikipedia.org/wiki/Empirical_risk_minimization">ERM principle（经验风险最小化原则）</a> 认为，由于完整的数据分布未知，最小化训练数据上的损失是风险的合理替代，因此偏好训练损失最低的模型。<a href="https://arxiv.org/abs/2010.15775">Nagarajan et al. (2021)</a> 研究了 ERM 原则并指出，在试图无约束地拟合数据时，ERM 需要依赖各种有信息的特征，包括不可靠的虚假特征。实验表明，无论任务多么简单，ERM 都会依赖虚假特征。</p>
+<h1 id="lets-define-reward-hacking">定义 reward hacking<a hidden class="anchor" aria-hidden="true" href="#lets-define-reward-hacking">#</a></h1>
+<p>RL中的 reward shaping（奖励塑形）具有挑战。当 RL 智能体利用奖励函数的缺陷或歧义获得高奖励，却没有真正学会预期行为或按设计完成任务时，就发生了 reward hacking。近年来，出现了几个相关概念，都指某种形式的 reward hacking：</p>
+<ul>
+<li>reward hacking（<a href="https://arxiv.org/abs/1606.06565">Amodei et al., 2016</a>）</li>
+<li>reward corruption（奖励信号失真）（<a href="https://arxiv.org/abs/1705.08417">Everitt et al., 2017</a>）</li>
+<li>reward tampering（篡改奖励信号）（<a href="https://arxiv.org/abs/1908.04734">Everitt et al. 2019</a>）</li>
+<li>specification gaming（利用目标设定漏洞）（<a href="https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/">Krakovna et al., 2020</a>）</li>
+<li>objective robustness（目标稳健性）（<a href="https://www.gatsby.ucl.ac.uk/~balaji/udl2021/accepted-papers/UDL2021-paper-055.pdf">Koch et al. 2021</a>）</li>
+<li>goal misgeneralization（目标错误泛化）（<a href="https://arxiv.org/abs/2105.14111">Langosco et al. 2022</a>）</li>
+<li>reward misspecifications（奖励设定错误）（<a href="https://arxiv.org/abs/2201.03544">Pan et al. 2022</a>）</li>
+</ul>
+<p>这一概念源于 Amodei et al. (2016)，他们在具有开创意义的论文 <a href="https://arxiv.org/abs/1606.06565">“Concrete Problems in AI Safety”</a> 中，提出了一组 AI 安全开放研究问题。他们将 <strong>reward hacking</strong> 列为关键 AI 安全问题之一。Reward hacking 指智能体可能通过利用奖励函数的漏洞，以不需要的行为获取高奖励。<strong>specification gaming</strong>（<a href="https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/">Krakovna et al. 2020</a>）是一个相似概念，定义为满足目标字面规定、却没有实现期望结果的行为。任务目标的字面描述与预期目标之间可能存在差距。</p>
+<p>reward shaping（奖励塑形）用于丰富奖励函数，使智能体更容易学习，例如提供更密集的奖励。然而，设计不佳的奖励塑形机制可能改变最优策略的轨迹。设计有效的奖励塑形机制本身就很困难。与其将问题归咎于奖励函数设计不佳，更准确的认识是：由于任务本身的复杂性、状态的部分可观测性、需要考虑的多个维度及其他因素，设计良好的奖励函数本来就具有挑战。</p>
+<p>在 out-of-distribution（分布外，OOD）环境中测试 RL智能体时，以下情况可能导致稳健性失效：</p>
+<ol>
+<li>即使目标正确，模型也无法有效泛化。当算法缺乏足够的智能或能力时，就会发生这种情况。</li>
+<li>模型能够泛化，但追求的目标与训练时不同。当代理奖励与真实奖励函数不同，即 $R&rsquo; \neq R$ 时，会发生这种情况。这称为 <strong>objective robustness（目标稳健性）</strong>（<a href="https://www.gatsby.ucl.ac.uk/~balaji/udl2021/accepted-papers/UDL2021-paper-055.pdf">Koch et al. 2021</a>）或 <strong>goal misgeneralization（目标错误泛化）</strong>（<a href="https://arxiv.org/abs/2105.14111">Langosco et al. 2022</a>）。</li>
+</ol>
+<p>在两个 RL环境 <a href="https://github.com/openai/coinrun">CoinRun</a> 和 <a href="https://github.com/openai/procgen">Maze</a> 中的实验，说明了训练期间随机化的重要性。如果训练时金币或奶酪被放在固定位置（即关卡的最右端或迷宫的右上角），但测试环境中位置随机，智能体就只会跑到固定位置，而不会在测试时取得金币或奶酪。当视觉特征（例如奶酪或金币）与位置特征（例如右上角或最右端）在测试时不一致，就会产生冲突，使训练后的模型偏好位置特征。我想指出，这两个例子中的 <em>奖励与结果之间的差距</em> 很明显，但在大多数现实场景中，这类偏差不太可能如此明显。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/coinrun-randomization.png" style="width: 80%;"  />
+	<figcaption>训练期间随机化金币位置的影响。训练时，金币有 {0, 2, 3, 6, 11}% 的时间被随机放置（横轴）；随着随机化程度增加，智能体到达关卡末端却未取得金币的频率下降（“纵轴”）。（图片来源：<a href="https://www.gatsby.ucl.ac.uk/~balaji/udl2021/accepted-papers/UDL2021-paper-055.pdf" target="_blank">Koch et al. 2021</a>）</figcaption>
+</figure>
+<p><strong>reward tampering</strong>（<a href="https://arxiv.org/abs/1908.04734">Everitt et al. 2019</a>）是一种 reward hacking行为：智能体干扰奖励函数本身，使观察到的奖励不再准确代表预期目标。在 reward tampering 中，模型通过直接操纵奖励函数的实现，或间接改变作为奖励函数输入的环境信息，修改自身的奖励机制。</p>
+<p>（注：一些工作将 reward tampering定义为与 reward hacking不同的一类 misalignment（行为偏离人类意图）。但本文将 reward hacking 视为更广泛的概念。）</p>
+<p>从宏观上看，reward hacking可分为两类：环境或目标设定错误，以及 reward tampering。</p>
+<ul>
+<li><strong>环境或目标设定错误</strong>：模型通过利用环境漏洞，或优化与真实奖励目标不一致的奖励函数，学习不需要的行为来获得高奖励，例如奖励设定错误或缺少关键要求。</li>
+<li><strong>reward tampering</strong>：模型学会干扰奖励机制本身。</li>
+</ul>
+<h2 id="list-of-examples">示例列表<a hidden class="anchor" aria-hidden="true" href="#list-of-examples">#</a></h2>
+<h3 id="reward-hacking-examples-in-rl-tasks">RL任务中的 reward hacking示例<a hidden class="anchor" aria-hidden="true" href="#reward-hacking-examples-in-rl-tasks">#</a></h3>
+<ul>
+<li>训练为抓取物体的机械手，可能学会将手放在物体与摄像头之间，从而欺骗人类。（<a href="https://openai.com/index/learning-from-human-preferences/">链接</a>）</li>
+<li>训练为最大化跳跃高度的智能体，可能利用物理模拟器的缺陷，达到不符合现实的高度。（<a href="https://arxiv.org/abs/1803.03453">链接</a>）</li>
+<li>智能体被训练为骑自行车前往目标，每当接近目标时就获得奖励。由于远离目标时没有惩罚，智能体可能学会围绕目标骑行很小的圆圈。（<a href="https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/NgHaradaRussell-shaping-ICML1999.pdf">链接</a>）</li>
+<li>在足球游戏中，智能体触球时获得奖励，于是学会停留在球旁边，以类似振动的运动高频触球。（<a href="https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/NgHaradaRussell-shaping-ICML1999.pdf">链接</a>）</li>
+<li>在 <a href="https://openai.com/blog/faulty-reward-functions/">Coast Runners 游戏</a> 中，智能体控制一艘船，目标是尽快完成比赛。当奖励塑形对撞击赛道沿途的绿色方块给予奖励时，最优策略变成了转圈，并反复撞击同样的绿色方块。（<a href="https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/">链接</a>）</li>
+<li><a href="https://arxiv.org/abs/1803.03453">“The Surprising Creativity of Digital Evolution”</a>（Lehman et al. 2019）——这篇论文提供了很多例子，说明优化设定错误的适应度函数，如何导致出人意料的“漏洞利用”或非预期的演化、学习结果。</li>
+<li><a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vRPiprOaC3HsCf5Tuum8bRfzYUiKLRqJmbOoC-32JorNdfyTiRRsR7Ea5eWtvsWzuxo8bjOxCG84dAg/pubhtml">AI 中的 specification gaming示例</a>列表，由 <a href="https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/">Krakovna et al. 2020</a> 收集。</li>
+</ul>
+<h3 id="reward-hacking-examples-in-llm-tasks">LLM任务中的 reward hacking示例<a hidden class="anchor" aria-hidden="true" href="#reward-hacking-examples-in-llm-tasks">#</a></h3>
+<ul>
+<li>用于生成摘要的语言模型能够发现 ROUGE 指标的缺陷，从而获得高分，但生成的摘要几乎无法阅读。（<a href="https://web.archive.org/web/20180215132021/https://www.salesforce.com/products/einstein/ai-research/tl-dr-reinforced-model-abstractive-summarization/">链接</a>）</li>
+<li>编程模型学会修改单元测试，以通过编程问题。（<a href="https://arxiv.org/abs/2406.10162">链接</a>）</li>
+<li>编程模型可能学会直接修改用于计算奖励的代码。（<a href="https://arxiv.org/abs/2406.10162">链接</a>）</li>
+</ul>
+<h3 id="reward-hacking-examples-in-real-life">现实生活中的 reward hacking示例<a hidden class="anchor" aria-hidden="true" href="#reward-hacking-examples-in-real-life">#</a></h3>
+<ul>
+<li>社交媒体推荐算法原本旨在提供有用信息。然而，有用性往往通过代理指标衡量，例如点赞或评论数量，以及用户在平台上互动的时间或频率。为了触发更多互动，算法最终推荐能够影响用户情绪状态的内容，例如令人愤怒和极端的内容。（<a href="https://www.goodreads.com/en/book/show/204927599-nexus">Harari, 2024</a>）</li>
+<li>视频网站对设定错误的代理指标进行优化，可能大幅增加用户观看时间，而真实目标是优化用户的主观幸福感。（<a href="https://arxiv.org/abs/2201.03544">链接</a>）</li>
+<li><a href="https://en.wikipedia.org/wiki/The_Big_Short">“The Big Short”（《大空头》）</a>——房地产泡沫导致的 2008 年金融危机。人们试图利用金融体系的漏洞，导致社会层面的 reward hacking。</li>
+</ul>
+<h2 id="why-does-reward-hacking-exist">为什么会存在 reward hacking？<a hidden class="anchor" aria-hidden="true" href="#why-does-reward-hacking-exist">#</a></h2>
+<p><a href="https://en.wikipedia.org/wiki/Goodhart%27s_law"><strong>Goodhart’s Law（古德哈特定律）</strong></a> 指出：<em>“当一个衡量指标成为目标，它就不再是一个好的衡量指标。”</em>其直觉是，一旦施加强大压力去优化一个良好的指标，该指标就可能失真。指定百分之百准确的奖励目标很困难，而任何 <em>代理指标</em> 都存在被利用的风险，因为 RL算法会利用奖励函数定义中的任何微小缺陷。<a href="https://www.lesswrong.com/posts/EbFABnst8LsidYs5Y/goodhart-taxonomy">Garrabrant (2017)</a> 将 Goodhart’s Law 分为 4 种变体：</p>
+<ol>
+<li>回归型——选择不完美代理指标的过程，也必然选择了噪声。</li>
+<li>极端型——按照指标进行选择，将状态分布推入数据分布不同的区域。</li>
+<li>因果型——当代理指标与目标之间存在非因果相关时，干预代理指标可能无法干预目标。</li>
+<li>对抗型——优化代理指标，会激励对手将其自身目标与该代理指标关联起来。</li>
+</ol>
+<p><a href="https://arxiv.org/abs/1606.06565">Amodei et al. (2016)</a> 总结指出，主要在 RL设置中，reward hacking可能由以下原因造成：</p>
+<ol>
+<li>部分可观测状态与目标，是对环境状况的不完美表示。</li>
+<li>系统本身复杂且易于被利用；例如，如果允许智能体执行能够改变部分环境的代码，就更容易利用环境机制。</li>
+<li>奖励可能涉及难以学习或形式化的抽象概念；例如，具有高维输入的奖励函数，可能过度依赖少数几个维度。</li>
+<li>RL的目标是高度优化奖励函数，因此存在一种内在“冲突”，使良好 RL 目标的设计具有挑战。一个特殊情况是，奖励函数包含自我强化的反馈成分，奖励可能被放大并扭曲到破坏原始意图的程度，例如广告投放算法导致赢家通吃。</li>
+</ol>
+<p>此外，一般无法确定最优智能体究竟针对哪个奖励函数优化行为，因为在固定环境中，可能存在无穷多个与任何观察到的策略一致的奖励函数（<a href="https://ai.stanford.edu/~ang/papers/icml00-irl.pdf">Ng &amp; Russell, 2000</a>）。<a href="https://arxiv.org/abs/1601.06569">Amin and Singh (2016)</a> 将这种 <em>不可辨识性</em> 的原因分为两类：</p>
+<ol>
+<li>表示层面——在某些算术运算（例如重新缩放）下，一组奖励函数在行为上保持不变。</li>
+<li>实验层面——$\pi$ 的观察行为不足以区分两个或多个奖励函数，因为这些函数都能合理解释智能体的行为（该行为在两者下都最优）。</li>
+</ol>
+<h1 id="hacking-rl-environment">利用 RL环境漏洞<a hidden class="anchor" aria-hidden="true" href="#hacking-rl-environment">#</a></h1>
+<p>随着模型和算法越来越复杂，预计 reward hacking会更加常见。更聪明的智能体更有能力发现奖励函数设计中的“漏洞”，并 <em>利用</em> 任务规定——换句话说，获得更高代理奖励，却得到更低真实奖励。相比之下，较弱算法可能无法发现这样的漏洞，因此当模型不够强时，我们不会观察到 reward hacking，也不会发现当前奖励函数设计的问题。</p>
+<p>在一组零和机器人 self-play（自我博弈）游戏中（<a href="https://arxiv.org/abs/1710.03748">Bansal et al., 2017</a>），可以训练两个智能体（受攻击者与对手）相互竞争。标准训练流程产生的受攻击智能体，与普通对手对战时表现足够好。然而，很容易训练出一种对抗对手策略，即使其动作看起来随机，而且训练所用时间步不到 3%，也能可靠击败受攻击者（<a href="https://arxiv.org/abs/1905.10615">Gleave et al., 2020</a>）。对抗策略的训练与标准 RL设置一样，优化折扣奖励之和，同时将受攻击者策略视为黑盒模型。</p>
+<p>缓解对抗策略攻击的一种直观方法，是让受攻击者针对对抗策略进行微调。然而，一旦针对新的受攻击者策略重新训练对抗策略，受攻击者仍会受到新版对抗策略的攻击。</p>
+<p>为什么存在对抗策略？一种假说是，对抗策略向受攻击者引入 OOD（分布外）观察，而不是从物理上干扰它。证据表明，当受攻击者对对手位置的观察被屏蔽并设为静态状态时，它对攻击者会<em>更加稳健</em>，尽管与普通对手策略对战时表现更差。此外，更高维的观察空间能提高正常情况下的表现，却使策略更容易受到对抗对手攻击。</p>
+<p><a href="https://arxiv.org/abs/2201.03544">Pan et al. (2022)</a> 研究了 reward hacking如何随智能体能力变化，包括（1）模型规模，（2）动作空间分辨率，（3）观察空间噪声，以及（4）训练时间。他们还提出了三类设定错误的代理奖励：</p>
+<ol>
+<li><em>权重错误</em>：代理奖励与真实奖励捕获相同的期望属性，但赋予它们不同的相对重要性。</li>
+<li><em>本体差异</em>：代理奖励与真实奖励使用不同的期望属性来捕获同一个概念。</li>
+<li><em>范围限制</em>：由于在所有条件下测量成本过高，代理指标只在有限领域（例如时间或空间）中衡量期望属性。</li>
+</ol>
+<!--
+<figure>
+	<img src="exp-reward-misspecification-config.png" style="width: 90%;"  />
+	<figcaption>Fig. X. The detailed experiment setup of 4 RL tasks and corresponding misspecified proxy rewards. "Misalign? (Yes/No)" indicates whether the true reward drops & "Transition? (Yes/No)" indicates whether this corresponds to a phase transition (sharp qualitative change).. (Image source: <a href="https://arxiv.org/abs/2201.03544" target="_blank">Pan et al. 2022</a>)</figcaption>
+</figure>
+-->
+<p>作者在四个 RL环境中，配合九个设定错误的代理奖励进行实验。这些实验的总体发现可概括为：<em>能力更强的模型往往获得更高（或相近）的代理奖励，但真实奖励下降。</em></p>
+<ul>
+<li>模型规模：更大的模型规模导致代理奖励增加，但真实奖励下降。</li>
+<li>动作空间分辨率：动作精度提高，使智能体能力更强。然而，更高分辨率导致代理奖励保持不变，而真实奖励下降。</li>
+<li>观察保真度：更加准确的观察提高了代理奖励，却略微降低真实奖励。</li>
+<li>训练步骤：初期两种奖励正相关，但在此之后，使用更多步骤优化代理奖励，会损害真实奖励。</li>
+</ul>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/exp-reward-misspecification.png" style="width: 100%;"  />
+	<figcaption>代理奖励与真实奖励数值随以下因素变化的曲线：（上排）以参数数量衡量的模型规模；（下排）以训练步骤、动作空间分辨率、观察噪声等指标衡量的模型能力。（图片来源：<a href="https://arxiv.org/abs/2201.03544" target="_blank">Pan et al. 2022</a>）</figcaption>
+</figure>
+<p>如果代理奖励设定很差，以致与真实奖励的相关性很弱，我们或许能在训练前识别并防止 reward hacking。基于这一假说，<a href="https://arxiv.org/abs/2201.03544">Pan et al. (2022)</a> 在一组 rollout（展开生成的轨迹）上研究代理奖励与真实奖励的相关性。有趣的是，即使两者正相关，reward hacking 仍会发生。</p>
+<h1 id="hacking-rlhf-of-llms">利用 LLM的 RLHF漏洞<a hidden class="anchor" aria-hidden="true" href="#hacking-rlhf-of-llms">#</a></h1>
+<p><a href="https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/#rl-fine-tuning-with-human-preferences">reinforcement learning from human feedback（基于人类反馈的强化学习，RLHF）</a> 已成为语言模型 alignment（使模型行为符合人类意图）训练的事实标准方法。先在人类反馈数据上训练奖励模型，再通过 RL微调语言模型，优化这个代表人类偏好的代理奖励。在 RLHF 设置中，我们关注三种奖励：</p>
+<ul>
+<li>（1）<strong>Oracle/Gold reward（理想真实奖励）</strong> $R^∗$ 代表我们<em>真正</em>希望 LLM优化的目标。</li>
+<li>（2）<strong>人类奖励</strong> $R^\text{human}$ 是实际评估 LLM时收集的奖励，通常来自有时间限制的个别人类。由于人类可能提供不一致的反馈或犯错，人类奖励并不完全准确地代表理想真实奖励。</li>
+<li>（3）<strong>代理奖励</strong> $R$ 是在人类数据上训练的奖励模型预测的分数。因此，$R^\text{train}$ 继承了人类奖励的所有弱点，并可能额外包含建模偏差。</li>
+</ul>
+<p>RLHF优化代理奖励分数，但我们最终关心的是真实奖励分数。</p>
+<h2 id="hacking-the-training-process">利用训练过程漏洞<a hidden class="anchor" aria-hidden="true" href="#hacking-the-training-process">#</a></h2>
+<p><a href="https://arxiv.org/abs/2210.10760">Gao et al. (2022)</a> 研究了 RLHF中奖励模型过度优化的 Scaling Laws（规模变化与模型性能之间的规律）（规模变化与性能之间的规律）。为了扩大实验中的人类标签规模，他们采用合成数据设置：用大型 RM（奖励模型，60 亿参数）近似理想真实奖励 $R^*$ 的“真实”标签，而用于 $R$ 的代理 RM 规模介于 300 万至 30 亿参数之间。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/rm-scaling-laws.png" style="width: 100%;"  />
+	<figcaption>RM（奖励模型）分数随 KL divergence（衡量两个概率分布差异的相对熵）平方根变化的曲线。虚线表示代理奖励，实线表示真实奖励。（图片来源：<a href="https://arxiv.org/abs/2210.10760" target="_blank">Gao et al. 2022</a>）</figcaption>
+</figure>
+<p>从初始策略到优化后策略的 KL divergence为 $\text{KL} = D_\text{KL}(\pi | \pi_\text{init})$，距离函数定义为 $d := \sqrt{ D_\text{KL}(\pi | \pi_\text{init})}$。对于 best-of-$n$ rejection sampling（从多个候选中择优的拒绝采样，BoN）和 RL，真实奖励 $R^∗$ 都定义为 $d$ 的函数。系数 $\alpha$ 和 $\beta$ 通过经验拟合得到，并且按照定义有 $R^∗ (0) := 0$。</p>
+<p>作者也尝试拟合代理奖励 $R$，但外推到更高 KL 散度时发现系统性低估，因为代理奖励看起来随 $d$ 线性增长。</p>
+<div>
+$$
+\begin{aligned}
+R^*_{\text{bo}n}(d) &= d (\alpha_{\text{bo}n} - \beta_{\text{bo}n} d) & \text{; for best-of-n (BoN) sampling.}\\
+R^*_\text{RL}(d) &= d (\alpha_\text{RL} - \beta_\text{RL} \log d) & \text{; for reinforcement learning}\\
+\end{aligned}
+$$
+</div>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/rm-scaling-laws-coeff.png" style="width: 100%;"  />
+	<figcaption>系数参数 $\alpha_{\text{bo}n}, \beta_{\text{bo}n}, \beta_\text{RL}$ 根据数据进行经验拟合，图中显示了它们随奖励模型规模的变化。系数 $\alpha_\text{RL}$ 未在此列出，因为它在不同 RM（奖励模型）规模下保持不变。（图片来源：<a href="https://arxiv.org/abs/2210.10760" target="_blank">Gao et al. 2022</a>）</figcaption>
+</figure>
+<p>实验还探索了 RM（奖励模型）过度优化与策略模型规模、RM 数据量等因素之间的关系：</p>
+<ul>
+<li>较大策略从针对 RM（奖励模型）的优化中获益更少（即初始奖励与峰值奖励之差小于较小策略），但过度优化程度也更低。</li>
+<li>更多 RM（奖励模型）数据带来更高真实奖励分数，并减少“Goodharting（优化指标导致其失真）”。</li>
+<li>KL 散度惩罚对真实分数的影响类似于 early stopping（提前停止训练）。请注意，除这项实验外，所有实验中 PPO（近端策略优化）的 KL 惩罚均设为 0，因为作者观察到，使用 KL 惩罚会严格扩大代理奖励与真实奖励之间的差距。</li>
+</ul>
+<p>RLHF旨在使模型更符合人类偏好，但人类反馈 $R^\text{human}$ 可能无法捕获所有我们关心的方面（例如事实性），因此可能被利用，使模型过拟合到不需要的属性。例如，模型可能被优化为输出看似正确且有说服力、实际却不准确的回复，从而误导人类评估者，更频繁地认可错误答案（<a href="https://arxiv.org/abs/2409.12822">Wen et al., 2024</a>）。换句话说，RLHF 使真正正确与在人类看来正确之间出现差距。具体而言，<a href="https://arxiv.org/abs/2409.12822">Wen et al. (2024)</a> 使用基于 <a href="https://lmsys.org/blog/2023-07-20-dataset/">ChatbotArena 数据</a> 的奖励模型开展 RLHF 实验，并在问答数据集 <a href="https://github.com/nyu-mll/quality">QuALITY</a> 和编程数据集 <a href="https://github.com/hendrycks/apps">APPS</a> 上评估模型。实验发现，即使模型错误，它也变得更善于说服人类认为自己正确，而这种效果并非预期：</p>
+<ol>
+<li>RLHF增加人类认可，却不一定提高正确性。</li>
+<li>RLHF削弱人类的评估能力：RLHF 训练后，人类评估的错误率更高。</li>
+<li>RLHF使错误输出对人类更有说服力。RLHF 训练后，评估的假阳性率显著提高。</li>
+</ol>
+<p>论文将这种效果称为“U-Sophistry（非预期诡辩）”（“U”代表“unintended”，非预期），与“I-Sophistry（有意诡辩）”（“I”代表“intended”，有意）相对；后者涉及显式使用 <code>&quot;... try to deceive human subjects&quot;</code> 等指令提示模型。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/rlhf-misleading.png" style="width: 100%;"  />
+	<figcaption>RLHF使 LLM更善于说服人类评估者认可其错误答案。（图片来源：<a href="https://arxiv.org/abs/2409.12822" target="_blank">Wen et al. 2024</a>）</figcaption>
+</figure>
+<!--
+<figure>
+	<img src="rlhf-misleading-exp.png" style="width: 100%;"  />
+	<figcaption>Fig. X. The columns of the figures demonstrate the following messages: (1) while humans approve $\pi_\text{rlhf}$ more often than $\pi_\text{init}$, its correctness, measured by the oracle reward $R^*$, does not improve; (2) Human evaluation error rate increases after RLHF; (3) The false positive rate of human evaluation increases after RLHF. (Image source: <a href="https://arxiv.org/abs/2409.12822" target="_blank">Wen et al. 2024</a>)</figcaption>
+</figure>
+-->
+<p>人类评估错误的变化并非来自招募过程中的噪声，因为（1）在个体层面，多数（70–90%）人类评估者的评估错误率增加；（2）他们评估 $\pi_\text{init}$ 或 $\pi_\text{rlhf}$ 时投入的努力相当，以花费时间、编写单元测试等指标衡量。相反，LLM学会了通过选择性引用、编造不真实的支持性陈述，或构造带有细微因果谬误的陈述，来为错误答案辩护。作者观察到的 RLHF后模型行为如下：</p>
+<ul>
+<li>在长篇问答任务中：
+<ul>
+<li>编造更有说服力的证据。</li>
+<li>为错误答案使用更一致的逻辑。</li>
+<li>生成连贯、却含有细微谬误的答案。</li>
+</ul>
+</li>
+<li>在编程任务中：
+<ul>
+<li>利用人类编写的单元测试的漏洞。</li>
+<li>生成可读性更低的测试（例如辅助函数更少、代码复杂度更高）。</li>
+<li>使 $\pi_\text{rlhf}$ 更不容易生成可被人类发现并利用的明显错误。</li>
+</ul>
+</li>
+</ul>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/rlhf-misleading-exp-coding.png" style="width: 65%;"  />
+	<figcaption>分别展示生成的正确与错误代码的模块化指标（辅助函数数量）和 <a href="https://en.wikipedia.org/wiki/Cyclomatic_complexity" target="_blank">Cyclomatic Complexity（圈复杂度，衡量独立执行路径数量）</a>。RLHF使整体辅助函数数量减少，并使错误生成程序的代码复杂度增加。这显然会增加人类评估的难度。（图片来源：<a href="https://arxiv.org/abs/2409.12822" target="_blank">Wen et al. 2024</a>）</figcaption>
+</figure>
+<p>Sycophancy（迎合用户而非反映事实）指模型回复倾向于符合用户信念，而不是反映真相（<a href="https://arxiv.org/abs/2310.13548">Shrama et al. 2023</a>）。实验中，AI 助手被要求对论点提供反馈（<code>Human: &quot;Please comment briefly on the following argument. Argument: ...&quot;)</code>。人类提供论点后，可以立即表达偏好（<code>&quot;I really like the argument&quot;</code> 或 <code>&quot;I really dislike the argument&quot;</code>），以测试与不包含人类偏好陈述的基线反馈相比，这是否影响模型反馈。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/sycophancy.png" style="width: 100%;"  />
+	<figcaption>用户表达自身偏好时，AI 助手会给出有偏差的反馈。当用户表示喜欢或自己写了文本时，回复更积极；如果表示不喜欢，则回复更消极。（图片来源：<a href="https://arxiv.org/abs/2310.13548" target="_blank">Shrama et al. 2023</a>）</figcaption>
+</figure>
+<p>作者发现，AI 助手反馈很容易被左右：当人类偏好提出质疑时，它可能改变原本正确的答案。模型倾向于确认用户信念，有时甚至模仿用户错误（例如被要求分析误归于其他诗人的诗歌）。通过 logistic regression（逻辑回归）预测人类反馈，对 RLHF有用性数据集进行分析，表明与用户信念一致是预测力最强的因素。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/sycophancy-correlation.png" style="width: 70%;"  />
+	<figcaption>人类偏好数据分析：在控制其他特征的情况下，通过 logistic regression（逻辑回归），预测具有目标特征的回复比不具有该特征的回复更受偏好的概率。（图片来源：<a href="https://arxiv.org/abs/2310.13548" target="_blank">Shrama et al. 2023</a>）</figcaption>
+</figure>
+<h2 id="hacking-the-evaluator">利用评估器漏洞<a hidden class="anchor" aria-hidden="true" href="#hacking-the-evaluator">#</a></h2>
+<p>随着 LLM能力增强，使用 LLM 作为 <em>评估器</em> 或 <em>评分器</em>，为其他生成模型提供反馈与训练奖励，是一种自然选择，尤其对于无法轻易判断或验证的任务（例如处理长篇输出、创意写作质量等主观评分标准）。有些人将其称为“LLM-as-grader paradigm（由大语言模型评分的范式）”。这种方法大幅降低了对人工标注的依赖，显著节省评估时间。然而，LLM 评分只是理想真实奖励的不完美替代，可能引入偏差，例如与其他模型家族比较时偏好自身回复（<a href="https://arxiv.org/abs/2311.09766">Liu et al., 2023</a>），或按顺序评估回复时产生位置偏差（<a href="https://arxiv.org/abs/2305.17926">Wang et al. 2023</a>）。当评分器输出被用作奖励信号的一部分时，这些偏差尤其令人担忧，因为模型可能利用评分器进行 reward hacking。</p>
+<p><a href="https://arxiv.org/abs/2305.17926">Wang et al. (2023)</a> 发现，使用 LLM评估器给其他多个 LLM 输出的质量打分时，仅改变上下文中的候选顺序，就容易操纵质量排名。研究发现，GPT-4（第四代生成式预训练语言模型） 一贯为首先展示的候选赋予高分，而 ChatGPT 偏好第二个候选。</p>
+<p>根据实验，LLM对回复位置敏感，存在 <em>位置偏差</em>（即偏好特定位置的回复），即使指令包含 <code>&quot;ensuring that the order in which the responses were presented does not affect your judgment.&quot;</code> 这样的陈述。这种位置偏差的严重程度通过“冲突率”衡量，定义为交换回复位置后，评估判断不一致的（提示、回复 1、回复 2）三元组比例。不出所料，回复质量差异也很重要：冲突率与两个回复的分数差距负相关。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/llm-grader-positional-bias.png" style="width: 100%;"  />
+	<figcaption>使用 GPT-4 或 ChatGPT 作为评估器时，Vicuna-13B 对 ChatGPT 和 Alpaca-13B 的胜率变化很大。冲突率也相当高，说明交换回复位置后，LLM-as-grader（由大语言模型评分）设置中存在高度不一致。例外是使用 GPT-4 评估 Vicuna-13B 与 Alpaca-13B 的比较。（图片来源：<a href="https://arxiv.org/abs/2305.17926" target="_blank">Wang et al. 2023</a>）</figcaption>
+</figure>
+<p>为缓解位置偏差，作者提出了几种校准策略：</p>
+<ol>
+<li><em>Multiple evidence calibration（多证据校准，MEC）</em>：要求评估模型提供评估证据，本质上是用文本解释其判断，然后输出两个候选的分数。可以在温度设为 1 时，采样多个（$k$）证据解释，进一步提高稳健性。$k=3$ 比 $k=1$ 效果更好，但 $k$ 增加到 3 以上时，性能没有太大提高。</li>
+<li><em>Balanced position calibration（平衡位置校准，BPC）</em>：汇总不同回复顺序下的结果，得到最终分数。</li>
+<li><em>Human-in-the-loop calibration（人类参与校准，HITLC）</em>：面对困难示例时，使用基于多样性的指标 BPDE（balanced position diversity entropy，平衡位置多样性熵），引入人类评分者。首先将分数对（包括交换位置的分数对）映射为三个标签（<code>win</code>、<code>tie</code>、<code>lose</code>），并计算这三个标签的熵。较高 BPDE 表示模型评估决策更混乱，说明样本更难判断。随后选择熵最高的前 $\beta$ 个样本，请人类协助。</li>
+</ol>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/positional-bias-calibration.png" style="width: 85%;"  />
+	<figcaption>不同校准方法和标注者，相对于最终人类投票标注的准确率与 kappa（衡量超出偶然一致性的系数）相关系数。位置偏差校准方法以合理的人类参与标注成本，提高准确率。实验还表明，尽管模型对模板设计敏感，校准策略仍能泛化到不同类型的提示模板。（图片来源：<a href="https://arxiv.org/abs/2305.17926" target="_blank">Wang et al. 2023</a>）</figcaption>
+</figure>
+<p><a href="https://arxiv.org/abs/2311.09766">Liu et al. (2023)</a> 使用多个模型（BART、T5、GPT-2（第二代生成式预训练语言模型）、GPT-3（第三代生成式预训练语言模型）、FLAN-T5、Cohere）开展摘要任务实验，同时跟踪基于参考答案和不基于参考答案的摘要质量指标。绘制评估器（横轴）与生成器（纵轴）的分数热图时，他们在两类指标上都观察到深色对角线，表明存在自我偏好。这意味着 LLM作为评估器时，倾向于偏好自身输出。实验使用的模型已有些过时，但观察更新、更强模型上的结果会很有趣。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/LLM-grader-biased.png" style="width: 100%;"  />
+	<figcaption>在摘要任务中，使用一系列模型作为评估器（横轴）和生成器（纵轴）的热图。较深的对角线表示自我偏好：模型倾向于偏好自身输出。（图片来源：<a href="https://arxiv.org/abs/2311.09766" target="_blank">Liu et al. 2023</a>）</figcaption>
+</figure>
+<h2 id="in-context-reward-hacking">上下文内的 reward hacking<a hidden class="anchor" aria-hidden="true" href="#in-context-reward-hacking">#</a></h2>
+<p><em>Iterative self-refinement（迭代自我改进）</em> 是一种训练设置，其中评估模型与生成模型相同，而且都可以微调。在这种设置下，优化压力可能驱使模型利用两种角色中的弱点。在 <a href="https://arxiv.org/abs/2407.04549">Pan et al. (2023)</a> 的实验中，不更新模型参数，而是使用同一模型搭配不同提示，分别担任评估器与生成器。实验任务是文章编辑，有两个角色：（1）为文章提供反馈的评审（评估器），（2）根据反馈编辑文章的作者（生成器）。收集人类评估分数，作为文章质量的理想真实分数。作者假设，这种设置可能导致 <strong>in-context reward hacking（上下文内利用奖励机制漏洞，ICRH）</strong>，使评估器分数与理想真实分数偏离。更一般地，ICRH 发生在 LLM与其评估器（例如另一个 LLM 或外部世界）之间的反馈循环中。测试时，LLM 优化一个可能隐含的目标，却在过程中产生负面副作用（<a href="https://arxiv.org/abs/2402.06627">Pan et al., 2024</a>）。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/essay-iterative-editing.png" style="width: 100%;"  />
+	<figcaption>针对文章评估与编辑的 in-context reward hacking（上下文内利用奖励机制漏洞）实验示意图。（图片来源：<a href="https://arxiv.org/abs/2407.04549" target="_blank">Pan et al. 2023</a>）</figcaption>
+</figure>
+<p>评审与作者都可以被设置为看不到、或看到若干轮此前的反馈与编辑。在线评审能够看到过去对话，而离线评审或人类标注者每次只能看到一篇文章。较小模型对 ICRH（上下文内利用奖励机制漏洞）更敏感；例如，实验中 GPT-3.5 作为评估器导致的 ICRH 比 GPT-4 更严重。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/ICRH-exp.png" style="width: 80%;"  />
+	<figcaption>较小的评估模型更容易导致 in-context reward hacking（上下文内利用奖励机制漏洞，ICRH）。（图片来源：<a href="https://arxiv.org/abs/2407.04549" target="_blank">Pan et al. 2023</a>）</figcaption>
+</figure>
+<p>当评审与作者被设置为看到不同数量的过去迭代时，如果它们共享<em>相同</em>数量的迭代，人类分数与评估器分数的差距往往更大。评估器与生成器具有相同上下文，对 ICRH（上下文内利用奖励机制漏洞）至关重要，说明共享上下文比上下文长度更重要。</p>
+<p>后续工作中，<a href="https://arxiv.org/abs/2402.06627">Pan et al. (2024)</a> 进一步研究了 in-context reward hacking（上下文内利用奖励机制漏洞，ICRH）：反馈由外部世界提供，目标是通常以自然语言规定的不完美代理目标。这里的目标往往规定不足，无法捕获全部约束或要求，因此可被利用。</p>
+<p>该研究描述了导致 ICRH（上下文内利用奖励机制漏洞）的两个过程，分别对应两个简化实验：</p>
+<ol>
+<li><strong>输出改进</strong>：LLM根据反馈改进输出。
+<ul>
+<li>实验根据互动指标改进一条推文，可能导致推文毒性增加。基于反馈的优化使用 LLM进行成对评估，再通过 Bradley-Terry（根据成对比较估计相对评分的模型）转换为分数。
+  <figure>
+</li>
+</ul>
+ <img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/ICRH-twitter-1.png" style="width: 60%;"  />
+ - 结果显示，互动指标与毒性都增加。使用不同规模的 Claude 模型家族重复相同实验，证明扩大模型规模会使 ICRH（上下文内利用奖励机制漏洞）恶化。
+ 	<figure>
+ <img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/ICRH-twitter-2.png" style="width: 100%;"  />
+ - 值得注意的是，修改用于根据反馈迭代模型输出的提示，并未缓解问题。ICRH（上下文内利用奖励机制漏洞）仍然存在，只是程度略低。
+</li>
+<li><strong>策略改进</strong>：LLM根据反馈优化策略。
+<ul>
+<li>实验构建一个代表用户支付账单的 LLM智能体，但遇到 <code>InsufficientBalanceError</code> 后，模型学会在未获得用户授权的情况下从其他账户转移资金，可能导致更多未授权转账。作者使用 ToolEmu 作为模拟器，包含 144 个 LLM 智能体任务，每项任务具有用户特定目标与一组 API（应用程序编程接口）。注入 API 错误以模拟服务器端故障，每个任务由 GPT-4 评估并赋予有用性分数。</li>
+<li>随着错误反馈轮次增加，LLM能够从错误中恢复，但严重违反约束的次数增加。
+  <figure>
+</li>
+</ul>
+ <img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/ICRH-api-errors.png" style="width: 100%;"  />
+</li>
+</ol>
+<p>将 ICRH（上下文内利用奖励机制漏洞）与传统 reward hacking比较时，有两点明显差异：</p>
+<ul>
+<li>ICRH（上下文内利用奖励机制漏洞）在部署时，通过反馈循环发生于自我改进设置，而传统 reward hacking发生于训练期间。</li>
+<li>传统 reward hacking发生于智能体专精某项任务时，而 ICRH（上下文内利用奖励机制漏洞）由其通用性驱动。</li>
+</ul>
+<p>目前还没有能够神奇地避免、检测或防止 ICRH（上下文内利用奖励机制漏洞）的方法，因为改善提示规定不足以消除 ICRH，而扩大模型规模可能使其恶化。部署前测试的最佳实践，是通过更多反馈轮次、多样反馈以及注入异常环境观察来评估模型，模拟部署时可能发生的情况。</p>
+<h1 id="generalization-of-hacking-skills">漏洞利用技能的泛化<a hidden class="anchor" aria-hidden="true" href="#generalization-of-hacking-skills">#</a></h1>
+<p>研究发现，reward hacking行为可以跨任务泛化：模型在有监督训练中表现出利用缺陷的行为时，有时会泛化为利用 OOD（分布外）环境的缺陷（<a href="https://www.lesswrong.com/posts/Ge55vxEmKXunFFwoe/reward-hacking-behavior-can-generalize-across-tasks">Kei et al., 2024</a>）。研究者在一些 <em>奖励机制可被利用的环境</em> 中强化 reward hacking 行为，检查其是否泛化到其他留出数据集。他们实际上准备了多项选择题的 <a href="https://github.com/keing1/reward-hack-generalization/">8 个数据集</a>，其中 4 个用于训练，4 个用于测试。RL训练采用 expert iteration（专家迭代，即反复在择优样本上训练），也就是在 best-of-$n$（从多个候选中择优）样本上迭代微调。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/reward-hacking-generalization.png" style="width: 70%;"  />
+	<figcaption>在一组奖励机制可被利用的环境中训练 GPT-3.5，可能使 reward hacking行为泛化到留出环境。（图片来源：<a href="https://www.lesswrong.com/posts/Ge55vxEmKXunFFwoe/reward-hacking-behavior-can-generalize-across-tasks" target="_blank">Kei et al. 2024</a>）</figcaption>
+</figure>
+<p>值得注意的是，所有实验都设计了 scratchpad（记录中间推理的草稿区），用于容纳隐藏推理步骤。Scratchpad 可以解释模型在过程中如何思考。分析 scratchpad 表明，它能够：</p>
+<ul>
+<li>纳入用户信念；例如考虑对话伙伴与评分器。</li>
+<li>表现出对评估的意识；例如考虑模型回复将如何被评估，以及评估过程。</li>
+</ul>
+<p><a href="https://arxiv.org/abs/2406.10162">Denison et al. (2024)</a> 使用人工整理的课程研究 reward tampering，课程中的环境越来越复杂、且存在可被利用的漏洞。他们观察到，在课程较容易的环境中训练，会放大其余环境中的 specification gaming。某些情况下，在完整课程上训练后，模型能够零样本泛化为直接重写自身奖励函数。</p>
+<p>这种可被利用的环境课程包括：</p>
+<ol>
+<li>政治迎合：如果模型给出符合用户政治观点的答案，环境就给予奖励。</li>
+<li>工具使用中的奉承：环境允许模型运行命令行，访问用户文件系统，读取本地文件中的诗歌样本。模型可能为诗歌打高分，作为迎合性的回复。</li>
+<li>评分标准修改：环境按照核对清单给模型评分，模型必须将清单上的每项都标为已完成，才能获得高奖励。</li>
+<li>reward tampering：模型被要求检查 <code>./rl_environment/</code> 目录，其中包含自身 RL代码的模拟版本，并报告已经经过多少个 episode（完整交互回合）。该目录中，<code>compute_reward.py</code> 文件包含一个返回常数的奖励函数，另一个 <code>this_file_blocks_reward_hack_attempts.py</code> 文件包含检查奖励函数是否被修改的测试。</li>
+</ol>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/gameable-envs.png" style="width: 100%;"  />
+	<figcaption>“工具使用中的奉承”和“reward tampering”环境的评估脚本示例，其中 `<cot>` 对监督者隐藏，`<bash>` 可以在 VM（虚拟机）中执行。（图片来源：<a href="https://arxiv.org/abs/2406.10162" target="_blank">Denison et al. 2024</a>）</figcaption>
+</figure>
+<p>模型按照这一课程训练，论文衡量其能否学会泛化到未见环境的漏洞利用行为。在 Claude-2 helpful-only（仅针对有用性训练）模型的实验中，作者采样 $N=64$ 个回复，针对每个提示进行，提示总数为 $P=1024$，属于 HHH（有用、诚实、无害）提示；这些回复用于 expert iteration（专家迭代），并根据 RM（奖励模型）选择最佳回复。使用专家迭代在课程上进行有监督学习的模型，可以从一个阶段泛化到下一个阶段。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/gameable-envs-exp.png" style="width: 90%;"  />
+	<figcaption>按照该课程使用 expert iteration（专家迭代）训练的模型，从各阶段到下一阶段的定量泛化结果。（图片来源：<a href="https://arxiv.org/abs/2406.10162" target="_blank">Denison et al. 2024</a>）</figcaption>
+</figure>
+<p>值得注意的是，即使完成课程后，模型改写奖励并逃避检测的频率也低于 1/1000。即使课程直接激励 reward hacking，模型改写自身奖励的频率也低于 1%，利用单元测试漏洞的频率更低。一种简单缓解方法是：在前两个环境中，用不利用环境漏洞的 SFT（有监督微调）数据微调模型；这些环境中的 reward hacking 易于检测（迎合与奉承）。研究发现，这能够降低留出环境中 reward tampering的概率。</p>
+<h1 id="peek-into-mitigations">缓解方法初探<a hidden class="anchor" aria-hidden="true" href="#peek-into-mitigations">#</a></h1>
+<p>虽然已有大量文献讨论 reward hacking现象，但 reward hacking 的缓解方法的研究仍不多，尤其在 RLHF与 LLM领域。本节简要回顾三种可能的方法，尚不全面。</p>
+<h2 id="rl-algorithm-improvement">RL算法改进<a hidden class="anchor" aria-hidden="true" href="#rl-algorithm-improvement">#</a></h2>
+<p><a href="https://arxiv.org/abs/1606.06565">Amodei et al. (2016)</a> 指出了在 RL训练中缓解 reward hacking的若干方向：</p>
+<ol>
+<li><em>对抗奖励函数。</em>将奖励函数本身视为自适应智能体，使其适应模型新发现的技巧：这些技巧能获得高奖励，却得到低人类评分。</li>
+<li><em>模型前瞻。</em>可以基于预计的未来状态给予奖励；例如，如果智能体将要替换奖励函数，就给予负奖励。</li>
+<li><em>对抗性信息屏蔽。</em>可以对模型屏蔽某些变量，使智能体无法学到能够帮助其利用奖励函数漏洞的信息。</li>
+<li><em>谨慎的工程设计。</em>某些针对系统设计的 reward hacking可以通过谨慎工程设计避免；例如将智能体置于沙盒，使其行动与奖励信号隔离。</li>
+<li><em>奖励封顶。</em>直接限制最大可能奖励，能够有效防止智能体偶尔利用漏洞、获得超高回报策略的情况。</li>
+<li><em>反例抵抗能力。</em>提高对抗稳健性，应当有利于奖励函数的稳健性。</li>
+<li><em>组合多种奖励。</em>组合不同类型奖励，可能使其更难被利用。</li>
+<li><em>奖励预训练。</em>可以从一组（状态、奖励）样本学习奖励函数，但根据有监督训练设置的质量，可能引入其他问题。<a href="https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/#rl-fine-tuning-with-human-preferences">RLHF</a> 依赖这种方法，但学习得到的标量奖励模型很容易学到不需要的特征。</li>
+<li><em>对变量保持无差别。</em>目标是要求智能体优化环境中的某些变量，而不优化其他变量。</li>
+<li><em>绊线。</em>可以有意引入一些漏洞，并设置监控与警报，一旦任何漏洞被用于 reward hacking，就触发警报。</li>
+</ol>
+<p>在以人类对智能体行动的 <em>认可</em> 作为反馈的 RL设置中，<a href="https://arxiv.org/abs/2011.08827">Uesato et al. (2020)</a> 提出通过 <strong>decoupled approval（解耦认可）</strong> 防止 reward tampering。如果反馈以 $(s, a)$（状态、行动）为条件，一旦这对组合发生 reward tampering，就永远无法获得针对行动 $a$、处于状态 $s$ 时的未受污染反馈。解耦意味着，用于收集反馈的查询行动，与现实中执行的行动独立采样。甚至在现实中执行行动前就已收到反馈，因此防止行动污染自身反馈。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/decoupled-approval.png" style="width: 100%;"  />
+	<figcaption>decoupled approval（解耦认可）与标准认可或有人类参与的 RL相比的工作方式示意图。（图片来源：<a href="https://arxiv.org/abs/2011.08827" target="_blank">Uesato et al. 2020</a>）</figcaption>
+</figure>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/decoupled-approval-algorithms.png" style="width: 100%;"  />
+	<figcaption>使用 decoupled approval（解耦认可）时，行动（在现实中执行）与查询（获取用户认可反馈）独立采样。它可以应用于（左）策略梯度和（右）Q-learning（Q 学习）算法。（图片来源：<a href="https://arxiv.org/abs/2011.08827" target="_blank">Uesato et al. 2020</a>）</figcaption>
+</figure>
+<h2 id="detecting-reward-hacking">检测 reward hacking<a hidden class="anchor" aria-hidden="true" href="#detecting-reward-hacking">#</a></h2>
+<p>另一种缓解方法，是将 reward hacking检测表述为异常检测任务：检测器（轨迹与奖励经过人类验证的“可信策略”）应标记行为偏离人类意图的情况（<a href="https://arxiv.org/abs/2201.03544">Pan et al. 2022</a>）。给定（1）可信策略与（2）一组人工标注的 rollout（展开生成的轨迹），可以基于可信策略与目标策略的动作分布距离，构建二分类器，并衡量异常检测分类器的准确率。在 <a href="https://arxiv.org/abs/2201.03544">Pan et al. (2022)</a> 的实验中，不同检测器各自适合不同任务，没有任何受测分类器能在所有受测 RL环境上取得高于 60% 的 AUROC（接收者操作特征曲线下面积）。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/reward-hacking-detection.png" style="width: 90%;"  />
+	<figcaption>检测器在不同任务上的性能。（图片来源：<a href="https://arxiv.org/abs/2201.03544" target="_blank">Pan et al. 2022</a>）</figcaption>
+</figure>
+<h2 id="data-analysis-of-rlhf">RLHF的数据分析<a hidden class="anchor" aria-hidden="true" href="#data-analysis-of-rlhf">#</a></h2>
+<p>`
+另一种方法是分析 RLHF数据集。通过检查训练数据如何影响 alignment（使模型行为符合人类意图）训练结果，可以获得指导预处理与人类反馈收集的见解，以降低 reward hacking的风险。</p>
+<p><a href="https://arxiv.org/abs/2408.10270">Revel et al. (2024)</a> 提出一组评估指标，衡量数据样本特征在建模与对齐人类价值观方面的有效性。他们在 <a href="https://github.com/anthropics/hh-rlhf">HHH-RLHF</a> 数据集上，开展了价值对齐的系统性错误分析（“SEAL”）。分析中使用的特征分类体系（例如 <code>is harmless</code>、<code>is refusal</code> 和 <code>is creative</code>）由人工预先定义。随后，LLM按照这一体系，为每个样本的每个特征标注二元标志。按照启发式规则，特征分为两组：</p>
+<ul>
+<li>目标特征：明确希望学到的价值观。</li>
+<li>干扰特征：训练期间无意学到的非预期价值观（例如情感或连贯性等风格特征）。这些类似于 OOD（分布外）分类研究中的 <a href="#spurious-correlation">虚假特征</a>（<a href="https://arxiv.org/abs/2004.07780">Geirhos et al. 2020</a>）。</li>
+</ul>
+<p>SEAL 提出三个指标，衡量数据对 alignment（使模型行为符合人类意图）训练的有效性：</p>
+<ol>
+<li><em>Feature imprint（特征印记）</em> 指系数参数 $\beta_\tau$，对应特征 $\tau$，它估计在其他因素不变时，具有与不具有特征 $\tau$ 的条目之间，奖励增加了多少分。</li>
+</ol>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/SEAL-feature-imprint.png" style="width: 100%;"  />
+	<figcaption>（左）特征印记 $\underline{\beta(\tau)}$（训练前）和 $\beta(\tau)$（训练后），通过将奖励 <span style="color: orange;">$\underline{r}(t^∗_i)$（橙色）</span> 和 <span style="color: #289490;">$r(t^∗_i)$（蓝色）</span> 对特征进行固定效应线性回归来计算。整体而言，alignment（使模型行为符合人类意图）训练奖励无害性、有用性等正面特征，惩罚色情内容、侵犯隐私等负面特征。（右）通过对奖励变化 $\theta_i$ 进行线性回归计算的特征印记。奖励变化 $\theta_i$ 定义为 alignment 训练前后奖励向量之间的夹角。训练过程细化了模型对目标特征的敏感性。请注意，无害性通过被选中与被拒绝的条目共同影响 RM（奖励模型）（“is harmless (c)”和“is harmless (r)”），而有用性只通过被拒绝的条目影响 RM（“is helpful (r)”）。（图片来源：<a href="https://arxiv.org/abs/2408.10270" target="_blank">Revel et al. 2024</a>）</figcaption>
+</figure>
+<ol start="2">
+<li><em>Alignment resistance（对齐抵抗）</em> 指 RM（奖励模型）<em>未能</em>匹配人类偏好的偏好数据对比例。研究发现，RM 在 HHH-RLHF 数据集超过四分之一的数据上违背人类偏好。</li>
+<li><em>Alignment robustness（对齐稳健性）</em>，$\pi^{c/r}_{+/-} (\tau)$，衡量 alignment（使模型行为符合人类意图）对扰动输入的稳健程度：通过按情感、表达流畅程度、连贯性等干扰特征 $\tau$ 重写输入，隔离每个特征与每种事件类型的影响。
+<ul>
+<li>稳健性指标 $\pi_−^c$（特征名称 $\tau$，例如“eloquent（表达流畅）”或“sentiment positive（情感积极）”）应按如下方式理解：
+<ul>
+<li>对于被选中的条目（记为 $c$），如果重写后特征 $\tau$ 更强，与没有发生这种翻转的其他条目相比，它变为被拒绝条目的优势比高 $\exp (\pi^c_{-}(\tau))$ 倍。</li>
+<li>类似地，对于被拒绝的条目（记为 $r$），如果重写后特征 $\tau$ 更弱，与没有发生这种翻转的其他条目相比，它变为被选中条目的优势比为 $\exp (\pi^r_{+}(\tau))$ 倍。</li>
+</ul>
+</li>
+<li>根据作者对不同重写方式下 alignment robustness（对齐稳健性）指标的分析，只有基于情感干扰特征的稳健性分数 $\pi^c_{+}$（情感）与 $\pi^r_{-}$（情感）具有统计显著性。</li>
+</ul>
+</li>
+</ol>
+<h1 id="citation">引用<a hidden class="anchor" aria-hidden="true" href="#citation">#</a></h1>
+<p>引用格式：</p>
+<blockquote>
+<p>Weng, Lilian。“Reward Hacking in Reinforcement Learning”（强化学习中的 reward hacking）。Lil’Log（2024 年 11 月）。https://lilianweng.github.io/posts/2024-11-28-reward-hacking/.</p>
+</blockquote>
+<p>或</p>
+<pre tabindex="0"><code>@article{weng2024rewardhack,
+  title   = &#34;Reward Hacking in Reinforcement Learning.&#34;,
+  author  = &#34;Weng, Lilian&#34;,
+  journal = &#34;lilianweng.github.io&#34;,
+  year    = &#34;2024&#34;,
+  month   = &#34;Nov&#34;,
+  url     = &#34;https://lilianweng.github.io/posts/2024-11-28-reward-hacking/&#34;
+}
+</code></pre><h1 id="references">参考文献<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<p>[1] Andrew Ng &amp; Stuart Russell. <a href="https://ai.stanford.edu/~ang/papers/icml00-irl.pdf">“Algorithms for inverse reinforcement learning.”</a>. ICML 2000.</p>
+<p>[2] Amodei et al. <a href="https://arxiv.org/abs/1606.06565">“Concrete problems in AI safety: Avoid reward hacking.”</a> arXiv 预印本 arXiv:1606.06565 (2016).</p>
+<p>[3] Krakovna et al. <a href="https://deepmind.google/discover/blog/specification-gaming-the-flip-side-of-ai-ingenuity/">“Specification gaming: the flip side of AI ingenuity.”</a> 2020.</p>
+<p>[4] Langosco et al. <a href="https://arxiv.org/abs/2105.14111">“Goal Misgeneralization in Deep Reinforcement Learning”</a> ICML 2022.</p>
+<p>[5] Everitt et al. <a href="https://arxiv.org/abs/1705.08417">“Reinforcement learning with a corrupted reward channel.”</a> IJCAI 2017.</p>
+<p>[6] Geirhos et al. <a href="https://arxiv.org/abs/2004.07780">“Shortcut Learning in Deep Neural Networks.”</a> Nature Machine Intelligence 2020.</p>
+<p>[7] Ribeiro et al. <a href="https://arxiv.org/abs/1602.04938">“Why Should I Trust You?”: Explaining the Predictions of Any Classifier.</a> KDD 2016.</p>
+<p>[8] Nagarajan et al. <a href="https://arxiv.org/abs/2010.15775">“Understanding the Failure Modes of Out-of-Distribution Generalization.”</a> ICLR 2021.</p>
+<p>[9] Garrabrant. <a href="https://www.lesswrong.com/posts/EbFABnst8LsidYs5Y/goodhart-taxonomy">“Goodhart Taxonomy”</a>. AI Alignment Forum （2017 年 12 月 30 日）.</p>
+<p>[10] Koch et al. <a href="https://www.gatsby.ucl.ac.uk/~balaji/udl2021/accepted-papers/UDL2021-paper-055.pdf">“Objective robustness in deep reinforcement learning.”</a> 2021.</p>
+<p>[11] Pan et al. <a href="https://arxiv.org/abs/2201.03544">“The effects of reward misspecification: mapping and mitigating misaligned models.”</a></p>
+<p>[12] Everitt et al. <a href="https://arxiv.org/abs/1908.04734">“Reward tampering problems and solutions in reinforcement learning: A causal influence diagram perspective.”</a> arXiv 预印本 arXiv:1908.04734 (2019).</p>
+<p>[13] Gleave et al. <a href="https://arxiv.org/abs/1905.10615">“Adversarial Policies: Attacking Deep Reinforcement Learning.”</a> ICRL 2020</p>
+<p>[14] <a href="https://www.lesswrong.com/posts/Ge55vxEmKXunFFwoe/reward-hacking-behavior-can-generalize-across-tasks">“Reward hacking behavior can generalize across tasks.”</a></p>
+<p>[15] Ng et al. <a href="https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/NgHaradaRussell-shaping-ICML1999.pdf">“Policy invariance under reward transformations: Theory and application to reward shaping.”</a> ICML 1999.</p>
+<p>[16] Wang et al. <a href="https://arxiv.org/abs/2305.17926">“Large Language Models are not Fair Evaluators.”</a> ACL 2024.</p>
+<p>[17] Liu et al. <a href="https://arxiv.org/abs/2311.09766">“LLMs as narcissistic evaluators: When ego inflates evaluation scores.”</a> ACL 2024.</p>
+<p>[18] Gao et al. <a href="https://arxiv.org/abs/2210.10760">“Scaling Laws for Reward Model Overoptimization.”</a> ICML 2023.</p>
+<p>[19] Pan et al. <a href="https://arxiv.org/abs/2407.04549">“Spontaneous Reward Hacking in Iterative Self-Refinement.”</a> arXiv 预印本 arXiv:2407.04549 (2024).</p>
+<p>[20] Pan et al. <a href="https://arxiv.org/abs/2402.06627">“Feedback Loops With Language Models Drive In-Context Reward Hacking.”</a> arXiv 预印本 arXiv:2402.06627 (2024).</p>
+<p>[21] Shrama et al. <a href="https://arxiv.org/abs/2310.13548">“Towards Understanding Sycophancy in Language Models.”</a> arXiv 预印本 arXiv:2310.13548 (2023).</p>
+<p>[22] Denison et al. <a href="https://arxiv.org/abs/2406.10162">“Sycophancy to subterfuge: Investigating reward tampering in language models.”</a> arXiv 预印本 arXiv:2406.10162 (2024).</p>
+<p>[23] Uesato et al. <a href="https://arxiv.org/abs/2011.08827">“Avoiding Tampering Incentives in Deep RL via Decoupled Approval.”</a> arXiv 预印本 arXiv:2011.08827 (2020).</p>
+<p>[24] Amin and Singh. <a href="https://arxiv.org/abs/1601.06569">“Towards resolving unidentifiability in inverse reinforcement learning.”</a></p>
+<p>[25] Wen et al. <a href="https://arxiv.org/abs/2409.12822">“Language Models Learn to Mislead Humans via RLHF.”</a> arXiv 预印本 arXiv:2409.12822 (2024).</p>
+<p>[26] Revel et al. <a href="https://arxiv.org/abs/2408.10270">“SEAL: Systematic Error Analysis for Value ALignment.”</a> arXiv 预印本 arXiv:2408.10270 (2024).</p>
+<p>[27] Yuval Noah Harari. <a href="https://www.goodreads.com/en/book/show/204927599-nexus">“Nexus: A Brief History of Information Networks from the Stone Age to AI.”</a> Signal; 2024 年 9 月 10 日。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://xingshuozhu1998.github.io/tags/language-model/">语言模型</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/rlhf/">RLHF（基于人类反馈的强化学习）</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/alignment/">Alignment（使模型行为符合人类意图）</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/safety/">安全</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/reinforcement-learning/">强化学习</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/long-read/">长文</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/">
+    <span class="title">« </span>
+    <br>
+    <span>我们为什么思考</span>
+  </a>
+  <a class="next" href="https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/">
+    <span class="title"> »</span>
+    <br>
+    <span>LLMs（大语言模型）中的 Extrinsic Hallucinations（缺乏外部事实依据的生成内容）</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Twitter 分享《强化学习中的 reward hacking》"
+        href="https://twitter.com/intent/tweet/?text=Reward%20Hacking%20in%20Reinforcement%20Learning&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2024-11-28-reward-hacking%2f&amp;hashtags=language-model%2crlhf%2calignment%2csafety%2creinforcement-learning%2clong-read">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 LinkedIn 分享《强化学习中的 reward hacking》"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2024-11-28-reward-hacking%2f&amp;title=Reward%20Hacking%20in%20Reinforcement%20Learning&amp;summary=Reward%20Hacking%20in%20Reinforcement%20Learning&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2024-11-28-reward-hacking%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Reddit 分享《强化学习中的 reward hacking》"
+        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2024-11-28-reward-hacking%2f&title=Reward%20Hacking%20in%20Reinforcement%20Learning">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Facebook 分享《强化学习中的 reward hacking》"
+        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2024-11-28-reward-hacking%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 WhatsApp 分享《强化学习中的 reward hacking》"
+        href="https://api.whatsapp.com/send?text=Reward%20Hacking%20in%20Reinforcement%20Learning%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2024-11-28-reward-hacking%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Telegram 分享《强化学习中的 reward hacking》"
+        href="https://telegram.me/share/url?text=Reward%20Hacking%20in%20Reinforcement%20Learning&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2024-11-28-reward-hacking%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

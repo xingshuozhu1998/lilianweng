@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/video-generation</title>
+    <link>https://xingshuozhu1998.github.io/tags/video-generation/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 12 Apr 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/video-generation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>用于视频生成的扩散模型</title>
+      <link>https://xingshuozhu1998.github.io/posts/2024-04-12-diffusion-video/</link>
+      <pubDate>Fri, 12 Apr 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2024-04-12-diffusion-video/</guid>
+      <description>过去几年， 扩散模型  在图像合成上表现强劲。现在，研究社区开始探索更困难的视频生成。图像相当于单帧视频，因此视频任务包含图像任务，但更有挑战，因为： 
+ 
+ 它对不同时间帧之间的时间一致性有额外要求，自然需要模型编码更多世界知识。 
+ 相比文本或图像，大量高质量、高维视频数据更难收集，更不用说文本—视频配对。 
+ 
+ 
+   
+🥑 必读前文：继续前，请确保读过图像生成文章  “What are Diffusion Models?”（什么是扩散模型？） 。
+    
+ 
+ 从头建模视频生成 #  
+ 首先回顾从头设计、训练视频扩散模型的方法，也就是不依赖预训练图像生成器。 
+ 参数化与采样基础 #  
+ 这里的变量定义与  上一篇  略有不同，但数学相同。令 $\mathbf{x} \sim q_\text{real}$ 为真实分布采样的数据点。随时间添加少量高斯噪声，创建 $\mathbf{x}$ 的含噪变体序列 $\{\mathbf{z}_t \mid t =1 \dots, T\}$，噪声随 $t$ 增加，最后 $q(\mathbf{z}_T) \sim \mathcal{N}(</description>
+    </item>
+    
+  </channel>
+</rss>

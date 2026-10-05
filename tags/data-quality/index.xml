@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/data-quality</title>
+    <link>https://xingshuozhu1998.github.io/tags/data-quality/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 05 Feb 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/data-quality/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于高质量人工数据的思考</title>
+      <link>https://xingshuozhu1998.github.io/posts/2024-02-05-human-data-quality/</link>
+      <pubDate>Mon, 05 Feb 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2024-02-05-human-data-quality/</guid>
+      <description>[特别感谢  Ian Kivlichan  提供许多有用线索（如百余年前 Nature 论文“Vox populi”）和良好反馈。🙏]   
+ 高质量数据是现代深度学习模型训练的燃料。多数针对特定任务的带标签数据来自人工标注，例如分类任务，以及用于 LLM（大语言模型）alignment（使模型行为符合人类意图）训练的  RLHF（基于人类反馈的强化学习）  标注，后者也可以构建为分类格式。本文介绍的许多机器学习技术能够改善数据质量，但从根本上说，收集人类数据需要关注细节并谨慎执行。研究社区知道高质量数据的价值，却不知为何有一种微妙印象：“人人都想做模型工作，而不想做数据工作”（ Sambasivan et al. 2021 ）。 
+ 
+	 
+	 实现高数据质量的两个方向。 
+ 
+ 人类评分者 ↔ 数据质量 #  
+ 收集人类数据涉及一系列操作步骤，每个步骤都会影响数据质量： 
+ 
+ 任务设计：设计任务流程，使任务更加清楚并降低复杂度。详细的指南很有帮助，但如果指南非常长且复杂，就需要相当充分的培训，才能真正发挥作用。 
+ 选择并培训一组评分者：选择技能与任务匹配、表现一致的标注者。培</description>
+    </item>
+    
+    <item>
+      <title>数据不足时的学习（三）：数据生成</title>
+      <link>https://xingshuozhu1998.github.io/posts/2022-04-15-data-gen/</link>
+      <pubDate>Fri, 15 Apr 2022 15:10:30 -0700</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2022-04-15-data-gen/</guid>
+      <description>这是“数据不足时的学习”第 3 部分（此前： 第 1 部分 和 第 2 部分 ）。我们来考虑两种生成训练用合成数据的方法。 
+ 
+  增强数据 。给定一组现有训练样本，可以施加各种增强、扰动和变换，在不丢失关键属性的情况下得到新数据点。此前关于对比学习的 文章 已介绍许多文本与图像增强方法。为保证本文完整，我将数据增强一节 复制 到这里，并作了一些修改。 
+  新数据 。给定很少甚至没有数据点，可以依赖强大的预训练模型，生成若干 新 数据点。近年来大型预训练 language models（语言模型，LM） 快速发展，这一点尤其成立。少样本提示已被证明可以有效让 LM 在上下文中学习，无需额外训练。 
+ 
+ 数据增强 #  
+ 数据增强的目标，是在保持语义不变的同时，修改输入形式（例如文本措辞、视觉外观）。 
+ 图像增强 #  
+ 基本图像处理操作 #  
+ 在保留语义信息的同时，修改图像有多种方式。可以使用以下任一增强方法，或组合多种操作。 
+ 
+ 随机裁剪，然后缩放回原始大小。 
+ 随机颜色扰动 
+ 随机高斯模糊 
+ 随机颜色抖动 
+ 随机水平翻转 
+ 随机灰度转换 
+ 还有许多其</description>
+    </item>
+    
+  </channel>
+</rss>

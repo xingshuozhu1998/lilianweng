@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>数据不足时的学习（二）：主动学习 | Lil’Log 中文学习镜像</title>
+<meta name="keywords" content="data, active-learning" />
+<meta name="description" content="
+这是面对监督学习任务中有限带标签数据时如何应对的第二部分。这次会加入一定量的人类标注工作，但受预算限制，因此需要明智地选择标注哪些样本。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="数据不足时的学习（二）：主动学习" />
+<meta property="og:description" content="
+这是面对监督学习任务中有限带标签数据时如何应对的第二部分。这次会加入一定量的人类标注工作，但受预算限制，因此需要明智地选择标注哪些样本。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-02-20T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2022-02-20T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="数据不足时的学习（二）：主动学习"/>
+<meta name="twitter:description" content="
+这是面对监督学习任务中有限带标签数据时如何应对的第二部分。这次会加入一定量的人类标注工作，但受预算限制，因此需要明智地选择标注哪些样本。"/>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/posts/"}, {"@type": "ListItem", "position": 2, "name": "数据不足时的学习（二）：主动学习", "item": "https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "数据不足时的学习（二）：主动学习", "name": "数据不足时的学习（二）：主动学习", "description": "这是面对监督学习任务中有限带标签数据时如何应对的第二部分。这次会加入一定量的人类标注工作，但受预算限制，因此需要明智地选择标注哪些样本。", "keywords": ["data", "active-learning"], "articleBody": "这是面对监督学习任务中有限带标签数据时如何应对的第二部分。这次会加入一定量的人类标注工作，但受预算限制，因此需要明智地选择标注哪些样本。 \n 符号说明 #  \n \n\t \n\t\t\t \n\t\t\t\t\t 符号 \n\t\t\t\t\t 含义 \n\t\t\t \n\t \n\t \n\t\t\t \n\t\t\t\t\t $K$ \n\t\t\t\t\t 不同类别标签的数量。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $(\\mathbf{x}^l, y) \\sim \\mathcal{X}, y \\in \\{0, 1\\}^K$ \n\t\t\t\t\t 带标签数据集。$y$ 是真实标签的 one-hot（独热）表示。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mathbf{u} \\sim \\mathcal{U}$ \n\t\t\t\t\t 无标签数据集。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mathcal{D} = \\mathcal{X} \\cup \\mathcal{U}$ \n\t\t\t\t\t 整个数据集，包括带标签与无标签样本。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mathbf{x}$ \n\t\t\t\t\t 任意样本，可以带标签，也可以不带标签。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mathbf{x}_i$ \n\t\t\t\t\t 第 $i$ 个样本。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $U(\\mathbf{x})$ \n\t\t\t\t\t 主动学习样本选择的评分函数。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $P_\\theta(y \\vert \\mathbf{x})$ \n\t\t\t\t\t 由 $\\theta$ 参数化的 softmax 分类器。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\hat{y} = \\arg\\max_{y \\in \\mathcal{Y}} P_\\theta(y \\vert \\mathbf{x})$ \n\t\t\t\t\t 分类器置信度最高的预测。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $B$ \n\t\t\t\t\t 标注预算（最多标注的样本数量）。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $b$ \n\t\t\t\t\t 批次大小。 \n\t\t\t \n\t \n \n 什么是主动学习？ #  \n 给定无标签数据集 $\\mathcal{U}$ 与固定标注成本 $B$，主动学习旨在选择 $B$ 个样本的子集，来自 $\\mathcal{U}$，对其标注，使模型性能改善最大化。这是有效学习方式，尤其是标注困难昂贵时，例如医学图像。2010年的经典  综述  列出许多关键概念。某些传统方法可能不适用于深度学习，本文主要聚焦深度神经模型与批量训练。 \n \n\t \n\t 主动学习循环工作流示意图，通过明智选择标注样本，更高效地得到更好模型。 \n \n 为简化讨论，下文都假设任务为 $K$ 类分类。参数为 $\\theta$ 的模型，输出候选标签上的概率分布，可能经过校准，也可能没有，$P_\\theta(y \\vert \\mathbf{x})$；最可能预测为 $\\hat{y} = \\arg\\max_{y \\in \\mathcal{Y}} P_\\theta(y \\vert \\mathbf{x})$。 \n Acquisition Function（样本选择函数） #  \n 识别下一批最有价值标注样本的过程，称为“sampling strategy（采样策略）”或“query strategy（查询策略）”。采样评分函数称为“acquisition function（样本选择函数）”，记为 $U(\\mathbf{x})$。预计高得分数据点一旦标注，可为模型训练带来更高价值。 \n 以下是基本采样策略列表。 \n Uncertainty Sampling（不确定性采样） #  \n  Uncertainty sampling（不确定性采样）  选择模型预测最不确定的样本。单模型的不确定性可以通过预测概率估计，但常见批评是，深度学习预测往往未校准，与真实不确定性关联不佳。实际上，深度学习模型经常过度自信。 \n \n  Least confident score（最低置信度得分） ，也称  variation ratio（变异比） ：$U(\\mathbf{x}) = 1 - P_\\theta(\\hat{y} \\vert \\mathbf{x})$。 \n  Margin score（间隔得分） ：$U(\\mathbf{x}) = P_\\theta(\\hat{y}_1 \\vert \\mathbf{x}) - P_\\theta(\\hat{y}_2 \\vert \\mathbf{x})$，其中 $\\hat{y}_1$ 与 $\\hat{y}_2$ 是最可能与第二可能的预测标签。 \n  熵 ：$U(\\mathbf{x}) = \\mathcal{H}(P_\\theta(y \\vert \\mathbf{x})) = - \\sum_{y \\in \\mathcal{Y}} P_\\theta(y \\vert \\mathbf{x}) \\log P_\\theta(y \\vert \\mathbf{x})$。 \n \n 另一种量化不确定性的方法，是依赖专家模型委员会，称为 Query-By-Committee (QBC)（委员会查询）。QBC 根据一组意见衡量不确定性，因此保持成员间一定分歧至关重要。给定委员会池中 $C$ 个模型，分别由 $\\theta_1, \\dots, \\theta_C$ 参数化。 \n \n  Voter entropy（投票熵） ：$U(\\mathbf{x}) = \\mathcal{H}(\\frac{V(y)}{C})$，其中 $V(y)$ 统计委员会对标签 $y$ 的投票数量。 \n  Consensus entropy（共识熵） ：$U(\\mathbf{x}) = \\mathcal{H}(P_\\mathcal{C})$，其中 $P_\\mathcal{C}$ 是委员会各预测的平均。 \n  KL divergence（衡量两个概率分布差异的相对熵）（KL散度） ：$U(\\mathbf{x}) = \\frac{1}{C} \\sum_{c=1}^C D_\\text{KL} (P_{\\theta_c} | P_\\mathcal{C})$。 \n \n Diversity Sampling（多样性采样） #  \n  Diversity sampling（多样性采样）  旨在找到一组能充分代表整个数据分布的样本。多样性很重要，因为模型应对真实环境任意数据表现良好，而不只对狭窄子集。所选样本应代表底层分布，常见方法通常依赖量化样本间相似度。 \n Expected Model Change（期望模型变化） #  \n  Expected model change（期望模型变化）  指一个样本对模型训练的影响，可以是模型权重影响，也可以是训练损失改善。 后文  回顾若干研究，介绍如何衡量所选数据样本触发的模型影响。 \n 混合策略 #  \n 上述许多方法并不互斥。 混合  采样策略重视数据点不同属性，将不同采样偏好结合。通常希望选择  不确定、又具有高度代表性  的样本。 \n 深度样本选择函数 #  \n 衡量不确定性 #  \n 模型不确定性通常分为两类（ Der Kiureghian & Ditlevsen 2009 ， Kendall & Gal 2017 ）： \n \n  Aleatoric uncertainty（偶然不确定性）  来自数据噪声（例如传感器数据、测量过程噪声），可能依赖输入，也可能不依赖。通常认为无法消除，因为缺少真实情况的信息。 \n  Epistemic uncertainty（认知不确定性）  指模型参数中的不确定性，因此不知道模型能否最好地解释数据。理论上，增加数据可以降低这类不确定性。 \n \n 集成与近似集成 #  \n 机器学习长期使用集成改善性能。模型间多样性显著时，预计集成能获得更好结果。许多算法证明这一理论正确，例如  AdaBoost  聚合许多弱学习器，表现可与单个强学习器相当或更好。 Bootstrapping（自助采样）  集成多次重采样试验，更准确估计指标。随机森林或  GBM（梯度提升机）  也是集成有效性的例子。 \n 为更好估计不确定性，直观方法是聚合一组独立训练模型。但训练单个深度网络已昂贵，更不用说多个。强化学习中，Bootstrapped DQN（深度 Q 网络）（ Osband, et al. 2016 ）配备多个价值头，依赖 Q值近似集成的不确定性，指导 RL（强化学习）的  探索 。 \n 主动学习更常用  dropout（随机失活） “模拟”概率 Gaussian process（高斯过程； Gal & Ghahramani 2016 ）。因此，集成同一模型、前向计算中应用不同 dropout 掩码的多个样本，估计模型不确定性（认知不确定性）。过程称为  MC dropout （Monte Carlo dropout，蒙特卡洛随机失活），在每个权重层之前应用 dropout；它被证明在数学上等价于概率深度高斯过程的近似（ Gal & Ghahramani 2016 ）。该简单思路在小数据集分类中有效，被广泛用于需要高效估计模型不确定性的场景。 \n  DBAL （Deep Bayesian active learning，深度贝叶斯主动学习； Gal et al. 2017 ）通过 MC dropout（蒙特卡洛随机失活）近似贝叶斯神经网络，学习模型权重上的分布。实验中，MC dropout 优于随机基线与 Mean STD（平均标准差），表现类似变异比与熵度量。 \n \n\t \n\t DBAL 在 MNIST 上的主动学习结果。（图片来源： Gal et al. 2017 。） \n \n  Beluch et al. (2018)  比较集成模型与 MC dropout（蒙特卡洛随机失活），发现朴素集成（分别独立训练多个模型）结合变异比，预测校准优于其他方法。但朴素集成  非常  昂贵，因此探索几种较便宜替代方案： \n \n Snapshot ensemble（快照集成）：用循环学习率调度训练隐式集成，使其收敛到不同局部极小值。 \n Diversity encouraging ensemble (DEE)（鼓励多样性的集成）：用只训练少量 epoch（训练轮次）的基础网络，初始化 $n$ 个不同网络，各通过 dropout（随机失活）训练促进多样性。 \n Split head approach（分头方法）：一个基础模型配备多个头，各对应一个分类器。 \n \n 遗憾的是，上述便宜的隐式集成都不如朴素集成。考虑计算资源限制，MC dropout（蒙特卡洛随机失活）仍是良好且经济的选择。自然，也有人结合集成与 MC dropout（ Pop & Fulop 2018 ），通过随机集成获得少量额外性能收益。 \n 参数空间中的不确定性 #  \n  Bayes-by-backprop （ Blundell et al. 2015 ）直接衡量神经网络权重不确定性。维护权重 $\\mathbf{w}$ 上的概率分布，建模为变分分布 $q(\\mathbf{w} \\vert \\theta)$，因为真实后验 $p(\\mathbf{w} \\vert \\mathcal{D})$ 难以直接计算。损失最小化 $q(\\mathbf{w} \\vert \\theta)$ 与 $p(\\mathbf{w} \\vert \\mathcal{D})$ 之间的 KL divergence（KL散度）， \n \n$$\n\\begin{aligned}\n\\mathcal{L}(\\theta)\n&= \\text{KL}[q(\\mathbf{w}\\vert\\theta) \\| p(\\mathbf{w} \\vert \\mathcal{D})] \\\\ \n&= \\int q(\\mathbf{w}\\vert\\theta) \\log \\frac{q(\\mathbf{w}\\vert\\theta)}{p(\\mathbf{w}) p(\\mathcal{D}\\vert \\mathbf{w})} d\\mathbf{w} \\\\ \n&= \\text{KL}[q(\\mathbf{w}\\vert\\theta) \\| p(w)] - \\mathbb{E}_{q(\\mathbf{w}\\vert\\theta)} [\\log p(\\mathcal{D} \\vert \\mathbf{w})] \\\\\n&\\approx \\log q(\\mathbf{w} \\vert \\theta) - \\log p(\\mathbf{w}) p(\\mathcal{D}\\vert \\mathbf{w}) & \\text{; monte carlo sampling; }q(\\mathbf{w} \\vert \\theta)\\text{ & }p(\\mathbf{w})\\text{ are close.}\n\\end{aligned}\n$$\n \n 变分分布 $q$ 通常是对角协方差高斯分布，各权重从 $\\mathcal{N}(\\mu_i, \\sigma_i^2)$ 采样。为保证 $\\sigma_i$ 非负，通过 softplus 进一步参数化，$\\sigma_i = \\log(1 + \\exp(\\rho_i))$，变分参数为 $\\theta = \\{\\mu_i , \\rho_i\\}^d_{i=1}$。 \n Bayes-by-backprop 过程总结如下： \n \n 采样 $\\epsilon \\sim \\mathcal{N}(0, I)$。 \n 令 $\\mathbf{w} = \\mu + \\log(1+ \\exp(\\rho)) \\circ \\epsilon$。 \n 令 $\\theta = (\\mu, \\rho)$。 \n 令 $f(\\mathbf{w}, \\theta) = \\log q(\\mathbf{w} \\vert \\theta) - \\log p(\\mathbf{w})p(\\mathcal{D}\\vert \\mathbf{w})$。 \n 计算 $f(\\mathbf{w}, \\theta)$ 关于 $\\mu$ 与 $\\rho$ 的梯度，再更新 $\\theta$。 \n 推理期间采样不同模型权重，以衡量不确定性。 \n \n 损失预测 #  \n 损失目标指导模型训练。损失低表明模型能作出良好准确预测。 Yoo & Kweon (2019)  设计  loss prediction module（损失预测模块） ，预测无标签输入的损失，估计模型对给定数据的预测质量。如果模块对样本预测不确定（高损失），就选择该样本。模块是带 dropout（随机失活）的简单 MLP（多层感知机），以多个中间层特征为输入，进行全局平均池化后拼接。 \n \n\t \n\t 使用带损失预测模块的模型，进行主动学习选择。（图片来源： Yoo & Kweon 2019 ） \n \n 令 $\\hat{l}$ 为损失预测模块输出，$l$ 为真实损失。训练模块时，简单 MSE（均方误差）损失 $=(l - \\hat{l})^2$ 不合适，因为模型随学习改善，损失随时间下降。良好目标应不受目标损失尺度变化影响。因此，采用样本对比较。每个大小为 $b$ 的批次，有 $b/2$ 对样本 $(\\mathbf{x}_i, \\mathbf{x}_j)$，损失预测模型应正确判断哪个样本损失更大。 \n \n$$\n\\begin{aligned}\n\\mathcal{L}_\\text{loss}(\\mathbf{x}_i, \\mathbf{x}_j) &= \\max\\big( 0, -\\mathbb{1}(l(\\mathbf{x}_i), l(\\mathbf{x}_j)) \\cdot (\\hat{l}(\\mathbf{x}_i) - \\hat{l}(\\mathbf{x}_j)) + \\epsilon \\big) \\\\ \n\\text{where } \\mathbb{1}(l_i, l_j) &= \\begin{cases} +1 & \\text{if }l_i > l_j \\\\ -1 & \\text{otherwise} \\end{cases} \n\\end{aligned}\n$$\n \n 其中 $\\epsilon$ 是预定义的正间隔常数。 \n 三个视觉任务实验中，基于损失预测的主动学习选择，优于随机基线、基于熵的选择与  core-set（核心集） 。 \n \n\t \n\t 基于损失预测模块的主动学习选择，与其他方法的结果比较。（图片来源： Yoo & Kweon 2019 ） \n \n 对抗设置 #  \n  Sinha et al. (2019)  提出类似 GAN（生成对抗网络）的设置，称为  VAAL  (Variational Adversarial Active Learning，变分对抗主动学习)，训练判别器区分无标签与带标签数据。有趣的是，VAAL 的主动学习选择标准不依赖任务性能。 \n \n\t \n\t VAAL (Variational Adversarial Active Learning，变分对抗主动学习) 示意图。（图片来源： Sinha et al. 2019 ） \n \n \n $\\beta$-VAE（对潜变量约束加权的变分自编码器）分别为带标签与无标签数据，学习潜在特征空间 $\\mathbf{z}^l \\cup \\mathbf{z}^u$，旨在  欺骗  判别器 $D(.)$，使其认为全部数据点来自带标签池； \n 判别器 $D(.)$ 根据潜在表示 $\\mathbf{z}$，预测样本是否带标签（1为是，0为否）。VAAL 选择判别器得分较低的无标签样本，表明这些样本与此前带标签样本足够不同。 \n \n VAAL 中 VAE（变分自编码器）表示学习的损失，包含重建部分（最小化给定样本的 ELBO（证据下界））与对抗部分（带标签与无标签数据来自同一概率分布 $q_\\phi$）： \n \n$$\n\\begin{aligned}\n\\mathcal{L}_\\text{VAE} &= \\lambda_1 \\mathcal{L}^\\text{rec}_\\text{VAE} + \\lambda_2 \\mathcal{L}^\\text{adv}_\\text{VAE} \\\\\n\\mathcal{L}^\\text{rec}_\\text{VAE} &= \\mathbb{E}[\\log p_\\theta(\\mathbf{x}^l \\vert \\mathbf{z}^l)] - \\beta \\text{KL}(q_\\phi(\\mathbf{z}^l \\vert \\mathbf{x}^l) \\| p(\\mathbf{\\tilde{z}})) + \\mathbb{E}[\\log p_\\theta(\\mathbf{u} \\vert \\mathbf{z}^u)] - \\beta \\text{KL}(q_\\phi(\\mathbf{z}^u \\vert \\mathbf{u}) \\| p(\\mathbf{\\tilde{z}})) \\\\\n\\mathcal{L}^\\text{adv}_\\text{VAE} &= - \\mathbb{E}[\\log D(q_\\phi (\\mathbf{z}^l \\vert \\mathbf{x}^l))] - \\mathbb{E}[\\log D(q_\\phi(\\mathbf{z}^u \\vert \\mathbf{u}))]\n\\end{aligned}\n$$\n \n 其中 $p(\\mathbf{\\tilde{z}})$ 是预定义先验，即单位高斯分布，$\\beta$ 是 Lagrangian（拉格朗日）参数。 \n 判别器损失为： \n \n$$\n\\mathcal{L}_D = -\\mathbb{E}[\\log D(q_\\phi (\\mathbf{z}^l \\vert \\mathbf{x}^l))] - \\mathbb{E}[\\log (1 - D(q_\\phi (\\mathbf{z}^u \\vert \\mathbf{u})))]\n$$\n \n \n\t \n\t VAAL（变分对抗主动学习）在多个图像分类任务上的实验结果。（图片来源： Sinha et al. 2019   \n \n 消融研究表明，联合训练 VAE与判别器至关重要。结果对有偏的初始带标签池、不同标注预算，以及有噪声的 oracle（标注信息源）具有鲁棒性。 \n  MAL （Minimax Active Learning，极小极大主动学习； Ebrahimiet al. 2021 ）扩展 VAAL。框架包含熵最小化特征编码网络 $F$，随后是熵最大化分类器 $C$。这种极小极大设置减少带标签与无标签数据间的分布差距。 \n \n\t \n\t MAL（极小极大主动学习）框架示意图。（图片来源： Ebrahimiet al. 2021 ） \n \n 特征编码器 $F$ 将样本编码为经 $\\ell_2$ 归一化的 $d$ 维潜在向量。假设有 $K$ 类，分类器 $C$ 由 $\\mathbf{W} \\in \\mathbb{R}^{d \\times K}$ 参数化。 \n (1) 首先，用简单交叉熵损失在带标签样本上训练 $F$ 与 $C$，取得良好分类结果， \n \n$$\n\\mathcal{L}_\\text{CE} = -\\mathbb{E}_{(\\mathbf{x}^l, y) \\sim \\mathcal{X}} \\sum_{k=1}^K \\mathbb{1}[k=y] \\log\\Big( \\sigma(\\frac{1}{T} \\frac{\\mathbf{W}^\\top F\\big(\\mathbf{x}^l)}{\\|F(\\mathbf{x}^l)\\|}\\big) \\Big)\n$$\n \n (2) 无标签样本训练中，MAL 依赖  minimax（极小极大）  博弈设置： \n \n$$\n\\begin{aligned}\n\\mathcal{L}_\\text{Ent} &= -\\sum^K_{k=1} p(y=k \\vert \\mathbf{u}) \\log p(y=k\\vert \\mathbf{u}) \\\\\n\\theta^*_F, \\theta^*_C &= \\min_F\\max_C \\mathcal{L}_\\text{Ent} \\\\\n\\theta_F &\\gets \\theta_F - \\alpha_1 \\nabla \\mathcal{L}_\\text{Ent} \\\\\n\\theta_C &\\gets \\theta_C + \\alpha_2 \\nabla \\mathcal{L}_\\text{Ent}\n\\end{aligned}\n$$\n \n 其中， \n \n 首先，最小化 $F$ 中的熵，鼓励预测标签相似的无标签样本，具有相似特征。 \n 对抗性地最大化 $C$ 中的熵，使预测趋于更均匀的类别分布。 （我的理解是，由于无标签样本真实标签未知，尚不应优化分类器以最大化预测标签。）  \n \n 判别器采用与 VAAL 相同的训练方式。 \n MAL 的采样策略同时考虑多样性与不确定性： \n \n 多样性：$D$ 得分表示样本与此前样本的相似程度。得分越接近0，越有利于选择不熟悉的数据点。 \n 不确定性：使用 $C$ 得到的熵。熵越高，表示模型尚无法作出高置信度预测。 \n \n 实验在图像分类与分割任务上，将 MAL 与随机、熵、core-set（核心集）、BALD 和 VAAL 基线比较，结果相当强。 \n \n\t \n\t MAL 在 ImageNet 上的性能。（表格来源： Ebrahimiet al. 2021 ） \n \n  CAL （Contrastive Active Learning，对比主动学习； Margatina et al. 2021 ）旨在选择  contrastive（对比）  样本。如果两个不同标签数据点具有相似网络表示 $\\Phi(.)$，CAL 就视为对比样本。给定一对对比样本 $(\\mathbf{x}_i, \\mathbf{x}_j)$，它们应当： \n \n$$\nd(\\Phi(\\mathbf{x}_i), \\Phi(\\mathbf{x}_j))  \n 给定无标签样本 $\\mathbf{x}$，CAL 执行以下过程： \n \n 在带标签样本中，选择模型特征空间的前 $k$ 个最近邻，$\\{(\\mathbf{x}^l_i, y_i\\}_{i=1}^M \\subset \\mathcal{X}$。 \n 计算 $\\mathbf{x}$ 与 $\\{\\mathbf{x}^l\\}$ 中各样本模型输出概率间的 KL divergence（KL散度）。$\\mathbf{x}$ 的对比得分，是这些 KL divergence 的平均值：$s(\\mathbf{x}) = \\frac{1}{M} \\sum_{i=1}^M \\text{KL}(p(y \\vert \\mathbf{x}^l_i | p(y \\vert \\mathbf{x}))$。 \n 选择  高对比得分  样本进行主动学习。 \n \n 多种分类任务上，CAL 实验结果与熵基线相似。 \n 衡量代表性 #  \n Core-sets Approach（核心集方法） #  \n  core-set（核心集）  是计算几何概念，指近似较大点集形状的小点集，可用某种几何度量刻画近似。主动学习中，希望在核心集上训练的模型，与在全部数据点上训练的模型表现相当。 \n  Sener & Savarese (2018)  将主动学习视为核心集选择问题。假设训练期间总共可访问 $N$ 个样本。主动学习每个时间步 $t$，标注一小组数据点，记为 $\\mathcal{S}^{(t)}$。学习目标上界如下，其中  core-set loss（核心集损失）  定义为带标签样本平均经验损失，与包含无标签样本的完整数据集损失之差。 \n \n$$\n\\begin{aligned}\n\\mathbb{E}_{(\\mathbf{x}, y) \\sim p} [\\mathcal{L}(\\mathbf{x}, y)]\n\\leq& \\bigg\\vert \\mathbb{E}_{(\\mathbf{x}, y) \\sim p} [\\mathcal{L}(\\mathbf{x}, y)] - \\frac{1}{N} \\sum_{i=1}^N \\mathcal{L}(\\mathbf{x}_i, y_i) \\bigg\\vert & \\text{; Generalization error}\\\\\n+& \\frac{1}{\\vert \\mathcal{S}^{(t)} \\vert} \\sum_{j=1}^{\\vert \\mathcal{S}^{(t)} \\vert} \\mathcal{L}(\\mathbf{x}^l_j, y_j) & \\text{; Training error}\\\\\n+& \\bigg\\vert \\frac{1}{N} \\sum_{i=1}^N \\mathcal{L}(\\mathbf{x}_i, y_i) - \\frac{1}{\\vert \\mathcal{S}^{(t)} \\vert} \\sum_{j=1}^{\\vert \\mathcal{S}^{(t)} \\vert} \\mathcal{L}(\\mathbf{x}^l_j, y_j) \\bigg\\vert & \\text{; Core-set error}\n\\end{aligned}\n$$\n \n 主动学习问题可重新定义为： \n \n$$\n\\min_{\\mathcal{S}^{(t+1)} : \\vert \\mathcal{S}^{(t+1)} \\vert \\leq b} \\bigg\\vert \\frac{1}{N}\\sum_{i=1}^N \\mathcal{L}(\\mathbf{x}_i, y_i) - \\frac{1}{\\vert \\mathcal{S}^{(t)} \\cup \\mathcal{S}^{(t+1)} \\vert} \\sum_{j=1}^{\\vert \\mathcal{S}^{(t)} \\cup \\mathcal{S}^{(t+1)} \\vert} \\mathcal{L}(\\mathbf{x}^l_j, y_j) \\bigg\\vert\n$$\n \n 等价于  $k$-Center problem（k中心问题） ：选择 $b$ 个中心点，最小化数据点与最近中心之间的最大距离。该问题为 NP-hard（非确定性多项式难），近似解依赖贪心算法。 \n \n\t \n\t 核心集算法与常见基线在 CIFAR-10、CIFAR-100、SVHN 上的主动学习结果比较。（图片来源： Sener & Savarese 2018 ） \n \n 类别少时，它适合图像分类。类别变多或数据维度增高（“curse of dimensionality”，维度灾难）时，核心集方法有效性下降（ Sinha et al. 2019 ）。 \n 核心集选择昂贵，因此  Coleman et al. (2020)  实验使用较弱模型（例如更小、架构更弱、训练不充分），发现以弱模型为代理，可以显著缩短反复训练模型、选择样本的数据选择周期，而不明显损害最终错误率。方法称为  SVP  (Selection via Proxy，通过代理选择)。 \n 多样化梯度嵌入 #  \n  BADGE （Batch Active learning by Diverse Gradient Embeddings，通过多样化梯度嵌入进行批量主动学习； Ash et al. 2020 ）在梯度空间同时追踪模型不确定性与数据多样性。不确定性由网络最后一层的梯度幅度衡量，多样性由梯度空间中覆盖不同位置的一组样本体现。 \n \n 不确定性。给定无标签样本 $\\mathbf{x}$，BADGE 先计算预测 $\\hat{y}$，以及损失梯度 $g_\\mathbf{x}$，损失基于 $(\\mathbf{x}, \\hat{y})$，梯度相对于最后一层参数。他们发现，$g_\\mathbf{x}$ 的范数保守估计样本对模型学习的影响，高置信度样本倾向于较小幅度的梯度嵌入。 \n 多样性。给定许多样本的梯度嵌入 $g_\\mathbf{x}$，BADGE 运行  $k$-means++ ，据此采样数据点。 \n \n \n\t \n\t BADGE（通过多样化梯度嵌入进行批量主动学习）算法。（图片来源： Ash et al. 2020 ） \n \n 衡量训练效果 #  \n 量化模型变化 #  \n  Settles et al. (2008)  提出主动学习查询策略  EGL  (Expected Gradient Length，期望梯度长度)。动机是，找到一旦知道标签，就能引发最大模型更新的样本。 \n 令 $\\nabla \\mathcal{L}(\\theta)$ 为损失对模型参数的梯度。具体而言，给定无标签样本 $\\mathbf{x}_i$，假设标签为 $y \\in \\mathcal{Y}$，计算梯度 $\\nabla \\mathcal{L}^{(y)}(\\theta)$。由于真实标签 $y_i$ 未知，EGL 依赖模型当前信念，计算期望梯度变化： \n \n$$\n\\text{EGL}(\\mathbf{x}_i) = \\sum_{y_i \\in \\mathcal{Y}} p(y=y_i \\vert \\mathbf{x}) \\|\\nabla \\mathcal{L}^{(y_i)}(\\theta)\\|\n$$\n \n  BALD （Bayesian Active Learning by Disagreement，通过分歧进行贝叶斯主动学习； Houlsby et al. 2011 ）旨在识别最大化模型权重信息增益的样本，等价于最大化期望后验熵的下降。 \n \n$$\n\\begin{aligned}\nI[\\boldsymbol{\\theta}, y \\vert x,\\mathcal{D}] \n&= H(\\boldsymbol{\\theta} \\vert \\mathcal{D}) - \\mathbb{E}_{y \\sim p(y \\vert \\boldsymbol{x}, \\mathcal{D})} \\big[ H(\\boldsymbol{\\theta} \\vert y, \\boldsymbol{x}, \\mathcal{D}) \\big] & \\text{; Decrease in expected posterior entropy}\\\\ \n&= H(y \\vert \\boldsymbol{x}, \\mathcal{D}) - \\mathbb{E}_{\\boldsymbol{\\theta} \\sim p(\\boldsymbol{\\theta} \\vert \\mathcal{D})} \\big[ H(y \\vert \\boldsymbol{x}, \\mathcal{\\theta}) \\big]\n\\end{aligned}\n$$\n \n 其解释是：“寻找 $\\mathbf{x}$，模型边缘上对 $y$ 最不确定（$H(y \\vert \\mathbf{x}, \\mathcal{D})$ 高），但各个参数设置却很自信（$H(y \\vert \\mathbf{x}, \\boldsymbol{\\theta})$ 低）。”换句话说，每次后验采样都自信，但多次采样有不同意见。 \n BALD 最初用于单样本， Kirsch et al. (2019)  扩展为批量模式。 \n Forgetting Events（遗忘事件） #  \n 为研究神经网络是否倾向于  忘记  之前学到的信息， Mariya Toneva et al. (2019)  设计实验：追踪训练中每个样本的预测，统计从分类正确到错误、或反过来的转变。样本据此分类： \n \n  Forgettable（可遗忘） （冗余）样本：类别标签在各训练轮次间变化。 \n  Unforgettable（不可遗忘）  样本：类别标签分配在各训练轮次保持一致，一旦学会就不再忘记。 \n \n 他们发现，大量不可遗忘样本一旦学会就不会忘记。噪声标签样本或有“不常见”特征的图像（视觉上难分类），属于最容易忘记的样本。实验证实，安全移除不可遗忘样本，不会损害性能。 \n 实现中，只在样本包含于当前训练批次时计数遗忘事件，即计算同一样本在后续小批次再次出现时是否遗忘。每个样本的遗忘次数在不同随机种子下相当稳定，可遗忘样本略倾向于在训练较晚阶段首次学会。遗忘事件也能在训练期间和不同架构间迁移。 \n 如果假设模型训练中改变预测反映不确定性，就可用遗忘事件作为主动学习选择信号。然而，无标签样本真实标签未知。 Bengar et al. (2021)  为此提出  label dispersion（标签离散度） 。假设训练期间，$c^*$ 是输入 $\\mathbf{x}$ 最常预测的标签，标签离散度衡量模型未把 $c^**$ 分配给该样本的训练步骤比例： \n \n$$\n\\text{Dispersion}(\\mathbf{x}) = 1 - \\frac{f_\\mathbf{x}}{T} \\text{ where }\nf_\\mathbf{x} = \\sum_{t=1}^T \\mathbb{1}[\\hat{y}_t = c^*], c^* = \\arg\\max_{c=1,\\dots,C}\\sum_{t=1}^T \\mathbb{1}[\\hat{y}_t = c]\n$$\n \n 实现中，每个 epoch（训练轮次）计算离散度。模型持续为同一样本分配同一标签时，离散度低；预测频繁变化时则高。标签离散度与网络不确定性相关，如图所示：  \n \n 标签离散度与网络不确定性相关。横轴数据点按标签离散度排序，纵轴为模型推断这些样本标签时的预测准确率。（图片来源： Bengar et al. 2021 ）  \n \n 混合方法 #  \n 批量主动学习中，控制批内多样性很重要。 Suggestive Annotation （ SA ； Yang et al. 2017 ）是两步混合策略，旨在选择高不确定性、又高度代表性的标注样本。它使用带标签数据训练模型集成的不确定性，并用核心集选择代表样本。 \n \n 首先，SA 选择不确定性最高的前 $K$ 张图像，形成候选池 $\\mathcal{S}_c \\subseteq \\mathcal{S}_U$。不确定性由采用自助采样训练的多个模型间分歧衡量。 \n 下一步，寻找代表性最高的子集 $\\mathcal{S}_a \\subseteq \\mathcal{S}_c$。两个输入特征向量的余弦相似度，近似其相似性。$\\mathcal{S}_a$ 对 $\\mathcal{S}_U$ 的代表性，反映 $\\mathcal{S}_a$ 能在多大程度上代表 $\\mathcal{S}_u$ 全部样本，定义为： \n \n \n $$\nF(\\mathcal{S}_a, \\mathcal{S}_u) = \\sum_{\\mathbf{x}_j \\in \\mathcal{S}_u} f(\\mathcal{S}_a, \\mathbf{x}_j) = \\sum_{\\mathbf{x}_j \\in \\mathcal{S}_u} \\max_{\\mathbf{x}_i \\in \\mathcal{S}_a} \\text{sim}(\\mathbf{x}_i, \\mathbf{x}_j)\n$$\n \n 构建 $\\mathcal{S}_a \\subseteq \\mathcal{S}_c$，包含 $k$ 个数据点，并最大化 $F(\\mathcal{S}_a, \\mathcal{S}_u)$，是最大集合覆盖问题的推广版本。它为 NP-hard（非确定性多项式难），最佳多项式时间近似算法是简单贪心方法。 \n \n 初始时，$\\mathcal{S}_a = \\emptyset$，$F(\\mathcal{S}_a, \\mathcal{S}_u) = 0$。 \n 随后，迭代加入 $\\mathbf{x}_i \\in \\mathcal{S}_c$，使 $F(\\mathcal{S}_a \\cup I_i, \\mathcal{S}_u)$ 在 $\\mathcal{S}_a$ 上最大，直到 $\\mathcal{S}_s$ 包含 $k$ 张图像。 \n \n  Zhdanov (2019)  执行类似 SA 的过程，但步骤2依赖 $k$-means（均值聚类），而非核心集，候选池大小相对于批次大小设置。给定批次大小 $b$ 与常数 $beta$（10到50），执行： \n \n 在带标签数据上训练分类器； \n 衡量每个无标签样本的信息价值（如用不确定性指标）； \n 预筛选信息价值最高的前 $\\beta b \\geq b$ 个样本； \n 将 $\\beta b$ 个样本聚为 $B$ 个簇； \n 选择最接近簇中心的 $b$ 个不同样本，用于本轮主动学习。 \n \n 主动学习可进一步结合  半监督学习 ，节省预算。 CEAL （Cost-Effective Active Learning，成本高效的主动学习； Yang et al. 2017 ）并行执行两件事： \n \n 通过主动学习选择不确定样本，并标注； \n 选择预测置信度最高的样本，赋予  pseudo labels（伪标签） 。是否高置信度，由预测熵是否低于阈值 $\\delta$ 判断。模型随时间改善，阈值 $\\delta$ 也随时间衰减。 \n \n \n\t \n\t CEAL（成本高效的主动学习）示意图。（图片来源： Yang et al. 2017 ） \n \n 引用 #  \n 引用格式： \n \n Weng, Lilian. (Feb 2022). Learning with not enough data part 2: active learning. Lil’Log. https://lilianweng.github.io/posts/2022-02-20-active-learning/. \n \n 或 \n  @article{weng2022active,\n  title   = \"Learning with not Enough Data Part 2: Active Learning\",\n  author  = \"Weng, Lilian\",\n  journal = \"lilianweng.github.io\",\n  year    = \"2022\",\n  month   = \"Feb\",\n  url     = \"https://lilianweng.github.io/posts/2022-02-20-active-learning/\"\n}\n   参考文献 #  \n [1] Burr Settles.  Active learning literature survey.  University of Wisconsin, Madison, 52(55-66):11, 2010. \n [2]  https://jacobgil.github.io/deeplearning/activelearning  \n [3] Yang et al.  “Cost-effective active learning for deep image classification”  TCSVT 2016. \n [4] Yarin Gal et al.  “Dropout as a Bayesian Approximation: representing model uncertainty in deep learning.”  ICML 2016. \n [5] Blundell et al.  “Weight uncertainty in neural networks (Bayes-by-Backprop)”  ICML 2015. \n [6] Settles et al.  “Multiple-Instance Active Learning.”  NIPS 2007. \n [7] Houlsby et al.  Bayesian Active Learning for Classification and Preference Learning.\"  arXiv preprint arXiv:1112.5745 (2020). \n [8] Kirsch et al.  “BatchBALD: Efficient and Diverse Batch Acquisition for Deep Bayesian Active Learning.”  NeurIPS 2019. \n [9] Beluch et al.  “The power of ensembles for active learning in image classification.”  CVPR 2018. \n [10] Sener & Savarese.  “Active learning for convolutional neural networks: A core-set approach.”  ICLR 2018. \n [11] Donggeun Yoo & In So Kweon.  “Learning Loss for Active Learning.”  CVPR 2019. \n [12] Margatina et al.  “Active Learning by Acquiring Contrastive Examples.”  EMNLP 2021. \n [13] Sinha et al.  “Variational Adversarial Active Learning”  ICCV 2019 \n [14] Ebrahimiet al.  “Minmax Active Learning”  arXiv preprint arXiv:2012.10467 (2021). \n [15] Mariya Toneva et al.  “An empirical study of example forgetting during deep neural network learning.”  ICLR 2019. \n [16] Javad Zolfaghari Bengar et al.  “When Deep Learners Change Their Mind: Learning Dynamics for Active Learning.”  CAIP 2021. \n [17] Yang et al.  “Suggestive annotation: A deep active learning framework for biomedical image segmentation.”  MICCAI 2017. \n [18] Fedor Zhdanov.  “Diverse mini-batch Active Learning”  arXiv preprint arXiv:1901.05954 (2019).", "wordCount": "4570", "inLanguage": "zh-CN", "datePublished": "2022-02-20T00:00:00Z", "dateModified": "2022-02-20T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/favicon_wine.ico"}}}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/posts/2022-02-20-active-learning/">
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2022-02-20-active-learning/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/posts/2022-02-20-active-learning/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      数据不足时的学习（二）：主动学习
+    </h1>
+    <div class="post-meta">日期：2022年2月20日 | 预计阅读时间：22分钟 | 作者：Lilian Weng
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#notations" aria-label="Notations">符号说明</a></li>
+                <li>
+                    <a href="#what-is-active-learning" aria-label="What is Active Learning?">什么是主动学习？</a></li>
+                <li>
+                    <a href="#acquisition-function" aria-label="Acquisition Function（样本选择函数）">Acquisition Function（样本选择函数）</a><ul>
+                        
+                <li>
+                    <a href="#uncertainty-sampling" aria-label="Uncertainty Sampling">Uncertainty Sampling（不确定性采样）</a></li>
+                <li>
+                    <a href="#diversity-sampling" aria-label="Diversity Sampling">Diversity Sampling（多样性采样）</a></li>
+                <li>
+                    <a href="#expected-model-change" aria-label="Expected Model Change">Expected Model Change（期望模型变化）</a></li>
+                <li>
+                    <a href="#hybrid-strategy" aria-label="Hybrid Strategy">混合策略</a></li></ul>
+                </li>
+                <li>
+                    <a href="#deep-acquisition-function" aria-label="深度样本选择函数">深度样本选择函数</a><ul>
+                        
+                <li>
+                    <a href="#measuring-uncertainty" aria-label="衡量不确定性">衡量不确定性</a><ul>
+                        
+                <li>
+                    <a href="#ensemble-and-approximated-ensemble" aria-label="Ensemble and Approximated Ensemble">集成与近似集成</a></li>
+                <li>
+                    <a href="#uncertainty-in-parameter-space" aria-label="Uncertainty in Parameter Space">参数空间中的不确定性</a></li>
+                <li>
+                    <a href="#loss-prediction" aria-label="Loss Prediction">损失预测</a></li>
+                <li>
+                    <a href="#adversarial-setup" aria-label="Adversarial Setup">对抗设置</a></li></ul>
+                </li>
+                <li>
+                    <a href="#measuring-representativeness" aria-label="衡量代表性">衡量代表性</a><ul>
+                        
+                <li>
+                    <a href="#core-sets-approach" aria-label="Core-sets Approach">Core-sets Approach（核心集方法）</a></li>
+                <li>
+                    <a href="#diverse-gradient-embedding" aria-label="Diverse Gradient Embedding">多样化梯度嵌入</a></li></ul>
+                </li>
+                <li>
+                    <a href="#measuring-training-effects" aria-label="衡量训练效果">衡量训练效果</a><ul>
+                        
+                <li>
+                    <a href="#quantify-model-changes" aria-label="Quantify Model Changes">量化模型变化</a></li>
+                <li>
+                    <a href="#forgetting-events" aria-label="Forgetting Events">Forgetting Events（遗忘事件）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#hybrid" aria-label="Hybrid">混合方法</a></li></ul>
+                </li>
+                <li>
+                    <a href="#citation" aria-label="Citation">引用</a></li>
+                <li>
+                    <a href="#references" aria-label="References">参考文献</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><!-- The performance of supervised learning tasks improves with more high-quality labels available. However, it is expensive to collect a large number of labeled samples. Active learning is one paradigm to deal with not enough labeled data, when there are resources for labeling more data samples but under a limited budget. -->
+<p>这是面对监督学习任务中有限带标签数据时如何应对的第二部分。这次会加入一定量的人类标注工作，但受预算限制，因此需要明智地选择标注哪些样本。</p>
+<h1 id="notations">符号说明<a hidden class="anchor" aria-hidden="true" href="#notations">#</a></h1>
+<table>
+	<thead>
+			<tr>
+					<th>符号</th>
+					<th>含义</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>$K$</td>
+					<td>不同类别标签的数量。</td>
+			</tr>
+			<tr>
+					<td>$(\mathbf{x}^l, y) \sim \mathcal{X}, y \in \{0, 1\}^K$</td>
+					<td>带标签数据集。$y$ 是真实标签的 one-hot（独热）表示。</td>
+			</tr>
+			<tr>
+					<td>$\mathbf{u} \sim \mathcal{U}$</td>
+					<td>无标签数据集。</td>
+			</tr>
+			<tr>
+					<td>$\mathcal{D} = \mathcal{X} \cup \mathcal{U}$</td>
+					<td>整个数据集，包括带标签与无标签样本。</td>
+			</tr>
+			<tr>
+					<td>$\mathbf{x}$</td>
+					<td>任意样本，可以带标签，也可以不带标签。</td>
+			</tr>
+			<tr>
+					<td>$\mathbf{x}_i$</td>
+					<td>第 $i$ 个样本。</td>
+			</tr>
+			<tr>
+					<td>$U(\mathbf{x})$</td>
+					<td>主动学习样本选择的评分函数。</td>
+			</tr>
+			<tr>
+					<td>$P_\theta(y \vert \mathbf{x})$</td>
+					<td>由 $\theta$ 参数化的 softmax 分类器。</td>
+			</tr>
+			<tr>
+					<td>$\hat{y} = \arg\max_{y \in \mathcal{Y}} P_\theta(y \vert \mathbf{x})$</td>
+					<td>分类器置信度最高的预测。</td>
+			</tr>
+			<tr>
+					<td>$B$</td>
+					<td>标注预算（最多标注的样本数量）。</td>
+			</tr>
+			<tr>
+					<td>$b$</td>
+					<td>批次大小。</td>
+			</tr>
+	</tbody>
+</table>
+<h1 id="what-is-active-learning">什么是主动学习？<a hidden class="anchor" aria-hidden="true" href="#what-is-active-learning">#</a></h1>
+<p>给定无标签数据集 $\mathcal{U}$ 与固定标注成本 $B$，主动学习旨在选择 $B$ 个样本的子集，来自 $\mathcal{U}$，对其标注，使模型性能改善最大化。这是有效学习方式，尤其是标注困难昂贵时，例如医学图像。2010年的经典 <a href="https://burrsettles.com/pub/settles.activelearning.pdf">综述</a> 列出许多关键概念。某些传统方法可能不适用于深度学习，本文主要聚焦深度神经模型与批量训练。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/active-learning-workflow.png" style="width: 60%;"  />
+	<figcaption>主动学习循环工作流示意图，通过明智选择标注样本，更高效地得到更好模型。</figcaption>
+</figure>
+<p>为简化讨论，下文都假设任务为 $K$ 类分类。参数为 $\theta$ 的模型，输出候选标签上的概率分布，可能经过校准，也可能没有，$P_\theta(y \vert \mathbf{x})$；最可能预测为 $\hat{y} = \arg\max_{y \in \mathcal{Y}} P_\theta(y \vert \mathbf{x})$。</p>
+<h1 id="acquisition-function">Acquisition Function（样本选择函数）<a hidden class="anchor" aria-hidden="true" href="#acquisition-function">#</a></h1>
+<p>识别下一批最有价值标注样本的过程，称为“sampling strategy（采样策略）”或“query strategy（查询策略）”。采样评分函数称为“acquisition function（样本选择函数）”，记为 $U(\mathbf{x})$。预计高得分数据点一旦标注，可为模型训练带来更高价值。</p>
+<p>以下是基本采样策略列表。</p>
+<h2 id="uncertainty-sampling">Uncertainty Sampling（不确定性采样）<a hidden class="anchor" aria-hidden="true" href="#uncertainty-sampling">#</a></h2>
+<p><strong>Uncertainty sampling（不确定性采样）</strong> 选择模型预测最不确定的样本。单模型的不确定性可以通过预测概率估计，但常见批评是，深度学习预测往往未校准，与真实不确定性关联不佳。实际上，深度学习模型经常过度自信。</p>
+<ul>
+<li><em>Least confident score（最低置信度得分）</em>，也称 <em>variation ratio（变异比）</em>：$U(\mathbf{x}) = 1 - P_\theta(\hat{y} \vert \mathbf{x})$。</li>
+<li><em>Margin score（间隔得分）</em>：$U(\mathbf{x}) = P_\theta(\hat{y}_1 \vert \mathbf{x}) - P_\theta(\hat{y}_2 \vert \mathbf{x})$，其中 $\hat{y}_1$ 与 $\hat{y}_2$ 是最可能与第二可能的预测标签。</li>
+<li><em>熵</em>：$U(\mathbf{x}) = \mathcal{H}(P_\theta(y \vert \mathbf{x})) = - \sum_{y \in \mathcal{Y}} P_\theta(y \vert \mathbf{x}) \log P_\theta(y \vert \mathbf{x})$。</li>
+</ul>
+<p>另一种量化不确定性的方法，是依赖专家模型委员会，称为 Query-By-Committee (QBC)（委员会查询）。QBC 根据一组意见衡量不确定性，因此保持成员间一定分歧至关重要。给定委员会池中 $C$ 个模型，分别由 $\theta_1, \dots, \theta_C$ 参数化。</p>
+<ul>
+<li><em>Voter entropy（投票熵）</em>：$U(\mathbf{x}) = \mathcal{H}(\frac{V(y)}{C})$，其中 $V(y)$ 统计委员会对标签 $y$ 的投票数量。</li>
+<li><em>Consensus entropy（共识熵）</em>：$U(\mathbf{x}) = \mathcal{H}(P_\mathcal{C})$，其中 $P_\mathcal{C}$ 是委员会各预测的平均。</li>
+<li><em>KL divergence（衡量两个概率分布差异的相对熵）（KL散度）</em>：$U(\mathbf{x}) = \frac{1}{C} \sum_{c=1}^C D_\text{KL} (P_{\theta_c} | P_\mathcal{C})$。</li>
+</ul>
+<h2 id="diversity-sampling">Diversity Sampling（多样性采样）<a hidden class="anchor" aria-hidden="true" href="#diversity-sampling">#</a></h2>
+<p><strong>Diversity sampling（多样性采样）</strong> 旨在找到一组能充分代表整个数据分布的样本。多样性很重要，因为模型应对真实环境任意数据表现良好，而不只对狭窄子集。所选样本应代表底层分布，常见方法通常依赖量化样本间相似度。</p>
+<h2 id="expected-model-change">Expected Model Change（期望模型变化）<a hidden class="anchor" aria-hidden="true" href="#expected-model-change">#</a></h2>
+<p><strong>Expected model change（期望模型变化）</strong> 指一个样本对模型训练的影响，可以是模型权重影响，也可以是训练损失改善。<a href="#measuring-training-effects">后文</a> 回顾若干研究，介绍如何衡量所选数据样本触发的模型影响。</p>
+<h2 id="hybrid-strategy">混合策略<a hidden class="anchor" aria-hidden="true" href="#hybrid-strategy">#</a></h2>
+<p>上述许多方法并不互斥。<strong>混合</strong> 采样策略重视数据点不同属性，将不同采样偏好结合。通常希望选择 <mark>不确定、又具有高度代表性</mark> 的样本。</p>
+<h1 id="deep-acquisition-function">深度样本选择函数<a hidden class="anchor" aria-hidden="true" href="#deep-acquisition-function">#</a></h1>
+<h2 id="measuring-uncertainty">衡量不确定性<a hidden class="anchor" aria-hidden="true" href="#measuring-uncertainty">#</a></h2>
+<p>模型不确定性通常分为两类（<a href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.455.9057&amp;rep=rep1&amp;type=pdf">Der Kiureghian &amp; Ditlevsen 2009</a>，<a href="https://arxiv.org/abs/1703.04977">Kendall &amp; Gal 2017</a>）：</p>
+<ul>
+<li><em>Aleatoric uncertainty（偶然不确定性）</em> 来自数据噪声（例如传感器数据、测量过程噪声），可能依赖输入，也可能不依赖。通常认为无法消除，因为缺少真实情况的信息。</li>
+<li><em>Epistemic uncertainty（认知不确定性）</em> 指模型参数中的不确定性，因此不知道模型能否最好地解释数据。理论上，增加数据可以降低这类不确定性。</li>
+</ul>
+<h3 id="ensemble-and-approximated-ensemble">集成与近似集成<a hidden class="anchor" aria-hidden="true" href="#ensemble-and-approximated-ensemble">#</a></h3>
+<p>机器学习长期使用集成改善性能。模型间多样性显著时，预计集成能获得更好结果。许多算法证明这一理论正确，例如 <a href="https://en.wikipedia.org/wiki/AdaBoost">AdaBoost</a> 聚合许多弱学习器，表现可与单个强学习器相当或更好。<a href="https://en.wikipedia.org/wiki/Bootstrapping_(statistics)">Bootstrapping（自助采样）</a> 集成多次重采样试验，更准确估计指标。随机森林或 <a href="https://en.wikipedia.org/wiki/Gradient_boosting">GBM（梯度提升机）</a> 也是集成有效性的例子。</p>
+<p>为更好估计不确定性，直观方法是聚合一组独立训练模型。但训练单个深度网络已昂贵，更不用说多个。强化学习中，Bootstrapped DQN（深度 Q 网络）（<a href="https://arxiv.org/abs/1602.04621">Osband, et al. 2016</a>）配备多个价值头，依赖 Q值近似集成的不确定性，指导 RL（强化学习）的 <a href="https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/#q-value-exploration">探索</a>。</p>
+<p>主动学习更常用 <em>dropout（随机失活）</em>“模拟”概率 Gaussian process（高斯过程；<a href="https://arxiv.org/abs/1506.02142">Gal &amp; Ghahramani 2016</a>）。因此，集成同一模型、前向计算中应用不同 dropout 掩码的多个样本，估计模型不确定性（认知不确定性）。过程称为 <strong>MC dropout</strong>（Monte Carlo dropout，蒙特卡洛随机失活），在每个权重层之前应用 dropout；它被证明在数学上等价于概率深度高斯过程的近似（<a href="https://arxiv.org/abs/1506.02157">Gal &amp; Ghahramani 2016</a>）。该简单思路在小数据集分类中有效，被广泛用于需要高效估计模型不确定性的场景。</p>
+<p><strong>DBAL</strong>（Deep Bayesian active learning，深度贝叶斯主动学习；<a href="https://arxiv.org/abs/1703.02910">Gal et al. 2017</a>）通过 MC dropout（蒙特卡洛随机失活）近似贝叶斯神经网络，学习模型权重上的分布。实验中，MC dropout 优于随机基线与 Mean STD（平均标准差），表现类似变异比与熵度量。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/DBAL-exp.png" style="width: 60%;"  />
+	<figcaption>DBAL 在 MNIST 上的主动学习结果。（图片来源：<a href="https://arxiv.org/abs/1703.02910" target="_blank">Gal et al. 2017</a>。）</figcaption>
+</figure>
+<p><a href="https://openaccess.thecvf.com/content_cvpr_2018/papers/Beluch_The_Power_of_CVPR_2018_paper.pdf">Beluch et al. (2018)</a> 比较集成模型与 MC dropout（蒙特卡洛随机失活），发现朴素集成（分别独立训练多个模型）结合变异比，预测校准优于其他方法。但朴素集成 <em>非常</em> 昂贵，因此探索几种较便宜替代方案：</p>
+<ul>
+<li>Snapshot ensemble（快照集成）：用循环学习率调度训练隐式集成，使其收敛到不同局部极小值。</li>
+<li>Diversity encouraging ensemble (DEE)（鼓励多样性的集成）：用只训练少量 epoch（训练轮次）的基础网络，初始化 $n$ 个不同网络，各通过 dropout（随机失活）训练促进多样性。</li>
+<li>Split head approach（分头方法）：一个基础模型配备多个头，各对应一个分类器。</li>
+</ul>
+<p>遗憾的是，上述便宜的隐式集成都不如朴素集成。考虑计算资源限制，MC dropout（蒙特卡洛随机失活）仍是良好且经济的选择。自然，也有人结合集成与 MC dropout（<a href="https://arxiv.org/abs/1811.03897">Pop &amp; Fulop 2018</a>），通过随机集成获得少量额外性能收益。</p>
+<h3 id="uncertainty-in-parameter-space">参数空间中的不确定性<a hidden class="anchor" aria-hidden="true" href="#uncertainty-in-parameter-space">#</a></h3>
+<p><strong>Bayes-by-backprop</strong>（<a href="https://arxiv.org/abs/1505.05424">Blundell et al. 2015</a>）直接衡量神经网络权重不确定性。维护权重 $\mathbf{w}$ 上的概率分布，建模为变分分布 $q(\mathbf{w} \vert \theta)$，因为真实后验 $p(\mathbf{w} \vert \mathcal{D})$ 难以直接计算。损失最小化 $q(\mathbf{w} \vert \theta)$ 与 $p(\mathbf{w} \vert \mathcal{D})$ 之间的 KL divergence（KL散度），</p>
+<div>
+$$
+\begin{aligned}
+\mathcal{L}(\theta)
+&= \text{KL}[q(\mathbf{w}\vert\theta) \| p(\mathbf{w} \vert \mathcal{D})] \\ 
+&= \int q(\mathbf{w}\vert\theta) \log \frac{q(\mathbf{w}\vert\theta)}{p(\mathbf{w}) p(\mathcal{D}\vert \mathbf{w})} d\mathbf{w} \\ 
+&= \text{KL}[q(\mathbf{w}\vert\theta) \| p(w)] - \mathbb{E}_{q(\mathbf{w}\vert\theta)} [\log p(\mathcal{D} \vert \mathbf{w})] \\
+&\approx \log q(\mathbf{w} \vert \theta) - \log p(\mathbf{w}) p(\mathcal{D}\vert \mathbf{w}) & \text{; monte carlo sampling; }q(\mathbf{w} \vert \theta)\text{ & }p(\mathbf{w})\text{ are close.}
+\end{aligned}
+$$
+</div>
+<p>变分分布 $q$ 通常是对角协方差高斯分布，各权重从 $\mathcal{N}(\mu_i, \sigma_i^2)$ 采样。为保证 $\sigma_i$ 非负，通过 softplus 进一步参数化，$\sigma_i = \log(1 + \exp(\rho_i))$，变分参数为 $\theta = \{\mu_i , \rho_i\}^d_{i=1}$。</p>
+<p>Bayes-by-backprop 过程总结如下：</p>
+<ol>
+<li>采样 $\epsilon \sim \mathcal{N}(0, I)$。</li>
+<li>令 $\mathbf{w} = \mu + \log(1+ \exp(\rho)) \circ \epsilon$。</li>
+<li>令 $\theta = (\mu, \rho)$。</li>
+<li>令 $f(\mathbf{w}, \theta) = \log q(\mathbf{w} \vert \theta) - \log p(\mathbf{w})p(\mathcal{D}\vert \mathbf{w})$。</li>
+<li>计算 $f(\mathbf{w}, \theta)$ 关于 $\mu$ 与 $\rho$ 的梯度，再更新 $\theta$。</li>
+<li>推理期间采样不同模型权重，以衡量不确定性。</li>
+</ol>
+<h3 id="loss-prediction">损失预测<a hidden class="anchor" aria-hidden="true" href="#loss-prediction">#</a></h3>
+<p>损失目标指导模型训练。损失低表明模型能作出良好准确预测。<a href="https://arxiv.org/abs/1905.03677">Yoo &amp; Kweon (2019)</a> 设计 <strong>loss prediction module（损失预测模块）</strong>，预测无标签输入的损失，估计模型对给定数据的预测质量。如果模块对样本预测不确定（高损失），就选择该样本。模块是带 dropout（随机失活）的简单 MLP（多层感知机），以多个中间层特征为输入，进行全局平均池化后拼接。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/active-learning-loss-prediction.png" style="width: 60%;"  />
+	<figcaption>使用带损失预测模块的模型，进行主动学习选择。（图片来源：<a href="https://arxiv.org/abs/1905.03677" target="_blank">Yoo &amp; Kweon 2019</a>）</figcaption>
+</figure>
+<p>令 $\hat{l}$ 为损失预测模块输出，$l$ 为真实损失。训练模块时，简单 MSE（均方误差）损失 $=(l - \hat{l})^2$ 不合适，因为模型随学习改善，损失随时间下降。良好目标应不受目标损失尺度变化影响。因此，采用样本对比较。每个大小为 $b$ 的批次，有 $b/2$ 对样本 $(\mathbf{x}_i, \mathbf{x}_j)$，损失预测模型应正确判断哪个样本损失更大。</p>
+<div>
+$$
+\begin{aligned}
+\mathcal{L}_\text{loss}(\mathbf{x}_i, \mathbf{x}_j) &= \max\big( 0, -\mathbb{1}(l(\mathbf{x}_i), l(\mathbf{x}_j)) \cdot (\hat{l}(\mathbf{x}_i) - \hat{l}(\mathbf{x}_j)) + \epsilon \big) \\ 
+\text{where } \mathbb{1}(l_i, l_j) &= \begin{cases} +1 & \text{if }l_i > l_j \\ -1 & \text{otherwise} \end{cases} 
+\end{aligned}
+$$
+</div>
+<p>其中 $\epsilon$ 是预定义的正间隔常数。</p>
+<p>三个视觉任务实验中，基于损失预测的主动学习选择，优于随机基线、基于熵的选择与 <a href="#core-sets-approach">core-set（核心集）</a>。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/active-learning-loss-prediction-exp.png" style="width: 100%;"  />
+	<figcaption>基于损失预测模块的主动学习选择，与其他方法的结果比较。（图片来源：<a href="https://arxiv.org/abs/1905.03677" target="_blank">Yoo &amp; Kweon 2019</a>）</figcaption>
+</figure>
+<h3 id="adversarial-setup">对抗设置<a hidden class="anchor" aria-hidden="true" href="#adversarial-setup">#</a></h3>
+<p><a href="https://arxiv.org/abs/1904.00370">Sinha et al. (2019)</a> 提出类似 GAN（生成对抗网络）的设置，称为 <strong>VAAL</strong> (Variational Adversarial Active Learning，变分对抗主动学习)，训练判别器区分无标签与带标签数据。有趣的是，VAAL 的主动学习选择标准不依赖任务性能。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/VAAL.png" style="width: 80%;"  />
+	<figcaption>VAAL (Variational Adversarial Active Learning，变分对抗主动学习) 示意图。（图片来源：<a href="https://arxiv.org/abs/1904.00370" target="_blank">Sinha et al. 2019</a>）</figcaption>
+</figure>
+<ul>
+<li>$\beta$-VAE（对潜变量约束加权的变分自编码器）分别为带标签与无标签数据，学习潜在特征空间 $\mathbf{z}^l \cup \mathbf{z}^u$，旨在 <em>欺骗</em> 判别器 $D(.)$，使其认为全部数据点来自带标签池；</li>
+<li>判别器 $D(.)$ 根据潜在表示 $\mathbf{z}$，预测样本是否带标签（1为是，0为否）。VAAL 选择判别器得分较低的无标签样本，表明这些样本与此前带标签样本足够不同。</li>
+</ul>
+<p>VAAL 中 VAE（变分自编码器）表示学习的损失，包含重建部分（最小化给定样本的 ELBO（证据下界））与对抗部分（带标签与无标签数据来自同一概率分布 $q_\phi$）：</p>
+<div>
+$$
+\begin{aligned}
+\mathcal{L}_\text{VAE} &= \lambda_1 \mathcal{L}^\text{rec}_\text{VAE} + \lambda_2 \mathcal{L}^\text{adv}_\text{VAE} \\
+\mathcal{L}^\text{rec}_\text{VAE} &= \mathbb{E}[\log p_\theta(\mathbf{x}^l \vert \mathbf{z}^l)] - \beta \text{KL}(q_\phi(\mathbf{z}^l \vert \mathbf{x}^l) \| p(\mathbf{\tilde{z}})) + \mathbb{E}[\log p_\theta(\mathbf{u} \vert \mathbf{z}^u)] - \beta \text{KL}(q_\phi(\mathbf{z}^u \vert \mathbf{u}) \| p(\mathbf{\tilde{z}})) \\
+\mathcal{L}^\text{adv}_\text{VAE} &= - \mathbb{E}[\log D(q_\phi (\mathbf{z}^l \vert \mathbf{x}^l))] - \mathbb{E}[\log D(q_\phi(\mathbf{z}^u \vert \mathbf{u}))]
+\end{aligned}
+$$
+</div>
+<p>其中 $p(\mathbf{\tilde{z}})$ 是预定义先验，即单位高斯分布，$\beta$ 是 Lagrangian（拉格朗日）参数。</p>
+<p>判别器损失为：</p>
+<div>
+$$
+\mathcal{L}_D = -\mathbb{E}[\log D(q_\phi (\mathbf{z}^l \vert \mathbf{x}^l))] - \mathbb{E}[\log (1 - D(q_\phi (\mathbf{z}^u \vert \mathbf{u})))]
+$$
+</div>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/VAAL-exp.png" style="width: 100%;"  />
+	<figcaption>VAAL（变分对抗主动学习）在多个图像分类任务上的实验结果。（图片来源：<a href="https://arxiv.org/abs/1904.00370" target="_blank">Sinha et al. 2019</a> </figcaption>
+</figure>
+<p>消融研究表明，联合训练 VAE与判别器至关重要。结果对有偏的初始带标签池、不同标注预算，以及有噪声的 oracle（标注信息源）具有鲁棒性。</p>
+<p><strong>MAL</strong>（Minimax Active Learning，极小极大主动学习；<a href="https://arxiv.org/abs/2012.10467">Ebrahimiet al. 2021</a>）扩展 VAAL。框架包含熵最小化特征编码网络 $F$，随后是熵最大化分类器 $C$。这种极小极大设置减少带标签与无标签数据间的分布差距。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/MAL.png" style="width: 100%;"  />
+	<figcaption>MAL（极小极大主动学习）框架示意图。（图片来源：<a href="https://arxiv.org/abs/2012.10467" target="_blank">Ebrahimiet al. 2021</a>）</figcaption>
+</figure>
+<p>特征编码器 $F$ 将样本编码为经 $\ell_2$ 归一化的 $d$ 维潜在向量。假设有 $K$ 类，分类器 $C$ 由 $\mathbf{W} \in \mathbb{R}^{d \times K}$ 参数化。</p>
+<p>(1) 首先，用简单交叉熵损失在带标签样本上训练 $F$ 与 $C$，取得良好分类结果，</p>
+<div>
+$$
+\mathcal{L}_\text{CE} = -\mathbb{E}_{(\mathbf{x}^l, y) \sim \mathcal{X}} \sum_{k=1}^K \mathbb{1}[k=y] \log\Big( \sigma(\frac{1}{T} \frac{\mathbf{W}^\top F\big(\mathbf{x}^l)}{\|F(\mathbf{x}^l)\|}\big) \Big)
+$$
+</div>
+<p>(2) 无标签样本训练中，MAL 依赖 <em>minimax（极小极大）</em> 博弈设置：</p>
+<div>
+$$
+\begin{aligned}
+\mathcal{L}_\text{Ent} &= -\sum^K_{k=1} p(y=k \vert \mathbf{u}) \log p(y=k\vert \mathbf{u}) \\
+\theta^*_F, \theta^*_C &= \min_F\max_C \mathcal{L}_\text{Ent} \\
+\theta_F &\gets \theta_F - \alpha_1 \nabla \mathcal{L}_\text{Ent} \\
+\theta_C &\gets \theta_C + \alpha_2 \nabla \mathcal{L}_\text{Ent}
+\end{aligned}
+$$
+</div>
+<p>其中，</p>
+<ul>
+<li>首先，最小化 $F$ 中的熵，鼓励预测标签相似的无标签样本，具有相似特征。</li>
+<li>对抗性地最大化 $C$ 中的熵，使预测趋于更均匀的类别分布。<span style="color: #888;">（我的理解是，由于无标签样本真实标签未知，尚不应优化分类器以最大化预测标签。）</span></li>
+</ul>
+<p>判别器采用与 VAAL 相同的训练方式。</p>
+<p>MAL 的采样策略同时考虑多样性与不确定性：</p>
+<ul>
+<li>多样性：$D$ 得分表示样本与此前样本的相似程度。得分越接近0，越有利于选择不熟悉的数据点。</li>
+<li>不确定性：使用 $C$ 得到的熵。熵越高，表示模型尚无法作出高置信度预测。</li>
+</ul>
+<p>实验在图像分类与分割任务上，将 MAL 与随机、熵、core-set（核心集）、BALD 和 VAAL 基线比较，结果相当强。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/MAL-exp.png" style="width: 100%;"  />
+	<figcaption>MAL 在 ImageNet 上的性能。（表格来源：<a href="https://arxiv.org/abs/2012.10467" target="_blank">Ebrahimiet al. 2021</a>）</figcaption>
+</figure>
+<p><strong>CAL</strong>（Contrastive Active Learning，对比主动学习；<a href="https://arxiv.org/abs/2109.03764">Margatina et al. 2021</a>）旨在选择 <a href="https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/">contrastive（对比）</a> 样本。如果两个不同标签数据点具有相似网络表示 $\Phi(.)$，CAL 就视为对比样本。给定一对对比样本 $(\mathbf{x}_i, \mathbf{x}_j)$，它们应当：</p>
+<div>
+$$
+d(\Phi(\mathbf{x}_i), \Phi(\mathbf{x}_j)) < \epsilon \quad\text{and}\quad \text{KL}(p(y\vert \mathbf{x}_i) \| p(y\vert \mathbf{x}_j)) \rightarrow \infty
+$$
+</div>
+<p>给定无标签样本 $\mathbf{x}$，CAL 执行以下过程：</p>
+<ol>
+<li>在带标签样本中，选择模型特征空间的前 $k$ 个最近邻，$\{(\mathbf{x}^l_i, y_i\}_{i=1}^M \subset \mathcal{X}$。</li>
+<li>计算 $\mathbf{x}$ 与 $\{\mathbf{x}^l\}$ 中各样本模型输出概率间的 KL divergence（KL散度）。$\mathbf{x}$ 的对比得分，是这些 KL divergence 的平均值：$s(\mathbf{x}) = \frac{1}{M} \sum_{i=1}^M \text{KL}(p(y \vert \mathbf{x}^l_i | p(y \vert \mathbf{x}))$。</li>
+<li>选择 <em>高对比得分</em> 样本进行主动学习。</li>
+</ol>
+<p>多种分类任务上，CAL 实验结果与熵基线相似。</p>
+<h2 id="measuring-representativeness">衡量代表性<a hidden class="anchor" aria-hidden="true" href="#measuring-representativeness">#</a></h2>
+<h3 id="core-sets-approach">Core-sets Approach（核心集方法）<a hidden class="anchor" aria-hidden="true" href="#core-sets-approach">#</a></h3>
+<p><strong>core-set（核心集）</strong> 是计算几何概念，指近似较大点集形状的小点集，可用某种几何度量刻画近似。主动学习中，希望在核心集上训练的模型，与在全部数据点上训练的模型表现相当。</p>
+<p><a href="https://arxiv.org/abs/1708.00489">Sener &amp; Savarese (2018)</a> 将主动学习视为核心集选择问题。假设训练期间总共可访问 $N$ 个样本。主动学习每个时间步 $t$，标注一小组数据点，记为 $\mathcal{S}^{(t)}$。学习目标上界如下，其中 <em>core-set loss（核心集损失）</em> 定义为带标签样本平均经验损失，与包含无标签样本的完整数据集损失之差。</p>
+<div>
+$$
+\begin{aligned}
+\mathbb{E}_{(\mathbf{x}, y) \sim p} [\mathcal{L}(\mathbf{x}, y)]
+\leq& \bigg\vert \mathbb{E}_{(\mathbf{x}, y) \sim p} [\mathcal{L}(\mathbf{x}, y)] - \frac{1}{N} \sum_{i=1}^N \mathcal{L}(\mathbf{x}_i, y_i) \bigg\vert & \text{; Generalization error}\\
++& \frac{1}{\vert \mathcal{S}^{(t)} \vert} \sum_{j=1}^{\vert \mathcal{S}^{(t)} \vert} \mathcal{L}(\mathbf{x}^l_j, y_j) & \text{; Training error}\\
++& \bigg\vert \frac{1}{N} \sum_{i=1}^N \mathcal{L}(\mathbf{x}_i, y_i) - \frac{1}{\vert \mathcal{S}^{(t)} \vert} \sum_{j=1}^{\vert \mathcal{S}^{(t)} \vert} \mathcal{L}(\mathbf{x}^l_j, y_j) \bigg\vert & \text{; Core-set error}
+\end{aligned}
+$$
+</div>
+<p>主动学习问题可重新定义为：</p>
+<div>
+$$
+\min_{\mathcal{S}^{(t+1)} : \vert \mathcal{S}^{(t+1)} \vert \leq b} \bigg\vert \frac{1}{N}\sum_{i=1}^N \mathcal{L}(\mathbf{x}_i, y_i) - \frac{1}{\vert \mathcal{S}^{(t)} \cup \mathcal{S}^{(t+1)} \vert} \sum_{j=1}^{\vert \mathcal{S}^{(t)} \cup \mathcal{S}^{(t+1)} \vert} \mathcal{L}(\mathbf{x}^l_j, y_j) \bigg\vert
+$$
+</div>
+<p>等价于 <a href="https://en.wikipedia.org/wiki/Metric_k-center">$k$-Center problem（k中心问题）</a>：选择 $b$ 个中心点，最小化数据点与最近中心之间的最大距离。该问题为 NP-hard（非确定性多项式难），近似解依赖贪心算法。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/core-sets-exp.png" style="width: 100%;"  />
+	<figcaption>核心集算法与常见基线在 CIFAR-10、CIFAR-100、SVHN 上的主动学习结果比较。（图片来源：<a href="https://arxiv.org/abs/1708.00489" target="_blank">Sener &amp; Savarese 2018</a>）</figcaption>
+</figure>
+<p>类别少时，它适合图像分类。类别变多或数据维度增高（“curse of dimensionality”，维度灾难）时，核心集方法有效性下降（<a href="https://arxiv.org/abs/1904.00370">Sinha et al. 2019</a>）。</p>
+<p>核心集选择昂贵，因此 <a href="https://arxiv.org/abs/1906.11829">Coleman et al. (2020)</a> 实验使用较弱模型（例如更小、架构更弱、训练不充分），发现以弱模型为代理，可以显著缩短反复训练模型、选择样本的数据选择周期，而不明显损害最终错误率。方法称为 <strong>SVP</strong> (Selection via Proxy，通过代理选择)。</p>
+<h3 id="diverse-gradient-embedding">多样化梯度嵌入<a hidden class="anchor" aria-hidden="true" href="#diverse-gradient-embedding">#</a></h3>
+<p><strong>BADGE</strong>（Batch Active learning by Diverse Gradient Embeddings，通过多样化梯度嵌入进行批量主动学习；<a href="https://arxiv.org/abs/1906.03671">Ash et al. 2020</a>）在梯度空间同时追踪模型不确定性与数据多样性。不确定性由网络最后一层的梯度幅度衡量，多样性由梯度空间中覆盖不同位置的一组样本体现。</p>
+<ul>
+<li>不确定性。给定无标签样本 $\mathbf{x}$，BADGE 先计算预测 $\hat{y}$，以及损失梯度 $g_\mathbf{x}$，损失基于 $(\mathbf{x}, \hat{y})$，梯度相对于最后一层参数。他们发现，$g_\mathbf{x}$ 的范数保守估计样本对模型学习的影响，高置信度样本倾向于较小幅度的梯度嵌入。</li>
+<li>多样性。给定许多样本的梯度嵌入 $g_\mathbf{x}$，BADGE 运行 <a href="https://en.wikipedia.org/wiki/K-means%2B%2B">$k$-means++</a>，据此采样数据点。</li>
+</ul>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/BADGE-algo.png" style="width: 100%;"  />
+	<figcaption>BADGE（通过多样化梯度嵌入进行批量主动学习）算法。（图片来源：<a href="https://arxiv.org/abs/1906.03671" target="_blank">Ash et al. 2020</a>）</figcaption>
+</figure>
+<h2 id="measuring-training-effects">衡量训练效果<a hidden class="anchor" aria-hidden="true" href="#measuring-training-effects">#</a></h2>
+<h3 id="quantify-model-changes">量化模型变化<a hidden class="anchor" aria-hidden="true" href="#quantify-model-changes">#</a></h3>
+<p><a href="https://papers.nips.cc/paper/2007/hash/a1519de5b5d44b31a01de013b9b51a80-Abstract.html">Settles et al. (2008)</a> 提出主动学习查询策略 <strong>EGL</strong> (Expected Gradient Length，期望梯度长度)。动机是，找到一旦知道标签，就能引发最大模型更新的样本。</p>
+<p>令 $\nabla \mathcal{L}(\theta)$ 为损失对模型参数的梯度。具体而言，给定无标签样本 $\mathbf{x}_i$，假设标签为 $y \in \mathcal{Y}$，计算梯度 $\nabla \mathcal{L}^{(y)}(\theta)$。由于真实标签 $y_i$ 未知，EGL 依赖模型当前信念，计算期望梯度变化：</p>
+<div>
+$$
+\text{EGL}(\mathbf{x}_i) = \sum_{y_i \in \mathcal{Y}} p(y=y_i \vert \mathbf{x}) \|\nabla \mathcal{L}^{(y_i)}(\theta)\|
+$$
+</div>
+<p><strong>BALD</strong>（Bayesian Active Learning by Disagreement，通过分歧进行贝叶斯主动学习；<a href="https://arxiv.org/abs/1112.5745">Houlsby et al. 2011</a>）旨在识别最大化模型权重信息增益的样本，等价于最大化期望后验熵的下降。</p>
+<div>
+$$
+\begin{aligned}
+I[\boldsymbol{\theta}, y \vert x,\mathcal{D}] 
+&= H(\boldsymbol{\theta} \vert \mathcal{D}) - \mathbb{E}_{y \sim p(y \vert \boldsymbol{x}, \mathcal{D})} \big[ H(\boldsymbol{\theta} \vert y, \boldsymbol{x}, \mathcal{D}) \big] & \text{; Decrease in expected posterior entropy}\\ 
+&= H(y \vert \boldsymbol{x}, \mathcal{D}) - \mathbb{E}_{\boldsymbol{\theta} \sim p(\boldsymbol{\theta} \vert \mathcal{D})} \big[ H(y \vert \boldsymbol{x}, \mathcal{\theta}) \big]
+\end{aligned}
+$$
+</div>
+<p>其解释是：“寻找 $\mathbf{x}$，模型边缘上对 $y$ 最不确定（$H(y \vert \mathbf{x}, \mathcal{D})$ 高），但各个参数设置却很自信（$H(y \vert \mathbf{x}, \boldsymbol{\theta})$ 低）。”换句话说，每次后验采样都自信，但多次采样有不同意见。</p>
+<p>BALD 最初用于单样本，<a href="https://arxiv.org/abs/1906.08158">Kirsch et al. (2019)</a> 扩展为批量模式。</p>
+<h3 id="forgetting-events">Forgetting Events（遗忘事件）<a hidden class="anchor" aria-hidden="true" href="#forgetting-events">#</a></h3>
+<p>为研究神经网络是否倾向于 <strong>忘记</strong> 之前学到的信息，<a href="https://arxiv.org/abs/1812.05159">Mariya Toneva et al. (2019)</a> 设计实验：追踪训练中每个样本的预测，统计从分类正确到错误、或反过来的转变。样本据此分类：</p>
+<ul>
+<li><em>Forgettable（可遗忘）</em>（冗余）样本：类别标签在各训练轮次间变化。</li>
+<li><em>Unforgettable（不可遗忘）</em> 样本：类别标签分配在各训练轮次保持一致，一旦学会就不再忘记。</li>
+</ul>
+<p>他们发现，大量不可遗忘样本一旦学会就不会忘记。噪声标签样本或有“不常见”特征的图像（视觉上难分类），属于最容易忘记的样本。实验证实，安全移除不可遗忘样本，不会损害性能。</p>
+<p>实现中，只在样本包含于当前训练批次时计数遗忘事件，即计算同一样本在后续小批次再次出现时是否遗忘。每个样本的遗忘次数在不同随机种子下相当稳定，可遗忘样本略倾向于在训练较晚阶段首次学会。遗忘事件也能在训练期间和不同架构间迁移。</p>
+<p>如果假设模型训练中改变预测反映不确定性，就可用遗忘事件作为主动学习选择信号。然而，无标签样本真实标签未知。<a href="https://arxiv.org/abs/2107.14707">Bengar et al. (2021)</a> 为此提出 <strong>label dispersion（标签离散度）</strong>。假设训练期间，$c^*$ 是输入 $\mathbf{x}$ 最常预测的标签，标签离散度衡量模型未把 $c^**$ 分配给该样本的训练步骤比例：</p>
+<div>
+$$
+\text{Dispersion}(\mathbf{x}) = 1 - \frac{f_\mathbf{x}}{T} \text{ where }
+f_\mathbf{x} = \sum_{t=1}^T \mathbb{1}[\hat{y}_t = c^*], c^* = \arg\max_{c=1,\dots,C}\sum_{t=1}^T \mathbb{1}[\hat{y}_t = c]
+$$
+</div>
+<p>实现中，每个 epoch（训练轮次）计算离散度。模型持续为同一样本分配同一标签时，离散度低；预测频繁变化时则高。标签离散度与网络不确定性相关，如图所示： <figure>
+<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/label-dispersion-vs-uncertainty.png" style="width: 100%;"  />
+<figcaption>标签离散度与网络不确定性相关。横轴数据点按标签离散度排序，纵轴为模型推断这些样本标签时的预测准确率。（图片来源：<a href="https://arxiv.org/abs/2107.14707" target="_blank">Bengar et al. 2021</a>）</figcaption></p>
+</figure>
+<h2 id="hybrid">混合方法<a hidden class="anchor" aria-hidden="true" href="#hybrid">#</a></h2>
+<p>批量主动学习中，控制批内多样性很重要。<strong>Suggestive Annotation</strong>（<strong>SA</strong>；<a href="https://arxiv.org/abs/1706.04737">Yang et al. 2017</a>）是两步混合策略，旨在选择高不确定性、又高度代表性的标注样本。它使用带标签数据训练模型集成的不确定性，并用核心集选择代表样本。</p>
+<ol>
+<li>首先，SA 选择不确定性最高的前 $K$ 张图像，形成候选池 $\mathcal{S}_c \subseteq \mathcal{S}_U$。不确定性由采用自助采样训练的多个模型间分歧衡量。</li>
+<li>下一步，寻找代表性最高的子集 $\mathcal{S}_a \subseteq \mathcal{S}_c$。两个输入特征向量的余弦相似度，近似其相似性。$\mathcal{S}_a$ 对 $\mathcal{S}_U$ 的代表性，反映 $\mathcal{S}_a$ 能在多大程度上代表 $\mathcal{S}_u$ 全部样本，定义为：</li>
+</ol>
+<div>
+ $$
+F(\mathcal{S}_a, \mathcal{S}_u) = \sum_{\mathbf{x}_j \in \mathcal{S}_u} f(\mathcal{S}_a, \mathbf{x}_j) = \sum_{\mathbf{x}_j \in \mathcal{S}_u} \max_{\mathbf{x}_i \in \mathcal{S}_a} \text{sim}(\mathbf{x}_i, \mathbf{x}_j)
+$$
+</div>
+<p>构建 $\mathcal{S}_a \subseteq \mathcal{S}_c$，包含 $k$ 个数据点，并最大化 $F(\mathcal{S}_a, \mathcal{S}_u)$，是最大集合覆盖问题的推广版本。它为 NP-hard（非确定性多项式难），最佳多项式时间近似算法是简单贪心方法。</p>
+<ol>
+<li>初始时，$\mathcal{S}_a = \emptyset$，$F(\mathcal{S}_a, \mathcal{S}_u) = 0$。</li>
+<li>随后，迭代加入 $\mathbf{x}_i \in \mathcal{S}_c$，使 $F(\mathcal{S}_a \cup I_i, \mathcal{S}_u)$ 在 $\mathcal{S}_a$ 上最大，直到 $\mathcal{S}_s$ 包含 $k$ 张图像。</li>
+</ol>
+<p><a href="https://arxiv.org/abs/1901.05954">Zhdanov (2019)</a> 执行类似 SA 的过程，但步骤2依赖 $k$-means（均值聚类），而非核心集，候选池大小相对于批次大小设置。给定批次大小 $b$ 与常数 $beta$（10到50），执行：</p>
+<ol>
+<li>在带标签数据上训练分类器；</li>
+<li>衡量每个无标签样本的信息价值（如用不确定性指标）；</li>
+<li>预筛选信息价值最高的前 $\beta b \geq b$ 个样本；</li>
+<li>将 $\beta b$ 个样本聚为 $B$ 个簇；</li>
+<li>选择最接近簇中心的 $b$ 个不同样本，用于本轮主动学习。</li>
+</ol>
+<p>主动学习可进一步结合 <a href="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/">半监督学习</a>，节省预算。<strong>CEAL</strong>（Cost-Effective Active Learning，成本高效的主动学习；<a href="https://arxiv.org/abs/1701.03551">Yang et al. 2017</a>）并行执行两件事：</p>
+<ol>
+<li>通过主动学习选择不确定样本，并标注；</li>
+<li>选择预测置信度最高的样本，赋予 <a href="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/#pseudo-labeling">pseudo labels（伪标签）</a>。是否高置信度，由预测熵是否低于阈值 $\delta$ 判断。模型随时间改善，阈值 $\delta$ 也随时间衰减。</li>
+</ol>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/CEAL.png" style="width: 100%;"  />
+	<figcaption>CEAL（成本高效的主动学习）示意图。（图片来源：<a href="https://arxiv.org/abs/1701.03551" target="_blank">Yang et al. 2017</a>）</figcaption>
+</figure>
+<h1 id="citation">引用<a hidden class="anchor" aria-hidden="true" href="#citation">#</a></h1>
+<p>引用格式：</p>
+<blockquote>
+<p>Weng, Lilian. (Feb 2022). Learning with not enough data part 2: active learning. Lil’Log. https://lilianweng.github.io/posts/2022-02-20-active-learning/.</p>
+</blockquote>
+<p>或</p>
+<pre tabindex="0"><code>@article{weng2022active,
+  title   = &#34;Learning with not Enough Data Part 2: Active Learning&#34;,
+  author  = &#34;Weng, Lilian&#34;,
+  journal = &#34;lilianweng.github.io&#34;,
+  year    = &#34;2022&#34;,
+  month   = &#34;Feb&#34;,
+  url     = &#34;https://lilianweng.github.io/posts/2022-02-20-active-learning/&#34;
+}
+</code></pre><h1 id="references">参考文献<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<p>[1] Burr Settles. <a href="https://burrsettles.com/pub/settles.activelearning.pdf">Active learning literature survey.</a> University of Wisconsin, Madison, 52(55-66):11, 2010.</p>
+<p>[2] <a href="https://jacobgil.github.io/deeplearning/activelearning">https://jacobgil.github.io/deeplearning/activelearning</a></p>
+<p>[3] Yang et al. <a href="https://arxiv.org/abs/1701.03551">“Cost-effective active learning for deep image classification”</a> TCSVT 2016.</p>
+<p>[4] Yarin Gal et al. <a href="https://arxiv.org/abs/1506.02142">“Dropout as a Bayesian Approximation: representing model uncertainty in deep learning.”</a> ICML 2016.</p>
+<p>[5] Blundell et al. <a href="https://arxiv.org/abs/1505.05424">“Weight uncertainty in neural networks (Bayes-by-Backprop)”</a> ICML 2015.</p>
+<p>[6] Settles et al. <a href="https://papers.nips.cc/paper/2007/hash/a1519de5b5d44b31a01de013b9b51a80-Abstract.html">“Multiple-Instance Active Learning.”</a> NIPS 2007.</p>
+<p>[7] Houlsby et al. <a href="https://arxiv.org/abs/1112.5745">Bayesian Active Learning for Classification and Preference Learning."</a> arXiv preprint arXiv:1112.5745 (2020).</p>
+<p>[8] Kirsch et al. <a href="https://arxiv.org/abs/1906.08158">“BatchBALD: Efficient and Diverse Batch Acquisition for Deep Bayesian Active Learning.”</a> NeurIPS 2019.</p>
+<p>[9] Beluch et al. <a href="https://openaccess.thecvf.com/content_cvpr_2018/papers/Beluch_The_Power_of_CVPR_2018_paper.pdf">“The power of ensembles for active learning in image classification.”</a> CVPR 2018.</p>
+<p>[10] Sener &amp; Savarese. <a href="https://arxiv.org/abs/1708.00489">“Active learning for convolutional neural networks: A core-set approach.”</a> ICLR 2018.</p>
+<p>[11] Donggeun Yoo &amp; In So Kweon. <a href="https://arxiv.org/abs/1905.03677">“Learning Loss for Active Learning.”</a> CVPR 2019.</p>
+<p>[12] Margatina et al. <a href="https://arxiv.org/abs/2109.03764">“Active Learning by Acquiring Contrastive Examples.”</a> EMNLP 2021.</p>
+<p>[13] Sinha et al. <a href="https://arxiv.org/abs/1904.00370">“Variational Adversarial Active Learning”</a> ICCV 2019</p>
+<p>[14] Ebrahimiet al. <a href="https://arxiv.org/abs/2012.10467">“Minmax Active Learning”</a> arXiv preprint arXiv:2012.10467 (2021).</p>
+<p>[15] Mariya Toneva et al. <a href="https://arxiv.org/abs/1812.05159">“An empirical study of example forgetting during deep neural network learning.”</a> ICLR 2019.</p>
+<p>[16] Javad Zolfaghari Bengar et al. <a href="https://arxiv.org/abs/2107.14707">“When Deep Learners Change Their Mind: Learning Dynamics for Active Learning.”</a> CAIP 2021.</p>
+<p>[17] Yang et al. <a href="https://arxiv.org/abs/1706.04737">“Suggestive annotation: A deep active learning framework for biomedical image segmentation.”</a> MICCAI 2017.</p>
+<p>[18] Fedor Zhdanov. <a href="https://arxiv.org/abs/1901.05954">“Diverse mini-batch Active Learning”</a> arXiv preprint arXiv:1901.05954 (2019).</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://xingshuozhu1998.github.io/tags/data/">数据</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/active-learning/">Active-Learning（主动学习）</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://xingshuozhu1998.github.io/posts/2022-04-15-data-gen/">
+    <span class="title">« </span>
+    <br>
+    <span>数据不足时的学习（三）：数据生成</span>
+  </a>
+  <a class="next" href="https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/">
+    <span class="title"> »</span>
+    <br>
+    <span>数据不足时的学习（一）：半监督学习</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 twitter 分享《数据不足时的学习，第二部分：主动学习》"
+        href="https://twitter.com/intent/tweet/?text=Learning%20with%20not%20Enough%20Data%20Part%202%3a%20Active%20Learning&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2022-02-20-active-learning%2f&amp;hashtags=data%2cactive-learning">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 linkedin 分享《数据不足时的学习，第二部分：主动学习》"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2022-02-20-active-learning%2f&amp;title=Learning%20with%20not%20Enough%20Data%20Part%202%3a%20Active%20Learning&amp;summary=Learning%20with%20not%20Enough%20Data%20Part%202%3a%20Active%20Learning&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2022-02-20-active-learning%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 reddit 分享《数据不足时的学习，第二部分：主动学习》"
+        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2022-02-20-active-learning%2f&title=Learning%20with%20not%20Enough%20Data%20Part%202%3a%20Active%20Learning">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 facebook 分享《数据不足时的学习，第二部分：主动学习》"
+        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2022-02-20-active-learning%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 whatsapp 分享《数据不足时的学习，第二部分：主动学习》"
+        href="https://api.whatsapp.com/send?text=Learning%20with%20not%20Enough%20Data%20Part%202%3a%20Active%20Learning%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2022-02-20-active-learning%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 telegram 分享《数据不足时的学习，第二部分：主动学习》"
+        href="https://telegram.me/share/url?text=Learning%20with%20not%20Enough%20Data%20Part%202%3a%20Active%20Learning&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2022-02-20-active-learning%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

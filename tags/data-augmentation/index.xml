@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/data-augmentation</title>
+    <link>https://xingshuozhu1998.github.io/tags/data-augmentation/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 15 Apr 2022 15:10:30 -0700</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/data-augmentation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>数据不足时的学习（三）：数据生成</title>
+      <link>https://xingshuozhu1998.github.io/posts/2022-04-15-data-gen/</link>
+      <pubDate>Fri, 15 Apr 2022 15:10:30 -0700</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2022-04-15-data-gen/</guid>
+      <description>这是“数据不足时的学习”第 3 部分（此前： 第 1 部分 和 第 2 部分 ）。我们来考虑两种生成训练用合成数据的方法。 
+ 
+  增强数据 。给定一组现有训练样本，可以施加各种增强、扰动和变换，在不丢失关键属性的情况下得到新数据点。此前关于对比学习的 文章 已介绍许多文本与图像增强方法。为保证本文完整，我将数据增强一节 复制 到这里，并作了一些修改。 
+  新数据 。给定很少甚至没有数据点，可以依赖强大的预训练模型，生成若干 新 数据点。近年来大型预训练 language models（语言模型，LM） 快速发展，这一点尤其成立。少样本提示已被证明可以有效让 LM 在上下文中学习，无需额外训练。 
+ 
+ 数据增强 #  
+ 数据增强的目标，是在保持语义不变的同时，修改输入形式（例如文本措辞、视觉外观）。 
+ 图像增强 #  
+ 基本图像处理操作 #  
+ 在保留语义信息的同时，修改图像有多种方式。可以使用以下任一增强方法，或组合多种操作。 
+ 
+ 随机裁剪，然后缩放回原始大小。 
+ 随机颜色扰动 
+ 随机高斯模糊 
+ 随机颜色抖动 
+ 随机水平翻转 
+ 随机灰度转换 
+ 还有许多其</description>
+    </item>
+    
+    <item>
+      <title>对比表征学习</title>
+      <link>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</link>
+      <pubDate>Mon, 31 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</guid>
+      <description>对比表征学习的目标，是学习这样的嵌入空间：相似样本对彼此接近，不相似样本对彼此远离。对比学习可以用于监督和无监督情形。在使用无监督数据时，对比学习是 自监督学习 中最强大的方法之一。 
+ 对比训练目标 #  
+ 早期用于对比学习的损失函数只涉及一个正样本和一个负样本。近期训练目标的趋势，则是在一个批量中包含多个正样本对和负样本对。 
+ 对比损失 #  
+  对比损失 （ Chopra 等，2005 ）是最早以对比方式进行深度度量学习的训练目标之一。 
+ 给定一组输入样本 $\{ \mathbf{x}_i \}$，每个样本都有对应标签 $y_i \in \{1, \dots, L\}$，属于 $L$ 个类别之一。我们希望学习函数 $f_\theta(.): \mathcal{X}\to\mathbb{R}^d$，将 $x_i$ 编码为嵌入向量，使同类示例具有相似嵌入，而不同类样本的嵌入差异很大。因此，对比损失以一对输入 $(x_i, x_j)$ 为对象：如果二者属于同类，就最小化嵌入距离；否则就最大化距离。 
+ 
+$$
+\mathcal{L}_\text{cont}(\mathbf{x}</description>
+    </item>
+    
+  </channel>
+</rss>

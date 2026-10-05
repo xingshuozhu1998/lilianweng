@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>深度神经网络是否严重过拟合？ | Lil’Log 中文学习镜像</title>
+<meta name="keywords" content="information-theory, foundation, learning-dynamics" />
+<meta name="description" content="
+[2019-05-27 更新：新增 Lottery Ticket Hypothesis（彩票假说）一节。]
+如果你和我一样，带着传统机器学习经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络参数如此之多，训练误差很容易达到完美，因此它肯定会严重过拟合。它怎么可能泛化到样本外数据点呢？">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="深度神经网络是否严重过拟合？" />
+<meta property="og:description" content="
+[2019-05-27 更新：新增 Lottery Ticket Hypothesis（彩票假说）一节。]
+如果你和我一样，带着传统机器学习经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络参数如此之多，训练误差很容易达到完美，因此它肯定会严重过拟合。它怎么可能泛化到样本外数据点呢？" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-03-14T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2019-03-14T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深度神经网络是否严重过拟合？"/>
+<meta name="twitter:description" content="
+[2019-05-27 更新：新增 Lottery Ticket Hypothesis（彩票假说）一节。]
+如果你和我一样，带着传统机器学习经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络参数如此之多，训练误差很容易达到完美，因此它肯定会严重过拟合。它怎么可能泛化到样本外数据点呢？"/>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/posts/"}, {"@type": "ListItem", "position": 2, "name": "深度神经网络是否严重过拟合？", "item": "https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "深度神经网络是否严重过拟合？", "name": "深度神经网络是否严重过拟合？", "description": "[2019-05-27 更新：新增 Lottery Ticket Hypothesis（彩票假说）一节。]\n如果你和我一样，带着传统机器学习经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络参数如此之多，训练误差很容易达到完美，因此它肯定会严重过拟合。它怎么可能泛化到样本外数据点呢？", "keywords": ["information-theory", "foundation", "learning-dynamics"], "articleBody": "[2019-05-27 更新：新增关于 Lottery Ticket Hypothesis（彩票假说）的 一节 。]  \n 如果你和我一样，带着传统机器学习经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络参数如此之多，训练误差很容易达到完美，因此它肯定会严重过拟合。它怎么可能泛化到样本外数据点呢？ \n 理解深度神经网络为何能泛化的努力，让我想起系统生物学领域一篇有趣论文—— “Can a biologist fix a radio?”（生物学家能修收音机吗？） （Lazebnik，2002）。如果生物学家像研究生物系统那样修收音机，可能很困难。因为收音机系统的完整机制尚未揭示，探测小型局部功能可能提供线索，却难以呈现系统内全部交互，更不用说完整工作流程。不论你认为它是否与 DL（深度学习）相关，这篇文章都非常有趣。 \n 本文想讨论几篇关于深度学习模型泛化能力与复杂度度量的论文，希望帮助你思考 DNN（深度神经网络）为什么能够泛化。 \n 压缩与模型选择的经典定理 #  \n 假设有分类问题和数据集，我们可以开发许多模型解决它，从拟合简单线性回归，到将整个数据集存储在磁盘中记忆。哪一种更好？如果只关心训练数据准确率（尤其是测试数据很可能未知），记忆方法似乎最佳——嗯，这听起来不对。 \n 许多经典定理可以指导我们，决定这种情形下良好模型应具备哪些性质。 \n Occam’s Razor（奥卡姆剃刀） #  \n  Occam’s Razor（奥卡姆剃刀） 是解决问题的非正式原则，由  William of Ockham 在 14 世纪提出： \n \n “简单的解法比复杂解法更可能正确。” \n \n 当面对多个解释世界的底层候选理论、必须选择其一时，这一原则极为有力。许多不必要假设对某个问题可能看似合理，却更难泛化到其他复杂情况，或最终导向宇宙基本原则。 \n 想想看，人们用了数百年才弄清：白天天空蓝、日落天空偏红，虽然看起来很不同，却源于同一原因（ Rayleigh scattering（瑞利散射） ）。人们肯定曾分别提出许多其他解释，但统一、简单的版本最终胜出。 \n Minimum Description Length principle（最小描述长度原则） #  \n Occam’s Razor（奥卡姆剃刀）原则同样可用于机器学习模型。其形式化版本称为  Minimum Description Length (MDL)（最小描述长度） 原则，用于在给定观测数据时比较相互竞争的模型／解释。 \n \n “理解就是压缩。” \n \n MDL（最小描述长度）的基本思路，是 将学习视为数据压缩 。要压缩数据，就需要发现规律或模式，它们很可能泛化到未见样本。 Information bottleneck（信息瓶颈） 理论认为，深度神经网络首先通过最小化泛化误差学习表示数据，再通过去除噪声学习压缩这一表征。 \n 同时，MDL（最小描述长度）将模型描述纳入压缩结果的一部分，因此模型不能任意大。 \n MDL（最小描述长度）原则的 两部分版本 指出：令 $\\mathcal{H}^{(1)}, \\mathcal{H}^{(2)}, \\dots$ 为能解释数据集 $\\mathcal{D}$ 的模型列表。最佳假设应最小化以下总和： \n \n$$\n\\mathcal{H}^\\text{best} = \\arg\\min_\\mathcal{H} [L(\\mathcal{H}) + L(\\mathcal{D}\\vert\\mathcal{H})]\n$$\n \n \n $L(\\mathcal{H})$ 是模型 $\\mathcal{H}$ 描述的比特长度。 \n $L(\\mathcal{D}\\vert\\mathcal{H})$ 是数据 $\\mathcal{D}$ 描述的比特长度，编码所用模型为 $\\mathcal{H}$。 \n \n 简单说， 最佳 模型是 最小 的模型，包含编码后数据与模型本身。按这一标准，本节开头提出的记忆方法，不论训练数据准确率多好，都很糟糕。 \n 有人可能认为 Occam’s Razor（奥卡姆剃刀）错误：真实世界可以任意复杂，为什么必须寻找简单模型？MDL（最小描述长度）的有趣视角，是将模型视为 “语言” ，而非基本生成定理。我们希望寻找良好压缩策略，描述小样本集合中的规律；它们 不必是解释现象的“真实”生成模型 。模型可以错误，却仍有用（例如，想想任何贝叶斯先验）。 \n Kolmogorov Complexity（柯尔莫哥洛夫复杂度） #  \n Kolmogorov Complexity（柯尔莫哥洛夫复杂度）依赖现代计算机概念，定义对象的算法（描述）复杂度：即 描述该对象的最短二进制计算机程序长度 。按照 MDL（最小描述长度），计算机本质上是最一般的数据解压器。 \n Kolmogorov Complexity（柯尔莫哥洛夫复杂度）的形式定义为：给定通用计算机 $\\mathcal{U}$ 和程序 $p$，将 $\\mathcal{U}(p)$ 记为计算机处理该程序的输出，$L(p)$ 记为程序描述长度。字符串的 Kolmogorov Complexity 为 $K_\\mathcal{U}$，该字符串是 $s$，相对于通用计算机 $\\mathcal{U}$ 定义为： \n \n$$\nK_\\mathcal{U}(s) = \\min_{p: \\mathcal{U}(p)=s} L(p)\n$$\n \n 注意，通用计算机能够模仿任何其他计算机的行为。所有现代计算机都是通用的，因为它们都可归约为 Turing machines（图灵机）。无论使用哪种计算机，这一定义都通用，因为总能编写另一个通用计算机的程序，复制 $\\mathcal{U}$ 的行为，而复制程序的编码长度只是常数。 \n Kolmogorov Complexity（柯尔莫哥洛夫复杂度）与 Shannon Information Theory（香农信息论）存在许多联系，因为二者都与通用编码相关。令人惊讶的是，随机变量的期望 Kolmogorov Complexity 近似等于其 Shannon entropy（香农熵）（见 报告 第 2.3 节）。进一步讨论超出本文范围，但网上有许多有趣阅读材料，请自行探索 :) \n Solomonoff’s Inference Theory（所罗门诺夫推断理论） #  \n Occam’s Razor（奥卡姆剃刀）的另一种数学形式化，是 Solomonoff 的通用归纳推断理论（ Solomonoff ， 1964 ）。其原则是，根据 Kolmogorov complexity（柯尔莫哥洛夫复杂度），偏好对应于生成训练数据的“最短程序”的模型。 \n DL（深度学习）模型的表达能力 #  \n 相比传统统计模型，深度神经网络参数极多。如果用 MDL（最小描述长度）衡量其复杂度，将参数数量视为模型描述长度，结果看起来会很糟糕。模型描述 $L(\\mathcal{H})$ 很容易失控增长。 \n 不过，神经网络要获得高表达能力，大量参数是 必要的 。由于能够捕获任意灵活数据表征的强大能力，深度神经网络在许多应用中取得巨大成功。 \n Universal Approximation Theorem（通用近似定理） #  \n  Universal Approximation Theorem（通用近似定理） 指出，具有以下结构的前馈网络：（1）线性输出层；（2）至少一个含有限数量神经元的隐藏层；（3）某种激活函数，可以任意精度近似 任何 连续函数，定义域为 $\\mathbb{R}^n$ 的紧子集。定理最初针对 sigmoid（S 形）激活函数证明（ Cybenko，1989 ）。后来证明，通用近似性质不取决于具体激活函数的选择（ Hornik，1991 ），而取决于多层前馈架构。 \n 虽然单个隐藏层的前馈网络足以表示任意函数，但宽度必须指数级大。Universal Approximation Theorem（通用近似定理）不保证模型是否能被恰当学习或泛化。通常，增加层数有助于减少浅层网络所需隐藏神经元数量。 \n 借助 Universal Approximation Theorem（通用近似定理），总能找到神经网络，使目标函数表示误差低于任意所需阈值；但代价是，网络可能变得极其庞大。 \n 证明：双层 NN（神经网络）的有限样本表达能力 #  \n 此前讨论的 Universal Approximation Theorem（通用近似定理）没有考虑有限样本集合。 Zhang 等（2017） 提供了双层神经网络有限样本表达能力的漂亮证明。 \n 神经网络 $C$ 能在样本量 $n$、维数 $d$ 下表示任意函数，条件是：对每个有限样本集 $S \\subseteq \\mathbb{R}^d$，满足 $\\vert S \\vert = n$，以及定义于该样本集的每个函数 $f: S \\mapsto \\mathbb{R}$，都能为 $C$ 找到权重配置，使 $C(\\boldsymbol{x}) = f(\\boldsymbol{x}), \\forall \\boldsymbol{x} \\in S$。 \n 论文提出一个定理： \n \n 存在具有 ReLU（修正线性单元）激活与 $2n + d$ 个权重的双层神经网络，能够在大小为 $n$、维数为 $d$ 的样本上表示任意函数。 \n \n  证明。 首先构造双层神经网络 $C: \\mathbb{R}^d \\mapsto \\mathbb{R}$。输入是 $d$ 维向量 $\\boldsymbol{x} \\in \\mathbb{R}^d$。隐藏层有 $h$ 个隐藏单元，对应权重矩阵 $\\mathbf{W} \\in \\mathbb{R}^{d\\times h}$、偏置向量 $-\\mathbf{b} \\in \\mathbb{R}^h$ 和 ReLU（修正线性单元）激活。第二层输出标量值，权重向量为 $\\boldsymbol{v} \\in \\mathbb{R}^h$，偏置为零。 \n 网络 $C$ 对输入向量 $\\boldsymbol{x}$ 的输出，可表示为： \n \n$$\nC(\\boldsymbol{x}) \n= \\boldsymbol{v} \\max\\{ \\boldsymbol{x}\\mathbf{W} - \\boldsymbol{b}, 0\\}^\\top\n= \\sum_{i=1}^h v_i \\max\\{\\boldsymbol{x}\\boldsymbol{W}_{(:,i)} - b_i, 0\\}\n$$\n \n 其中，$\\boldsymbol{W}_{(:,i)}$ 是第 $i$ 列，位于矩阵 $d \\times h$ 中。 \n 给定样本集 $S = \\{\\boldsymbol{x}_1, \\dots, \\boldsymbol{x}_n\\}$ 和目标值 $\\boldsymbol{y} = \\{y_1, \\dots, y_n \\}$，希望找到恰当权重 $\\mathbf{W} \\in \\mathbb{R}^{d\\times h}$、$\\boldsymbol{b}, \\boldsymbol{v} \\in \\mathbb{R}^h$，使 $C(\\boldsymbol{x}_i) = y_i, \\forall i=1,\\dots,n$。 \n 将全部样本点合为一个批量，形成输入矩阵 $\\mathbf{X} \\in \\mathbb{R}^{n \\times d}$。若设 $h=n$，则 $\\mathbf{X}\\mathbf{W} - \\boldsymbol{b}$ 为大小 $n \\times n$ 的方阵。 \n \n$$\n\\mathbf{M}_\\text{ReLU} \n= \\max\\{\\mathbf{X}\\mathbf{W} - \\boldsymbol{b}, 0 \\} \n= \\begin{bmatrix}\n\\boldsymbol{x}_1\\mathbf{W} - \\boldsymbol{b} \\\\\n\\dots \\\\\n\\boldsymbol{x}_n\\mathbf{W} - \\boldsymbol{b} \\\\\n\\end{bmatrix}\n= [\\boldsymbol{x}_i\\boldsymbol{W}_{(:,j)} - b_j]_{i \\times j}\n$$\n \n 可以简化 $\\mathbf{W}$，使所有列具有相同列向量： \n \n$$\n\\mathbf{W}_{(:,j)} = \\boldsymbol{w} \\in \\mathbb{R}^{d}, \\forall j = 1, \\dots, n\n$$\n \n \n\t \n 令 $a_i = \\boldsymbol{x}_i \\boldsymbol{w}$，希望找到恰当 $\\boldsymbol{w}$ 与 $\\boldsymbol{b}$，使 $b_1 < a_1 < b_2 < a_2 < \\dots < b_n < a_n$。这总能实现，因为求解 $n+d$ 个未知变量，约束数量为 $n$，而且 $\\boldsymbol{x}_i$ 相互独立（即随机选择 $\\boldsymbol{w}$，排序 $\\boldsymbol{x}_i \\boldsymbol{w}$，再将 $b_j$ 设为中间值）。于是，$\\mathbf{M}_\\text{ReLU}$ 变为下三角矩阵： \n \n$$\n\\mathbf{M}_\\text{ReLU} = [a_i - b_j]_{i \\times j}\n= \\begin{bmatrix}\na_1 - b_1 & 0        & 0  & \\dots & 0 \\\\\n\\vdots &  \\ddots  & &  & \\vdots \\\\\na_i - b_1 & \\dots & a_i - b_i & \\dots & 0\\\\\n\\vdots &    & & \\ddots & \\vdots \\\\\na_n - b_1 & a_n - b_2 & \\dots & \\dots & a_n - b_n \\\\\n\\end{bmatrix}\n$$\n \n 由于 $\\det(\\mathbf{M}_\\text{ReLU}) \\neq 0$，这是非奇异方阵，因此总能找到合适 $\\boldsymbol{v}$，求解 $\\boldsymbol{v}\\mathbf{M}_\\text{ReLU}=\\boldsymbol{y}$（换句话说，$\\mathbf{M}_\\text{ReLU}$ 的列空间是整个 $\\mathbb{R}^n$，可以找到列向量的线性组合，得到任意 $\\boldsymbol{y}$）。 \n 深层 NN（神经网络）能够学习随机噪声 #  \n 既然已知双层神经网络是通用近似器，看到它们能完美学习无结构随机噪声，就没那么惊讶了，如  Zhang 等（2017） 所示。即使将图像分类数据集的标签随机打乱，深度神经网络强大的表达能力仍可使训练损失接近零。加入正则化项也不改变这些结果。 \n \n\t \n\t 在随机标签或随机像素的 CIFAR10 上拟合模型：（a）学习曲线；（b–c）标签损坏比例，是随机打乱标签的比例。（图片来源： Zhang 等，2017 ） \n \n 深度学习模型是否严重过拟合？ #  \n 深度学习模型高度过参数化，往往可以在训练数据上取得完美结果。按传统观点，例如偏差—方差权衡，这可能是灾难，无法泛化到未见测试数据。但通常，这种“过拟合”（训练误差 = 0）的深度学习模型，在样本外测试数据上仍表现不错。嗯……很有趣，为什么呢？ \n 深度学习的现代风险曲线 #  \n 传统机器学习使用以下 U 形风险曲线，衡量偏差—方差权衡、量化模型泛化能力。如果有人问如何判断模型是否过拟合，我首先就会想到它。 \n 模型变大（增加参数）时，训练误差下降至接近零；但模型复杂度超过“欠拟合”与“过拟合”的阈值后，测试误差（泛化误差）开始上升。这在一定程度上符合 Occam’s Razor（奥卡姆剃刀）。 \n \n\t \n\t U 形偏差—方差风险曲线。（图片来源：（左） 论文 ；（右） 这篇文章的图 6 ） \n \n 遗憾的是，这不适用于深度学习模型。 Belkin 等（2018） 协调传统偏差—方差权衡，为深度神经网络提出新的双 U 形风险曲线。网络参数数量足够高时，风险曲线进入另一状态。 \n \n\t \n\t 深度神经网络新的双 U 形偏差—方差风险曲线。（图片来源： 原始论文 ） \n \n 论文认为，这可能有两个原因： \n \n 参数数量不是 归纳偏置 的良好度量；归纳偏置定义为学习算法预测未知样本所使用的假设集合。关于 DL（深度学习）模型复杂度，更多讨论见 后面 的 章节 。 \n 更大的模型可能让我们发现更大的函数类，进一步找到范数更小、因此“更简单”的插值函数。 \n \n 论文显示，经验上观察到了双 U 形风险曲线。但我复现结果时相当困难。虽然出现一些迹象，但要生成类似理论的漂亮平滑曲线，必须注意实验中的 许多细节 。 \n \n\t \n\t 单隐藏层 fc（全连接）网络在不同隐藏单元数量下的训练与评估误差，使用从 MNIST 采样的 4000 个数据点训练。（图片来源： 原始论文 ） \n \n 正则化不是泛化的关键 #  \n 正则化是控制过拟合、提高模型泛化性能的常见方式。有趣的是，一些研究（ Zhang 等，2017 ）表明，显式正则化（数据增强、权重衰减和 dropout（随机丢弃网络单元））既不是降低泛化误差的必要条件，也不是充分条件。 \n 以 CIFAR10 上训练的 Inception 模型为例（见图 5），正则化技术有助于样本外泛化，但作用不大。似乎没有哪一种正则化，独立于其他项就至关重要。因此，正则化很可能不是泛化的 根本原因 。 \n \n\t \n\t 使用不同数据增强、权重衰减开关组合，在 CIFAR10 上训练的 Inception 模型准确率。（图片来源： 原始论文 的表 1） \n \n Intrinsic Dimension（内在维数） #  \n 深度学习领域中，参数数量与模型过拟合不相关，说明数参数无法反映深度神经网络的真实复杂度。 \n 除参数数量外，研究者提出许多量化模型复杂度的方法，例如模型自由度数量（ Gao & Jojic，2016 ），或 prequential code（按预测顺序编码数据的方法）（ Blier & Ollivier，2018 ）。 \n 我想讨论近期一种方法，称为  intrinsic dimension（内在维数） （ Li 等，2018 ）。Intrinsic dimension 直观、容易衡量，同时揭示不同规模模型的许多有趣性质。 \n 考虑参数极多、形成高维参数空间的神经网络，学习发生在这一高维 目标函数曲面 上。\n参数空间流形的形状很重要。例如，更平滑的流形提供更具预测性的梯度，允许更大学习率，有利于优化；有人认为，这就是批量归一化能够稳定训练的原因（ Santurkar 等，2019 ）。 \n 虽然参数空间庞大，幸运的是，不必太担心优化困在局部最优，因为已经 证明 ，目标函数曲面的局部最优点几乎总位于鞍点而非谷底。换句话说，总存在某些维度，其中有离开局部最优、继续探索的路径。 \n \n\t \n\t 参数优化曲面中各种临界点的示意。（图片来源： 这里 ） \n \n 衡量 intrinsic dimension（内在维数）的一个直觉是：参数空间维数如此之高，高效学习可能无需利用全部维度。如果只经过目标函数曲面的一个切片，仍能学到良好解，结果模型复杂度很可能低于参数计数表现出的复杂度。这正是 intrinsic dimension 试图评估的东西。 \n 假设模型有 $D$ 个维度，参数记为 $\\theta^{(D)}$。学习时，随机采样较小的 $d$ 维子空间 $\\theta^{(d)}$，其中 $d < D$。一次优化更新中，不沿全部 $D$ 个维度执行梯度步，而只使用较小子空间 $\\theta^{(d)}$，重新映射后更新模型参数。 \n \n\t \n\t $D=3$ 时，直接优化的参数向量示意。（图片来源： 原始论文 ） \n \n 梯度更新公式如下： \n \n$$\n\\theta^{(D)} = \\theta_0^{(D)} + \\mathbf{P} \\theta^{(d)}\n$$\n \n 其中，$\\theta_0^{(D)}$ 是初始化值，$\\mathbf{P}$ 是大小为 $D \\times d$ 的投影矩阵，在训练前随机采样。$\\theta_0^{(D)}$ 与 $\\mathbf{P}$ 都不可训练，训练中保持固定。$\\theta^{(d)}$ 初始化为全零。 \n 通过搜索 $d = 1, 2, \\dots, D$ 的值，将解出现时对应的 $d$ 定义为  intrinsic dimension（内在维数） 。 \n 结果发现，许多问题的 intrinsic dimensions（内在维数）远小于参数数量。例如，CIFAR10 图像分类中，具有超过 65 万参数的全连接网络，intrinsic dimension 只有 9000；含 6.2 万参数的卷积网络，intrinsic dimension 更低，只有 2900。 \n \n\t \n\t 各模型达到最佳性能 90% 时，测得的 intrinsic dimensions（内在维数）$d$。（图片来源： 原始论文 ） \n \n intrinsic dimensions（内在维数）的测量，说明深度学习模型显著比表面看起来更简单。 \n 各层稳健性的差异 #  \n  Zhang 等（2019） 研究不同层参数的作用。论文提出的根本问题是： “所有层都生而平等吗？” 简短回答：否。模型对一些层的变化更敏感，对另一些层则不敏感。 \n 论文提出两类操作，可施加于第 $\\ell$ 层的参数 $\\ell = 1, \\dots, L$，在时刻 $t$、$\\theta^{(\\ell)}_t$ 进行，测试对模型稳健性的影响： \n \n \n  重新初始化 ：将参数重置为初始值 $\\theta^{(\\ell)}_t \\leftarrow \\theta^{(\\ell)}_0$。第 $\\ell$ 层重新初始化后，网络的性能称为 重新初始化稳健性 ，对应层为 $\\ell$。 \n \n \n  重新随机化 ：随机重新采样该层参数，$\\theta^{(\\ell)}_t \\leftarrow \\tilde{\\theta}^{(\\ell)} \\sim \\mathcal{P}^{(\\ell)}$。对应网络性能称为 重新随机化稳健性 ，对应层为 $\\ell$。 \n \n \n 借助这两类操作，层可分为两类： \n \n  稳健层 ：重新初始化或重新随机化该层后，网络性能没有下降，或下降可忽略。 \n  关键层 ：其余情况。 \n \n 全连接与卷积网络观察到类似模式。重新随机化任何层，都 彻底破坏 模型性能，预测立即退化为随机猜测。更有趣、惊讶的是，重新初始化时，只有第一层或前几层（最接近输入层）关键；重新初始化高层，只导致 可忽略的性能下降 。 \n \n\t \n\t （a）MNIST 上训练的 fc（全连接）网络。每行对应一层；第一列是每层的重新随机化稳健性，其余列是不同训练时间的重新初始化稳健性。（b）CIFAR 10 上训练的 VGG11（卷积网络），表示方式类似（a），但行列转置。（图片来源： 原始论文 ） \n \n ResNet（残差网络）可利用非相邻层之间的快捷连接，将敏感层重新分布到整个网络，而不只位于底部。残差块架构使网络能够 均匀地对重新随机化保持稳健 。只有每个残差块的第一层，仍对重新初始化和重新随机化都敏感。若把每个残差块视为局部子网络，稳健性模式类似上述 fc（全连接）与卷积网络。 \n \n\t \n\t CIFAR10 上训练的 ResNet-50 各层的重新随机化（第一行）与重新初始化（其余行）稳健性。（图片来源： 原始论文 ） \n \n 依据深度神经网络许多顶层重新初始化后，不影响模型性能的关键性这一事实，论文较宽泛地得出结论： \n \n “用随机梯度训练、容量过大的深度网络，由于自行限制关键层数量，具有较低复杂度。” \n \n 可以将重新初始化视为减少有效参数数量的方式，因此这一观察与 intrinsic dimension（内在维数）的结果一致。 \n Lottery Ticket Hypothesis（彩票假说） #  \n lottery ticket hypothesis（彩票假说）（ Frankle & Carbin，2019 ）是另一项有趣、启发性的发现，支持只有部分网络参数影响模型性能，因此网络并未过拟合。lottery ticket hypothesis 指出：随机初始化的稠密前馈网络包含一组子网络，其中只有部分是 “winning tickets（中奖彩票）” ，可以在 独立训练 时达到最优性能。 \n 这一思路受网络剪枝技术启发——移除不必要权重（如几乎可忽略的微小权重），而不损害模型性能。虽然最终网络大小可显著减少，但很难从头成功训练这种剪枝后架构。感觉上，成功训练神经网络需要大量参数；但训练完成后，维持高准确率却不需要那么多参数。为什么？ \n lottery ticket hypothesis（彩票假说）进行了以下实验： \n \n 随机初始化稠密前馈网络，初始化值为 $\\theta_0$； \n 训练网络多次迭代，达到良好性能，参数配置为 $\\theta$； \n 对 $\\theta$ 剪枝，创建掩码 $m$。 \n “winning ticket（中奖彩票）”的初始化配置为 $m \\odot \\theta_0$。 \n \n 只训练这个小型“winning ticket（中奖彩票）”参数子集，使用第 1 步找到的初始值，模型就能达到与第 2 步相同的准确率。结果表明，最终解的表示无需大参数空间，但训练需要它，因为它提供了许多小得多的子网络初始化配置组成的大型候选池。 \n lottery ticket hypothesis（彩票假说）为解释和剖析深度神经网络结果打开新视角。许多有趣后续工作正在出现。 \n 实验 #  \n 看到上述有趣发现后，复现它们应该很有趣。有些结果比另一些更容易复现，细节如下。我的代码在 github  lilianweng/generalization-experiment 。 \n  DL（深度学习）模型的新风险曲线  \n 这一项最难复现。作者给了我许多好建议，非常感谢。以下是实验中值得注意的设置： \n \n 没有权重衰减、dropout（随机丢弃网络单元）等正则化项。 \n 图 3 中，训练集含 4000 个样本，只采样一次，对所有模型固定。评估使用完整 MNIST 测试集。 \n 每个网络训练很长时间，达到接近零的训练风险。不同规模模型采用不同学习率调整。 \n 为使欠参数化区域的模型对初始化不那么敏感，实验采用 “权重重用” 方案：用较小神经网络训练得到的参数，初始化较大网络。 \n \n 我没有为每个模型训练或调参足够久，达到完美训练性能；但评估误差确实在插值阈值附近呈现特殊转折，与训练误差不同。例如，MNIST 的阈值是训练样本数量乘类别数量（10），即 40000。 \n 横轴是模型参数数量：(28 * 28 + 1) * num. units + num. units * 10，采用对数尺度。 \n \n\t \n \n  各层并非生而平等  \n 这一项较容易复现。我的实现见 这里 。 \n 第一个实验使用三层 fc（全连接）网络，每层 256 个单元。第 0 层是输入，第 3 层是输出。网络在 MNIST 上训练 100 轮。 \n \n\t \n 第二个实验使用四层 fc（全连接）网络，每层 128 个单元。其他设置与实验 1 相同。 \n \n\t \n \n  Intrinsic Dimension（内在维数）测量  \n 为将 $d$ 维子空间正确映射到完整参数空间，投影矩阵 $\\mathbf{P}$ 应具有正交列。因为乘积 $\\mathbf{P}\\theta^{(d)}$ 是矩阵 $\\mathbf{P}$ 各列的和，分别按 $d$ 维向量 $\\sum_{i=1}^d \\theta^{(d)}_i \\mathbf{P}^\\top_{(:,i)}$ 中的对应标量缩放，所以 $\\mathbf{P}$ 使用正交列，可更充分利用子空间。 \n 我的实现采用朴素方式：采样大矩阵，各元素独立来自标准正态分布。高维空间中，期望列彼此独立，因此正交。维数不太大时可行；探索较大 $d$ 时，可使用稀疏投影矩阵构造方法，这正是 intrinsic dimension（内在维数）论文建议的。 \n 以下是在 MNIST 的 10% 数据上训练两个网络的实验：（左）双层 fc（全连接）网络，每层 64 个单元；（右）单隐藏层 fc 网络，128 个隐藏单元。每个 $d$ 对应模型训练 100 轮。 代码 见 这里 。 \n \n\t \n \n 引用格式： \n  @article{weng2019overfit,\n  title   = \"Are Deep Neural Networks Dramatically Overfitted?\",\n  author  = \"Weng, Lilian\",\n  journal = \"lilianweng.github.io\",\n  year    = \"2019\",\n  url     = \"https://lilianweng.github.io/posts/2019-03-14-overfit/\"\n}\n   参考文献 #  \n [1] Wikipedia 上的  Occam’s Razor（奥卡姆剃刀） 页面。 \n [2] Principia Cybernetica Web 上的  Occam’s Razor（奥卡姆剃刀） 。 \n [3] Peter Grunwald。 “A Tutorial Introduction to the Minimum Description Length Principle”（最小描述长度原则的入门教程） 。2004。 \n [4] Ian Goodfellow 等。 Deep Learning（深度学习） 。2016。 第 6.4.1 节 。 \n [5] Zhang, Chiyuan 等。 “Understanding deep learning requires rethinking generalization.”（理解深度学习需要重新思考泛化。） ICLR 2017。 \n [6] Shibani Santurkar 等。 “How does batch normalization help optimization?.”（批量归一化如何帮助优化？） NIPS 2018。 \n [7] Mikhail Belkin 等。 “Reconciling modern machine learning and the bias-variance trade-off.”（协调现代机器学习与偏差—方差权衡。） arXiv:1812.11118，2018。 \n [8] Chiyuan Zhang 等。 “Are All Layers Created Equal?”（所有层都生而平等吗？） arXiv:1902.01996，2019。 \n [9] Chunyuan Li 等。 “Measuring the intrinsic dimension of objective landscapes.”（测量目标函数曲面的内在维数。） ICLR 2018。 \n [10] Jonathan Frankle 和 Michael Carbin。 “The lottery ticket hypothesis: Finding sparse, trainable neural networks.”（彩票假说：寻找稀疏、可训练神经网络。） ICLR 2019。", "wordCount": "4472", "inLanguage": "zh-CN", "datePublished": "2019-03-14T00:00:00Z", "dateModified": "2019-03-14T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/favicon_wine.ico"}}}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/posts/2019-03-14-overfit/">
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2019-03-14-overfit/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/posts/2019-03-14-overfit/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      深度神经网络是否严重过拟合？
+    </h1>
+    <div class="post-meta">日期：2019 年 3 月 14 日 | 预计阅读时间：21 分钟 | 作者：Lilian Weng
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#classic-theorems-on-compression-and-model-selection" aria-label="压缩与模型选择的经典定理">压缩与模型选择的经典定理</a><ul>
+                        
+                <li>
+                    <a href="#occams-razor" aria-label="Occam&rsquo;s Razor">Occam’s Razor（奥卡姆剃刀）</a></li>
+                <li>
+                    <a href="#minimum-description-length-principle" aria-label="Minimum Description Length principle">Minimum Description Length principle（最小描述长度原则）</a></li>
+                <li>
+                    <a href="#kolmogorov-complexity" aria-label="Kolmogorov Complexity">Kolmogorov Complexity（柯尔莫哥洛夫复杂度）</a></li>
+                <li>
+                    <a href="#solomonoffs-inference-theory" aria-label="Solomonoff&rsquo;s Inference Theory">Solomonoff’s Inference Theory（所罗门诺夫推断理论）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#expressive-power-of-dl-models" aria-label="DL（深度学习）模型的表达能力">DL（深度学习）模型的表达能力</a><ul>
+                        
+                <li>
+                    <a href="#universal-approximation-theorem" aria-label="Universal Approximation Theorem">Universal Approximation Theorem（通用近似定理）</a></li>
+                <li>
+                    <a href="#proof-finite-sample-expressivity-of-two-layer-nn" aria-label="Proof: Finite Sample Expressivity of Two-layer NN">证明：双层 NN（神经网络）的有限样本表达能力</a></li>
+                <li>
+                    <a href="#deep-nn-can-learn-random-noise" aria-label="Deep NN can Learn Random Noise">深层 NN（神经网络）能够学习随机噪声</a></li></ul>
+                </li>
+                <li>
+                    <a href="#are-deep-learning-models-dramatically-overfitted" aria-label="深度学习模型是否严重过拟合？">深度学习模型是否严重过拟合？</a><ul>
+                        
+                <li>
+                    <a href="#modern-risk-curve-for-deep-learning" aria-label="Modern Risk Curve for Deep Learning">深度学习的现代风险曲线</a></li>
+                <li>
+                    <a href="#regularization-is-not-the-key-to-generalization" aria-label="Regularization is not the Key to Generalization">正则化不是泛化的关键</a></li>
+                <li>
+                    <a href="#intrinsic-dimension" aria-label="Intrinsic Dimension">Intrinsic Dimension（内在维数）</a></li>
+                <li>
+                    <a href="#heterogeneous-layer-robustness" aria-label="Heterogeneous Layer Robustness">各层稳健性的差异</a></li>
+                <li>
+                    <a href="#the-lottery-ticket-hypothesis" aria-label="The Lottery Ticket Hypothesis">Lottery Ticket Hypothesis（彩票假说）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#experiments" aria-label="Experiments">实验</a></li>
+                <li>
+                    <a href="#references" aria-label="References">参考文献</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><!-- If you are, like me, confused by why deep neural networks can generalize to out-of-sample data points without drastic overfitting, keep on reading. -->
+<p><span class="update">[2019-05-27 更新：新增关于 Lottery Ticket Hypothesis（彩票假说）的<a href="#the-lottery-ticket-hypothesis">一节</a>。]</span></p>
+<p>如果你和我一样，带着传统机器学习经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络参数如此之多，训练误差很容易达到完美，因此它肯定会严重过拟合。它怎么可能泛化到样本外数据点呢？</p>
+<p>理解深度神经网络为何能泛化的努力，让我想起系统生物学领域一篇有趣论文——<a href="https://www.cell.com/cancer-cell/pdf/S1535-6108(02)00133-2.pdf">“Can a biologist fix a radio?”（生物学家能修收音机吗？）</a>（Lazebnik，2002）。如果生物学家像研究生物系统那样修收音机，可能很困难。因为收音机系统的完整机制尚未揭示，探测小型局部功能可能提供线索，却难以呈现系统内全部交互，更不用说完整工作流程。不论你认为它是否与 DL（深度学习）相关，这篇文章都非常有趣。</p>
+<p>本文想讨论几篇关于深度学习模型泛化能力与复杂度度量的论文，希望帮助你思考 DNN（深度神经网络）为什么能够泛化。</p>
+<h1 id="classic-theorems-on-compression-and-model-selection">压缩与模型选择的经典定理<a hidden class="anchor" aria-hidden="true" href="#classic-theorems-on-compression-and-model-selection">#</a></h1>
+<p>假设有分类问题和数据集，我们可以开发许多模型解决它，从拟合简单线性回归，到将整个数据集存储在磁盘中记忆。哪一种更好？如果只关心训练数据准确率（尤其是测试数据很可能未知），记忆方法似乎最佳——嗯，这听起来不对。</p>
+<p>许多经典定理可以指导我们，决定这种情形下良好模型应具备哪些性质。</p>
+<h2 id="occams-razor">Occam’s Razor（奥卡姆剃刀）<a hidden class="anchor" aria-hidden="true" href="#occams-razor">#</a></h2>
+<p><a href="http://pespmc1.vub.ac.be/OCCAMRAZ.html">Occam’s Razor（奥卡姆剃刀）</a>是解决问题的非正式原则，由 <a href="https://en.wikipedia.org/wiki/William_of_Ockham">William of Ockham</a>在 14 世纪提出：</p>
+<blockquote>
+<p>“简单的解法比复杂解法更可能正确。”</p>
+</blockquote>
+<p>当面对多个解释世界的底层候选理论、必须选择其一时，这一原则极为有力。许多不必要假设对某个问题可能看似合理，却更难泛化到其他复杂情况，或最终导向宇宙基本原则。</p>
+<p>想想看，人们用了数百年才弄清：白天天空蓝、日落天空偏红，虽然看起来很不同，却源于同一原因（<a href="https://en.wikipedia.org/wiki/Rayleigh_scattering">Rayleigh scattering（瑞利散射）</a>）。人们肯定曾分别提出许多其他解释，但统一、简单的版本最终胜出。</p>
+<h2 id="minimum-description-length-principle">Minimum Description Length principle（最小描述长度原则）<a hidden class="anchor" aria-hidden="true" href="#minimum-description-length-principle">#</a></h2>
+<p>Occam’s Razor（奥卡姆剃刀）原则同样可用于机器学习模型。其形式化版本称为 <em>Minimum Description Length (MDL)（最小描述长度）</em>原则，用于在给定观测数据时比较相互竞争的模型／解释。</p>
+<blockquote>
+<p>“理解就是压缩。”</p>
+</blockquote>
+<p>MDL（最小描述长度）的基本思路，是<em>将学习视为数据压缩</em>。要压缩数据，就需要发现规律或模式，它们很可能泛化到未见样本。<a href="https://xingshuozhu1998.github.io/posts/2017-09-28-information-bottleneck/">Information bottleneck（信息瓶颈）</a>理论认为，深度神经网络首先通过最小化泛化误差学习表示数据，再通过去除噪声学习压缩这一表征。</p>
+<p>同时，MDL（最小描述长度）将模型描述纳入压缩结果的一部分，因此模型不能任意大。</p>
+<p>MDL（最小描述长度）原则的<em>两部分版本</em>指出：令 $\mathcal{H}^{(1)}, \mathcal{H}^{(2)}, \dots$ 为能解释数据集 $\mathcal{D}$ 的模型列表。最佳假设应最小化以下总和：</p>
+<div>
+$$
+\mathcal{H}^\text{best} = \arg\min_\mathcal{H} [L(\mathcal{H}) + L(\mathcal{D}\vert\mathcal{H})]
+$$
+</div>
+<ul>
+<li>$L(\mathcal{H})$ 是模型 $\mathcal{H}$ 描述的比特长度。</li>
+<li>$L(\mathcal{D}\vert\mathcal{H})$ 是数据 $\mathcal{D}$ 描述的比特长度，编码所用模型为 $\mathcal{H}$。</li>
+</ul>
+<p>简单说，<em>最佳</em>模型是<em>最小</em>的模型，包含编码后数据与模型本身。按这一标准，本节开头提出的记忆方法，不论训练数据准确率多好，都很糟糕。</p>
+<p>有人可能认为 Occam’s Razor（奥卡姆剃刀）错误：真实世界可以任意复杂，为什么必须寻找简单模型？MDL（最小描述长度）的有趣视角，是将模型视为<strong>“语言”</strong>，而非基本生成定理。我们希望寻找良好压缩策略，描述小样本集合中的规律；它们<strong>不必是解释现象的“真实”生成模型</strong>。模型可以错误，却仍有用（例如，想想任何贝叶斯先验）。</p>
+<h2 id="kolmogorov-complexity">Kolmogorov Complexity（柯尔莫哥洛夫复杂度）<a hidden class="anchor" aria-hidden="true" href="#kolmogorov-complexity">#</a></h2>
+<p>Kolmogorov Complexity（柯尔莫哥洛夫复杂度）依赖现代计算机概念，定义对象的算法（描述）复杂度：即<em>描述该对象的最短二进制计算机程序长度</em>。按照 MDL（最小描述长度），计算机本质上是最一般的数据解压器。</p>
+<p>Kolmogorov Complexity（柯尔莫哥洛夫复杂度）的形式定义为：给定通用计算机 $\mathcal{U}$ 和程序 $p$，将 $\mathcal{U}(p)$ 记为计算机处理该程序的输出，$L(p)$ 记为程序描述长度。字符串的 Kolmogorov Complexity 为 $K_\mathcal{U}$，该字符串是 $s$，相对于通用计算机 $\mathcal{U}$ 定义为：</p>
+<div>
+$$
+K_\mathcal{U}(s) = \min_{p: \mathcal{U}(p)=s} L(p)
+$$
+</div>
+<p>注意，通用计算机能够模仿任何其他计算机的行为。所有现代计算机都是通用的，因为它们都可归约为 Turing machines（图灵机）。无论使用哪种计算机，这一定义都通用，因为总能编写另一个通用计算机的程序，复制 $\mathcal{U}$ 的行为，而复制程序的编码长度只是常数。</p>
+<p>Kolmogorov Complexity（柯尔莫哥洛夫复杂度）与 Shannon Information Theory（香农信息论）存在许多联系，因为二者都与通用编码相关。令人惊讶的是，随机变量的期望 Kolmogorov Complexity 近似等于其 Shannon entropy（香农熵）（见<a href="https://homepages.cwi.nl/~paulv/papers/info.pdf">报告</a>第 2.3 节）。进一步讨论超出本文范围，但网上有许多有趣阅读材料，请自行探索 :)</p>
+<h2 id="solomonoffs-inference-theory">Solomonoff’s Inference Theory（所罗门诺夫推断理论）<a hidden class="anchor" aria-hidden="true" href="#solomonoffs-inference-theory">#</a></h2>
+<p>Occam’s Razor（奥卡姆剃刀）的另一种数学形式化，是 Solomonoff 的通用归纳推断理论（<a href="https://www.sciencedirect.com/science/article/pii/S0019995864902232">Solomonoff</a>，<a href="https://www.sciencedirect.com/science/article/pii/S0019995864901317">1964</a>）。其原则是，根据 Kolmogorov complexity（柯尔莫哥洛夫复杂度），偏好对应于生成训练数据的“最短程序”的模型。</p>
+<h1 id="expressive-power-of-dl-models">DL（深度学习）模型的表达能力<a hidden class="anchor" aria-hidden="true" href="#expressive-power-of-dl-models">#</a></h1>
+<p>相比传统统计模型，深度神经网络参数极多。如果用 MDL（最小描述长度）衡量其复杂度，将参数数量视为模型描述长度，结果看起来会很糟糕。模型描述 $L(\mathcal{H})$ 很容易失控增长。</p>
+<p>不过，神经网络要获得高表达能力，大量参数是<em>必要的</em>。由于能够捕获任意灵活数据表征的强大能力，深度神经网络在许多应用中取得巨大成功。</p>
+<h2 id="universal-approximation-theorem">Universal Approximation Theorem（通用近似定理）<a hidden class="anchor" aria-hidden="true" href="#universal-approximation-theorem">#</a></h2>
+<p><em>Universal Approximation Theorem（通用近似定理）</em>指出，具有以下结构的前馈网络：（1）线性输出层；（2）至少一个含有限数量神经元的隐藏层；（3）某种激活函数，可以任意精度近似<strong>任何</strong>连续函数，定义域为 $\mathbb{R}^n$ 的紧子集。定理最初针对 sigmoid（S 形）激活函数证明（<a href="https://pdfs.semanticscholar.org/05ce/b32839c26c8d2cb38d5529cf7720a68c3fab.pdf">Cybenko，1989</a>）。后来证明，通用近似性质不取决于具体激活函数的选择（<a href="http://zmjones.com/static/statistical-learning/hornik-nn-1991.pdf">Hornik，1991</a>），而取决于多层前馈架构。</p>
+<p>虽然单个隐藏层的前馈网络足以表示任意函数，但宽度必须指数级大。Universal Approximation Theorem（通用近似定理）不保证模型是否能被恰当学习或泛化。通常，增加层数有助于减少浅层网络所需隐藏神经元数量。</p>
+<p>借助 Universal Approximation Theorem（通用近似定理），总能找到神经网络，使目标函数表示误差低于任意所需阈值；但代价是，网络可能变得极其庞大。</p>
+<h2 id="proof-finite-sample-expressivity-of-two-layer-nn">证明：双层 NN（神经网络）的有限样本表达能力<a hidden class="anchor" aria-hidden="true" href="#proof-finite-sample-expressivity-of-two-layer-nn">#</a></h2>
+<p>此前讨论的 Universal Approximation Theorem（通用近似定理）没有考虑有限样本集合。<a href="https://arxiv.org/abs/1611.03530">Zhang 等（2017）</a>提供了双层神经网络有限样本表达能力的漂亮证明。</p>
+<p>神经网络 $C$ 能在样本量 $n$、维数 $d$ 下表示任意函数，条件是：对每个有限样本集 $S \subseteq \mathbb{R}^d$，满足 $\vert S \vert = n$，以及定义于该样本集的每个函数 $f: S \mapsto \mathbb{R}$，都能为 $C$ 找到权重配置，使 $C(\boldsymbol{x}) = f(\boldsymbol{x}), \forall \boldsymbol{x} \in S$。</p>
+<p>论文提出一个定理：</p>
+<blockquote>
+<p>存在具有 ReLU（修正线性单元）激活与 $2n + d$ 个权重的双层神经网络，能够在大小为 $n$、维数为 $d$ 的样本上表示任意函数。</p>
+</blockquote>
+<p><em>证明。</em>首先构造双层神经网络 $C: \mathbb{R}^d \mapsto \mathbb{R}$。输入是 $d$ 维向量 $\boldsymbol{x} \in \mathbb{R}^d$。隐藏层有 $h$ 个隐藏单元，对应权重矩阵 $\mathbf{W} \in \mathbb{R}^{d\times h}$、偏置向量 $-\mathbf{b} \in \mathbb{R}^h$ 和 ReLU（修正线性单元）激活。第二层输出标量值，权重向量为 $\boldsymbol{v} \in \mathbb{R}^h$，偏置为零。</p>
+<p>网络 $C$ 对输入向量 $\boldsymbol{x}$ 的输出，可表示为：</p>
+<div>
+$$
+C(\boldsymbol{x}) 
+= \boldsymbol{v} \max\{ \boldsymbol{x}\mathbf{W} - \boldsymbol{b}, 0\}^\top
+= \sum_{i=1}^h v_i \max\{\boldsymbol{x}\boldsymbol{W}_{(:,i)} - b_i, 0\}
+$$
+</div>
+<p>其中，$\boldsymbol{W}_{(:,i)}$ 是第 $i$ 列，位于矩阵 $d \times h$ 中。</p>
+<p>给定样本集 $S = \{\boldsymbol{x}_1, \dots, \boldsymbol{x}_n\}$ 和目标值 $\boldsymbol{y} = \{y_1, \dots, y_n \}$，希望找到恰当权重 $\mathbf{W} \in \mathbb{R}^{d\times h}$、$\boldsymbol{b}, \boldsymbol{v} \in \mathbb{R}^h$，使 $C(\boldsymbol{x}_i) = y_i, \forall i=1,\dots,n$。</p>
+<p>将全部样本点合为一个批量，形成输入矩阵 $\mathbf{X} \in \mathbb{R}^{n \times d}$。若设 $h=n$，则 $\mathbf{X}\mathbf{W} - \boldsymbol{b}$ 为大小 $n \times n$ 的方阵。</p>
+<div>
+$$
+\mathbf{M}_\text{ReLU} 
+= \max\{\mathbf{X}\mathbf{W} - \boldsymbol{b}, 0 \} 
+= \begin{bmatrix}
+\boldsymbol{x}_1\mathbf{W} - \boldsymbol{b} \\
+\dots \\
+\boldsymbol{x}_n\mathbf{W} - \boldsymbol{b} \\
+\end{bmatrix}
+= [\boldsymbol{x}_i\boldsymbol{W}_{(:,j)} - b_j]_{i \times j}
+$$
+</div>
+<p>可以简化 $\mathbf{W}$，使所有列具有相同列向量：</p>
+<div>
+$$
+\mathbf{W}_{(:,j)} = \boldsymbol{w} \in \mathbb{R}^{d}, \forall j = 1, \dots, n
+$$
+</div>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/nn-expressivity-proof.png" style="width: 85%;"  />
+<p>令 $a_i = \boldsymbol{x}_i \boldsymbol{w}$，希望找到恰当 $\boldsymbol{w}$ 与 $\boldsymbol{b}$，使 $b_1 &lt; a_1 &lt; b_2 &lt; a_2 &lt; \dots &lt; b_n &lt; a_n$。这总能实现，因为求解 $n+d$ 个未知变量，约束数量为 $n$，而且 $\boldsymbol{x}_i$ 相互独立（即随机选择 $\boldsymbol{w}$，排序 $\boldsymbol{x}_i \boldsymbol{w}$，再将 $b_j$ 设为中间值）。于是，$\mathbf{M}_\text{ReLU}$ 变为下三角矩阵：</p>
+<div>
+$$
+\mathbf{M}_\text{ReLU} = [a_i - b_j]_{i \times j}
+= \begin{bmatrix}
+a_1 - b_1 & 0        & 0  & \dots & 0 \\
+\vdots &  \ddots  & &  & \vdots \\
+a_i - b_1 & \dots & a_i - b_i & \dots & 0\\
+\vdots &    & & \ddots & \vdots \\
+a_n - b_1 & a_n - b_2 & \dots & \dots & a_n - b_n \\
+\end{bmatrix}
+$$
+</div>
+<p>由于 $\det(\mathbf{M}_\text{ReLU}) \neq 0$，这是非奇异方阵，因此总能找到合适 $\boldsymbol{v}$，求解 $\boldsymbol{v}\mathbf{M}_\text{ReLU}=\boldsymbol{y}$（换句话说，$\mathbf{M}_\text{ReLU}$ 的列空间是整个 $\mathbb{R}^n$，可以找到列向量的线性组合，得到任意 $\boldsymbol{y}$）。</p>
+<h2 id="deep-nn-can-learn-random-noise">深层 NN（神经网络）能够学习随机噪声<a hidden class="anchor" aria-hidden="true" href="#deep-nn-can-learn-random-noise">#</a></h2>
+<p>既然已知双层神经网络是通用近似器，看到它们能完美学习无结构随机噪声，就没那么惊讶了，如 <a href="https://arxiv.org/abs/1611.03530">Zhang 等（2017）</a>所示。即使将图像分类数据集的标签随机打乱，深度神经网络强大的表达能力仍可使训练损失接近零。加入正则化项也不改变这些结果。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/fit-random-labels.png" style="width: 100%;"  />
+	<figcaption>在随机标签或随机像素的 CIFAR10 上拟合模型：（a）学习曲线；（b–c）标签损坏比例，是随机打乱标签的比例。（图片来源：<a href="https://arxiv.org/abs/1611.03530" target="_blank">Zhang 等，2017</a>）</figcaption>
+</figure>
+<h1 id="are-deep-learning-models-dramatically-overfitted">深度学习模型是否严重过拟合？<a hidden class="anchor" aria-hidden="true" href="#are-deep-learning-models-dramatically-overfitted">#</a></h1>
+<p>深度学习模型高度过参数化，往往可以在训练数据上取得完美结果。按传统观点，例如偏差—方差权衡，这可能是灾难，无法泛化到未见测试数据。但通常，这种“过拟合”（训练误差 = 0）的深度学习模型，在样本外测试数据上仍表现不错。嗯……很有趣，为什么呢？</p>
+<h2 id="modern-risk-curve-for-deep-learning">深度学习的现代风险曲线<a hidden class="anchor" aria-hidden="true" href="#modern-risk-curve-for-deep-learning">#</a></h2>
+<p>传统机器学习使用以下 U 形风险曲线，衡量偏差—方差权衡、量化模型泛化能力。如果有人问如何判断模型是否过拟合，我首先就会想到它。</p>
+<p>模型变大（增加参数）时，训练误差下降至接近零；但模型复杂度超过“欠拟合”与“过拟合”的阈值后，测试误差（泛化误差）开始上升。这在一定程度上符合 Occam’s Razor（奥卡姆剃刀）。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/bias-variance-risk-curve.png" style="width: 100%;"  />
+	<figcaption>U 形偏差—方差风险曲线。（图片来源：（左）<a href="https://arxiv.org/abs/1812.11118" target="_blank">论文</a>；（右）<a href="http://scott.fortmann-roe.com/docs/BiasVariance.html" target="_blank">这篇文章的图 6</a>）</figcaption>
+</figure>
+<p>遗憾的是，这不适用于深度学习模型。<a href="https://arxiv.org/abs/1812.11118">Belkin 等（2018）</a>协调传统偏差—方差权衡，为深度神经网络提出新的双 U 形风险曲线。网络参数数量足够高时，风险曲线进入另一状态。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/new-bias-variance-risk-curve.png" style="width: 80%;"  />
+	<figcaption>深度神经网络新的双 U 形偏差—方差风险曲线。（图片来源：<a href="https://arxiv.org/abs/1812.11118" target="_blank">原始论文</a>）</figcaption>
+</figure>
+<p>论文认为，这可能有两个原因：</p>
+<ul>
+<li>参数数量不是<em>归纳偏置</em>的良好度量；归纳偏置定义为学习算法预测未知样本所使用的假设集合。关于 DL（深度学习）模型复杂度，更多讨论见<a href="#intrinsic-dimension">后面</a>的<a href="#heterogeneous-layer-robustness">章节</a>。</li>
+<li>更大的模型可能让我们发现更大的函数类，进一步找到范数更小、因此“更简单”的插值函数。</li>
+</ul>
+<p>论文显示，经验上观察到了双 U 形风险曲线。但我复现结果时相当困难。虽然出现一些迹象，但要生成类似理论的漂亮平滑曲线，必须注意实验中的<a href="#experiments">许多细节</a>。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/new-risk-curve-mnist.png" style="width: 100%;"  />
+	<figcaption>单隐藏层 fc（全连接）网络在不同隐藏单元数量下的训练与评估误差，使用从 MNIST 采样的 4000 个数据点训练。（图片来源：<a href="https://arxiv.org/abs/1812.11118" target="_blank">原始论文</a>）</figcaption>
+</figure>
+<h2 id="regularization-is-not-the-key-to-generalization">正则化不是泛化的关键<a hidden class="anchor" aria-hidden="true" href="#regularization-is-not-the-key-to-generalization">#</a></h2>
+<p>正则化是控制过拟合、提高模型泛化性能的常见方式。有趣的是，一些研究（<a href="https://arxiv.org/abs/1611.03530">Zhang 等，2017</a>）表明，显式正则化（数据增强、权重衰减和 dropout（随机丢弃网络单元））既不是降低泛化误差的必要条件，也不是充分条件。</p>
+<p>以 CIFAR10 上训练的 Inception 模型为例（见图 5），正则化技术有助于样本外泛化，但作用不大。似乎没有哪一种正则化，独立于其他项就至关重要。因此，正则化很可能不是泛化的<em>根本原因</em>。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/regularization-generalization-test.png" style="width: 90%;"  />
+	<figcaption>使用不同数据增强、权重衰减开关组合，在 CIFAR10 上训练的 Inception 模型准确率。（图片来源：<a href="https://arxiv.org/abs/1611.03530" target="_blank">原始论文</a>的表 1）</figcaption>
+</figure>
+<h2 id="intrinsic-dimension">Intrinsic Dimension（内在维数）<a hidden class="anchor" aria-hidden="true" href="#intrinsic-dimension">#</a></h2>
+<p>深度学习领域中，参数数量与模型过拟合不相关，说明数参数无法反映深度神经网络的真实复杂度。</p>
+<p>除参数数量外，研究者提出许多量化模型复杂度的方法，例如模型自由度数量（<a href="https://arxiv.org/abs/1603.09260">Gao &amp; Jojic，2016</a>），或 prequential code（按预测顺序编码数据的方法）（<a href="https://arxiv.org/abs/1802.07044">Blier &amp; Ollivier，2018</a>）。</p>
+<p>我想讨论近期一种方法，称为 <strong>intrinsic dimension（内在维数）</strong>（<a href="https://arxiv.org/abs/1804.08838">Li 等，2018</a>）。Intrinsic dimension 直观、容易衡量，同时揭示不同规模模型的许多有趣性质。</p>
+<p>考虑参数极多、形成高维参数空间的神经网络，学习发生在这一高维<em>目标函数曲面</em>上。
+参数空间流形的形状很重要。例如，更平滑的流形提供更具预测性的梯度，允许更大学习率，有利于优化；有人认为，这就是批量归一化能够稳定训练的原因（<a href="https://arxiv.org/abs/1805.11604">Santurkar 等，2019</a>）。</p>
+<p>虽然参数空间庞大，幸运的是，不必太担心优化困在局部最优，因为已经<a href="https://arxiv.org/abs/1406.2572">证明</a>，目标函数曲面的局部最优点几乎总位于鞍点而非谷底。换句话说，总存在某些维度，其中有离开局部最优、继续探索的路径。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/optimization-landscape-shape.png" style="width: 100%;"  />
+	<figcaption>参数优化曲面中各种临界点的示意。（图片来源：<a href="https://www.offconvex.org/2016/03/22/saddlepoints/" target="_blank">这里</a>）</figcaption>
+</figure>
+<p>衡量 intrinsic dimension（内在维数）的一个直觉是：参数空间维数如此之高，高效学习可能无需利用全部维度。如果只经过目标函数曲面的一个切片，仍能学到良好解，结果模型复杂度很可能低于参数计数表现出的复杂度。这正是 intrinsic dimension 试图评估的东西。</p>
+<p>假设模型有 $D$ 个维度，参数记为 $\theta^{(D)}$。学习时，随机采样较小的 $d$ 维子空间 $\theta^{(d)}$，其中 $d &lt; D$。一次优化更新中，不沿全部 $D$ 个维度执行梯度步，而只使用较小子空间 $\theta^{(d)}$，重新映射后更新模型参数。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/intrinsic-dimension-illustration.png" style="width: 50%;"  />
+	<figcaption>$D=3$ 时，直接优化的参数向量示意。（图片来源：<a href="https://arxiv.org/abs/1804.08838" target="_blank">原始论文</a>）</figcaption>
+</figure>
+<p>梯度更新公式如下：</p>
+<div>
+$$
+\theta^{(D)} = \theta_0^{(D)} + \mathbf{P} \theta^{(d)}
+$$
+</div>
+<p>其中，$\theta_0^{(D)}$ 是初始化值，$\mathbf{P}$ 是大小为 $D \times d$ 的投影矩阵，在训练前随机采样。$\theta_0^{(D)}$ 与 $\mathbf{P}$ 都不可训练，训练中保持固定。$\theta^{(d)}$ 初始化为全零。</p>
+<p>通过搜索 $d = 1, 2, \dots, D$ 的值，将解出现时对应的 $d$ 定义为 <em>intrinsic dimension（内在维数）</em>。</p>
+<p>结果发现，许多问题的 intrinsic dimensions（内在维数）远小于参数数量。例如，CIFAR10 图像分类中，具有超过 65 万参数的全连接网络，intrinsic dimension 只有 9000；含 6.2 万参数的卷积网络，intrinsic dimension 更低，只有 2900。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/intrinsic-dimension.png" style="width: 90%;"  />
+	<figcaption>各模型达到最佳性能 90% 时，测得的 intrinsic dimensions（内在维数）$d$。（图片来源：<a href="https://arxiv.org/abs/1804.08838" target="_blank">原始论文</a>）</figcaption>
+</figure>
+<p>intrinsic dimensions（内在维数）的测量，说明深度学习模型显著比表面看起来更简单。</p>
+<h2 id="heterogeneous-layer-robustness">各层稳健性的差异<a hidden class="anchor" aria-hidden="true" href="#heterogeneous-layer-robustness">#</a></h2>
+<p><a href="https://arxiv.org/abs/1902.01996">Zhang 等（2019）</a>研究不同层参数的作用。论文提出的根本问题是：<em>“所有层都生而平等吗？”</em>简短回答：否。模型对一些层的变化更敏感，对另一些层则不敏感。</p>
+<p>论文提出两类操作，可施加于第 $\ell$ 层的参数 $\ell = 1, \dots, L$，在时刻 $t$、$\theta^{(\ell)}_t$ 进行，测试对模型稳健性的影响：</p>
+<ul>
+<li>
+<p><strong>重新初始化</strong>：将参数重置为初始值 $\theta^{(\ell)}_t \leftarrow \theta^{(\ell)}_0$。第 $\ell$ 层重新初始化后，网络的性能称为<em>重新初始化稳健性</em>，对应层为 $\ell$。</p>
+</li>
+<li>
+<p><strong>重新随机化</strong>：随机重新采样该层参数，$\theta^{(\ell)}_t \leftarrow \tilde{\theta}^{(\ell)} \sim \mathcal{P}^{(\ell)}$。对应网络性能称为<em>重新随机化稳健性</em>，对应层为 $\ell$。</p>
+</li>
+</ul>
+<p>借助这两类操作，层可分为两类：</p>
+<ul>
+<li><strong>稳健层</strong>：重新初始化或重新随机化该层后，网络性能没有下降，或下降可忽略。</li>
+<li><strong>关键层</strong>：其余情况。</li>
+</ul>
+<p>全连接与卷积网络观察到类似模式。重新随机化任何层，都<em>彻底破坏</em>模型性能，预测立即退化为随机猜测。更有趣、惊讶的是，重新初始化时，只有第一层或前几层（最接近输入层）关键；重新初始化高层，只导致<em>可忽略的性能下降</em>。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/layer-robustness-results.png" style="width: 100%;"  />
+	<figcaption>（a）MNIST 上训练的 fc（全连接）网络。每行对应一层；第一列是每层的重新随机化稳健性，其余列是不同训练时间的重新初始化稳健性。（b）CIFAR 10 上训练的 VGG11（卷积网络），表示方式类似（a），但行列转置。（图片来源：<a href="https://arxiv.org/abs/1902.01996" target="_blank">原始论文</a>）</figcaption>
+</figure>
+<p>ResNet（残差网络）可利用非相邻层之间的快捷连接，将敏感层重新分布到整个网络，而不只位于底部。残差块架构使网络能够<em>均匀地对重新随机化保持稳健</em>。只有每个残差块的第一层，仍对重新初始化和重新随机化都敏感。若把每个残差块视为局部子网络，稳健性模式类似上述 fc（全连接）与卷积网络。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/layer-robustness-resnet.png" style="width: 80%;"  />
+	<figcaption>CIFAR10 上训练的 ResNet-50 各层的重新随机化（第一行）与重新初始化（其余行）稳健性。（图片来源：<a href="https://arxiv.org/abs/1902.01996" target="_blank">原始论文</a>）</figcaption>
+</figure>
+<p>依据深度神经网络许多顶层重新初始化后，不影响模型性能的关键性这一事实，论文较宽泛地得出结论：</p>
+<blockquote>
+<p>“用随机梯度训练、容量过大的深度网络，由于自行限制关键层数量，具有较低复杂度。”</p>
+</blockquote>
+<p>可以将重新初始化视为减少有效参数数量的方式，因此这一观察与 intrinsic dimension（内在维数）的结果一致。</p>
+<h2 id="the-lottery-ticket-hypothesis">Lottery Ticket Hypothesis（彩票假说）<a hidden class="anchor" aria-hidden="true" href="#the-lottery-ticket-hypothesis">#</a></h2>
+<p>lottery ticket hypothesis（彩票假说）（<a href="https://arxiv.org/abs/1803.03635">Frankle &amp; Carbin，2019</a>）是另一项有趣、启发性的发现，支持只有部分网络参数影响模型性能，因此网络并未过拟合。lottery ticket hypothesis 指出：随机初始化的稠密前馈网络包含一组子网络，其中只有部分是<em>“winning tickets（中奖彩票）”</em>，可以在<em>独立训练</em>时达到最优性能。</p>
+<p>这一思路受网络剪枝技术启发——移除不必要权重（如几乎可忽略的微小权重），而不损害模型性能。虽然最终网络大小可显著减少，但很难从头成功训练这种剪枝后架构。感觉上，成功训练神经网络需要大量参数；但训练完成后，维持高准确率却不需要那么多参数。为什么？</p>
+<p>lottery ticket hypothesis（彩票假说）进行了以下实验：</p>
+<ol>
+<li>随机初始化稠密前馈网络，初始化值为 $\theta_0$；</li>
+<li>训练网络多次迭代，达到良好性能，参数配置为 $\theta$；</li>
+<li>对 $\theta$ 剪枝，创建掩码 $m$。</li>
+<li>“winning ticket（中奖彩票）”的初始化配置为 $m \odot \theta_0$。</li>
+</ol>
+<p>只训练这个小型“winning ticket（中奖彩票）”参数子集，使用第 1 步找到的初始值，模型就能达到与第 2 步相同的准确率。结果表明，最终解的表示无需大参数空间，但训练需要它，因为它提供了许多小得多的子网络初始化配置组成的大型候选池。</p>
+<p>lottery ticket hypothesis（彩票假说）为解释和剖析深度神经网络结果打开新视角。许多有趣后续工作正在出现。</p>
+<h1 id="experiments">实验<a hidden class="anchor" aria-hidden="true" href="#experiments">#</a></h1>
+<p>看到上述有趣发现后，复现它们应该很有趣。有些结果比另一些更容易复现，细节如下。我的代码在 github <a href="https://github.com/lilianweng/generalization-experiment">lilianweng/generalization-experiment</a>。</p>
+<p><strong>DL（深度学习）模型的新风险曲线</strong></p>
+<p>这一项最难复现。作者给了我许多好建议，非常感谢。以下是实验中值得注意的设置：</p>
+<ul>
+<li>没有权重衰减、dropout（随机丢弃网络单元）等正则化项。</li>
+<li>图 3 中，训练集含 4000 个样本，只采样一次，对所有模型固定。评估使用完整 MNIST 测试集。</li>
+<li>每个网络训练很长时间，达到接近零的训练风险。不同规模模型采用不同学习率调整。</li>
+<li>为使欠参数化区域的模型对初始化不那么敏感，实验采用<em>“权重重用”</em>方案：用较小神经网络训练得到的参数，初始化较大网络。</li>
+</ul>
+<p>我没有为每个模型训练或调参足够久，达到完美训练性能；但评估误差确实在插值阈值附近呈现特殊转折，与训练误差不同。例如，MNIST 的阈值是训练样本数量乘类别数量（10），即 40000。</p>
+<p>横轴是模型参数数量：(28 * 28 + 1) * num. units + num. units * 10，采用对数尺度。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/risk_curve_loss-mse_sample-4000_epoch-500.png" style="width: 100%;"  />
+<br />
+<p><strong>各层并非生而平等</strong></p>
+<p>这一项较容易复现。我的实现见<a href="https://github.com/lilianweng/generalization-experiment/blob/master/layer_equality.py">这里</a>。</p>
+<p>第一个实验使用三层 fc（全连接）网络，每层 256 个单元。第 0 层是输入，第 3 层是输出。网络在 MNIST 上训练 100 轮。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/layer_equality_256x3.png" style="width: 100%;"  />
+<p>第二个实验使用四层 fc（全连接）网络，每层 128 个单元。其他设置与实验 1 相同。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/layer_equality_128x4.png" style="width: 100%;"  />
+<br />
+<p><strong>Intrinsic Dimension（内在维数）测量</strong></p>
+<p>为将 $d$ 维子空间正确映射到完整参数空间，投影矩阵 $\mathbf{P}$ 应具有正交列。因为乘积 $\mathbf{P}\theta^{(d)}$ 是矩阵 $\mathbf{P}$ 各列的和，分别按 $d$ 维向量 $\sum_{i=1}^d \theta^{(d)}_i \mathbf{P}^\top_{(:,i)}$ 中的对应标量缩放，所以 $\mathbf{P}$ 使用正交列，可更充分利用子空间。</p>
+<p>我的实现采用朴素方式：采样大矩阵，各元素独立来自标准正态分布。高维空间中，期望列彼此独立，因此正交。维数不太大时可行；探索较大 $d$ 时，可使用稀疏投影矩阵构造方法，这正是 intrinsic dimension（内在维数）论文建议的。</p>
+<p>以下是在 MNIST 的 10% 数据上训练两个网络的实验：（左）双层 fc（全连接）网络，每层 64 个单元；（右）单隐藏层 fc 网络，128 个隐藏单元。每个 $d$ 对应模型训练 100 轮。<a href="https://github.com/lilianweng/generalization-experiment/blob/master/intrinsic_dimensions.py">代码</a>见<a href="https://github.com/lilianweng/generalization-experiment/blob/master/intrinsic_dimensions_measurement.py">这里</a>。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/intrinsic-dimension-net-64-64-and-128.png" style="width: 100%;"  />
+<hr>
+<p>引用格式：</p>
+<pre tabindex="0"><code>@article{weng2019overfit,
+  title   = &#34;Are Deep Neural Networks Dramatically Overfitted?&#34;,
+  author  = &#34;Weng, Lilian&#34;,
+  journal = &#34;lilianweng.github.io&#34;,
+  year    = &#34;2019&#34;,
+  url     = &#34;https://lilianweng.github.io/posts/2019-03-14-overfit/&#34;
+}
+</code></pre><h1 id="references">参考文献<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<p>[1] Wikipedia 上的 <a href="https://en.wikipedia.org/wiki/Occam%27s_razor">Occam’s Razor（奥卡姆剃刀）</a>页面。</p>
+<p>[2] Principia Cybernetica Web 上的 <a href="http://pespmc1.vub.ac.be/OCCAMRAZ.html">Occam’s Razor（奥卡姆剃刀）</a>。</p>
+<p>[3] Peter Grunwald。<a href="https://arxiv.org/abs/math/0406077">“A Tutorial Introduction to the Minimum Description Length Principle”（最小描述长度原则的入门教程）</a>。2004。</p>
+<p>[4] Ian Goodfellow 等。<a href="https://www.deeplearningbook.org/">Deep Learning（深度学习）</a>。2016。<a href="https://www.deeplearningbook.org/contents/mlp.html">第 6.4.1 节</a>。</p>
+<p>[5] Zhang, Chiyuan 等。<a href="https://arxiv.org/abs/1611.03530">“Understanding deep learning requires rethinking generalization.”（理解深度学习需要重新思考泛化。）</a>ICLR 2017。</p>
+<p>[6] Shibani Santurkar 等。<a href="https://arxiv.org/abs/1805.11604">“How does batch normalization help optimization?.”（批量归一化如何帮助优化？）</a>NIPS 2018。</p>
+<p>[7] Mikhail Belkin 等。<a href="https://arxiv.org/abs/1812.11118">“Reconciling modern machine learning and the bias-variance trade-off.”（协调现代机器学习与偏差—方差权衡。）</a>arXiv:1812.11118，2018。</p>
+<p>[8] Chiyuan Zhang 等。<a href="https://arxiv.org/abs/1902.01996">“Are All Layers Created Equal?”（所有层都生而平等吗？）</a>arXiv:1902.01996，2019。</p>
+<p>[9] Chunyuan Li 等。<a href="https://arxiv.org/abs/1804.08838">“Measuring the intrinsic dimension of objective landscapes.”（测量目标函数曲面的内在维数。）</a>ICLR 2018。</p>
+<p>[10] Jonathan Frankle 和 Michael Carbin。<a href="https://arxiv.org/abs/1803.03635">“The lottery ticket hypothesis: Finding sparse, trainable neural networks.”（彩票假说：寻找稀疏、可训练神经网络。）</a>ICLR 2019。</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://xingshuozhu1998.github.io/tags/information-theory/">信息论</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/foundation/">基础</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/learning-dynamics/">学习动态</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/">
+    <span class="title">« </span>
+    <br>
+    <span>用于仿真到现实迁移的域随机化</span>
+  </a>
+  <a class="next" href="https://xingshuozhu1998.github.io/posts/2019-01-31-lm/">
+    <span class="title"> »</span>
+    <br>
+    <span>通用语言模型</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 twitter 上分享《深度神经网络是否严重过拟合？》"
+        href="https://twitter.com/intent/tweet/?text=Are%20Deep%20Neural%20Networks%20Dramatically%20Overfitted%3f&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-03-14-overfit%2f&amp;hashtags=information-theory%2cfoundation%2clearning-dynamics">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 linkedin 上分享《深度神经网络是否严重过拟合？》"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-03-14-overfit%2f&amp;title=Are%20Deep%20Neural%20Networks%20Dramatically%20Overfitted%3f&amp;summary=Are%20Deep%20Neural%20Networks%20Dramatically%20Overfitted%3f&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-03-14-overfit%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 reddit 上分享《深度神经网络是否严重过拟合？》"
+        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-03-14-overfit%2f&title=Are%20Deep%20Neural%20Networks%20Dramatically%20Overfitted%3f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 facebook 上分享《深度神经网络是否严重过拟合？》"
+        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-03-14-overfit%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 whatsapp 上分享《深度神经网络是否严重过拟合？》"
+        href="https://api.whatsapp.com/send?text=Are%20Deep%20Neural%20Networks%20Dramatically%20Overfitted%3f%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-03-14-overfit%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 telegram 上分享《深度神经网络是否严重过拟合？》"
+        href="https://telegram.me/share/url?text=Are%20Deep%20Neural%20Networks%20Dramatically%20Overfitted%3f&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-03-14-overfit%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

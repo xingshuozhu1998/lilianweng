@@ -1,0 +1,186 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/nlp</title>
+    <link>https://xingshuozhu1998.github.io/tags/nlp/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 07 Jul 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/nlp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>LLMs（大语言模型）中的 Extrinsic Hallucinations（缺乏外部事实依据的生成内容）</title>
+      <link>https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/</link>
+      <pubDate>Sun, 07 Jul 2024 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/</guid>
+      <description>大语言模型中的幻觉通常指模型生成不忠实、虚构、不一致或无意义的内容。作为术语，“幻觉”在一定程度上被泛化到模型犯错的情况。这里，我想将幻觉问题限定为：模型输出是虚构的，且既 不以 给定上下文为依据，也不以世界知识为依据。 
+ 幻觉有两种类型： 
+ 
+ In-context hallucination（上下文幻觉）：模型输出应与上下文中的来源内容一致。 
+ Extrinsic hallucination：模型输出应以预训练数据集为依据。不过，考虑到预训练数据集的规模，每次生成都检索并识别冲突的成本过高。如果将预训练语料视为世界知识的代理，我们本质上是在努力确保模型输出符合事实，并能通过外部世界知识验证。同样重要的是，当模型不知道某个事实时，应明确说明。 
+ 
+ 本文重点讨论 extrinsic hallucination。为避免幻觉，LLM需要（1）符合事实；（2）适用时承认不知道答案。 
+ 什么导致幻觉？ #  
+ 一个标准、可部署的 LLM会经过预训练，以及用于对齐和其他改进的微调，因此我们来考察这两个阶段的原因。 
+ 预训练数据问题 #  
+ 预训练语料的规模极大，因为它应以所有可</description>
+    </item>
+    
+    <item>
+      <title>针对 LLMs（大语言模型）的对抗攻击</title>
+      <link>https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/</link>
+      <pubDate>Wed, 25 Oct 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/</guid>
+      <description>ChatGPT 的推出大幅加速了大语言模型在真实世界的应用。我们（包括我在 OpenAI 的团队，在此向他们致意）投入了大量精力，在对齐过程中（例如通过  RLHF（基于人类反馈的强化学习） ）为模型建立默认的安全行为。不过，对抗攻击或 jailbreak（绕过模型的行为约束）提示可能使模型输出不希望出现的内容。 
+ 大量对抗攻击基础工作以图像为对象；与文本不同，它们作用于连续、高维空间。由于缺乏直接梯度信号，针对文本等离散数据的攻击一直被认为困难得多。我之前的文章 《可控文本生成》 与此主题密切相关，因为攻击 LLM本质上是在控制模型，让它输出某一类（不安全的）内容。 
+ 还有一类工作通过攻击 LLM提取预训练数据、私有知识（ Carlini 等，2020 ），或通过数据投毒攻击模型训练过程（ Carlini 等，2023 ）。本文不涉及这些主题。 
+ 基础知识 #  
+ 威胁模型 #  
+ 对抗攻击是使模型输出不希望出现的内容的输入。许多早期文献聚焦分类任务，近期研究则开始更多考察生成模型的输出。在大语言模型情境下，本文假设攻击只发生在 推理时 ，即 模型权重固定 。 
+ 
+	 
+</description>
+    </item>
+    
+    <item>
+      <title>由 LLM（大语言模型）驱动的自主智能体</title>
+      <link>https://xingshuozhu1998.github.io/posts/2023-06-23-agent/</link>
+      <pubDate>Fri, 23 Jun 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2023-06-23-agent/</guid>
+      <description>以 LLM作为核心控制器构建智能体，是一个很有意思的概念。 AutoGPT 、 GPT-Engineer  与  BabyAGI  等概念验证演示，提供了富有启发性的例子。LLM 的潜力不只在于生成出色的文案、故事、文章与程序，还可以被构建为强大的通用问题求解器。 
+ 智能体系统概览 #  
+ 在 LLM驱动的自主智能体系统中，LLM 充当智能体的大脑，并由几个关键组件补充： 
+ 
+  规划 
+ 
+ 子目标与分解：智能体将大任务拆分为较小、可管理的子目标，以高效处理复杂任务。 
+ 反思与细化：智能体可以对过去动作进行自我批评与自我反思，从错误中学习，并为未来步骤细化行为，从而改善最终结果质量。 
+ 
+ 
+  记忆 
+ 
+ 短期记忆：我认为，所有 in-context learning（在上下文示例中学习）（在上下文示例中学习，参阅  Prompt Engineering（提示工程） ）都是利用模型的短期记忆来学习。 
+ 长期记忆：使智能体能够在较长时间内保留与回忆（无限的）信息，通常借助外部向量存储与快速检索实现。 
+ 
+ 
+  工具使用 
+ 
+ 智能体学习调用外部 API（应用程序编</description>
+    </item>
+    
+    <item>
+      <title>Prompt Engineering（提示工程）</title>
+      <link>https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/</link>
+      <pubDate>Wed, 15 Mar 2023 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/</guid>
+      <description>Prompt Engineering ，也称  In-Context Prompting（上下文提示） ，指如何与 LLM（大语言模型）通信，引导其行为达到预期结果，且  不  更新模型权重的方法。它是一门实证科学，Prompt Engineering 方法在不同模型上的效果可能差异很大，因此需要大量实验与启发式规则。 
+ 本文只聚焦自回归语言模型的 Prompt Engineering，不涉及完形填空测试、图像生成或多模态模型。Prompt Engineering 的核心目标是对齐与模型可引导性。请参阅我  之前  介绍可控文本生成的文章。 
+  [我的个人尖锐看法]  我认为，某些 Prompt Engineering论文不值得写满8页，因为技巧用一句或几句话就能解释，其余全是基准评估。易用且共享的基准基础设施，应对社区更有益。但迭代提示或外部工具使用的配置并不简单，让整个研究社区统一采用它也不容易。 
+ 基础提示方法 #  
+ Zero-shot（零样本）与 few-shot（少样本）学习，是提示模型的两种最基本方法，由许多 LLM论文率先使用，并常用于评估 LLM 性能。 
+ </description>
+    </item>
+    
+    <item>
+      <title>降低语言模型的有害性</title>
+      <link>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</link>
+      <pubDate>Sun, 21 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</guid>
+      <description>大型预训练  语言模型  在大量在线数据上训练，不可避免地从互联网习得某些有毒行为与偏差。预训练模型能力强大，在许多 NLP（自然语言处理）任务上非常成功。然而，要在现实应用中安全部署，必须对模型生成过程进行强有力的安全控制。 
+ 减少各类不安全内容，面临许多挑战： 
+ 
+ 首先，不安全内容类型多样，包括毒性、辱骂、仇恨言论、偏差、刻板印象、网络欺凌、身份攻击等，可能需要不同处理，也可能不需要。 
+ 其次，预训练语言模型的不安全行为缺乏明确、广泛认同的分类与定义。不同社会背景使个人看法可能差异很大。 
+ 
+ 本文深入讨论语言模型的毒性问题。我仍在寻找有毒内容的具体定义，因此列出文献中的几个定义。 
+ 
+ [ Perspective API（应用程序编程接口） ] 粗鲁、不尊重或不合理的评论，很可能让人退出讨论。 
+ 
+ 
+ [ Kurita et al. 2019 ] 可能冒犯或伤害接收者的内容，包括仇恨言论、种族主义和冒犯性语言。 
+ 
+ 
+ [ Pavlopoulos et al. 2020 ] 我们将“有毒”作为总称，但文献对不同类型有毒语言或相关现象使用多个术语：“冒犯性”“辱</description>
+    </item>
+    
+    <item>
+      <title>可控神经文本生成</title>
+      <link>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</link>
+      <pubDate>Sat, 02 Jan 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</guid>
+      <description>[2021-02-01 更新：更新至 2.0 版，新增若干研究工作并修正许多笔误。] 
+ 
+ [2021-05-26 更新：在  “提示设计” 一节新增 P-tuning 和 Prompt Tuning。] 
+ 
+ [2021-09-19 更新：新增  “Unlikelihood Training（非似然训练）” 。] 
+ 
+ 网络上存在海量的免费文本，比带标签的基准数据集多出几个数量级。最先进的语言模型（LM）使用大规模无监督网络数据进行训练。通过反复采样下一个 token（词元）来从 LM 生成样本时，我们对输出文本的主题、风格、情感等属性并没有多少控制能力。许多应用需要对模型输出进行良好的控制。例如，如果计划使用 LM 为儿童生成阅读材料，我们就希望引导输出的故事，使其安全、有教育意义，并且容易被儿童理解。 
+ 如何引导一个强大的无条件语言模型？本文将深入讨论几种借助无条件语言模型进行可控内容生成的方法。
+请注意，模型的可控性仍然是一个尚未解决的研究问题。本文介绍的每一种方法都有其优点和缺点。 
+ 
+ 应用引导解码策略，在测试时选择符合要求的输出。 
+ 通过良好的提示设计，优化生</description>
+    </item>
+    
+    <item>
+      <title>如何构建开放域问答系统？</title>
+      <link>https://xingshuozhu1998.github.io/posts/2020-10-29-odqa/</link>
+      <pubDate>Thu, 29 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2020-10-29-odqa/</guid>
+      <description>[2020-11-12更新：加入  一个示例 ，使用 OpenAI API（应用程序编程接口）（测试版）进行闭卷事实问答。  
+ 能够回答任何事实知识问题的模型，可以带来许多有用的实际应用，例如聊天机器人或 AI 助手🤖。本文将回顾构建这种开放域问答系统的几种常见方法。 
+ 考虑到相关论文很多，先说明几点： 
+ 
+ 假设可以使用一个强大的预训练  语言模型 。 
+ 本文不讨论如何使用结构化知识库（例如 Freebase、WikiData）。 
+ 只聚焦单轮问答，不讨论多轮对话式问答。 
+ 主要关注包含神经网络的问答模型，特别是基于 Transformer（基于注意力机制的神经网络架构） 的语言模型。 
+ 我承认，遗漏了2017—2019年间许多专门为问答任务设计架构的论文😔。 
+ 
+ 什么是 Open-Domain Question Answering（开放域问答）？ #  
+  Open-domain Question Answering (ODQA（开放域问答）)（开放域问答）  是一类语言任务，要求模型用自然语言回答事实型问题。真实答案是客观的，因此很容易评估模型性能。 
+ 例如</description>
+    </item>
+    
+    <item>
+      <title>通用语言模型</title>
+      <link>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</link>
+      <pubDate>Thu, 31 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</guid>
+      <description>[2019-02-14更新：加入  ULMFiT  和  GPT-2（第二代生成式预训练语言模型） 。]  
+ [2020-02-29更新：加入  ALBERT 。]  
+ [2020-10-25更新：加入  RoBERTa 。]  
+ [2020-12-13更新：加入  T5 。]  
+ [2020-12-30更新：加入  GPT-3（第三代生成式预训练语言模型） 。]  
+ [2021-11-13更新：加入  XLNet 、 BART  和  ELECTRA ；同时更新  总结  部分。]  
+ 
+ 
+	 
+	 我猜他们是 Elmo 和 Bert？（图片来源： 这里 ） 
+ 
+ 2018年，我们见证了 NLP（自然语言处理）的惊人进展。 OpenAI GPT（采用解码器的生成式预训练语言模型）  和  BERT（基于双向编码器的预训练语言模型）  等大规模预训练语言模型，使用通用模型架构，在多种语言任务上取得了出色性能。这一思路类似于 ImageNet 分类预训练对许多视觉任务的帮助（*）。比视觉分类预训练更好的是，NLP 中这种简单而强大的方法不需要带标签的数据进行预训练，因此我</description>
+    </item>
+    
+    <item>
+      <title>学习词嵌入</title>
+      <link>https://xingshuozhu1998.github.io/posts/2017-10-15-word-embedding/</link>
+      <pubDate>Sun, 15 Oct 2017 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2017-10-15-word-embedding/</guid>
+      <description>人类词汇以自由文本的形式出现。为了让机器学习模型理解并处理自然语言，需要将自由文本中的词转换为数值。最简单的转换方法之一是 one-hot encoding（独热编码）：每个不同的词对应结果向量的一个维度，用二元值表示该词出现（1）或未出现（0）。 
+ 然而，处理整个词汇表时，one-hot encoding（独热编码）在计算上并不实用，因为这种表示需要数十万个维度。词嵌入使用包含非二元数值的向量表示词和短语，维度低得多，因此也更稠密。关于良好词嵌入的一个直观假设是，它们能够近似表示词之间的相似性（例如，“cat”和“kitten”是相似的词，因此预期它们在降维后的向量空间中彼此接近），或揭示隐藏的语义关系（例如，“cat”与“kitten”的关系类似于“dog”与“puppy”的关系）。上下文信息对于学习词义及词之间的关系非常有用，因为相似的词往往会出现在相似的上下文中。 
+ 学习词嵌入主要有两种方法，都依赖上下文知识。 
+ 
+  基于计数 ：第一种方法是无监督的，基于全局词共现矩阵的矩阵分解。原始共现次数的效果并不好，所以需要在此基础上做一些巧妙处理。 
+  基于上下文 ：第二种方</description>
+    </item>
+    
+  </channel>
+</rss>

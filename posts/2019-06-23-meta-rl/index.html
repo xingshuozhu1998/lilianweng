@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>元强化学习 | Lil’Log 中文学习镜像</title>
+<meta name="keywords" content="meta-learning, reinforcement-learning" />
+<meta name="description" content="
+上一篇 meta-learning（元学习）主要在少样本分类背景下定义问题。这里进一步探索对 Reinforcement Learning（强化学习，RL）任务进行“元学习”：开发能快速、高效解决未见任务的智能体。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="元强化学习" />
+<meta property="og:description" content="
+上一篇 meta-learning（元学习）主要在少样本分类背景下定义问题。这里进一步探索对 Reinforcement Learning（强化学习，RL）任务进行“元学习”：开发能快速、高效解决未见任务的智能体。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-06-23T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2019-06-23T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="元强化学习"/>
+<meta name="twitter:description" content="
+上一篇 meta-learning（元学习）主要在少样本分类背景下定义问题。这里进一步探索对 Reinforcement Learning（强化学习，RL）任务进行“元学习”：开发能快速、高效解决未见任务的智能体。"/>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/posts/"}, {"@type": "ListItem", "position": 2, "name": "元强化学习", "item": "https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "元强化学习", "name": "元强化学习", "description": "上一篇 meta-learning（元学习）主要在少样本分类背景下定义问题。这里进一步探索对 Reinforcement Learning（强化学习，RL）任务进行“元学习”：开发能快速、高效解决未见任务的智能体。", "keywords": ["meta-learning", "reinforcement-learning"], "articleBody": "上一篇  meta-learning（元学习）  主要在少样本分类中定义问题。这里探索“元学习”  Reinforcement Learning（强化学习，RL（强化学习））  任务，开发快速、高效解决未见任务的智能体。 \n 回顾，好的元学习模型应泛化到未见任务或环境。适应本质是  小型学习阶段 ，测试时有限接触新配置。即使没有显式微调（可训练变量不做梯度反向传播），也能自主调整内部隐藏状态学习。 \n RL训练有时非常困难。如果元学习智能体足够聪明，可解未见任务分布极广，我们就走向  通用方法 ——构建无需太多人类干预或手工特征工程、能解决各种 RL 问题的“大脑”。很棒吧？💖 \n Meta-RL（元强化学习）的起源 #  \n 回到 2001 年 #  \n 我看到  Hochreiter et al.  的 2001 论文，当时正阅读  Wang et al., 2016 。虽针对有监督学习，但很像当前元强化学习。 \n \n\t \n\t 元学习系统包含监督系统与从属系统。从属是循环网络，输入当前观察 $x\\_t$ 与上步标签 $y\\_{t-1}$。（图片来源： Hochreiter et al., 2001 ） \n \n Hochreiter 用 LSTM（长短期记忆网络）循环网络，LSTM 能内化输入历史，通过  BPTT（随时间反向传播）  有效调整权重。数据有 $K$ 序列，每个有 $N$ 样本，由目标函数 $f_k(.), k=1, \\dots, K$ 生成， \n \n$$\n\\{\\text{input: }(\\mathbf{x}^k_i, \\mathbf{y}^k_{i-1}) \\to \\text{label: }\\mathbf{y}^k_i\\}_{i=1}^N\n\\text{ where }\\mathbf{y}^k_i = f_k(\\mathbf{x}^k_i)\n$$ \n \n  上一个标签  $\\mathbf{y}^k_{i-1}$ 也作为辅助输入，使函数学习映射。 \n 解码二维二次函数 $a x_1^2 + b x_2^2 + c x_1 x_2 + d x_1 + e x_2 + f$ 的实验中，系数 $a$ 至 $f$ 从 [-1, 1] 随机采样，系统只看约 35 个示例就能近似。 \n 2016 年的提案 #  \n 现代深度学习中， Wang et al. （2016）与  Duan et al. （2017）同时提出相似  Meta-RL（元强化学习） （第二篇称  RL^2 ）。模型在 MDP（马尔可夫决策过程）分布上训练，测试时快速学会新任务。目标很有雄心，进一步迈向通用算法。 \n 定义 Meta-RL（元强化学习） #  \n  Meta Reinforcement Learning（元强化学习） ，简言之是进行  元学习 ，领域为  强化学习 。训练、测试任务通常不同，但来自同一问题族：不同奖励概率的多臂老虎机、不同布局迷宫、模拟器物理参数不同的相同机器人等。 \n 形式化 #  \n 任务分布中，每项形式化为  MDP （Markov Decision Process，马尔可夫决策过程）$M_i \\in \\mathcal{M}$，MDP 由四元组 $M_i= \\langle \\mathcal{S}, \\mathcal{A}, P_i, R_i \\rangle$ 确定： \n \n\t \n\t\t\t \n\t\t\t\t\t 符号 \n\t\t\t\t\t 含义 \n\t\t\t \n\t \n\t \n\t\t\t \n\t\t\t\t\t $\\mathcal{S}$ \n\t\t\t\t\t 状态集合。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $\\mathcal{A}$ \n\t\t\t\t\t 动作集合。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $P_i: \\mathcal{S} \\times \\mathcal{A} \\times \\mathcal{S} \\to \\mathbb{R}_{+}$ \n\t\t\t\t\t 转移概率函数。 \n\t\t\t \n\t\t\t \n\t\t\t\t\t $R_i: \\mathcal{S} \\times \\mathcal{A} \\to \\mathbb{R}$ \n\t\t\t\t\t 奖励函数。 \n\t\t\t \n\t \n \n （RL^2 在 MDP元组加入 horizon（时间范围）$T$，强调每个 MDP 应有限。） \n 上文使用共同状态 $\\mathcal{S}$、动作空间 $\\mathcal{A}$，使随机策略 $\\pi_\\theta: \\mathcal{S} \\times \\mathcal{A} \\to \\mathbb{R}_{+}$ 的输入跨任务兼容。测试任务来自相同分布 $\\mathcal{M}$ 或略改版本。 \n \n\t \n\t 元强化学习含两个优化循环。外层每次采样新环境，调整决定智能体行为的参数。内层与环境交互，优化最大奖励。（图片来源： Botvinick, et al. 2019 ） \n \n 与 RL的主要区别 #  \n 整体类似普通 RL，但额外将  上次奖励  $r_{t-1}$ 与  上次动作  $a_{t-1}$ 纳入观察，除当前状态 $s_t$ 外。 \n \n RL中：$\\pi_\\theta(s_t) \\to$，为 $\\mathcal{A}$ 上的分布。 \n 元强化学习中：$\\pi_\\theta(a_{t-1}, r_{t-1}, s_t) \\to$，为 $\\mathcal{A}$ 上的分布。 \n \n 设计旨在输入历史，使策略内化当前 MDP中状态、奖励、动作动态，调整策略，与  Hochreiter 系统  一致。Meta-RL 与 RL^2 都用 LSTM，LSTM 的隐藏状态充当  记忆 ，跟踪轨迹特征。循环策略无需显式输入上次状态。 \n 训练流程： \n \n 采样新 MDP$M_i \\sim \\mathcal{M}$； \n  重置隐藏状态 ； \n 收集多条轨迹，更新权重； \n 从步骤 1 重复。 \n \n \n\t \n\t Meta-RL 中不同 Actor-Critic（行动者与评论家组成的学习框架）都使用循环模型，额外输入上次奖励、动作。观察以 one-hot（独热）向量或编码器产生的嵌入输入 LSTM。（图片来源： Wang et al., 2016 ） \n \n \n\t \n\t RL^2 描述的训练时模型与一系列 MDP交互流程。（图片来源： Duan et al., 2017 ） \n \n 关键组件 #  \n Meta-RL（元强化学习）三个关键组件： \n \n ⭐  带记忆模型 \n \n循环网络维护隐藏状态，rollout（展开交互轨迹）中更新它，获取、记忆当前任务知识。无记忆就无法工作。 \n \n \n ⭐  元学习算法 \n \n规定如何更新权重，使测试时快速解决未见任务。Meta-RL 与 RL^2 都用普通 LSTM梯度下降，切换 MDP时重置隐藏状态。 \n \n \n ⭐  MDP分布 \n \n训练中接触多样环境与任务，必须学会适应不同 MDP。 \n \n  Botvinick et al. （2019）认为，RL缓慢的一因是  较弱  inductive bias（归纳偏置）  （学习器预测未见输入输出时所用假设集合）。弱偏置能掌握更广变化，但通常样本效率低。因此，强偏置缩小假设范围，有助加快学习。 \n 元强化学习从  任务分布  加入归纳偏置，存于  记忆 ；测试采用哪种偏置由  算法  决定。三组件描绘观点：调整循环权重慢，却使模型通过内部活动动态实现自身 RL算法，快速解决新任务。 \n Meta-RL 与 Jeff Clune (2019) 的  AI-GAs （AI-Generating Algorithms，生成 AI 的算法）思想一致，这有趣但并不意外。他认为，通用 AI 的高效路线是尽量自动学习，包括（1）元学习架构，（2）元学习算法，（3）自动生成有效学习环境。 \n \n 好的循环架构主题太广，这里略过。接下来讨论元强化学习算法，以及如何获取多样训练 MDP。 \n 用于 Meta-RL（元强化学习）的元学习算法 #  \n 上一篇元学习  文章  已介绍经典算法，这里加入更多与 RL有关的方法。 \n 为元学习优化模型权重 #  \n MAML（模型无关元学习）（ Finn, et al. 2017 ）与 Reptile（ Nichol et al., 2018 ）都更新参数，提高新任务泛化。详见上一篇  章节  中的 MAML 与 Reptile。 \n 元学习超参数 #  \n RL 回报 函数 $G_t^{(n)}$ 或 $G_t^\\lambda$，有经验指定的超参数，如折扣  $\\gamma$ 、自举参数  $\\lambda$ 。Meta-gradient RL（元梯度强化学习； Xu et al., 2018 ）视其为  元参数  $\\eta=\\{\\gamma, \\lambda \\}$，交互中  在线  调优学习。因此回报成为 $\\eta$ 函数，随时间适应任务。 \n \n$$\n\\begin{aligned}\nG_\\eta^{(n)}(\\tau_t) &= R_{t+1} + \\gamma R_{t+2} + \\dots + \\gamma^{n-1}R_{t+n} + \\gamma^n v_\\theta(s_{t+n}) & \\scriptstyle{\\text{; n-step return}} \\\\\nG_\\eta^{\\lambda}(\\tau_t) &= (1-\\lambda) \\sum_{n=1}^\\infty \\lambda^{n-1} G_\\eta^{(n)} & \\scriptstyle{\\text{; λ-return, mixture of n-step returns}}\n\\end{aligned}\n$$\n \n 训练时，以所有现有信息的梯度函数 $\\theta’ = \\theta + f(\\tau, \\theta, \\eta)$ 更新策略，其中 $\\theta$ 是当前权重，$\\tau$ 是轨迹序列，$\\eta$ 是元参数。 \n 元目标 $J(\\tau, \\theta, \\eta)$ 衡量性能。训练按在线交叉验证，用连续经验序列： \n \n 从参数 $\\theta$ 开始，策略 $\\pi_\\theta$ 在首批 $\\tau$ 更新，得到 $\\theta’$。 \n 继续策略 $\\pi_{\\theta’}$，收集新经验 $\\tau’$，时间上紧随 $\\tau$。性能为 $J(\\tau’, \\theta’, \\bar{\\eta})$，固定元参数 $\\bar{\\eta}$。 \n 元目标 $J(\\tau’, \\theta’, \\bar{\\eta})$ 对 $\\eta$ 的梯度，更新 $\\eta$： \n \n \n$$\n\\begin{aligned}\n\\Delta \\eta\n&= -\\beta \\frac{\\partial J(\\tau', \\theta', \\bar{\\eta})}{\\partial \\eta} \\\\\n&= -\\beta \\frac{\\partial J(\\tau', \\theta', \\bar{\\eta})}{\\partial \\theta'} \\frac{d\\theta'}{d\\eta} & \\scriptstyle{\\text{ ; single variable chain rule.}} \\\\\n&= -\\beta \\frac{\\partial J(\\tau', \\theta', \\bar{\\eta})}{\\partial \\theta'} \\frac{\\partial (\\theta + f(\\tau, \\theta, \\eta))}{\\partial\\eta}  \\\\\n&= -\\beta \\frac{\\partial J(\\tau', \\theta', \\bar{\\eta})}{\\partial \\theta'} \\Big(\\frac{d\\theta}{d\\eta} + \\frac{\\partial f(\\tau, \\theta, \\eta)}{\\partial\\theta}\\frac{d\\theta}{d\\eta} + \\frac{\\partial f(\\tau, \\theta, \\eta)}{\\partial\\eta}\\frac{d\\eta}{d\\eta} \\Big) & \\scriptstyle{\\text{; multivariable chain rule.}}\\\\\n&= -\\beta \\frac{\\partial J(\\tau', \\theta', \\bar{\\eta})}{\\partial \\theta'} \\Big( \\color{red}{\\big(\\mathbf{I} + \\frac{\\partial f(\\tau, \\theta, \\eta)}{\\partial\\theta}\\big)}\\frac{d\\theta}{d\\eta} + \\frac{\\partial f(\\tau, \\theta, \\eta)}{\\partial\\eta}\\Big) & \\scriptstyle{\\text{; secondary gradient term in red.}}\n\\end{aligned}\n$$\n \n 其中 $\\beta$ 是 $\\eta$ 的学习率。 \n 元梯度 RL算法将次级梯度置零 $\\mathbf{I} + \\partial g(\\tau, \\theta, \\eta)/\\partial\\theta = 0$ 简化，偏好元参数 $\\eta$ 对参数 $\\theta$ 的即时影响。最终： \n \n$$\n\\Delta \\eta = -\\beta \\frac{\\partial J(\\tau', \\theta', \\bar{\\eta})}{\\partial \\theta'} \\frac{\\partial f(\\tau, \\theta, \\eta)}{\\partial\\eta}\n$$\n \n 实验采用与 $TD(\\lambda)$ 算法相同元目标，最小化近似价值 $v_\\theta(s)$ 与 $\\lambda$-return（回报）的误差： \n \n$$\n\\begin{aligned}\nJ(\\tau, \\theta, \\eta) &= (G^\\lambda_\\eta(\\tau) - v_\\theta(s))^2 \\\\\nJ(\\tau', \\theta', \\bar{\\eta}) &= (G^\\lambda_{\\bar{\\eta}}(\\tau') - v_{\\theta'}(s'))^2\n\\end{aligned}\n$$\n \n 元学习损失函数 #  \n 策略梯度沿估计梯度更新参数 $\\theta$，最大化期望总奖励（ Schulman et al., 2016 ）， \n \n$$\ng = \\mathbb{E}[\\sum_{t=0}^\\infty \\Psi_t \\nabla_\\theta \\log \\pi_\\theta (a_t \\mid s_t)]\n$$\n \n $\\Psi_t$ 可为轨迹回报 $G_t$、Q 值 $Q(s_t, a_t)$、优势 $A(s_t, a_t)$。可反推对应替代损失： \n \n$$\nL_\\text{pg} = \\mathbb{E}[\\sum_{t=0}^\\infty \\Psi_t \\log \\pi_\\theta (a_t \\mid s_t)]\n$$\n \n 损失衡量轨迹历史 $(s_0, a_0, r_0, \\dots, s_t, a_t, r_t, \\dots)$。 Evolved Policy Gradient（演化策略梯度） （ EPG ； Houthooft, et al, 2018 ）进一步定义为过去经验的时间卷积（一维卷积）$L_\\phi$。损失网络参数 $\\phi$ 演化，使智能体获得更高回报。 \n EPG（演化策略梯度）也有两循环： \n \n 内层，智能体改进策略 $\\pi_\\theta$。 \n 外层，更新损失参数 $\\phi$，函数 $L_\\phi$。无法显式写回报与损失间可微方程，因此用   Evolutionary Strategies（演化策略）  （ES）。 \n \n 训练 $N$ 个智能体，各使用损失 $L_{\\phi + \\sigma \\epsilon_i}$，参数 $\\phi$ 加小高斯噪声 $\\epsilon_i \\sim \\mathcal{N}(0, \\mathbf{I})$，标准差 $\\sigma$。内层跟踪经验历史，以损失 $L_{\\phi + \\sigma\\epsilon_i}$ 更新各策略： \n \n$$\n\\theta_i \\leftarrow \\theta - \\alpha_\\text{in} \\nabla_\\theta L_{\\phi + \\sigma \\epsilon_i} (\\pi_\\theta, \\tau_{t-K, \\dots, t})\n$$\n \n $\\alpha_\\text{in}$ 是内层学习率，$\\tau_{t-K, \\dots, t}$ 为 $M$ 个转移序列，至当前时间步 $t$。 \n 内层策略成熟后，多条随机轨迹平均回报 $\\bar{G}_{\\phi+\\sigma\\epsilon_i}$ 评估。最终估计 $\\phi$ 梯度，按照  NES（自然演化策略）  数值计算（ Salimans et al, 2017 ）。重复时，策略参数 $\\theta$ 与损失权重 $\\phi$ 同时更新，提高回报。 \n \n$$\n\\phi \\leftarrow \\phi + \\alpha_\\text{out} \\frac{1}{\\sigma N} \\sum_{i=1}^N \\epsilon_i G_{\\phi+\\sigma\\epsilon_i}\n$$\n \n $\\alpha_\\text{out}$ 是外层学习率。 \n 实际中，损失 $L_\\phi$ 用普通策略梯度（REINFORCE（基于蒙特卡洛回报的策略梯度算法） 或 PPO（近端策略优化））替代损失 $L_\\text{pg}$ 自举：$\\hat{L} = (1-\\alpha) L_\\phi + \\alpha L_\\text{pg}$。权重 $\\alpha$ 训练中从 1 渐退至 0。测试时损失参数 $\\phi$ 固定，根据经验历史计算损失，更新策略参数 $\\theta$。 \n 元学习探索策略 #  \n  exploitation vs exploration（利用与探索）  是 RL关键难题。探索包括 $\\epsilon$-greedy（贪心探索）、动作随机噪声、动作空间内置随机性的随机策略。 \n  MAESN（从经验学习结构化探索噪声的方法） （ Gupta et al, 2018 ）从既往经验学习结构化动作噪声，改善探索。仅加随机噪声，无法捕获任务依赖或时间相关策略。MAESN 以每任务随机变量 $z_i \\sim \\mathcal{N}(\\mu_i, \\sigma_i)$ 为条件，针对第 $i$ 个任务 $M_i$，得到策略 $a \\sim \\pi_\\theta(a\\mid s, z_i)$。\n潜变量 $z_i$ 每回合采样一次并固定。它决定 rollout（展开交互轨迹）初期应更多探索的行为或技能，智能体据此调整动作。同时优化策略参数与潜在空间，以最大化任务总奖励；与此同时，策略学习如何利用这些潜变量进行探索。 \n 损失还包含学得潜变量与单位高斯先验的 KL divergence（衡量两个概率分布差异的相对熵）$D_\\text{KL}(\\mathcal{N}(\\mu_i, \\sigma_i)|\\mathcal{N}(0, \\mathbf{I}))$。一方面限制潜空间离共同先验不远；另一方面为奖励函数创建变分证据下界（ ELBO（证据下界） ）。论文发现，各任务 $(\\mu_i, \\sigma_i)$ 收敛时通常接近先验。 \n \n\t \n\t 策略以潜变量 $z\\_i \\sim \\mathcal{N}(\\mu, \\sigma)$ 为条件，每回合采样一次。每任务分布超参数 $(\\mu\\_i, \\sigma\\_i)$ 不同，在外层优化。（图片来源： Gupta et al, 2018 ） \n \n Episodic Control（回合记忆控制） #  \n RL主要批评是样本效率低。为最大化泛化、避免灾难性遗忘，RL 的参数渐进调整需要大量样本、小步学习（ Botvinick et al., 2019 ）。 \n  Episodic control（回合记忆控制） （ Lengyel & Dayan, 2008 ）旨在避免遗忘、改善泛化并加快训练，部分受基于实例的  海马体  学习假说启发。 \n  episodic memory（情景记忆）  显式记录过去事件，直接参考它作新决策（类似  基于度量  元学习）。 MFEC （Model-Free Episodic Control，无模型回合记忆控制； Blundell et al., 2016 ）用大表，以状态动作 $(s, a)$ 为键，Q 值 $Q_\\text{EC}(s, a)$ 为值。新观察 $s$ 的 Q 值，以最相似的前 $k$ 个样本均值非参数估计： \n \n$$\n\\hat{Q}_\\text{EC}(s, a) = \n\\begin{cases}\nQ_\\text{EC}(s, a)                      & \\text{if } (s,a) \\in Q_\\text{EC}, \\\\\n\\frac{1}{k} \\sum_{i=1}^k Q(s^{(i)}, a) & \\text{otherwise}\n\\end{cases}\n$$\n \n $s^{(i)}, i=1, \\dots, k$ 是前 $k$ 个最近状态，相对状态 $s$。选择估计 Q 值最高动作，再按 $s_t$ 收到的回报更新记忆： \n \n$$\nQ_\\text{EC}(s, a) \\leftarrow\n\\begin{cases}\n\\max\\{Q_\\text{EC}(s_t, a_t), G_t\\}  & \\text{if } (s,a) \\in Q_\\text{EC}, \\\\\nG_t                                 & \\text{otherwise}\n\\end{cases}\n$$\n \n 表格 RL方法 MFEC 内存大、难在相似状态泛化。前者可用 LRU（最近最少使用）缓存。受  基于度量  元学习、尤其 Matching Networks（匹配网络； Vinyals et al., 2016 ）启发，后续  NEC （Neural Episodic Control，神经回合记忆控制； Pritzel et al., 2016 ）改善泛化。 \n NEC 用 Differentiable Neural Dictionary（可微神经字典， DND ）记忆。键是输入像素卷积嵌入，值是估计 Q 值。查询输出最相似键对应值的加权和，权重为查询与所选键的归一化核度量，类似硬  注意力 。 \n \n\t \n\t 图 6：NEC 情景记忆模块与可微神经字典两种操作。（图片来源： Pritzel et al., 2016 ） \n \n  Episodic LSTM （ Ritter et al., 2018 ）用 DND（可微神经字典）增强基础 LSTM，键为任务上下文嵌入，值为 LSTM 单元状态。检索状态，通过 LSTM 内相同门控直接加至当前状态： \n \n\t \n\t episodic LSTM 架构，新增情景记忆以粗线表示。（图片来源： Ritter et al., 2018 ） \n \n \n$$\n\\begin{aligned}\n\\mathbf{c}_t &= \\mathbf{i}_t \\circ \\mathbf{c}_\\text{in} + \\mathbf{f}_t \\circ \\mathbf{c}_{t-1} + \\color{green}{\\mathbf{r}_t \\circ \\mathbf{c}_\\text{ep}} &\\\\\n\\mathbf{i}_t &= \\sigma(\\mathbf{W}_{i} \\cdot [\\mathbf{h}_{t-1}, \\mathbf{x}_t] + \\mathbf{b}_i) & \\scriptstyle{\\text{; input gate}} \\\\\n\\mathbf{f}_t &= \\sigma(\\mathbf{W}_{f} \\cdot [\\mathbf{h}_{t-1}, \\mathbf{x}_t] + \\mathbf{b}_f) & \\scriptstyle{\\text{; forget gate}} \\\\\n\\color{green}{\\mathbf{r}_t} & \\color{green}{=} \\color{green}{\\sigma(\\mathbf{W}_{r} \\cdot [\\mathbf{h}_{t-1}, \\mathbf{x}_t] + \\mathbf{b}_r)} & \\scriptstyle{\\text{; reinstatement gate}}\n\\end{aligned}\n$$\n \n $\\mathbf{c}_t$ 与 $\\mathbf{h}_t$ 是隐藏及单元状态，时间 $t$；$\\mathbf{i}_t$、$\\mathbf{f}_t$、$\\mathbf{r}_t$ 是输入、遗忘、恢复门；$\\mathbf{c}_\\text{ep}$ 是检索单元状态。新增记忆组件绿色标出。 \n 架构通过上下文检索快捷访问旧经验，外部显式保存任务经验避免遗忘。所有实验手工设计上下文。为更自由任务构建有效、高效上下文嵌入很有趣。 \n 能力总体受环境复杂度限制。现实任务很少重复完全相同状态，因此编码关键。嵌入压缩观察至低维，同时期望邻近状态需要相似策略。 \n 获取训练任务 #  \n 在三个关键组件中，如何设计适当的任务分布是研究相对较少的一项，而且可能也是最体现 meta-RL（元强化学习）自身特点的一项。如 上文 所述，每个任务都是一个 MDP：$M_i = \\langle \\mathcal{S}, \\mathcal{A}, P_i, R_i \\rangle \\in \\mathcal{M}$。我们可以通过修改以下内容，构建一个 MDPs 的分布： \n \n  奖励配置 ：同一行为在不同任务，按 $R_i$ 得不同奖励。 \n 或  环境 ：以不同状态转移初始化环境，改变转移函数 $P_i$。 \n \n 通过 Domain Randomization（领域随机化）生成任务 #  \n 模拟器参数随机化，容易获得转移函数不同的任务。详见上一篇  文章  的  domain randomization（领域随机化） 。 \n 用演化算法生成环境 #  \n  演化算法 受自然选择启发，是无梯度启发式优化。解种群循环评估、选择、繁殖、变异，良好解最终存活、被选中。 \n  POET （ Wang et al, 2019 ）基于演化，解决问题的同时生成任务。实现仅为简单二维  双足行走  环境设计，但方向有趣。演化也用于  EPG（演化策略梯度） 、PBT（Population-Based Training，基于种群的训练；  Jaderberg et al, 2017 ）。 \n \n\t \n\t 双足行走示例（上）与 POET 概览（下）。（图片来源： POET 博客 ） \n \n 二维行走环境从平地演化为有缺口、树桩、崎岖地面的困难路径。POET 配对环境挑战生成与智能体优化，（a）选择可解决当前挑战者，（b）演化可解决环境。维护  环境—智能体对 ，重复： \n \n  变异 ：从活跃环境生成新环境。操作专为双足行走，新环境需新配置。 \n  优化 ：在各自环境训练配对智能体。 \n  选择 ：定期跨环境迁移，复制、更新每环境最佳者。某环境学到的技能可能有助其他环境。 \n \n 类似  PBT（基于种群的训练） ，但后者演化超参数。POET 某种程度是  domain randomization（领域随机化） ：缺口、树桩、崎岖程度由随机概率参数控制。不同于 DR，智能体不一次面对完全随机困难环境，而按演化配置课程逐步学习。 \n 用随机奖励学习 #  \n 无奖励函数 $R$ 的 MDP，称  Controlled Markov process（受控马尔可夫过程） （CMP）。给定 $\\langle \\mathcal{S}, \\mathcal{A}, P\\rangle$，生成奖励函数集合 $\\mathcal{R}$，获取多样任务，训练有效元学习策略。 \n  Gupta et al. (2018)  提出两种无监督 CMP（受控马尔可夫过程）任务扩展。每任务潜变量 $z \\sim p(z)$ 参数化奖励 $r_z(s) = \\log D(z|s)$，判别器 $D(.)$ 从状态提取潜变量。构建两法： \n \n 随机采样判别器权重 $\\phi_\\text{rand}$，$D_{\\phi_\\text{rand}}(z \\mid s)$。 \n 学习判别器，鼓励多样性探索。配套“DIAYN”论文（ Eysenbach et al., 2018 ）详述。 \n \n DIAYN（“Diversity is all you need”，只需多样性）使策略无奖励学习有用技能。潜变量 $z$ 为  技能  嵌入，策略除状态外还以 $z$ 为条件，状态 $s$，策略 $\\pi_\\theta(a \\mid s, z)$。（与  MAESN  相同并不意外，同一团队。）假说： \n \n 技能应多样，访问不同状态。→ 最大化状态与技能互信息 $I(S; Z)$。 \n 技能应由状态而非动作区分。→ 最小化给定状态的动作与技能互信息 $I(A; Z \\mid S)$。 \n \n 最大化目标如下，还加入策略熵鼓励多样性： \n \n$$\n\\begin{aligned}\n\\mathcal{F}(\\theta) \n&= I(S; Z) + H[A \\mid S] - I(A; Z \\mid S) &  \\\\\n&= (H(Z) - H(Z \\mid S)) + H[A \\mid S] - (H[A\\mid S] - H[A\\mid S, Z]) & \\\\\n&= H[A\\mid S, Z] \\color{green}{- H(Z \\mid S) + H(Z)} & \\\\\n&= H[A\\mid S, Z] + \\mathbb{E}_{z\\sim p(z), s\\sim\\rho(s)}[\\log p(z \\mid s)] - \\mathbb{E}_{z\\sim p(z)}[\\log p(z)] & \\scriptstyle{\\text{; can infer skills from states & p(z) is diverse.}} \\\\\n&\\ge H[A\\mid S, Z] + \\mathbb{E}_{z\\sim p(z), s\\sim\\rho(s)}[\\color{red}{\\log D_\\phi(z \\mid s) - \\log p(z)}] & \\scriptstyle{\\text{; according to Jensen's inequality; \"pseudo-reward\" in red.}}\n\\end{aligned}\n$$\n \n $I(.)$ 是互信息，$H[.]$ 是熵。无法积分全部状态计算 $p(z \\mid s)$，用 $D_\\phi(z \\mid s)$ 近似，即多样性判别器。 \n \n\t \n\t DIAYN 算法。（图片来源： Eysenbach et al., 2019 ） \n \n 学得判别器后，采样训练新 MDP很直接：先采样潜变量 $z \\sim p(z)$，构建奖励 $r_z(s) = \\log(D(z \\vert s))$，配上预定义 CMP（受控马尔可夫过程）即为新 MDP。 \n \n \n 引用格式： \n  @article{weng2019metaRL,\n  title   = \"Meta Reinforcement Learning\",\n  author  = \"Weng, Lilian\",\n  journal = \"lilianweng.github.io\",\n  year    = \"2019\",\n  url     = \"https://lilianweng.github.io/posts/2019-06-23-meta-rl/\"\n}\n   参考文献 #  \n [1] Richard S. Sutton.  “The Bitter Lesson.”  2019 年 3 月 13 日。 \n [2] Sepp Hochreiter, A. Steven Younger, and Peter R. Conwell.  “Learning to learn using gradient descent.”  国际人工神经网络会议。 2001. \n [3] Jane X Wang, et al.  “Learning to reinforcement learn.”  arXiv 预印本 arXiv:1611.05763 (2016). \n [4] Yan Duan, et al.  “RL $^ 2$: Fast Reinforcement Learning via Slow Reinforcement Learning.”  ICLR 2017. \n [5] Matthew Botvinick, et al.  “Reinforcement Learning, Fast and Slow”  Cell Review, 第 23 卷，第 5 期，第 408–422 页，2019 年 5 月 1 日。 \n [6] Jeff Clune.  “AI-GAs: AI-generating algorithms, an alternate paradigm for producing general artificial intelligence”  arXiv 预印本 arXiv:1905.10985 (2019). \n [7] Zhongwen Xu, et al.  “Meta-Gradient Reinforcement Learning”  NIPS 2018. \n [8] Rein Houthooft, et al.  “Evolved Policy Gradients.”  NIPS 2018. \n [9] Tim Salimans, et al.  “Evolution strategies as a scalable alternative to reinforcement learning.”  arXiv 预印本 arXiv:1703.03864 (2017). \n [10] Abhishek Gupta, et al.  “Meta-Reinforcement Learning of Structured Exploration Strategies.”  NIPS 2018. \n [11] Alexander Pritzel, et al.  “Neural episodic control.”  国际机器学习会议论文集，第 70 卷，2017。 \n [12] Charles Blundell, et al.  “Model-free episodic control.”  arXiv 预印本 arXiv:1606.04460 (2016). \n [13] Samuel Ritter, et al.  “Been there, done that: Meta-learning with episodic recall.”  ICML, 2018. \n [14] Rui Wang et al.  “Paired Open-Ended Trailblazer (POET): Endlessly Generating Increasingly Complex and Diverse Learning Environments and Their Solutions”  arXiv 预印本 arXiv:1901.01753 (2019). \n [15] Uber 工程博客：  “POET: Endlessly Generating Increasingly Complex and Diverse Learning Environments and their Solutions through the Paired Open-Ended Trailblazer.”  2019 年 1 月 8 日。 \n [16] Abhishek Gupta, et al. “Unsupervised meta-learning for Reinforcement Learning”  arXiv 预印本 arXiv:1806.04640 (2018). \n [17] Eysenbach, Benjamin, et al.  “Diversity is all you need: Learning skills without a reward function.”  ICLR 2019. \n [18] Max Jaderberg, et al.  “Population Based Training of Neural Networks.”  arXiv 预印本 arXiv:1711.09846 (2017).", "wordCount": "4588", "inLanguage": "zh-CN", "datePublished": "2019-06-23T00:00:00Z", "dateModified": "2019-06-23T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/favicon_wine.ico"}}}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/posts/2019-06-23-meta-rl/">
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2019-06-23-meta-rl/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/posts/2019-06-23-meta-rl/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      元强化学习
+    </h1>
+    <div class="post-meta">日期：2019 年 6 月 23 日  |  预计阅读时间：22 分钟  |  作者：Lilian Weng
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#on-the-origin-of-meta-rl" aria-label="Meta-RL（元强化学习）的起源">Meta-RL（元强化学习）的起源</a><ul>
+                        
+                <li>
+                    <a href="#back-in-2001" aria-label="Back in 2001">回到 2001 年</a></li>
+                <li>
+                    <a href="#proposal-in-2016" aria-label="Proposal in 2016">2016 年的提案</a></li></ul>
+                </li>
+                <li>
+                    <a href="#define-meta-rl" aria-label="定义 Meta-RL（元强化学习）">定义 Meta-RL（元强化学习）</a><ul>
+                        
+                <li>
+                    <a href="#formulation" aria-label="Formulation">形式化</a></li>
+                <li>
+                    <a href="#main-differences-from-rl" aria-label="Main Differences from RL">与 RL（强化学习）的主要区别</a></li>
+                <li>
+                    <a href="#key-components" aria-label="Key Components">关键组件</a></li></ul>
+                </li>
+                <li>
+                    <a href="#meta-learning-algorithms-for-meta-rl" aria-label="用于 Meta-RL（元强化学习）的元学习算法">用于 Meta-RL（元强化学习）的元学习算法</a><ul>
+                        
+                <li>
+                    <a href="#optimizing-model-weights-for-meta-learning" aria-label="Optimizing Model Weights for Meta-learning">为元学习优化模型权重</a></li>
+                <li>
+                    <a href="#meta-learning-hyperparameters" aria-label="Meta-learning Hyperparameters">元学习超参数</a></li>
+                <li>
+                    <a href="#meta-learning-the-loss-function" aria-label="Meta-learning the Loss Function">元学习损失函数</a></li>
+                <li>
+                    <a href="#meta-learning-the-exploration-strategies" aria-label="Meta-learning the Exploration Strategies">元学习探索策略</a></li>
+                <li>
+                    <a href="#episodic-control" aria-label="Episodic Control">Episodic Control（回合记忆控制）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#training-task-acquisition" aria-label="获取训练任务">获取训练任务</a><ul>
+                        
+                <li>
+                    <a href="#task-generation-by-domain-randomization" aria-label="Task Generation by Domain Randomization">通过 Domain Randomization（领域随机化）生成任务</a></li>
+                <li>
+                    <a href="#evolutionary-algorithm-on-environment-generation" aria-label="Evolutionary Algorithm on Environment Generation">用演化算法生成环境</a></li>
+                <li>
+                    <a href="#learning-with-random-rewards" aria-label="Learning with Random Rewards">用随机奖励学习</a></li></ul>
+                </li>
+                <li>
+                    <a href="#references" aria-label="References">参考文献</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><!-- Meta-RL is meta-learning on reinforcement learning tasks. After trained over a distribution of tasks, the agent is able to solve a new task by developing a new RL algorithm with its internal activity dynamics. This post starts with the origin of meta-RL and then dives into three key components of meta-RL. -->
+<p>上一篇 <a href="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/">meta-learning（元学习）</a> 主要在少样本分类中定义问题。这里探索“元学习” <a href="https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/">Reinforcement Learning（强化学习，RL（强化学习））</a> 任务，开发快速、高效解决未见任务的智能体。</p>
+<p>回顾，好的元学习模型应泛化到未见任务或环境。适应本质是 <em>小型学习阶段</em>，测试时有限接触新配置。即使没有显式微调（可训练变量不做梯度反向传播），也能自主调整内部隐藏状态学习。</p>
+<p>RL训练有时非常困难。如果元学习智能体足够聪明，可解未见任务分布极广，我们就走向 <a href="http://incompleteideas.net/IncIdeas/BitterLesson.html">通用方法</a>——构建无需太多人类干预或手工特征工程、能解决各种 RL 问题的“大脑”。很棒吧？💖</p>
+<h1 id="on-the-origin-of-meta-rl">Meta-RL（元强化学习）的起源<a hidden class="anchor" aria-hidden="true" href="#on-the-origin-of-meta-rl">#</a></h1>
+<h2 id="back-in-2001">回到 2001 年<a hidden class="anchor" aria-hidden="true" href="#back-in-2001">#</a></h2>
+<p>我看到 <a href="http://snowedin.net/tmp/Hochreiter2001.pdf">Hochreiter et al.</a> 的 2001 论文，当时正阅读 <a href="https://arxiv.org/pdf/1611.05763.pdf">Wang et al., 2016</a>。虽针对有监督学习，但很像当前元强化学习。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/Hochreiter-meta-learning.png" style="width: 100%;"  />
+	<figcaption>元学习系统包含监督系统与从属系统。从属是循环网络，输入当前观察 $x\_t$ 与上步标签 $y\_{t-1}$。（图片来源：<a href="http://snowedin.net/tmp/Hochreiter2001.pdf" target="_blank">Hochreiter et al., 2001</a>）</figcaption>
+</figure>
+<p>Hochreiter 用 LSTM（长短期记忆网络）循环网络，LSTM 能内化输入历史，通过 <a href="https://en.wikipedia.org/wiki/Backpropagation_through_time">BPTT（随时间反向传播）</a> 有效调整权重。数据有 $K$ 序列，每个有 $N$ 样本，由目标函数 $f_k(.), k=1, \dots, K$ 生成，</p>
+<div>
+$$
+\{\text{input: }(\mathbf{x}^k_i, \mathbf{y}^k_{i-1}) \to \text{label: }\mathbf{y}^k_i\}_{i=1}^N
+\text{ where }\mathbf{y}^k_i = f_k(\mathbf{x}^k_i)
+$$ 
+</div>
+<p><em>上一个标签</em> $\mathbf{y}^k_{i-1}$ 也作为辅助输入，使函数学习映射。</p>
+<p>解码二维二次函数 $a x_1^2 + b x_2^2 + c x_1 x_2 + d x_1 + e x_2 + f$ 的实验中，系数 $a$ 至 $f$ 从 [-1, 1] 随机采样，系统只看约 35 个示例就能近似。</p>
+<h2 id="proposal-in-2016">2016 年的提案<a hidden class="anchor" aria-hidden="true" href="#proposal-in-2016">#</a></h2>
+<p>现代深度学习中，<a href="https://arxiv.org/abs/1611.05763">Wang et al.</a>（2016）与 <a href="https://arxiv.org/abs/1611.02779">Duan et al.</a>（2017）同时提出相似 <strong>Meta-RL（元强化学习）</strong>（第二篇称 <strong>RL^2</strong>）。模型在 MDP（马尔可夫决策过程）分布上训练，测试时快速学会新任务。目标很有雄心，进一步迈向通用算法。</p>
+<h1 id="define-meta-rl">定义 Meta-RL（元强化学习）<a hidden class="anchor" aria-hidden="true" href="#define-meta-rl">#</a></h1>
+<p><em>Meta Reinforcement Learning（元强化学习）</em>，简言之是进行 <a href="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/">元学习</a>，领域为 <a href="https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/">强化学习</a>。训练、测试任务通常不同，但来自同一问题族：不同奖励概率的多臂老虎机、不同布局迷宫、模拟器物理参数不同的相同机器人等。</p>
+<h2 id="formulation">形式化<a hidden class="anchor" aria-hidden="true" href="#formulation">#</a></h2>
+<p>任务分布中，每项形式化为 <a href="https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/#markov-decision-processes">MDP</a>（Markov Decision Process，马尔可夫决策过程）$M_i \in \mathcal{M}$，MDP 由四元组 $M_i= \langle \mathcal{S}, \mathcal{A}, P_i, R_i \rangle$ 确定：</p>
+<table>
+	<thead>
+			<tr>
+					<th>符号</th>
+					<th>含义</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>$\mathcal{S}$</td>
+					<td>状态集合。</td>
+			</tr>
+			<tr>
+					<td>$\mathcal{A}$</td>
+					<td>动作集合。</td>
+			</tr>
+			<tr>
+					<td>$P_i: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to \mathbb{R}_{+}$</td>
+					<td>转移概率函数。</td>
+			</tr>
+			<tr>
+					<td>$R_i: \mathcal{S} \times \mathcal{A} \to \mathbb{R}$</td>
+					<td>奖励函数。</td>
+			</tr>
+	</tbody>
+</table>
+<p>（RL^2 在 MDP元组加入 horizon（时间范围）$T$，强调每个 MDP 应有限。）</p>
+<p>上文使用共同状态 $\mathcal{S}$、动作空间 $\mathcal{A}$，使随机策略 $\pi_\theta: \mathcal{S} \times \mathcal{A} \to \mathbb{R}_{+}$ 的输入跨任务兼容。测试任务来自相同分布 $\mathcal{M}$ 或略改版本。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/meta-RL-illustration.png" style="width: 100%;"  />
+	<figcaption>元强化学习含两个优化循环。外层每次采样新环境，调整决定智能体行为的参数。内层与环境交互，优化最大奖励。（图片来源：<a href="https://www.cell.com/action/showPdf?pii=S1364-6613%2819%2930061-0" target="_blank">Botvinick, et al. 2019</a>）</figcaption>
+</figure>
+<h2 id="main-differences-from-rl">与 RL的主要区别<a hidden class="anchor" aria-hidden="true" href="#main-differences-from-rl">#</a></h2>
+<p>整体类似普通 RL，但额外将 <strong>上次奖励</strong> $r_{t-1}$ 与 <strong>上次动作</strong> $a_{t-1}$ 纳入观察，除当前状态 $s_t$ 外。</p>
+<ul>
+<li>RL中：$\pi_\theta(s_t) \to$，为 $\mathcal{A}$ 上的分布。</li>
+<li>元强化学习中：$\pi_\theta(a_{t-1}, r_{t-1}, s_t) \to$，为 $\mathcal{A}$ 上的分布。</li>
+</ul>
+<p>设计旨在输入历史，使策略内化当前 MDP中状态、奖励、动作动态，调整策略，与 <a href="#back-in-2001">Hochreiter 系统</a> 一致。Meta-RL 与 RL^2 都用 LSTM，LSTM 的隐藏状态充当 <em>记忆</em>，跟踪轨迹特征。循环策略无需显式输入上次状态。</p>
+<p>训练流程：</p>
+<ol>
+<li>采样新 MDP$M_i \sim \mathcal{M}$；</li>
+<li><strong>重置隐藏状态</strong>；</li>
+<li>收集多条轨迹，更新权重；</li>
+<li>从步骤 1 重复。</li>
+</ol>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/L2RL.png" style="width: 68%;"  />
+	<figcaption>Meta-RL 中不同 Actor-Critic（行动者与评论家组成的学习框架）都使用循环模型，额外输入上次奖励、动作。观察以 one-hot（独热）向量或编码器产生的嵌入输入 LSTM。（图片来源：<a href="https://arxiv.org/abs/1611.05763" target="_blank">Wang et al., 2016</a>）</figcaption>
+</figure>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/RL_2.png" style="width: 100%;"  />
+	<figcaption>RL^2 描述的训练时模型与一系列 MDP交互流程。（图片来源：<a href="https://arxiv.org/abs/1611.02779" target="_blank">Duan et al., 2017</a>）</figcaption>
+</figure>
+<h2 id="key-components">关键组件<a hidden class="anchor" aria-hidden="true" href="#key-components">#</a></h2>
+<p>Meta-RL（元强化学习）三个关键组件：</p>
+<blockquote>
+<p>⭐ <strong>带记忆模型</strong>
+<br/>
+循环网络维护隐藏状态，rollout（展开交互轨迹）中更新它，获取、记忆当前任务知识。无记忆就无法工作。</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>元学习算法</strong>
+<br/>
+规定如何更新权重，使测试时快速解决未见任务。Meta-RL 与 RL^2 都用普通 LSTM梯度下降，切换 MDP时重置隐藏状态。</p>
+</blockquote>
+<blockquote>
+<p>⭐ <strong>MDP分布</strong>
+<br />
+训练中接触多样环境与任务，必须学会适应不同 MDP。</p>
+</blockquote>
+<p><a href="https://www.cell.com/action/showPdf?pii=S1364-6613%2819%2930061-0">Botvinick et al.</a>（2019）认为，RL缓慢的一因是 <em>较弱 <a href="https://en.wikipedia.org/wiki/Inductive_bias">inductive bias（归纳偏置）</a></em>（学习器预测未见输入输出时所用假设集合）。弱偏置能掌握更广变化，但通常样本效率低。因此，强偏置缩小假设范围，有助加快学习。</p>
+<p>元强化学习从 <em>任务分布</em> 加入归纳偏置，存于 <em>记忆</em>；测试采用哪种偏置由 <em>算法</em> 决定。三组件描绘观点：调整循环权重慢，却使模型通过内部活动动态实现自身 RL算法，快速解决新任务。</p>
+<p>Meta-RL 与 Jeff Clune (2019) 的 <a href="https://arxiv.org/abs/1905.10985">AI-GAs</a>（AI-Generating Algorithms，生成 AI 的算法）思想一致，这有趣但并不意外。他认为，通用 AI 的高效路线是尽量自动学习，包括（1）元学习架构，（2）元学习算法，（3）自动生成有效学习环境。</p>
+<hr>
+<p>好的循环架构主题太广，这里略过。接下来讨论元强化学习算法，以及如何获取多样训练 MDP。</p>
+<h1 id="meta-learning-algorithms-for-meta-rl">用于 Meta-RL（元强化学习）的元学习算法<a hidden class="anchor" aria-hidden="true" href="#meta-learning-algorithms-for-meta-rl">#</a></h1>
+<p>上一篇元学习 <a href="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/">文章</a> 已介绍经典算法，这里加入更多与 RL有关的方法。</p>
+<h2 id="optimizing-model-weights-for-meta-learning">为元学习优化模型权重<a hidden class="anchor" aria-hidden="true" href="#optimizing-model-weights-for-meta-learning">#</a></h2>
+<p>MAML（模型无关元学习）（<a href="https://arxiv.org/abs/1703.03400">Finn, et al. 2017</a>）与 Reptile（<a href="https://arxiv.org/abs/1803.02999">Nichol et al., 2018</a>）都更新参数，提高新任务泛化。详见上一篇 <a href="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/#optimization-based">章节</a> 中的 MAML 与 Reptile。</p>
+<h2 id="meta-learning-hyperparameters">元学习超参数<a hidden class="anchor" aria-hidden="true" href="#meta-learning-hyperparameters">#</a></h2>
+<p>RL<a href="https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/#value-function">回报</a>函数 $G_t^{(n)}$ 或 $G_t^\lambda$，有经验指定的超参数，如折扣 <a href="https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/#value-function">$\gamma$</a>、自举参数 <a href="https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/#combining-td-and-mc-learning">$\lambda$</a>。Meta-gradient RL（元梯度强化学习；<a href="http://papers.nips.cc/paper/7507-meta-gradient-reinforcement-learning.pdf">Xu et al., 2018</a>）视其为 <em>元参数</em> $\eta=\{\gamma, \lambda \}$，交互中 <em>在线</em> 调优学习。因此回报成为 $\eta$ 函数，随时间适应任务。</p>
+<div>
+$$
+\begin{aligned}
+G_\eta^{(n)}(\tau_t) &= R_{t+1} + \gamma R_{t+2} + \dots + \gamma^{n-1}R_{t+n} + \gamma^n v_\theta(s_{t+n}) & \scriptstyle{\text{; n-step return}} \\
+G_\eta^{\lambda}(\tau_t) &= (1-\lambda) \sum_{n=1}^\infty \lambda^{n-1} G_\eta^{(n)} & \scriptstyle{\text{; λ-return, mixture of n-step returns}}
+\end{aligned}
+$$
+</div>
+<p>训练时，以所有现有信息的梯度函数 $\theta&rsquo; = \theta + f(\tau, \theta, \eta)$ 更新策略，其中 $\theta$ 是当前权重，$\tau$ 是轨迹序列，$\eta$ 是元参数。</p>
+<p>元目标 $J(\tau, \theta, \eta)$ 衡量性能。训练按在线交叉验证，用连续经验序列：</p>
+<ol>
+<li>从参数 $\theta$ 开始，策略 $\pi_\theta$ 在首批 $\tau$ 更新，得到 $\theta&rsquo;$。</li>
+<li>继续策略 $\pi_{\theta&rsquo;}$，收集新经验 $\tau&rsquo;$，时间上紧随 $\tau$。性能为 $J(\tau&rsquo;, \theta&rsquo;, \bar{\eta})$，固定元参数 $\bar{\eta}$。</li>
+<li>元目标 $J(\tau&rsquo;, \theta&rsquo;, \bar{\eta})$ 对 $\eta$ 的梯度，更新 $\eta$：</li>
+</ol>
+<div>
+$$
+\begin{aligned}
+\Delta \eta
+&= -\beta \frac{\partial J(\tau', \theta', \bar{\eta})}{\partial \eta} \\
+&= -\beta \frac{\partial J(\tau', \theta', \bar{\eta})}{\partial \theta'} \frac{d\theta'}{d\eta} & \scriptstyle{\text{ ; single variable chain rule.}} \\
+&= -\beta \frac{\partial J(\tau', \theta', \bar{\eta})}{\partial \theta'} \frac{\partial (\theta + f(\tau, \theta, \eta))}{\partial\eta}  \\
+&= -\beta \frac{\partial J(\tau', \theta', \bar{\eta})}{\partial \theta'} \Big(\frac{d\theta}{d\eta} + \frac{\partial f(\tau, \theta, \eta)}{\partial\theta}\frac{d\theta}{d\eta} + \frac{\partial f(\tau, \theta, \eta)}{\partial\eta}\frac{d\eta}{d\eta} \Big) & \scriptstyle{\text{; multivariable chain rule.}}\\
+&= -\beta \frac{\partial J(\tau', \theta', \bar{\eta})}{\partial \theta'} \Big( \color{red}{\big(\mathbf{I} + \frac{\partial f(\tau, \theta, \eta)}{\partial\theta}\big)}\frac{d\theta}{d\eta} + \frac{\partial f(\tau, \theta, \eta)}{\partial\eta}\Big) & \scriptstyle{\text{; secondary gradient term in red.}}
+\end{aligned}
+$$
+</div>
+<p>其中 $\beta$ 是 $\eta$ 的学习率。</p>
+<p>元梯度 RL算法将次级梯度置零 $\mathbf{I} + \partial g(\tau, \theta, \eta)/\partial\theta = 0$ 简化，偏好元参数 $\eta$ 对参数 $\theta$ 的即时影响。最终：</p>
+<div>
+$$
+\Delta \eta = -\beta \frac{\partial J(\tau', \theta', \bar{\eta})}{\partial \theta'} \frac{\partial f(\tau, \theta, \eta)}{\partial\eta}
+$$
+</div>
+<p>实验采用与 $TD(\lambda)$ 算法相同元目标，最小化近似价值 $v_\theta(s)$ 与 $\lambda$-return（回报）的误差：</p>
+<div>
+$$
+\begin{aligned}
+J(\tau, \theta, \eta) &= (G^\lambda_\eta(\tau) - v_\theta(s))^2 \\
+J(\tau', \theta', \bar{\eta}) &= (G^\lambda_{\bar{\eta}}(\tau') - v_{\theta'}(s'))^2
+\end{aligned}
+$$
+</div>
+<h2 id="meta-learning-the-loss-function">元学习损失函数<a hidden class="anchor" aria-hidden="true" href="#meta-learning-the-loss-function">#</a></h2>
+<p>策略梯度沿估计梯度更新参数 $\theta$，最大化期望总奖励（<a href="https://arxiv.org/abs/1506.02438">Schulman et al., 2016</a>），</p>
+<div>
+$$
+g = \mathbb{E}[\sum_{t=0}^\infty \Psi_t \nabla_\theta \log \pi_\theta (a_t \mid s_t)]
+$$
+</div>
+<p>$\Psi_t$ 可为轨迹回报 $G_t$、Q 值 $Q(s_t, a_t)$、优势 $A(s_t, a_t)$。可反推对应替代损失：</p>
+<div>
+$$
+L_\text{pg} = \mathbb{E}[\sum_{t=0}^\infty \Psi_t \log \pi_\theta (a_t \mid s_t)]
+$$
+</div>
+<p>损失衡量轨迹历史 $(s_0, a_0, r_0, \dots, s_t, a_t, r_t, \dots)$。<strong>Evolved Policy Gradient（演化策略梯度）</strong>（<strong>EPG</strong>；<a href="https://papers.nips.cc/paper/7785-evolved-policy-gradients.pdf">Houthooft, et al, 2018</a>）进一步定义为过去经验的时间卷积（一维卷积）$L_\phi$。损失网络参数 $\phi$ 演化，使智能体获得更高回报。</p>
+<p>EPG（演化策略梯度）也有两循环：</p>
+<ul>
+<li>内层，智能体改进策略 $\pi_\theta$。</li>
+<li>外层，更新损失参数 $\phi$，函数 $L_\phi$。无法显式写回报与损失间可微方程，因此用 <a href="https://en.wikipedia.org/wiki/Evolution_strategy"><em>Evolutionary Strategies（演化策略）</em></a>（ES）。</li>
+</ul>
+<p>训练 $N$ 个智能体，各使用损失 $L_{\phi + \sigma \epsilon_i}$，参数 $\phi$ 加小高斯噪声 $\epsilon_i \sim \mathcal{N}(0, \mathbf{I})$，标准差 $\sigma$。内层跟踪经验历史，以损失 $L_{\phi + \sigma\epsilon_i}$ 更新各策略：</p>
+<div>
+$$
+\theta_i \leftarrow \theta - \alpha_\text{in} \nabla_\theta L_{\phi + \sigma \epsilon_i} (\pi_\theta, \tau_{t-K, \dots, t})
+$$
+</div>
+<p>$\alpha_\text{in}$ 是内层学习率，$\tau_{t-K, \dots, t}$ 为 $M$ 个转移序列，至当前时间步 $t$。</p>
+<p>内层策略成熟后，多条随机轨迹平均回报 $\bar{G}_{\phi+\sigma\epsilon_i}$ 评估。最终估计 $\phi$ 梯度，按照 <a href="http://blog.otoro.net/2017/10/29/visual-evolution-strategies/">NES（自然演化策略）</a> 数值计算（<a href="https://arxiv.org/abs/1703.03864">Salimans et al, 2017</a>）。重复时，策略参数 $\theta$ 与损失权重 $\phi$ 同时更新，提高回报。</p>
+<div>
+$$
+\phi \leftarrow \phi + \alpha_\text{out} \frac{1}{\sigma N} \sum_{i=1}^N \epsilon_i G_{\phi+\sigma\epsilon_i}
+$$
+</div>
+<p>$\alpha_\text{out}$ 是外层学习率。</p>
+<p>实际中，损失 $L_\phi$ 用普通策略梯度（REINFORCE（基于蒙特卡洛回报的策略梯度算法） 或 PPO（近端策略优化））替代损失 $L_\text{pg}$ 自举：$\hat{L} = (1-\alpha) L_\phi + \alpha L_\text{pg}$。权重 $\alpha$ 训练中从 1 渐退至 0。测试时损失参数 $\phi$ 固定，根据经验历史计算损失，更新策略参数 $\theta$。</p>
+<h2 id="meta-learning-the-exploration-strategies">元学习探索策略<a hidden class="anchor" aria-hidden="true" href="#meta-learning-the-exploration-strategies">#</a></h2>
+<p><a href="https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/#exploitation-vs-exploration">exploitation vs exploration（利用与探索）</a> 是 RL关键难题。探索包括 $\epsilon$-greedy（贪心探索）、动作随机噪声、动作空间内置随机性的随机策略。</p>
+<p><strong>MAESN（从经验学习结构化探索噪声的方法）</strong>（<a href="http://papers.nips.cc/paper/7776-meta-reinforcement-learning-of-structured-exploration-strategies.pdf">Gupta et al, 2018</a>）从既往经验学习结构化动作噪声，改善探索。仅加随机噪声，无法捕获任务依赖或时间相关策略。MAESN 以每任务随机变量 $z_i \sim \mathcal{N}(\mu_i, \sigma_i)$ 为条件，针对第 $i$ 个任务 $M_i$，得到策略 $a \sim \pi_\theta(a\mid s, z_i)$。
+潜变量 $z_i$ 每回合采样一次并固定。它决定 rollout（展开交互轨迹）初期应更多探索的行为或技能，智能体据此调整动作。同时优化策略参数与潜在空间，以最大化任务总奖励；与此同时，策略学习如何利用这些潜变量进行探索。</p>
+<p>损失还包含学得潜变量与单位高斯先验的 KL divergence（衡量两个概率分布差异的相对熵）$D_\text{KL}(\mathcal{N}(\mu_i, \sigma_i)|\mathcal{N}(0, \mathbf{I}))$。一方面限制潜空间离共同先验不远；另一方面为奖励函数创建变分证据下界（<a href="http://users.umiacs.umd.edu/~xyang35/files/understanding-variational-lower.pdf">ELBO（证据下界）</a>）。论文发现，各任务 $(\mu_i, \sigma_i)$ 收敛时通常接近先验。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/MAESN.png" style="width: 82%;"  />
+	<figcaption>策略以潜变量 $z\_i \sim \mathcal{N}(\mu, \sigma)$ 为条件，每回合采样一次。每任务分布超参数 $(\mu\_i, \sigma\_i)$ 不同，在外层优化。（图片来源：<a href="http://papers.nips.cc/paper/7776-meta-reinforcement-learning-of-structured-exploration-strategies.pdf" target="_blank">Gupta et al, 2018</a>）</figcaption>
+</figure>
+<h2 id="episodic-control">Episodic Control（回合记忆控制）<a hidden class="anchor" aria-hidden="true" href="#episodic-control">#</a></h2>
+<p>RL主要批评是样本效率低。为最大化泛化、避免灾难性遗忘，RL 的参数渐进调整需要大量样本、小步学习（<a href="https://www.cell.com/trends/cognitive-sciences/fulltext/S1364-6613(19)30061-0">Botvinick et al., 2019</a>）。</p>
+<p><strong>Episodic control（回合记忆控制）</strong>（<a href="http://papers.nips.cc/paper/3311-hippocampal-contributions-to-control-the-third-way.pdf">Lengyel &amp; Dayan, 2008</a>）旨在避免遗忘、改善泛化并加快训练，部分受基于实例的 <a href="https://en.wikipedia.org/wiki/Hippocampus">海马体</a> 学习假说启发。</p>
+<p><em>episodic memory（情景记忆）</em> 显式记录过去事件，直接参考它作新决策（类似 <a href="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/#metric-based">基于度量</a> 元学习）。<strong>MFEC</strong>（Model-Free Episodic Control，无模型回合记忆控制；<a href="https://arxiv.org/abs/1606.04460">Blundell et al., 2016</a>）用大表，以状态动作 $(s, a)$ 为键，Q 值 $Q_\text{EC}(s, a)$ 为值。新观察 $s$ 的 Q 值，以最相似的前 $k$ 个样本均值非参数估计：</p>
+<div>
+$$
+\hat{Q}_\text{EC}(s, a) = 
+\begin{cases}
+Q_\text{EC}(s, a)                      & \text{if } (s,a) \in Q_\text{EC}, \\
+\frac{1}{k} \sum_{i=1}^k Q(s^{(i)}, a) & \text{otherwise}
+\end{cases}
+$$
+</div>
+<p>$s^{(i)}, i=1, \dots, k$ 是前 $k$ 个最近状态，相对状态 $s$。选择估计 Q 值最高动作，再按 $s_t$ 收到的回报更新记忆：</p>
+<div>
+$$
+Q_\text{EC}(s, a) \leftarrow
+\begin{cases}
+\max\{Q_\text{EC}(s_t, a_t), G_t\}  & \text{if } (s,a) \in Q_\text{EC}, \\
+G_t                                 & \text{otherwise}
+\end{cases}
+$$
+</div>
+<p>表格 RL方法 MFEC 内存大、难在相似状态泛化。前者可用 LRU（最近最少使用）缓存。受 <a href="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/#metric-based">基于度量</a> 元学习、尤其 Matching Networks（匹配网络；<a href="http://papers.nips.cc/paper/6385-matching-networks-for-one-shot-learning.pdf">Vinyals et al., 2016</a>）启发，后续 <strong>NEC</strong>（Neural Episodic Control，神经回合记忆控制；<a href="https://arxiv.org/abs/1703.01988">Pritzel et al., 2016</a>）改善泛化。</p>
+<p>NEC 用 Differentiable Neural Dictionary（可微神经字典，<strong>DND</strong>）记忆。键是输入像素卷积嵌入，值是估计 Q 值。查询输出最相似键对应值的加权和，权重为查询与所选键的归一化核度量，类似硬 <a href="https://xingshuozhu1998.github.io/posts/2018-06-24-attention/">注意力</a>。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/neural-episodic-control.png" style="width: 100%;"  />
+	<figcaption>图 6：NEC 情景记忆模块与可微神经字典两种操作。（图片来源：<a href="https://arxiv.org/abs/1703.01988" target="_blank">Pritzel et al., 2016</a>）</figcaption>
+</figure>
+<p><strong>Episodic LSTM</strong>（<a href="https://arxiv.org/abs/1805.09692">Ritter et al., 2018</a>）用 DND（可微神经字典）增强基础 LSTM，键为任务上下文嵌入，值为 LSTM 单元状态。检索状态，通过 LSTM 内相同门控直接加至当前状态：</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/episodic-LSTM.png" style="width: 77%;"  />
+	<figcaption>episodic LSTM 架构，新增情景记忆以粗线表示。（图片来源：<a href="https://arxiv.org/abs/1805.09692" target="_blank">Ritter et al., 2018</a>）</figcaption>
+</figure>
+<div>
+$$
+\begin{aligned}
+\mathbf{c}_t &= \mathbf{i}_t \circ \mathbf{c}_\text{in} + \mathbf{f}_t \circ \mathbf{c}_{t-1} + \color{green}{\mathbf{r}_t \circ \mathbf{c}_\text{ep}} &\\
+\mathbf{i}_t &= \sigma(\mathbf{W}_{i} \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_i) & \scriptstyle{\text{; input gate}} \\
+\mathbf{f}_t &= \sigma(\mathbf{W}_{f} \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_f) & \scriptstyle{\text{; forget gate}} \\
+\color{green}{\mathbf{r}_t} & \color{green}{=} \color{green}{\sigma(\mathbf{W}_{r} \cdot [\mathbf{h}_{t-1}, \mathbf{x}_t] + \mathbf{b}_r)} & \scriptstyle{\text{; reinstatement gate}}
+\end{aligned}
+$$
+</div>
+<p>$\mathbf{c}_t$ 与 $\mathbf{h}_t$ 是隐藏及单元状态，时间 $t$；$\mathbf{i}_t$、$\mathbf{f}_t$、$\mathbf{r}_t$ 是输入、遗忘、恢复门；$\mathbf{c}_\text{ep}$ 是检索单元状态。新增记忆组件绿色标出。</p>
+<p>架构通过上下文检索快捷访问旧经验，外部显式保存任务经验避免遗忘。所有实验手工设计上下文。为更自由任务构建有效、高效上下文嵌入很有趣。</p>
+<p>能力总体受环境复杂度限制。现实任务很少重复完全相同状态，因此编码关键。嵌入压缩观察至低维，同时期望邻近状态需要相似策略。</p>
+<h1 id="training-task-acquisition">获取训练任务<a hidden class="anchor" aria-hidden="true" href="#training-task-acquisition">#</a></h1>
+<p>在三个关键组件中，如何设计适当的任务分布是研究相对较少的一项，而且可能也是最体现 meta-RL（元强化学习）自身特点的一项。如<a href="#formulation">上文</a>所述，每个任务都是一个 MDP：$M_i = \langle \mathcal{S}, \mathcal{A}, P_i, R_i \rangle \in \mathcal{M}$。我们可以通过修改以下内容，构建一个 MDPs 的分布：</p>
+<ul>
+<li><em>奖励配置</em>：同一行为在不同任务，按 $R_i$ 得不同奖励。</li>
+<li>或 <em>环境</em>：以不同状态转移初始化环境，改变转移函数 $P_i$。</li>
+</ul>
+<h2 id="task-generation-by-domain-randomization">通过 Domain Randomization（领域随机化）生成任务<a hidden class="anchor" aria-hidden="true" href="#task-generation-by-domain-randomization">#</a></h2>
+<p>模拟器参数随机化，容易获得转移函数不同的任务。详见上一篇 <a href="https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/">文章</a> 的 <strong>domain randomization（领域随机化）</strong>。</p>
+<h2 id="evolutionary-algorithm-on-environment-generation">用演化算法生成环境<a hidden class="anchor" aria-hidden="true" href="#evolutionary-algorithm-on-environment-generation">#</a></h2>
+<p><a href="https://en.wikipedia.org/wiki/Evolutionary_algorithm">演化算法</a>受自然选择启发，是无梯度启发式优化。解种群循环评估、选择、繁殖、变异，良好解最终存活、被选中。</p>
+<p><strong>POET</strong>（<a href="https://arxiv.org/abs/1901.01753">Wang et al, 2019</a>）基于演化，解决问题的同时生成任务。实现仅为简单二维 <a href="https://gym.openai.com/envs/BipedalWalkerHardcore-v2/">双足行走</a> 环境设计，但方向有趣。演化也用于 <a href="#meta-learning-the-loss-function">EPG（演化策略梯度）</a>、PBT（Population-Based Training，基于种群的训练；<a href="https://arxiv.org/abs/1711.09846"> Jaderberg et al, 2017</a>）。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/POET.png" style="width: 100%;"  />
+	<figcaption>双足行走示例（上）与 POET 概览（下）。（图片来源：<a href="https://eng.uber.com/poet-open-ended-deep-learning/" target="_blank">POET 博客</a>）</figcaption>
+</figure>
+<p>二维行走环境从平地演化为有缺口、树桩、崎岖地面的困难路径。POET 配对环境挑战生成与智能体优化，（a）选择可解决当前挑战者，（b）演化可解决环境。维护 <em>环境—智能体对</em>，重复：</p>
+<ol>
+<li><em>变异</em>：从活跃环境生成新环境。操作专为双足行走，新环境需新配置。</li>
+<li><em>优化</em>：在各自环境训练配对智能体。</li>
+<li><em>选择</em>：定期跨环境迁移，复制、更新每环境最佳者。某环境学到的技能可能有助其他环境。</li>
+</ol>
+<p>类似 <a href="https://arxiv.org/abs/1711.09846">PBT（基于种群的训练）</a>，但后者演化超参数。POET 某种程度是 <a href="https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/">domain randomization（领域随机化）</a>：缺口、树桩、崎岖程度由随机概率参数控制。不同于 DR，智能体不一次面对完全随机困难环境，而按演化配置课程逐步学习。</p>
+<h2 id="learning-with-random-rewards">用随机奖励学习<a hidden class="anchor" aria-hidden="true" href="#learning-with-random-rewards">#</a></h2>
+<p>无奖励函数 $R$ 的 MDP，称 <em>Controlled Markov process（受控马尔可夫过程）</em>（CMP）。给定 $\langle \mathcal{S}, \mathcal{A}, P\rangle$，生成奖励函数集合 $\mathcal{R}$，获取多样任务，训练有效元学习策略。</p>
+<p><a href="https://arxiv.org/abs/1806.04640">Gupta et al. (2018)</a> 提出两种无监督 CMP（受控马尔可夫过程）任务扩展。每任务潜变量 $z \sim p(z)$ 参数化奖励 $r_z(s) = \log D(z|s)$，判别器 $D(.)$ 从状态提取潜变量。构建两法：</p>
+<ul>
+<li>随机采样判别器权重 $\phi_\text{rand}$，$D_{\phi_\text{rand}}(z \mid s)$。</li>
+<li>学习判别器，鼓励多样性探索。配套“DIAYN”论文（<a href="https://arxiv.org/abs/1802.06070">Eysenbach et al., 2018</a>）详述。</li>
+</ul>
+<p>DIAYN（“Diversity is all you need”，只需多样性）使策略无奖励学习有用技能。潜变量 $z$ 为 <em>技能</em> 嵌入，策略除状态外还以 $z$ 为条件，状态 $s$，策略 $\pi_\theta(a \mid s, z)$。（与 <a href="#meta-learning-the-exploration-strategies">MAESN</a> 相同并不意外，同一团队。）假说：</p>
+<ul>
+<li>技能应多样，访问不同状态。→ 最大化状态与技能互信息 $I(S; Z)$。</li>
+<li>技能应由状态而非动作区分。→ 最小化给定状态的动作与技能互信息 $I(A; Z \mid S)$。</li>
+</ul>
+<p>最大化目标如下，还加入策略熵鼓励多样性：</p>
+<div>
+$$
+\begin{aligned}
+\mathcal{F}(\theta) 
+&= I(S; Z) + H[A \mid S] - I(A; Z \mid S) &  \\
+&= (H(Z) - H(Z \mid S)) + H[A \mid S] - (H[A\mid S] - H[A\mid S, Z]) & \\
+&= H[A\mid S, Z] \color{green}{- H(Z \mid S) + H(Z)} & \\
+&= H[A\mid S, Z] + \mathbb{E}_{z\sim p(z), s\sim\rho(s)}[\log p(z \mid s)] - \mathbb{E}_{z\sim p(z)}[\log p(z)] & \scriptstyle{\text{; can infer skills from states & p(z) is diverse.}} \\
+&\ge H[A\mid S, Z] + \mathbb{E}_{z\sim p(z), s\sim\rho(s)}[\color{red}{\log D_\phi(z \mid s) - \log p(z)}] & \scriptstyle{\text{; according to Jensen's inequality; "pseudo-reward" in red.}}
+\end{aligned}
+$$
+</div>
+<p>$I(.)$ 是互信息，$H[.]$ 是熵。无法积分全部状态计算 $p(z \mid s)$，用 $D_\phi(z \mid s)$ 近似，即多样性判别器。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/DIAYN.png" style="width: 100%;"  />
+	<figcaption>DIAYN 算法。（图片来源：<a href="https://arxiv.org/abs/1802.06070" target="_blank">Eysenbach et al., 2019</a>）</figcaption>
+</figure>
+<p>学得判别器后，采样训练新 MDP很直接：先采样潜变量 $z \sim p(z)$，构建奖励 $r_z(s) = \log(D(z \vert s))$，配上预定义 CMP（受控马尔可夫过程）即为新 MDP。</p>
+<!--
+---
+ So far, experiments of meta-RL are still limited to a collection of very similar tasks, originated from the same family; such as multi-armed bandit with different reward probabilities, mazes with different layouts, or same robots but with different physical parameters in simulator. I'm looking forward to more research demonstrating the power of meta-RL over a more diverse set of tasks. 
+-->
+<hr>
+<p>引用格式：</p>
+<pre tabindex="0"><code>@article{weng2019metaRL,
+  title   = &#34;Meta Reinforcement Learning&#34;,
+  author  = &#34;Weng, Lilian&#34;,
+  journal = &#34;lilianweng.github.io&#34;,
+  year    = &#34;2019&#34;,
+  url     = &#34;https://lilianweng.github.io/posts/2019-06-23-meta-rl/&#34;
+}
+</code></pre><h1 id="references">参考文献<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<p>[1] Richard S. Sutton. <a href="http://incompleteideas.net/IncIdeas/BitterLesson.html">“The Bitter Lesson.”</a> 2019 年 3 月 13 日。</p>
+<p>[2] Sepp Hochreiter, A. Steven Younger, and Peter R. Conwell. <a href="http://snowedin.net/tmp/Hochreiter2001.pdf">“Learning to learn using gradient descent.”</a> 国际人工神经网络会议。 2001.</p>
+<p>[3] Jane X Wang, et al. <a href="https://arxiv.org/abs/1611.05763">“Learning to reinforcement learn.”</a> arXiv 预印本 arXiv:1611.05763 (2016).</p>
+<p>[4] Yan Duan, et al. <a href="https://arxiv.org/abs/1611.02779">“RL $^ 2$: Fast Reinforcement Learning via Slow Reinforcement Learning.”</a> ICLR 2017.</p>
+<p>[5] Matthew Botvinick, et al. <a href="https://www.cell.com/trends/cognitive-sciences/fulltext/S1364-6613(19)30061-0">“Reinforcement Learning, Fast and Slow”</a> Cell Review, 第 23 卷，第 5 期，第 408–422 页，2019 年 5 月 1 日。</p>
+<p>[6] Jeff Clune. <a href="https://arxiv.org/abs/1905.10985">“AI-GAs: AI-generating algorithms, an alternate paradigm for producing general artificial intelligence”</a> arXiv 预印本 arXiv:1905.10985 (2019).</p>
+<p>[7] Zhongwen Xu, et al. <a href="http://papers.nips.cc/paper/7507-meta-gradient-reinforcement-learning.pdf">“Meta-Gradient Reinforcement Learning”</a> NIPS 2018.</p>
+<p>[8] Rein Houthooft, et al. <a href="https://papers.nips.cc/paper/7785-evolved-policy-gradients.pdf">“Evolved Policy Gradients.”</a> NIPS 2018.</p>
+<p>[9] Tim Salimans, et al. <a href="https://arxiv.org/abs/1703.03864">“Evolution strategies as a scalable alternative to reinforcement learning.”</a> arXiv 预印本 arXiv:1703.03864 (2017).</p>
+<p>[10] Abhishek Gupta, et al. <a href="http://papers.nips.cc/paper/7776-meta-reinforcement-learning-of-structured-exploration-strategies.pdf">“Meta-Reinforcement Learning of Structured Exploration Strategies.”</a> NIPS 2018.</p>
+<p>[11] Alexander Pritzel, et al. <a href="https://arxiv.org/abs/1703.01988">“Neural episodic control.”</a> 国际机器学习会议论文集，第 70 卷，2017。</p>
+<p>[12] Charles Blundell, et al. <a href="https://arxiv.org/abs/1606.04460">“Model-free episodic control.”</a> arXiv 预印本 arXiv:1606.04460 (2016).</p>
+<p>[13] Samuel Ritter, et al. <a href="https://arxiv.org/abs/1805.09692">“Been there, done that: Meta-learning with episodic recall.”</a> ICML, 2018.</p>
+<p>[14] Rui Wang et al. <a href="https://arxiv.org/abs/1901.01753">“Paired Open-Ended Trailblazer (POET): Endlessly Generating Increasingly Complex and Diverse Learning Environments and Their Solutions”</a> arXiv 预印本 arXiv:1901.01753 (2019).</p>
+<p>[15] Uber 工程博客： <a href="https://eng.uber.com/poet-open-ended-deep-learning/">“POET: Endlessly Generating Increasingly Complex and Diverse Learning Environments and their Solutions through the Paired Open-Ended Trailblazer.”</a> 2019 年 1 月 8 日。</p>
+<p>[16] Abhishek Gupta, et al.<a href="https://arxiv.org/abs/1806.04640">“Unsupervised meta-learning for Reinforcement Learning”</a> arXiv 预印本 arXiv:1806.04640 (2018).</p>
+<p>[17] Eysenbach, Benjamin, et al. <a href="https://arxiv.org/abs/1802.06070">“Diversity is all you need: Learning skills without a reward function.”</a> ICLR 2019.</p>
+<p>[18] Max Jaderberg, et al. <a href="https://arxiv.org/abs/1711.09846">“Population Based Training of Neural Networks.”</a> arXiv 预印本 arXiv:1711.09846 (2017).</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://xingshuozhu1998.github.io/tags/meta-learning/">Meta-Learning（元学习）</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/reinforcement-learning/">强化学习</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://xingshuozhu1998.github.io/posts/2019-09-05-evolution-strategies/">
+    <span class="title">« </span>
+    <br>
+    <span>进化策略</span>
+  </a>
+  <a class="next" href="https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/">
+    <span class="title"> »</span>
+    <br>
+    <span>用于仿真到现实迁移的域随机化</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Twitter 分享《Meta Reinforcement Learning（元强化学习）》"
+        href="https://twitter.com/intent/tweet/?text=Meta%20Reinforcement%20Learning&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-06-23-meta-rl%2f&amp;hashtags=meta-learning%2creinforcement-learning">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 LinkedIn 分享《Meta Reinforcement Learning（元强化学习）》"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-06-23-meta-rl%2f&amp;title=Meta%20Reinforcement%20Learning&amp;summary=Meta%20Reinforcement%20Learning&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-06-23-meta-rl%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Reddit 分享《Meta Reinforcement Learning（元强化学习）》"
+        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-06-23-meta-rl%2f&title=Meta%20Reinforcement%20Learning">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Facebook 分享《Meta Reinforcement Learning（元强化学习）》"
+        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-06-23-meta-rl%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 WhatsApp 分享《Meta Reinforcement Learning（元强化学习）》"
+        href="https://api.whatsapp.com/send?text=Meta%20Reinforcement%20Learning%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-06-23-meta-rl%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 Telegram 分享《Meta Reinforcement Learning（元强化学习）》"
+        href="https://telegram.me/share/url?text=Meta%20Reinforcement%20Learning&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2019-06-23-meta-rl%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

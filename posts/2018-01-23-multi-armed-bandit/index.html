@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>多臂老虎机问题及其解法 | Lil’Log 中文学习镜像</title>
+<meta name="keywords" content="exploration, math-heavy, reinforcement-learning" />
+<meta name="description" content="
+这些算法针对 Bernoulli bandit（伯努利老虎机）的实现见 lilianweng/multi-armed-bandit。
+Exploitation（利用）与 Exploration（探索）
+探索与利用的两难困境存在于生活的许多方面。假设你最喜欢的餐馆就在街角。如果每天都去，你很清楚自己会吃到什么，却可能错过发现更好选择的机会。如果总去尝试新地方，你很可能时不时就得吃到难吃的食物。同样，在线广告推荐系统也试图在已知最吸引人的广告与可能取得更好效果的新广告之间取得平衡。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
+    onload="hljs.initHighlightingOnLoad();"></script>
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="多臂老虎机问题及其解法" />
+<meta property="og:description" content="
+这些算法针对 Bernoulli bandit（伯努利老虎机）的实现见 lilianweng/multi-armed-bandit。
+Exploitation（利用）与 Exploration（探索）
+探索与利用的两难困境存在于生活的许多方面。假设你最喜欢的餐馆就在街角。如果每天都去，你很清楚自己会吃到什么，却可能错过发现更好选择的机会。如果总去尝试新地方，你很可能时不时就得吃到难吃的食物。同样，在线广告推荐系统也试图在已知最吸引人的广告与可能取得更好效果的新广告之间取得平衡。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-01-23T00:00:00&#43;00:00" />
+<meta property="article:modified_time" content="2018-01-23T00:00:00&#43;00:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="多臂老虎机问题及其解法"/>
+<meta name="twitter:description" content="
+这些算法针对 Bernoulli bandit（伯努利老虎机）的实现见 lilianweng/multi-armed-bandit。
+Exploitation（利用）与 Exploration（探索）
+探索与利用的两难困境存在于生活的许多方面。假设你最喜欢的餐馆就在街角。如果每天都去，你很清楚自己会吃到什么，却可能错过发现更好选择的机会。如果总去尝试新地方，你很可能时不时就得吃到难吃的食物。同样，在线广告推荐系统也试图在已知最吸引人的广告与可能取得更好效果的新广告之间取得平衡。"/>
+
+
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/posts/"}, {"@type": "ListItem", "position": 2, "name": "多臂老虎机问题及其解法", "item": "https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "多臂老虎机问题及其解法", "name": "多臂老虎机问题及其解法", "description": "这些算法针对 Bernoulli bandit（伯努利老虎机）的实现见 lilianweng/multi-armed-bandit。\nExploitation（利用）与 Exploration（探索）\n探索与利用的两难困境存在于生活的许多方面。假设你最喜欢的餐馆就在街角。如果每天都去，你很清楚自己会吃到什么，却可能错过发现更好选择的机会。如果总去尝试新地方，你很可能时不时就得吃到难吃的食物。同样，在线广告推荐系统也试图在已知最吸引人的广告与可能取得更好效果的新广告之间取得平衡。", "keywords": ["exploration", "math-heavy", "reinforcement-learning"], "articleBody": "这些算法针对 Bernoulli bandit（伯努利老虎机）的实现见  lilianweng/multi-armed-bandit 。 \n Exploitation（利用）与 Exploration（探索） #  \n 探索与利用的两难困境存在于生活的许多方面。假设你最喜欢的餐馆就在街角。如果每天都去，你很清楚自己会吃到什么，却可能错过发现更好选择的机会。如果总去尝试新地方，你很可能时不时就得吃到难吃的食物。同样，在线广告推荐系统也试图在已知最吸引人的广告与可能取得更好效果的新广告之间取得平衡。 \n \n\t \n\t 探索与利用两难困境的现实例子：去哪里吃饭？（图片来源：UC Berkeley 的 AI（人工智能）课程 幻灯片 ， 第11讲 。） \n \n 如果已经掌握环境的全部信息，即使只用暴力模拟，也能够找出最佳策略，更不用说其他许多巧妙的方法了。这种困境源于信息 不完整 ：我们需要收集足够的信息，做出整体上最优的决策，同时控制风险。利用意味着选择已知的最佳选项；探索意味着承担一些风险，收集未知选项的信息。最佳的长期策略可能需要短期牺牲。例如，一次探索尝试可能彻底失败，但它会提醒我们今后不要过于频繁地采取这个行动。 \n 什么是 Multi-Armed Bandit（多臂老虎机）？ #  \n  multi-armed bandit（多臂老虎机） 问题是一个经典问题，很好地展示了探索与利用的两难困境。设想你在赌场里，面前有多台老虎机，每台机器都以一个未知的概率在一次游戏中给予奖励。问题是： 怎样的策略能够获得最高的长期奖励？  \n 本文只讨论可以无限次尝试的情形。尝试次数有限的限制会带来一种新的探索问题。例如，如果尝试次数比老虎机数量还少，我们甚至无法把每台机器都试一遍来估计奖励概率（！），因此必须根据有限的知识和资源（即时间）采取明智的行动。 \n \n\t \n\t Bernoulli multi-armed bandit（伯努利多臂老虎机）的工作方式示意图。玩家**不知道**奖励概率。 \n \n 一种朴素方法是连续在同一台机器上玩很多很多轮，最终根据 law of large numbers（大数定律） 估计出“真实”的奖励概率。然而，这相当浪费，而且显然无法保证最好的长期奖励。 \n 定义 #  \n 现在，我们给出一个科学的定义。 \n Bernoulli multi-armed bandit（伯努利多臂老虎机）可以用二元组 $\\langle \\mathcal{A}, \\mathcal{R} \\rangle$ 描述，其中： \n \n 我们有 $K$ 台机器，奖励概率为 $\\{ \\theta_1, \\dots, \\theta_K \\}$。 \n 在每个时间步 t，我们对一台老虎机采取行动 a，并获得奖励 r。 \n $\\mathcal{A}$ 是行动集合，每个行动对应与一台老虎机的交互。行动 a 的价值是其期望奖励，$Q(a) = \\mathbb{E} [r \\vert a] = \\theta$。如果时间步 t 的行动 $a_t$ 对应第 i 台机器，那么 $Q(a_t) = \\theta_i$。 \n $\\mathcal{R}$ 是奖励函数。对于 Bernoulli bandit（伯努利老虎机），我们以 随机 方式观察奖励 r。在时间步 t，$r_t = \\mathcal{R}(a_t)$ 以概率 $Q(a_t)$ 返回奖励 1，否则返回 0。 \n \n 这是  Markov decision process（马尔可夫决策过程） 的简化版本，因为这里没有状态 $\\mathcal{S}$。 \n 目标是最大化累计奖励 $\\sum_{t=1}^T r_t$。\n如果知道奖励最高的最优行动，那么这个目标就等价于最小化未选择最优行动所产生的潜在 regret（遗憾） 或损失。 \n 最优奖励概率 $\\theta^{*}$ 对应最优行动 $a^{*}$，其定义为： \n \n$$\n\\theta^{*}=Q(a^{*})=\\max_{a \\in \\mathcal{A}} Q(a) = \\max_{1 \\leq i \\leq K} \\theta_i\n$$\n \n 我们的损失函数是在时间步 T 之前，因没有选择最优行动而可能产生的总遗憾： \n \n$$\n\\mathcal{L}_T = \\mathbb{E} \\Big[ \\sum_{t=1}^T \\big( \\theta^{*} - Q(a_t) \\big) \\Big]\n$$\n \n Bandit（老虎机）策略 #  \n 根据探索方式的不同，解决 multi-armed bandit（多臂老虎机）问题有几种方法。 \n \n 不进行探索：最朴素、效果也很差的方法。 \n 随机探索 \n 优先探索不确定性较大的选项，以更聪明的方式进行探索 \n \n ε-Greedy（ε 贪心）算法 #  \n ε-greedy（ε 贪心）算法大多数时候采取最佳行动，偶尔进行随机探索。行动价值根据过去的经验估计：对迄今为止（截至当前时间步 t）观察到的目标行动 a 所产生的奖励求平均： \n \n$$\n\\hat{Q}_t(a) = \\frac{1}{N_t(a)} \\sum_{\\tau=1}^t r_\\tau \\mathbb{1}[a_\\tau = a]\n$$\n \n 其中，$\\mathbb{1}$ 是二值指示函数，$N_t(a)$ 是迄今为止选择行动 a 的次数，即 $N_t(a) = \\sum_{\\tau=1}^t \\mathbb{1}[a_\\tau = a]$。 \n 按照 ε-greedy（ε 贪心）算法，我们以较小概率 $\\epsilon$ 随机采取行动，否则（应当占大多数时候，概率为 1-$\\epsilon$）选择迄今为止学到的最佳行动：$\\hat{a}^{*}_t = \\arg\\max_{a \\in \\mathcal{A}} \\hat{Q}_t(a)$。 \n 我的简单示例实现见 这里 。 \n Upper Confidence Bounds（置信上界） #  \n 随机探索让我们有机会尝试尚不了解的选项。然而，由于随机性，我们最后可能探索了过去已经确认很差的行动（运气不好！）。为了避免这种低效探索，一种方法是让参数 ε 随时间减小；另一种方法是对 高度不确定 的选项保持乐观，从而优先选择尚未可靠估计其价值的行动。换句话说，我们倾向于探索那些很有可能具有最优价值的行动。 \n Upper Confidence Bounds（置信上界，UCB（置信上界））算法用奖励价值的置信上界 $\\hat{U}_t(a)$ 来衡量这种潜力，使真实价值以很高的概率满足界限 $Q(a) \\leq \\hat{Q}_t(a) + \\hat{U}_t(a)$。上界 $\\hat{U}_t(a)$ 是 $N_t(a)$ 的函数；尝试次数 $N_t(a)$ 越大，上界 $\\hat{U}_t(a)$ 应当越小。 \n 在 UCB算法中，我们始终选择最贪心的行动，以最大化置信上界： \n \n$$\na^{UCB}_t = argmax_{a \\in \\mathcal{A}} \\hat{Q}_t(a) + \\hat{U}_t(a)\n$$\n \n 现在的问题是 如何估计置信上界 。 \n Hoeffding’s Inequality（霍夫丁不等式） #  \n 如果不想对分布的形式作任何先验假设，我们可以借助  “Hoeffding’s Inequality（霍夫丁不等式）” ，这个定理适用于任何有界分布。 \n 设 $X_1, \\dots, X_t$ 是 i.i.d.（独立同分布）随机变量，且全部位于区间 [0, 1] 内。样本均值为 $\\overline{X}_t = \\frac{1}{t}\\sum_{\\tau=1}^t X_\\tau$。那么，对于 $u > 0$，有： \n \n$$\n\\mathbb{P} [ \\mathbb{E}[X] > \\overline{X}_t + u] \\leq e^{-2tu^2}\n$$\n \n 对于一个目标行动 $a$，我们令： \n \n $r_t(a)$ 为随机变量， \n $Q(a)$ 为真实均值， \n $\\hat{Q}_t(a)$ 为样本均值， \n 并令 $u$ 为置信上界，即 $u = U_t(a)$。 \n \n 于是有： \n \n$$\n\\mathbb{P} [ Q(a) > \\hat{Q}_t(a) + U_t(a)] \\leq e^{-2t{U_t(a)}^2}\n$$\n \n 我们希望选择一个界限，使真实均值以很高的概率小于样本均值加置信上界。因此，$e^{-2t U_t(a)^2}$ 应当是一个很小的概率。假设我们可以接受一个极小的阈值 p： \n \n$$\ne^{-2t U_t(a)^2} = p \\text{  Thus, } U_t(a) = \\sqrt{\\frac{-\\log p}{2 N_t(a)}}\n$$\n \n UCB1 #  \n 一种启发式方法是让阈值 p 随时间减小，因为观察到的奖励越多，我们就越希望更有把握地估计界限。设 $p=t^{-4}$，即可得到  UCB1  算法： \n \n$$\nU_t(a) = \\sqrt{\\frac{2 \\log t}{N_t(a)}} \\text{  and  }\na^{UCB1}_t = \\arg\\max_{a \\in \\mathcal{A}} Q(a) + \\sqrt{\\frac{2 \\log t}{N_t(a)}}\n$$\n \n Bayesian UCB（贝叶斯置信上界） #  \n 在 UCB或 UCB1 算法中，我们没有对奖励分布作任何先验假设，因此必须依赖 Hoeffding’s Inequality（霍夫丁不等式）作一种非常通用的估计。如果能够预先知道分布，就可以更准确地估计界限。 \n 例如，如果像图2那样，预期每台老虎机的平均奖励服从 Gaussian（高斯）分布，就可以将 $\\hat{U}_t(a)$ 设为两倍标准差，从而把上界设为95%置信区间的上端。 \n \n\t \n\t 期望奖励服从 Gaussian（高斯）分布的情形。$\\sigma(a\\_i)$ 是标准差，$c\\sigma(a\\_i)$ 是置信上界。常数 $c$ 是可调整的 hyperparameter（超参数）。（图片来源： UCL RL（强化学习）课程第9讲幻灯片 。） \n \n 查看我使用 θ 的 Beta（贝塔）先验实现的  UCB1  和  Bayesian UCB（贝叶斯置信上界）  简单示例。 \n Thompson Sampling（汤普森采样） #  \n Thompson sampling（汤普森采样）的思想简单，但在解决 multi-armed bandit（多臂老虎机）问题时效果很好。 \n \n\t \n\t 哎呀，我想说的应该不是这位 Thompson？（感谢  Ben Taborsky ；他有一套完整的理论，说明 Thompson 如何在思考把球传给谁时发明了这个方法。没错，我偷用了他的笑话。） \n \n 在每个时间步，我们希望根据行动 a 是 最优行动 的概率来选择 a： \n \n$$\n\\begin{aligned}\n\\pi(a \\; \\vert \\; h_t) \n&= \\mathbb{P} [ Q(a) > Q(a'), \\forall a' \\neq a \\; \\vert \\; h_t] \\\\\n&= \\mathbb{E}_{\\mathcal{R} \\vert h_t} [ \\mathbb{1}(a = \\arg\\max_{a \\in \\mathcal{A}} Q(a)) ]\n\\end{aligned}\n$$\n \n 其中，$\\pi(a ; \\vert ; h_t)$ 表示给定历史 $h_t$ 时采取行动 a 的概率。 \n 对于 Bernoulli bandit（伯努利老虎机），自然可以假设 $Q(a)$ 服从  Beta（贝塔）  分布，因为 $Q(a)$ 本质上就是  Bernoulli（伯努利）  分布中的成功概率 θ。$\\text{Beta}(\\alpha, \\beta)$ 的取值位于区间 [0, 1]；α 和 β 分别对应我们 成功 或 失败 获得奖励的次数。 \n 首先，根据一些先验知识或信念，为每个行动初始化 Beta（贝塔）参数 α 和 β。例如： \n \n α = 1 且 β = 1：我们预期奖励概率为50%，但没有很强的把握。 \n α = 1000 且 β = 9000：我们强烈相信奖励概率为10%。 \n \n 在每个时刻 t，我们为每个行动采样一个期望奖励 $\\tilde{Q}(a)$，样本来自先验分布 $\\text{Beta}(\\alpha_i, \\beta_i)$。在这些样本中选择最佳行动：$a^{TS}_t = \\arg\\max_{a \\in \\mathcal{A}} \\tilde{Q}(a)$。观察到真实奖励后，就可以相应地更新 Beta（贝塔）分布，这本质上是 Bayesian inference（贝叶斯推断）：根据已知先验及得到采样数据的似然计算后验。 \n \n$$\n\\begin{aligned}\n\\alpha_i & \\leftarrow \\alpha_i + r_t \\mathbb{1}[a^{TS}_t = a_i] \\\\ \n\\beta_i & \\leftarrow \\beta_i + (1-r_t) \\mathbb{1}[a^{TS}_t = a_i]\n\\end{aligned}\n$$\n \n Thompson sampling（汤普森采样）实现了  probability matching（概率匹配） 的思想。由于其奖励估计 $\\tilde{Q}$ 是从后验分布中采样得到的，每个这样的概率都等于以观测历史为条件时，对应行动成为最优行动的概率。 \n 然而，对于许多复杂的实际问题，使用 Bayesian inference（贝叶斯推断）根据观测到的真实奖励估计后验分布，计算上可能不可行。如果能够使用 Gibbs sampling（吉布斯采样）、Laplace approximate（拉普拉斯近似）和 bootstraps（自助重采样）等方法近似后验分布，Thompson sampling（汤普森采样）仍然可以奏效。这篇 教程 给出了全面综述；如果想进一步了解 Thompson sampling（汤普森采样），我强烈推荐阅读。 \n 案例研究 #  \n 我在  lilianweng/multi-armed-bandit  中实现了上述算法。可以用一组随机生成或预先定义的奖励概率构造  BernoulliBandit  对象。老虎机算法实现为  Solver  的子类，以一个 Bandit 对象作为目标问题，并随时间记录累计遗憾。 \n \n\t \n\t 解决一个 Bernoulli bandit（伯努利老虎机）的小实验结果：有 K = 10 台老虎机，奖励概率为 {0.0, 0.1, 0.2, ..., 0.9}。每个求解器运行10000步。 \n \n（左）时间步与累计遗憾的关系图。\n（中）真实奖励概率与估计概率的关系图。\n（右）在10000步运行中各行动被选择的比例。*\n 总结 #  \n 我们需要探索，因为信息有价值。就探索策略而言，可以完全不探索，专注于短期回报；也可以偶尔随机探索；还可以更进一步，在探索时有选择地决定探索哪些选项——优先选择不确定性较高的行动，因为它们能够带来更高的信息增益。 \n \n\t \n \n 引用格式： \n  @article{weng2018bandit,\n  title   = \"The Multi-Armed Bandit Problem and Its Solutions\",\n  author  = \"Weng, Lilian\",\n  journal = \"lilianweng.github.io\",\n  year    = \"2018\",\n  url     = \"https://lilianweng.github.io/posts/2018-01-23-multi-armed-bandit/\"\n}\n   参考文献 #  \n [1] CS229 补充讲义： Hoeffding’s inequality 。 \n [2] David Silver 的 RL（强化学习）课程，第9讲： Exploration and Exploitation  \n [3] Olivier Chapelle and Lihong Li.  “An empirical evaluation of thompson sampling.”  NIPS. 2011. \n [4] Russo, Daniel, et al.  “A Tutorial on Thompson Sampling.”  arXiv:1707.02038 (2017).", "wordCount": "2100", "inLanguage": "zh-CN", "datePublished": "2018-01-23T00:00:00Z", "dateModified": "2018-01-23T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/favicon_wine.ico"}}}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/posts/2018-01-23-multi-armed-bandit/">
+</head>
+
+<body class="" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2018-01-23-multi-armed-bandit/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/posts/2018-01-23-multi-armed-bandit/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title">
+      多臂老虎机问题及其解法
+    </h1>
+    <div class="post-meta">日期：2018年1月23日  |  预计阅读时间：10分钟  |  作者：Lilian Weng
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#exploitation-vs-exploration" aria-label="Exploitation vs Exploration">Exploitation（利用）与 Exploration（探索）</a></li>
+                <li>
+                    <a href="#what-is-multi-armed-bandit" aria-label="什么是 Multi-Armed Bandit（多臂老虎机）？">什么是 Multi-Armed Bandit（多臂老虎机）？</a><ul>
+                        
+                <li>
+                    <a href="#definition" aria-label="Definition">定义</a></li>
+                <li>
+                    <a href="#bandit-strategies" aria-label="Bandit Strategies">Bandit（老虎机）策略</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%ce%b5-greedy-algorithm" aria-label="ε-Greedy Algorithm">ε-Greedy（ε 贪心）算法</a></li>
+                <li>
+                    <a href="#upper-confidence-bounds" aria-label="Upper Confidence Bounds（置信上界）">Upper Confidence Bounds（置信上界）</a><ul>
+                        
+                <li>
+                    <a href="#hoeffdings-inequality" aria-label="Hoeffding&rsquo;s Inequality">Hoeffding’s Inequality（霍夫丁不等式）</a></li>
+                <li>
+                    <a href="#ucb1" aria-label="UCB1">UCB1</a></li>
+                <li>
+                    <a href="#bayesian-ucb" aria-label="Bayesian UCB">Bayesian UCB（贝叶斯置信上界）</a></li></ul>
+                </li>
+                <li>
+                    <a href="#thompson-sampling" aria-label="Thompson Sampling">Thompson Sampling（汤普森采样）</a></li>
+                <li>
+                    <a href="#case-study" aria-label="Case Study">案例研究</a></li>
+                <li>
+                    <a href="#summary" aria-label="Summary">总结</a></li>
+                <li>
+                    <a href="#references" aria-label="References">参考文献</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><!-- The multi-armed bandit problem is a class example to demonstrate the exploration versus exploitation dilemma. This post introduces the bandit problem and how to solve it using different exploration strategies. -->
+<p>这些算法针对 Bernoulli bandit（伯努利老虎机）的实现见 <a href="http://github.com/lilianweng/multi-armed-bandit">lilianweng/multi-armed-bandit</a>。</p>
+<h1 id="exploitation-vs-exploration">Exploitation（利用）与 Exploration（探索）<a hidden class="anchor" aria-hidden="true" href="#exploitation-vs-exploration">#</a></h1>
+<p>探索与利用的两难困境存在于生活的许多方面。假设你最喜欢的餐馆就在街角。如果每天都去，你很清楚自己会吃到什么，却可能错过发现更好选择的机会。如果总去尝试新地方，你很可能时不时就得吃到难吃的食物。同样，在线广告推荐系统也试图在已知最吸引人的广告与可能取得更好效果的新广告之间取得平衡。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/exploration_vs_exploitation.png" style="width: 80%;"  />
+	<figcaption>探索与利用两难困境的现实例子：去哪里吃饭？（图片来源：UC Berkeley 的 AI（人工智能）课程<a href="http://ai.berkeley.edu/lecture_slides.html" target="_blank">幻灯片</a>，<a href="http://ai.berkeley.edu/slides/Lecture%2011%20--%20Reinforcement%20Learning%20II/SP14%20CS188%20Lecture%2011%20--%20Reinforcement%20Learning%20II.pptx" target="_blank">第11讲</a>。）</figcaption>
+</figure>
+<p>如果已经掌握环境的全部信息，即使只用暴力模拟，也能够找出最佳策略，更不用说其他许多巧妙的方法了。这种困境源于信息<em>不完整</em>：我们需要收集足够的信息，做出整体上最优的决策，同时控制风险。利用意味着选择已知的最佳选项；探索意味着承担一些风险，收集未知选项的信息。最佳的长期策略可能需要短期牺牲。例如，一次探索尝试可能彻底失败，但它会提醒我们今后不要过于频繁地采取这个行动。</p>
+<h1 id="what-is-multi-armed-bandit">什么是 Multi-Armed Bandit（多臂老虎机）？<a hidden class="anchor" aria-hidden="true" href="#what-is-multi-armed-bandit">#</a></h1>
+<p><a href="https://en.wikipedia.org/wiki/Multi-armed_bandit">multi-armed bandit（多臂老虎机）</a>问题是一个经典问题，很好地展示了探索与利用的两难困境。设想你在赌场里，面前有多台老虎机，每台机器都以一个未知的概率在一次游戏中给予奖励。问题是：<em>怎样的策略能够获得最高的长期奖励？</em></p>
+<p>本文只讨论可以无限次尝试的情形。尝试次数有限的限制会带来一种新的探索问题。例如，如果尝试次数比老虎机数量还少，我们甚至无法把每台机器都试一遍来估计奖励概率（！），因此必须根据有限的知识和资源（即时间）采取明智的行动。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/bern_bandit.png" style="width: 80%;"  />
+	<figcaption>Bernoulli multi-armed bandit（伯努利多臂老虎机）的工作方式示意图。玩家**不知道**奖励概率。</figcaption>
+</figure>
+<p>一种朴素方法是连续在同一台机器上玩很多很多轮，最终根据<a href="https://en.wikipedia.org/wiki/Law_of_large_numbers">law of large numbers（大数定律）</a>估计出“真实”的奖励概率。然而，这相当浪费，而且显然无法保证最好的长期奖励。</p>
+<h2 id="definition">定义<a hidden class="anchor" aria-hidden="true" href="#definition">#</a></h2>
+<p>现在，我们给出一个科学的定义。</p>
+<p>Bernoulli multi-armed bandit（伯努利多臂老虎机）可以用二元组 $\langle \mathcal{A}, \mathcal{R} \rangle$ 描述，其中：</p>
+<ul>
+<li>我们有 $K$ 台机器，奖励概率为 $\{ \theta_1, \dots, \theta_K \}$。</li>
+<li>在每个时间步 t，我们对一台老虎机采取行动 a，并获得奖励 r。</li>
+<li>$\mathcal{A}$ 是行动集合，每个行动对应与一台老虎机的交互。行动 a 的价值是其期望奖励，$Q(a) = \mathbb{E} [r \vert a] = \theta$。如果时间步 t 的行动 $a_t$ 对应第 i 台机器，那么 $Q(a_t) = \theta_i$。</li>
+<li>$\mathcal{R}$ 是奖励函数。对于 Bernoulli bandit（伯努利老虎机），我们以<em>随机</em>方式观察奖励 r。在时间步 t，$r_t = \mathcal{R}(a_t)$ 以概率 $Q(a_t)$ 返回奖励 1，否则返回 0。</li>
+</ul>
+<p>这是 <a href="https://en.wikipedia.org/wiki/Markov_decision_process">Markov decision process（马尔可夫决策过程）</a>的简化版本，因为这里没有状态 $\mathcal{S}$。</p>
+<p>目标是最大化累计奖励 $\sum_{t=1}^T r_t$。
+如果知道奖励最高的最优行动，那么这个目标就等价于最小化未选择最优行动所产生的潜在<a href="https://en.wikipedia.org/wiki/Regret_(decision_theory)">regret（遗憾）</a>或损失。</p>
+<p>最优奖励概率 $\theta^{*}$ 对应最优行动 $a^{*}$，其定义为：</p>
+<div>
+$$
+\theta^{*}=Q(a^{*})=\max_{a \in \mathcal{A}} Q(a) = \max_{1 \leq i \leq K} \theta_i
+$$
+</div>
+<p>我们的损失函数是在时间步 T 之前，因没有选择最优行动而可能产生的总遗憾：</p>
+<div>
+$$
+\mathcal{L}_T = \mathbb{E} \Big[ \sum_{t=1}^T \big( \theta^{*} - Q(a_t) \big) \Big]
+$$
+</div>
+<h2 id="bandit-strategies">Bandit（老虎机）策略<a hidden class="anchor" aria-hidden="true" href="#bandit-strategies">#</a></h2>
+<p>根据探索方式的不同，解决 multi-armed bandit（多臂老虎机）问题有几种方法。</p>
+<ul>
+<li>不进行探索：最朴素、效果也很差的方法。</li>
+<li>随机探索</li>
+<li>优先探索不确定性较大的选项，以更聪明的方式进行探索</li>
+</ul>
+<h1 id="ε-greedy-algorithm">ε-Greedy（ε 贪心）算法<a hidden class="anchor" aria-hidden="true" href="#ε-greedy-algorithm">#</a></h1>
+<p>ε-greedy（ε 贪心）算法大多数时候采取最佳行动，偶尔进行随机探索。行动价值根据过去的经验估计：对迄今为止（截至当前时间步 t）观察到的目标行动 a 所产生的奖励求平均：</p>
+<div>
+$$
+\hat{Q}_t(a) = \frac{1}{N_t(a)} \sum_{\tau=1}^t r_\tau \mathbb{1}[a_\tau = a]
+$$
+</div>
+<p>其中，$\mathbb{1}$ 是二值指示函数，$N_t(a)$ 是迄今为止选择行动 a 的次数，即 $N_t(a) = \sum_{\tau=1}^t \mathbb{1}[a_\tau = a]$。</p>
+<p>按照 ε-greedy（ε 贪心）算法，我们以较小概率 $\epsilon$ 随机采取行动，否则（应当占大多数时候，概率为 1-$\epsilon$）选择迄今为止学到的最佳行动：$\hat{a}^{*}_t = \arg\max_{a \in \mathcal{A}} \hat{Q}_t(a)$。</p>
+<p>我的简单示例实现见<a href="https://github.com/lilianweng/multi-armed-bandit/blob/master/solvers.py#L45">这里</a>。</p>
+<h1 id="upper-confidence-bounds">Upper Confidence Bounds（置信上界）<a hidden class="anchor" aria-hidden="true" href="#upper-confidence-bounds">#</a></h1>
+<p>随机探索让我们有机会尝试尚不了解的选项。然而，由于随机性，我们最后可能探索了过去已经确认很差的行动（运气不好！）。为了避免这种低效探索，一种方法是让参数 ε 随时间减小；另一种方法是对<em>高度不确定</em>的选项保持乐观，从而优先选择尚未可靠估计其价值的行动。换句话说，我们倾向于探索那些很有可能具有最优价值的行动。</p>
+<p>Upper Confidence Bounds（置信上界，UCB（置信上界））算法用奖励价值的置信上界 $\hat{U}_t(a)$ 来衡量这种潜力，使真实价值以很高的概率满足界限 $Q(a) \leq \hat{Q}_t(a) + \hat{U}_t(a)$。上界 $\hat{U}_t(a)$ 是 $N_t(a)$ 的函数；尝试次数 $N_t(a)$ 越大，上界 $\hat{U}_t(a)$ 应当越小。</p>
+<p>在 UCB算法中，我们始终选择最贪心的行动，以最大化置信上界：</p>
+<div>
+$$
+a^{UCB}_t = argmax_{a \in \mathcal{A}} \hat{Q}_t(a) + \hat{U}_t(a)
+$$
+</div>
+<p>现在的问题是<em>如何估计置信上界</em>。</p>
+<h2 id="hoeffdings-inequality">Hoeffding’s Inequality（霍夫丁不等式）<a hidden class="anchor" aria-hidden="true" href="#hoeffdings-inequality">#</a></h2>
+<p>如果不想对分布的形式作任何先验假设，我们可以借助 <a href="http://cs229.stanford.edu/extra-notes/hoeffding.pdf">“Hoeffding’s Inequality（霍夫丁不等式）”</a>，这个定理适用于任何有界分布。</p>
+<p>设 $X_1, \dots, X_t$ 是 i.i.d.（独立同分布）随机变量，且全部位于区间 [0, 1] 内。样本均值为 $\overline{X}_t = \frac{1}{t}\sum_{\tau=1}^t X_\tau$。那么，对于 $u &gt; 0$，有：</p>
+<div>
+$$
+\mathbb{P} [ \mathbb{E}[X] > \overline{X}_t + u] \leq e^{-2tu^2}
+$$
+</div>
+<p>对于一个目标行动 $a$，我们令：</p>
+<ul>
+<li>$r_t(a)$ 为随机变量，</li>
+<li>$Q(a)$ 为真实均值，</li>
+<li>$\hat{Q}_t(a)$ 为样本均值，</li>
+<li>并令 $u$ 为置信上界，即 $u = U_t(a)$。</li>
+</ul>
+<p>于是有：</p>
+<div>
+$$
+\mathbb{P} [ Q(a) > \hat{Q}_t(a) + U_t(a)] \leq e^{-2t{U_t(a)}^2}
+$$
+</div>
+<p>我们希望选择一个界限，使真实均值以很高的概率小于样本均值加置信上界。因此，$e^{-2t U_t(a)^2}$ 应当是一个很小的概率。假设我们可以接受一个极小的阈值 p：</p>
+<div>
+$$
+e^{-2t U_t(a)^2} = p \text{  Thus, } U_t(a) = \sqrt{\frac{-\log p}{2 N_t(a)}}
+$$
+</div>
+<h2 id="ucb1">UCB1<a hidden class="anchor" aria-hidden="true" href="#ucb1">#</a></h2>
+<p>一种启发式方法是让阈值 p 随时间减小，因为观察到的奖励越多，我们就越希望更有把握地估计界限。设 $p=t^{-4}$，即可得到 <strong>UCB1</strong> 算法：</p>
+<div>
+$$
+U_t(a) = \sqrt{\frac{2 \log t}{N_t(a)}} \text{  and  }
+a^{UCB1}_t = \arg\max_{a \in \mathcal{A}} Q(a) + \sqrt{\frac{2 \log t}{N_t(a)}}
+$$
+</div>
+<h2 id="bayesian-ucb">Bayesian UCB（贝叶斯置信上界）<a hidden class="anchor" aria-hidden="true" href="#bayesian-ucb">#</a></h2>
+<p>在 UCB或 UCB1 算法中，我们没有对奖励分布作任何先验假设，因此必须依赖 Hoeffding’s Inequality（霍夫丁不等式）作一种非常通用的估计。如果能够预先知道分布，就可以更准确地估计界限。</p>
+<p>例如，如果像图2那样，预期每台老虎机的平均奖励服从 Gaussian（高斯）分布，就可以将 $\hat{U}_t(a)$ 设为两倍标准差，从而把上界设为95%置信区间的上端。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/bern_UCB.png" style="width: 100%;"  />
+	<figcaption>期望奖励服从 Gaussian（高斯）分布的情形。$\sigma(a\_i)$ 是标准差，$c\sigma(a\_i)$ 是置信上界。常数 $c$ 是可调整的 hyperparameter（超参数）。（图片来源：<a href="http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/XX.pdf" target="_blank">UCL RL（强化学习）课程第9讲幻灯片</a>。）</figcaption>
+</figure>
+<p>查看我使用 θ 的 Beta（贝塔）先验实现的 <a href="https://github.com/lilianweng/multi-armed-bandit/blob/master/solvers.py#L76">UCB1</a> 和 <a href="https://github.com/lilianweng/multi-armed-bandit/blob/master/solvers.py#L99">Bayesian UCB（贝叶斯置信上界）</a> 简单示例。</p>
+<h1 id="thompson-sampling">Thompson Sampling（汤普森采样）<a hidden class="anchor" aria-hidden="true" href="#thompson-sampling">#</a></h1>
+<p>Thompson sampling（汤普森采样）的思想简单，但在解决 multi-armed bandit（多臂老虎机）问题时效果很好。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/klay-thompson.jpg" style="width: 80%;"  />
+	<figcaption>哎呀，我想说的应该不是这位 Thompson？（感谢 <a href="https://www.linkedin.com/in/benjamin-taborsky" target="_blank">Ben Taborsky</a>；他有一套完整的理论，说明 Thompson 如何在思考把球传给谁时发明了这个方法。没错，我偷用了他的笑话。）</figcaption>
+</figure>
+<p>在每个时间步，我们希望根据行动 a 是<strong>最优行动</strong>的概率来选择 a：</p>
+<div>
+$$
+\begin{aligned}
+\pi(a \; \vert \; h_t) 
+&= \mathbb{P} [ Q(a) > Q(a'), \forall a' \neq a \; \vert \; h_t] \\
+&= \mathbb{E}_{\mathcal{R} \vert h_t} [ \mathbb{1}(a = \arg\max_{a \in \mathcal{A}} Q(a)) ]
+\end{aligned}
+$$
+</div>
+<p>其中，$\pi(a ; \vert ; h_t)$ 表示给定历史 $h_t$ 时采取行动 a 的概率。</p>
+<p>对于 Bernoulli bandit（伯努利老虎机），自然可以假设 $Q(a)$ 服从 <a href="https://en.wikipedia.org/wiki/Beta_distribution">Beta（贝塔）</a> 分布，因为 $Q(a)$ 本质上就是 <a href="https://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli（伯努利）</a> 分布中的成功概率 θ。$\text{Beta}(\alpha, \beta)$ 的取值位于区间 [0, 1]；α 和 β 分别对应我们<strong>成功</strong>或<strong>失败</strong>获得奖励的次数。</p>
+<p>首先，根据一些先验知识或信念，为每个行动初始化 Beta（贝塔）参数 α 和 β。例如：</p>
+<ul>
+<li>α = 1 且 β = 1：我们预期奖励概率为50%，但没有很强的把握。</li>
+<li>α = 1000 且 β = 9000：我们强烈相信奖励概率为10%。</li>
+</ul>
+<p>在每个时刻 t，我们为每个行动采样一个期望奖励 $\tilde{Q}(a)$，样本来自先验分布 $\text{Beta}(\alpha_i, \beta_i)$。在这些样本中选择最佳行动：$a^{TS}_t = \arg\max_{a \in \mathcal{A}} \tilde{Q}(a)$。观察到真实奖励后，就可以相应地更新 Beta（贝塔）分布，这本质上是 Bayesian inference（贝叶斯推断）：根据已知先验及得到采样数据的似然计算后验。</p>
+<div>
+$$
+\begin{aligned}
+\alpha_i & \leftarrow \alpha_i + r_t \mathbb{1}[a^{TS}_t = a_i] \\ 
+\beta_i & \leftarrow \beta_i + (1-r_t) \mathbb{1}[a^{TS}_t = a_i]
+\end{aligned}
+$$
+</div>
+<p>Thompson sampling（汤普森采样）实现了 <a href="https://en.wikipedia.org/wiki/Probability_matching">probability matching（概率匹配）</a>的思想。由于其奖励估计 $\tilde{Q}$ 是从后验分布中采样得到的，每个这样的概率都等于以观测历史为条件时，对应行动成为最优行动的概率。</p>
+<p>然而，对于许多复杂的实际问题，使用 Bayesian inference（贝叶斯推断）根据观测到的真实奖励估计后验分布，计算上可能不可行。如果能够使用 Gibbs sampling（吉布斯采样）、Laplace approximate（拉普拉斯近似）和 bootstraps（自助重采样）等方法近似后验分布，Thompson sampling（汤普森采样）仍然可以奏效。这篇<a href="https://arxiv.org/pdf/1707.02038.pdf">教程</a>给出了全面综述；如果想进一步了解 Thompson sampling（汤普森采样），我强烈推荐阅读。</p>
+<h1 id="case-study">案例研究<a hidden class="anchor" aria-hidden="true" href="#case-study">#</a></h1>
+<p>我在 <a href="https://github.com/lilianweng/multi-armed-bandit">lilianweng/multi-armed-bandit</a> 中实现了上述算法。可以用一组随机生成或预先定义的奖励概率构造 <a href="https://github.com/lilianweng/multi-armed-bandit/blob/master/bandits.py#L13">BernoulliBandit</a> 对象。老虎机算法实现为 <a href="https://github.com/lilianweng/multi-armed-bandit/blob/master/solvers.py#L9">Solver</a> 的子类，以一个 Bandit 对象作为目标问题，并随时间记录累计遗憾。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/bandit_experiment.png" style="width: 100%;"  />
+	<figcaption>解决一个 Bernoulli bandit（伯努利老虎机）的小实验结果：有 K = 10 台老虎机，奖励概率为 {0.0, 0.1, 0.2, ..., 0.9}。每个求解器运行10000步。</figcaption>
+</figure>
+（左）时间步与累计遗憾的关系图。
+（中）真实奖励概率与估计概率的关系图。
+（右）在10000步运行中各行动被选择的比例。*
+<h1 id="summary">总结<a hidden class="anchor" aria-hidden="true" href="#summary">#</a></h1>
+<p>我们需要探索，因为信息有价值。就探索策略而言，可以完全不探索，专注于短期回报；也可以偶尔随机探索；还可以更进一步，在探索时有选择地决定探索哪些选项——优先选择不确定性较高的行动，因为它们能够带来更高的信息增益。</p>
+<figure>
+	<img src="https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/bandit_solution_summary.png" style="width: 90%;"  />
+<hr>
+<p>引用格式：</p>
+<pre tabindex="0"><code>@article{weng2018bandit,
+  title   = &#34;The Multi-Armed Bandit Problem and Its Solutions&#34;,
+  author  = &#34;Weng, Lilian&#34;,
+  journal = &#34;lilianweng.github.io&#34;,
+  year    = &#34;2018&#34;,
+  url     = &#34;https://lilianweng.github.io/posts/2018-01-23-multi-armed-bandit/&#34;
+}
+</code></pre><h1 id="references">参考文献<a hidden class="anchor" aria-hidden="true" href="#references">#</a></h1>
+<p>[1] CS229 补充讲义：<a href="http://cs229.stanford.edu/extra-notes/hoeffding.pdf">Hoeffding’s inequality</a>。</p>
+<p>[2] David Silver 的 RL（强化学习）课程，第9讲：<a href="https://youtu.be/sGuiWX07sKw">Exploration and Exploitation</a></p>
+<p>[3] Olivier Chapelle and Lihong Li. <a href="http://papers.nips.cc/paper/4321-an-empirical-evaluation-of-thompson-sampling.pdf">“An empirical evaluation of thompson sampling.”</a> NIPS. 2011.</p>
+<p>[4] Russo, Daniel, et al. <a href="https://arxiv.org/pdf/1707.02038.pdf">“A Tutorial on Thompson Sampling.”</a> arXiv:1707.02038 (2017).</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://xingshuozhu1998.github.io/tags/exploration/">探索</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/math-heavy/">数学内容较多</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/tags/reinforcement-learning/">强化学习</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/">
+    <span class="title">« </span>
+    <br>
+    <span>深入了解强化学习</span>
+  </a>
+  <a class="next" href="https://xingshuozhu1998.github.io/posts/2017-12-31-object-recognition-part-3/">
+    <span class="title"> »</span>
+    <br>
+    <span>目标检测入门（三）：R-CNN（基于候选区域的卷积神经网络） 家族</span>
+  </a>
+</nav>
+
+
+<div class="share-buttons">
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 twitter 上分享《Multi-Armed Bandit（多臂老虎机）问题及其解决方法》"
+        href="https://twitter.com/intent/tweet/?text=The%20Multi-Armed%20Bandit%20Problem%20and%20Its%20Solutions&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-01-23-multi-armed-bandit%2f&amp;hashtags=exploration%2cmath-heavy%2creinforcement-learning">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 linkedin 上分享《Multi-Armed Bandit（多臂老虎机）问题及其解决方法》"
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-01-23-multi-armed-bandit%2f&amp;title=The%20Multi-Armed%20Bandit%20Problem%20and%20Its%20Solutions&amp;summary=The%20Multi-Armed%20Bandit%20Problem%20and%20Its%20Solutions&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-01-23-multi-armed-bandit%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 reddit 上分享《Multi-Armed Bandit（多臂老虎机）问题及其解决方法》"
+        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-01-23-multi-armed-bandit%2f&title=The%20Multi-Armed%20Bandit%20Problem%20and%20Its%20Solutions">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 facebook 上分享《Multi-Armed Bandit（多臂老虎机）问题及其解决方法》"
+        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-01-23-multi-armed-bandit%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 whatsapp 上分享《Multi-Armed Bandit（多臂老虎机）问题及其解决方法》"
+        href="https://api.whatsapp.com/send?text=The%20Multi-Armed%20Bandit%20Problem%20and%20Its%20Solutions%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-01-23-multi-armed-bandit%2f">
+        <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
+            <path
+                d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
+        </svg>
+    </a>
+    <a target="_blank" rel="noopener noreferrer" aria-label="在 telegram 上分享《Multi-Armed Bandit（多臂老虎机）问题及其解决方法》"
+        href="https://telegram.me/share/url?text=The%20Multi-Armed%20Bandit%20Problem%20and%20Its%20Solutions&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-01-23-multi-armed-bandit%2f">
+        <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
+            <path
+                d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
+        </svg>
+    </a>
+</div>
+
+  </footer>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerText = 'copy';
+
+        function copyingDone() {
+            copybutton.innerText = 'copied!';
+            setTimeout(() => {
+                copybutton.innerText = 'copy';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

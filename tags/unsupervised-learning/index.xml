@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
+  <channel>
+    <title>Lil’Log 中文学习镜像 · tags/unsupervised-learning</title>
+    <link>https://xingshuozhu1998.github.io/tags/unsupervised-learning/</link>
+    <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Sun, 05 Dec 2021 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/unsupervised-learning/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>数据不足时的学习（一）：半监督学习</title>
+      <link>https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/</link>
+      <pubDate>Sun, 05 Dec 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/</guid>
+      <description>面对监督学习任务中有限的带标签数据，通常讨论四种方法。 
+ 
+  预训练 + 微调 ：在大量无监督数据上预训练强大的任务无关模型，例如在自由文本上  预训练 LM（语言模型） ，或通过  自监督学习  在无标签图像上预训练视觉模型；随后，用少量带标签样本在下游任务上微调。 
+  半监督学习 ：同时从带标签与无标签样本学习。视觉任务中已有大量采用这一方法的研究。 
+  主动学习 ：标注昂贵，但仍希望在成本预算内收集更多标签。主动学习学会选择最有价值的无标签样本作为下一批标注对象，帮助我们在有限预算下明智行动。 
+  预训练 + 自动生成数据集 ：给定有能力的预训练模型，可以利用它自动生成更多带标签样本。受到 few-shot learning（少样本学习）成功的推动，这在语言领域尤为流行。 
+ 
+ 我计划围绕“数据不足时的学习”写一系列文章。第一部分介绍  半监督学习 。 
+ 什么是半监督学习？ #  
+ 半监督学习同时使用带标签与无标签数据训练模型。 
+ 有趣的是，目前大多数半监督学习文献聚焦视觉任务；语言任务更常见的范式则是预训练 + 微调。 
+ 本文介绍的所有方法，其损失都结合两部</description>
+    </item>
+    
+    <item>
+      <title>对比表征学习</title>
+      <link>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</link>
+      <pubDate>Mon, 31 May 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</guid>
+      <description>对比表征学习的目标，是学习这样的嵌入空间：相似样本对彼此接近，不相似样本对彼此远离。对比学习可以用于监督和无监督情形。在使用无监督数据时，对比学习是 自监督学习 中最强大的方法之一。 
+ 对比训练目标 #  
+ 早期用于对比学习的损失函数只涉及一个正样本和一个负样本。近期训练目标的趋势，则是在一个批量中包含多个正样本对和负样本对。 
+ 对比损失 #  
+  对比损失 （ Chopra 等，2005 ）是最早以对比方式进行深度度量学习的训练目标之一。 
+ 给定一组输入样本 $\{ \mathbf{x}_i \}$，每个样本都有对应标签 $y_i \in \{1, \dots, L\}$，属于 $L$ 个类别之一。我们希望学习函数 $f_\theta(.): \mathcal{X}\to\mathbb{R}^d$，将 $x_i$ 编码为嵌入向量，使同类示例具有相似嵌入，而不同类样本的嵌入差异很大。因此，对比损失以一对输入 $(x_i, x_j)$ 为对象：如果二者属于同类，就最小化嵌入距离；否则就最大化距离。 
+ 
+$$
+\mathcal{L}_\text{cont}(\mathbf{x}</description>
+    </item>
+    
+    <item>
+      <title>自监督表征学习</title>
+      <link>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</link>
+      <pubDate>Sun, 10 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</guid>
+      <description>[2020-01-09 更新：新增  Contrastive Predictive Coding（对比预测编码） 一节。] 
+ 
+  [2020-04-13 更新：新增关于 MoCo（动量对比学习方法）、SimCLR（使用数据增强与对比损失的表征学习方法） 和 CURL 的“Momentum Contrast（动量对比学习）”一节。]  
+ 
+ [2020-07-08 更新：新增关于 DeepMDP 和 DBC 的  “Bisimulation（双模拟）” 一节。] 
+ 
+  [2020-09-12 更新：在“Momentum Contrast（动量对比学习）”一节中新增  MoCo V2  和  BYOL（不依赖负样本的自监督表征学习方法） 。]  
+ 
+ [2021-05-31 更新：移除“Momentum Contrast（动量对比学习）”一节，并添加完整文章  《对比表征学习》 的链接。]  
+ 给定任务和足够的标签，有监督学习可以将其解决得很好。良好性能通常需要相当数量的标签，但收集人工标签成本很高（例如 ImageNet），且难以扩大规模。考虑到无标签数据的数量（例如自由文</description>
+    </item>
+    
+  </channel>
+</rss>

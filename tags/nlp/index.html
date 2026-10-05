@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Nlp（自然语言处理） | Lil'Log</title>
+<meta name="keywords" content="" />
+<meta name="description" content="记录我的学习笔记。">
+<meta name="author" content="Lilian Weng">
+<link rel="canonical" href="https://xingshuozhu1998.github.io/tags/nlp/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="https://xingshuozhu1998.github.io/tags/nlp/index.xml">
+
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript>
+      <meta property="og:title" content="Nlp（自然语言处理）" />
+<meta property="og:description" content="记录我的学习笔记。" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/tags/nlp/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Nlp（自然语言处理）"/>
+<meta name="twitter:description" content="记录我的学习笔记。"/>
+
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/tags/nlp/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/tags/nlp/">
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$'], ['\\(', '\\)']],
+      displayMath: [['$$','$$'], ['\\[', '\\]']],
+      processEscapes: true,
+      processEnvironments: true
+    },
+    options: {
+      skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+    }
+  };
+
+  window.addEventListener('load', (event) => {
+      document.querySelectorAll("mjx-container").forEach(function(x){
+        x.parentElement.classList += 'has-jax'})
+    });
+
+</script>
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <span class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+                <ul class="lang-switch"><li>|</li>
+                </ul>
+            </span>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+            </li>
+            <li>
+                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/tags/nlp/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/tags/nlp/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside> 
+<header class="page-header">
+  <h1>Nlp（自然语言处理）</h1>
+</header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>LLMs（大语言模型）中的 Extrinsic Hallucinations（缺乏外部事实依据的生成内容）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>大语言模型中的 hallucination（幻觉）通常指模型生成不忠实于依据、捏造、前后不一致或毫无意义的内容。“幻觉”这个词在一定程度上被泛化为模型出错的各种情况。在这里，我想将幻觉问题缩小到模型输出是捏造的，而且既不以给定上下文为依据，也不以世界知识为依据的情况。
+幻觉有两种类型：
+In-context hallucination（上下文内幻觉）：模型输出应当与上下文中的来源内容保持一致。Extrinsic hallucination（缺乏外部事实依据的幻觉）：模型输出应当以预训练数据集为依据。不过，由于预训练数据集规模庞大，为每次生成检索并识别冲突的成本过高。如果将预训练语料库视为世界知识的替代，我们实质上是在努力确保模型输出符合事实，并能由外部世界知识核实。同样重要的是，当模型不了解某个事实时，应当明确说明。本文聚焦于 extrinsic hallucination。为了避免幻觉，LLMs（大语言模型）需要（1）符合事实，以及（2）在适当情况下承认不知道答案。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2024 年 7 月 7 日 | 预计阅读时间：29 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《LLMs（大语言模型）中的 Extrinsic Hallucinations（缺乏外部事实依据的幻觉）》" href="https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>针对 LLMs（大语言模型）的对抗攻击
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>ChatGPT 的推出大幅加速了 large language models（大语言模型）在现实世界中的应用。我们（包括我在 OpenAI 的团队，向他们致意）投入了大量精力，在对齐过程中（例如通过 RLHF（基于人类反馈的强化学习））让模型默认表现出安全行为。然而，adversarial attacks（对抗攻击）或 jailbreak（绕过模型的行为约束）提示仍可能诱导模型输出不期望的内容。
+adversarial attacks（对抗攻击）的许多基础研究针对图像，这与文本不同，操作的是连续、高维的空间。文本等离散数据的攻击被认为困难得多，因为缺少直接的梯度信号。我此前关于 Controllable Text Generation（可控文本生成）的文章与这个话题非常相关，因为攻击 LLMs（大语言模型）本质上就是控制模型输出某种类型的（不安全）内容。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2023 年 10 月 25 日 | 预计阅读时间：33 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《针对 LLMs（大语言模型）的 Adversarial Attacks（对抗攻击）》" href="https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>由 LLM（大语言模型）驱动的自主智能体
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>以 LLM（large language model，大语言模型）作为核心控制器来构建智能体，是一个很酷的想法。AutoGPT、GPT-Engineer 和 BabyAGI 等几个概念验证演示提供了富有启发性的例子。LLM 的潜力超出了生成优质文案、故事、文章与程序；它可以被视为一种强大的通用问题求解器。
+智能体系统概览：在由 LLM 驱动的自主智能体系统中，LLM 充当智能体的大脑，并由几个关键组件加以补充。
+规划：子目标与分解——智能体将大型任务拆分成更小、可管理的子目标，从而高效处理复杂任务。反思与改进——智能体可以对过去的行动进行自我批评和自我反思，从错误中学习，并改进后续步骤，从而提高最终结果的质量。记忆：短期记忆——我认为所有 in-context learning（在上下文示例中学习，参见 Prompt Engineering，提示工程）都在利用模型的短期记忆进行学习。长期记忆——长期记忆使智能体能够在很长的时间内保留并回忆（无限量的）信息，通常借助外部向量存储与快速检索来实现。工具使用：智能体学习调用外部 APIs（应用程序编程接口），获取模型权重中缺少的额外信息（权重在预训练后往往难以修改），包括当前信息、代码执行能力、专有信息来源的访问权限等。由 LLM 驱动的自主智能体系统概览。组件一：规划。复杂任务通常涉及许多步骤。智能体需要知道这些步骤是什么，并提前制定计划。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2023年6月23日 | 预计阅读时间：31分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《由 LLM（大语言模型）驱动的自主智能体》" href="https://xingshuozhu1998.github.io/posts/2023-06-23-agent/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>Prompt Engineering（提示工程）
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p>Prompt Engineering（提示工程），又称 In-Context Prompting（上下文内提示），指在不更新模型权重的情况下，通过与 LLM（大语言模型）沟通来引导其行为、获得期望结果的方法。它是一门经验科学，prompt engineering（提示工程）方法在不同模型上的效果可能差异很大，因此需要大量实验与启发式方法。
+本文只讨论 autoregressive（自回归）语言模型的 prompt engineering（提示工程），不涉及 Cloze tests（完形填空测试）、图像生成或多模态模型。prompt engineering（提示工程）的核心目标是对齐与模型行为的可引导性。请参阅我此前关于可控文本生成的文章。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2023年3月15日 | 预计阅读时间：21分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Prompt Engineering（提示工程）》" href="https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>降低语言模型的有害性
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> 大型预训练语言模型使用大量在线数据进行训练，不可避免地从互联网学到某些有害行为与偏见。预训练语言模型非常强大，在许多 NLP（自然语言处理）任务中取得了巨大成功。然而，要将它们安全地部署到现实中的实际应用，就需要对模型生成过程实施有力的安全控制。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2021 年 3 月 21 日  |  预计阅读时间：22 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《减少语言模型的有害输出》" href="https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>可控神经文本生成
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2021-02-01更新：更新至2.0版，加入几项研究并修正许多笔误。］［2021-05-26更新：在“提示设计”一节添加 P-tuning 与 Prompt Tuning（提示调优）。］［2021-09-19更新：添加“unlikelihood training（非似然训练）”。］
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2021 年 1 月 2 日  |  预计阅读时间：42 分钟  |  作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Controllable Neural Text Generation（可控神经文本生成）》" href="https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>如何构建开放域问答系统？
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2020-11-12 更新：添加使用 OpenAI API（测试版）进行 closed-book factual QA（闭卷事实问答）的示例。
+能够回答任何事实知识问题的模型，可以带来许多有用而实际的应用，例如聊天机器人或 AI 助手🤖。本文将回顾构建这种开放域问答系统的几种常见方法。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2020年10月29日 | 预计阅读时间：33分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《如何构建开放域问答系统？》" href="https://xingshuozhu1998.github.io/posts/2020-10-29-odqa/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>通用语言模型
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> ［2019-02-14更新：添加 ULMFiT 与 GPT-2。］［2020-02-29更新：添加 ALBERT。］［2020-10-25更新：添加 RoBERTa。］［2020-12-13更新：添加 T5。］［2020-12-30更新：添加 GPT-3。］［2021-11-13更新：添加 XLNet、BART 与 ELECTRA；同时更新总结一节。］
+我猜它们是 Elmo 和 Bert？（图片来源：这里。）2018年，NLP（自然语言处理）取得了令人惊叹的进展。OpenAI GPT（生成式预训练语言模型）与 BERT（基于双向编码器的预训练语言模型）等大规模预训练语言模型，使用通用模型架构，在多种语言任务中取得了优异表现。这一思路与 ImageNet 分类预训练帮助许多视觉任务的方式类似（*）。比视觉分类预训练更进一步，这种简单而强大的 NLP 方法不需要标注数据进行预训练，使我们能够不断扩大训练规模，直至能力极限。
+……</p>
+  </section>
+  <footer class="entry-footer">日期：2019年1月31日 | 预计阅读时间：36分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《Generalized Language Models（广义语言模型）》" href="https://xingshuozhu1998.github.io/posts/2019-01-31-lm/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2>学习词嵌入
+    </h2>
+  </header>
+  <section class="entry-content">
+    <p> 人类的词汇以自由文本形式出现。要让机器学习模型理解并处理自然语言，就需要将自由文本中的词转换为数值。最简单的转换方法之一是 one-hot encoding（独热编码）：每个不同的词对应结果向量中的一个维度，二值数值表示该词是否出现，出现为1，不出现为0。
+...</p>
+  </section>
+  <footer class="entry-footer">日期：2017 年 10 月 15 日 | 预计阅读时间：18 分钟 | 作者：Lilian Weng</footer>
+  <a class="entry-link" aria-label="文章链接：《学习 Word Embedding（词嵌入）》" href="https://xingshuozhu1998.github.io/posts/2017-10-15-word-embedding/"></a>
+</article>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>
+        由以下工具驱动：
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://git.io/hugopapermod" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="返回顶部" title="返回顶部 (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>
