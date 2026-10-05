@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/image-generation</title>
-    <link>https://xingshuozhu1998.github.io/tags/image-generation/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/image-generation/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 11 Jul 2021 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/image-generation/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 11 Jul 2021 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/image-generation/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>什么是扩散模型？</title>
-      <link>https://xingshuozhu1998.github.io/posts/2021-07-11-diffusion-models/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2021-07-11-diffusion-models/</link>
       <pubDate>Sun, 11 Jul 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2021-07-11-diffusion-models/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2021-07-11-diffusion-models/</guid>
       <description>[2021-09-19 更新：强烈推荐 Yang Song（参考文献中多篇关键论文的作者）关于  score-based generative modeling（以对数概率密度梯度建模的生成方法）  的这篇博客。]  
  [2022-08-27 更新：新增  classifier-free guidance（无分类器引导） 、 GLIDE 、 unCLIP  和  Imagen 。  
  [2022-08-31 更新：新增  latent diffusion model（潜空间扩散模型） 。  
@@ -22,10 +22,10 @@
     
     <item>
       <title>基于流的深度生成模型</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-10-13-flow-models/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-10-13-flow-models/</link>
       <pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-10-13-flow-models/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-10-13-flow-models/</guid>
       <description>此前我介绍过  GAN（生成对抗网络）  和  VAE（变分自编码器）  两类生成模型。它们都不显式学习真实数据的概率密度函数 $p(\mathbf{x})$（其中 $\mathbf{x} \in \mathcal{D}$）——因为这实在很难！以潜变量生成模型为例，$p(\mathbf{x}) = \int p(\mathbf{x}\vert\mathbf{z})p(\mathbf{z})d\mathbf{z}$ 很难计算，因为无法遍历潜在编码 $\mathbf{z}$ 的所有可能值。 
  Flow-based（基于可逆变换的）深度生成模型，通过  normalizing flows（通过可逆变换构建概率分布的模型）  解决这一难题。这是强大的密度估计统计工具。准确估计 $p(\mathbf{x})$，便能高效完成许多下游任务：采样未见但真实的新数据点（生成数据）、预测未来事件的罕见程度（密度估计）、推断潜变量、补全不完整样本等。 
  生成模型类型 #  
@@ -36,10 +36,10 @@
     
     <item>
       <title>从自编码器到 Beta-VAE（对潜变量约束进行加权的变分自编码器）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-08-12-vae/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-08-12-vae/</link>
       <pubDate>Sun, 12 Aug 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-08-12-vae/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-08-12-vae/</guid>
       <description>[2019-07-18 更新：新增  VQ-VAE（向量量化变分自编码器）与 VQ-VAE-2 一节。] 
  
  [2019-07-26 更新：新增  TD-VAE（时间差分变分自编码器） 一节。] 
@@ -64,10 +64,10 @@
     
     <item>
       <title>从 GAN（生成对抗网络） 到 WGAN（采用最优传输距离的生成对抗网络）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2017-08-20-gan/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2017-08-20-gan/</link>
       <pubDate>Sun, 20 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2017-08-20-gan/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2017-08-20-gan/</guid>
       <description>[2018-09-30更新：感谢 Yoonju，本文已有  韩文译本 ！] 
  
  [2019-04-18更新：本文也可在  arXiv  获取。]  

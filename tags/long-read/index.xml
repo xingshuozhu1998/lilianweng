@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/long-read</title>
-    <link>https://xingshuozhu1998.github.io/tags/long-read/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/long-read/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 01 May 2025 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/long-read/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 01 May 2025 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/long-read/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>我们为什么思考</title>
-      <link>https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2025-05-01-thinking/</link>
       <pubDate>Thu, 01 May 2025 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2025-05-01-thinking/</guid>
       <description>特别感谢  John Schulman  为本文提供大量极有价值的反馈，并直接编辑本文。  
  Test-time compute（测试时计算）（ Graves et al. 2016 、 Ling, et al. 2017 、 Cobbe et al. 2021 ）与 chain-of-thought（思维链）（思维链，CoT（思维链））（ Wei et al. 2022 、 Nye et al. 2021 ）显著提升了模型性能，同时也提出了许多研究问题。本文旨在回顾如何有效使用测试时计算（即“思考时间”）、以及它为何有效的最新进展。 
  动机 #  
@@ -23,10 +23,10 @@
     
     <item>
       <title>强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2024-11-28-reward-hacking/</link>
       <pubDate>Thu, 28 Nov 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2024-11-28-reward-hacking/</guid>
       <description>当  reinforcement learning（强化学习，RL（强化学习））  智能体  利用  奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。 
  随着  语言模型  开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL训练中的 reward hacking已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。 
  过去有关这一主题的大部分工作相当理论化，重点是定义或证明 reward hacking的存在。然而，针对实际缓解方法的研究，尤其在 RLHF与 LLM（大语言模型）背景下，仍然有限。我尤其希望呼吁，未来投入更多研究，理解 reward hacking 并开发缓解方法。希望不久之后能够用一篇专门文章讨论</description>
@@ -34,10 +34,10 @@
     
     <item>
       <title>Transformer（基于注意力机制的神经网络架构） 家族 2.0</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-27-the-transformer-family-v2/</link>
       <pubDate>Fri, 27 Jan 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-27-the-transformer-family-v2/</guid>
       <description>自从大约三年前我发布上一篇   “The Transformer Family”   以来，人们提出了许多新的 Transformer 架构改进。在这里，我对那篇2020年的文章进行了大幅重构与扩充：重新组织各节的层级，并用更新的论文完善许多章节。2.0版包含旧版的全部内容，长度约为旧版的两倍。 
  符号说明 #  
  
@@ -74,10 +74,10 @@
     
     <item>
       <title>对比表征学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2021-05-31-contrastive/</link>
       <pubDate>Mon, 31 May 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2021-05-31-contrastive/</guid>
       <description>对比表征学习的目标，是学习这样的嵌入空间：相似样本对彼此接近，不相似样本对彼此远离。对比学习可以用于监督和无监督情形。在使用无监督数据时，对比学习是 自监督学习 中最强大的方法之一。 
  对比训练目标 #  
  早期用于对比学习的损失函数只涉及一个正样本和一个负样本。近期训练目标的趋势，则是在一个批量中包含多个正样本对和负样本对。 
@@ -91,10 +91,10 @@ $$
     
     <item>
       <title>可控神经文本生成</title>
-      <link>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2021-01-02-controllable-text-generation/</link>
       <pubDate>Sat, 02 Jan 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2021-01-02-controllable-text-generation/</guid>
       <description>[2021-02-01 更新：更新至 2.0 版，新增若干研究工作并修正许多笔误。] 
  
  [2021-05-26 更新：在  “提示设计” 一节新增 P-tuning 和 Prompt Tuning。] 
@@ -111,10 +111,10 @@ $$
     
     <item>
       <title>深度强化学习中的探索策略</title>
-      <link>https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2020-06-07-exploration-drl/</link>
       <pubDate>Sun, 07 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2020-06-07-exploration-drl/</guid>
       <description>[2020-06-17更新：加入  “exploration via disagreement（通过分歧探索）” ，位于“Forward Dynamics（前向动力学）” 一节 。  
   Exploitation（利用）与 exploration（探索）之间的权衡 ，是RL（强化学习）中的重要主题。我们希望RL智能体尽快找到最佳解。然而，在探索不足时过早锁定某个解，会造成很差的结果，因为这可能导致局部极小值或彻底失败。以最优回报为优化目标的现代  RL   算法 ，能够相当高效地实现良好的利用，而探索仍更像一个开放问题。 
  这里，我想讨论深度 RL中的几种常见探索策略。这是一个很大的主题，本文绝不可能覆盖所有重要子主题。我计划定期更新，随着时间推移逐步丰富内容。 
@@ -127,10 +127,10 @@ $$
     
     <item>
       <title>自监督表征学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-11-10-self-supervised/</link>
       <pubDate>Sun, 10 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-11-10-self-supervised/</guid>
       <description>[2020-01-09 更新：新增  Contrastive Predictive Coding（对比预测编码） 一节。] 
  
   [2020-04-13 更新：新增关于 MoCo（动量对比学习方法）、SimCLR（使用数据增强与对比损失的表征学习方法） 和 CURL 的“Momentum Contrast（动量对比学习）”一节。]  
@@ -145,10 +145,10 @@ $$
     
     <item>
       <title>通用语言模型</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-01-31-lm/</link>
       <pubDate>Thu, 31 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-01-31-lm/</guid>
       <description>[2019-02-14更新：加入  ULMFiT  和  GPT-2（第二代生成式预训练语言模型） 。]  
  [2020-02-29更新：加入  ALBERT 。]  
  [2020-10-25更新：加入  RoBERTa 。]  
@@ -165,10 +165,10 @@ $$
     
     <item>
       <title>元学习：学会快速学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-11-30-meta-learning/</link>
       <pubDate>Fri, 30 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-11-30-meta-learning/</guid>
       <description>[2019-10-01 更新：感谢 Tianhao，本文有了  中文  译本！]  
  好的机器学习模型往往需要大量样本训练。相比之下，人类学习新概念与技能更快、更高效。孩子只见过几次猫和鸟，就能很快区分它们。会骑自行车的人，可能只需少量演示、甚至无需演示，就能迅速学会骑摩托车。能否设计具有类似性质的机器学习模型，用少量训练示例快速学习新概念与技能？这正是  meta-learning（元学习）  的基本目标。 
  我们期待好的 meta-learning（元学习）模型，能很好适应或泛化到训练中未曾遇到的新任务与新环境。适应过程本质上是小型学习阶段，发生在测试期间，只有限接触新任务配置。最终适应后的模型能完成新任务。因此，元学习也称为  learning to learn（学会学习） 。 
@@ -183,10 +183,10 @@ $$
     
     <item>
       <title>策略梯度算法</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/</link>
       <pubDate>Sun, 08 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/</guid>
       <description>[2018-06-30 更新：新增两种策略梯度方法  SAC（基于最大熵目标的行动者与评论家算法）  和  D4PG（分布式分布型深度确定性策略梯度） 。] 
  
  [2018-09-30 更新：新增策略梯度方法  TD3（双延迟深度确定性策略梯度） 。] 
@@ -208,10 +208,10 @@ $$
     
     <item>
       <title>深入了解强化学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-02-19-rl-overview/</link>
       <pubDate>Mon, 19 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-02-19-rl-overview/</guid>
       <description>[2020-09-03更新：更新  SARSA  与  Q-learning  算法，使两者区别更加明显。 
  
  [2021-09-19更新：感谢爱吃猫的鱼，本文已有  中文版 。]  
@@ -225,10 +225,10 @@ $$
     
     <item>
       <title>从 GAN（生成对抗网络） 到 WGAN（采用最优传输距离的生成对抗网络）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2017-08-20-gan/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2017-08-20-gan/</link>
       <pubDate>Sun, 20 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2017-08-20-gan/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2017-08-20-gan/</guid>
       <description>[2018-09-30更新：感谢 Yoonju，本文已有  韩文译本 ！] 
  
  [2019-04-18更新：本文也可在  arXiv  获取。]  

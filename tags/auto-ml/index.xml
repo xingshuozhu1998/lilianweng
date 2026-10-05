@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/auto-ml</title>
-    <link>https://xingshuozhu1998.github.io/tags/auto-ml/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/auto-ml/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 Aug 2020 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/auto-ml/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 06 Aug 2020 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/auto-ml/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>神经架构搜索</title>
-      <link>https://xingshuozhu1998.github.io/posts/2020-08-06-nas/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2020-08-06-nas/</link>
       <pubDate>Thu, 06 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2020-08-06-nas/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2020-08-06-nas/</guid>
       <description>虽然最流行、最成功的模型架构大多由人类专家设计，但这并不意味着我们已经探索了全部网络架构空间，并选定了最佳方案。如果采用系统化、自动化的方法学习高性能模型架构，我们找到最优解的机会会更大。 
  自动学习并演化网络拓扑并非新想法（ Stanley &amp; Miikkulainen, 2002 ）。近年来， Zoph &amp; Le 2017  与  Baker et al. 2017  的开创性工作，使 Neural Architecture Search（神经架构搜索，NAS（神经架构搜索））受到大量关注，带来许多有趣想法，以实现更好、更快、更节省成本的 NAS。 
  开始研究 NAS时，我发现  Elsken, et al 2019  的这篇优秀综述很有帮助。他们将 NAS 描述为具有三个主要组件的系统，清楚简洁，也被其他 NAS 论文广泛采用。 

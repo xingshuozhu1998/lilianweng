@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/factuality</title>
-    <link>https://xingshuozhu1998.github.io/tags/factuality/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/factuality/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 07 Jul 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/factuality/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 07 Jul 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/factuality/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>LLMs（大语言模型）中的 Extrinsic Hallucinations（缺乏外部事实依据的生成内容）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2024-07-07-hallucination/</link>
       <pubDate>Sun, 07 Jul 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2024-07-07-hallucination/</guid>
       <description>大语言模型中的幻觉通常指模型生成不忠实、虚构、不一致或无意义的内容。作为术语，“幻觉”在一定程度上被泛化到模型犯错的情况。这里，我想将幻觉问题限定为：模型输出是虚构的，且既 不以 给定上下文为依据，也不以世界知识为依据。 
  幻觉有两种类型： 
  

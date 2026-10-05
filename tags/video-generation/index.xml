@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/video-generation</title>
-    <link>https://xingshuozhu1998.github.io/tags/video-generation/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/video-generation/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 12 Apr 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/video-generation/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 12 Apr 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/video-generation/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>用于视频生成的扩散模型</title>
-      <link>https://xingshuozhu1998.github.io/posts/2024-04-12-diffusion-video/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2024-04-12-diffusion-video/</link>
       <pubDate>Fri, 12 Apr 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2024-04-12-diffusion-video/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2024-04-12-diffusion-video/</guid>
       <description>过去几年， 扩散模型  在图像合成上表现强劲。现在，研究社区开始探索更困难的视频生成。图像相当于单帧视频，因此视频任务包含图像任务，但更有挑战，因为： 
  
  它对不同时间帧之间的时间一致性有额外要求，自然需要模型编码更多世界知识。 

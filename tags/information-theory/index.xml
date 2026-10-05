@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/information-theory</title>
-    <link>https://xingshuozhu1998.github.io/tags/information-theory/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/information-theory/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 14 Mar 2019 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/information-theory/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 14 Mar 2019 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/information-theory/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>深度神经网络是否严重过拟合？</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-03-14-overfit/</link>
       <pubDate>Thu, 14 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-03-14-overfit/</guid>
       <description>[2019-05-27 更新：新增关于 Lottery Ticket Hypothesis（彩票假说）的 一节 。]  
  如果你和我一样，带着传统机器学习经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络参数如此之多，训练误差很容易达到完美，因此它肯定会严重过拟合。它怎么可能泛化到样本外数据点呢？ 
  理解深度神经网络为何能泛化的努力，让我想起系统生物学领域一篇有趣论文—— “Can a biologist fix a radio?”（生物学家能修收音机吗？） （Lazebnik，2002）。如果生物学家像研究生物系统那样修收音机，可能很困难。因为收音机系统的完整机制尚未揭示，探测小型局部功能可能提供线索，却难以呈现系统内全部交互，更不用说完整工作流程。不论你认为它是否与 DL（深度学习）相关，这篇文章都非常有趣。 
@@ -23,10 +23,10 @@
     
     <item>
       <title>用信息论剖析深度学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2017-09-28-information-bottleneck/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2017-09-28-information-bottleneck/</link>
       <pubDate>Thu, 28 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2017-09-28-information-bottleneck/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2017-09-28-information-bottleneck/</guid>
       <description>Naftali Tishby 教授于 2021 年去世。希望本文能让更多人了解他关于 information bottleneck（信息瓶颈）的精彩想法。  
  最近，我观看了 Naftali Tishby 教授的演讲  “Information Theory in Deep Learning”（深度学习中的信息论） ，觉得非常有趣。他介绍了如何应用信息论，研究深度神经网络在训练期间的成长与变换。利用  Information Bottleneck（信息瓶颈，IB） 方法，他为深度神经网络（DNN）提出了新的学习界，因为参数数量呈指数增加，传统学习理论失效。另一个敏锐的观察是，DNN 训练包含两个不同阶段：首先，训练网络充分表示输入数据并最小化泛化误差；然后，通过压缩输入的表示，网络学习遗忘无关细节。 
  本文大部分资料来自 Tishby 教授的演讲和 相关论文 。 

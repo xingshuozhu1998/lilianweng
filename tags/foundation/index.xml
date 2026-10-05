@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/foundation</title>
-    <link>https://xingshuozhu1998.github.io/tags/foundation/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/foundation/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/foundation/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/foundation/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>审慎理解 Scaling Laws（规模变化与模型性能之间的规律）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2026-06-24-scaling-laws/</link>
       <pubDate>Wed, 24 Jun 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2026-06-24-scaling-laws/</guid>
       <description>Scaling laws是深度学习最重要的经验发现之一。观察形式简单：训练损失 $L$ 随模型规模 $N$、数据规模 $D$ 与计算量 $C$ 扩大，以可预测方式按幂律下降，在双对数图上呈直线。可将 scaling laws 视为描述计算、损失、模型规模与数据关系的框架；核心是如何在 $N$ 与 $D$ 之间最优分配宝贵计算。 
  这种可预测性使 scaling laws在实践中很有价值。常见流程是在少数小规模运行上拟合 scaling laws，再外推估计大型模型的 token（词元）与计算需求。 
  
@@ -38,10 +38,10 @@
     
     <item>
       <title>Transformer（基于注意力机制的神经网络架构） 家族 2.0</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-27-the-transformer-family-v2/</link>
       <pubDate>Fri, 27 Jan 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-27-the-transformer-family-v2/</guid>
       <description>自从大约三年前我发布上一篇   “The Transformer Family”   以来，人们提出了许多新的 Transformer 架构改进。在这里，我对那篇2020年的文章进行了大幅重构与扩充：重新组织各节的层级，并用更新的论文完善许多章节。2.0版包含旧版的全部内容，长度约为旧版的两倍。 
  符号说明 #  
  
@@ -78,10 +78,10 @@
     
     <item>
       <title>大型 Transformer（基于注意力机制的神经网络架构） 模型的推理优化</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-01-10-inference-optimization/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-10-inference-optimization/</link>
       <pubDate>Tue, 10 Jan 2023 10:00:00 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-01-10-inference-optimization/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-10-inference-optimization/</guid>
       <description>[2023-01-24 更新：新增  distillation（知识蒸馏）  小节。]   
  大型 Transformer模型如今已成为主流，在多种任务上取得最先进结果。它们能力强大，但训练与使用成本都很高。推理在时间和内存上的极高成本，是大规模采用强大 Transformer 解决现实任务的主要瓶颈。 
   为什么大型 Transformer模型推理难以运行？ 除了最先进模型的规模不断增大，还有两个主要因素导致推理困难（ Pope et al. 2022 ）： 
@@ -100,10 +100,10 @@
     
     <item>
       <title>神经切线核背后的数学</title>
-      <link>https://xingshuozhu1998.github.io/posts/2022-09-08-ntk/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2022-09-08-ntk/</link>
       <pubDate>Thu, 08 Sep 2022 10:00:00 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2022-09-08-ntk/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2022-09-08-ntk/</guid>
       <description>神经网络具有过度参数化的特点，这是 众所周知的 。神经网络往往能够轻松拟合数据，使训练损失接近零，同时在测试数据集上取得不错的泛化表现。尽管所有参数都随机初始化，优化过程仍能稳定地得到同样良好的结果。即使模型参数数量超过训练数据点数量，这一点也成立。 
   Neural tangent kernel（神经切线核；NTK（神经切线核）） （ Jacot et al. 2018 ）是一种核，用于解释神经网络在梯度下降训练过程中的演化。它帮助我们深入理解：为什么具有足够宽度的神经网络在训练以最小化经验损失时，能够稳定地收敛到全局最小值。本文将深入讨论 NTK 的动机与定义，并通过刻画无限宽神经网络中的 NTK，证明这些网络在不同初始化下的确定性收敛。 
  
@@ -112,10 +112,10 @@
     
     <item>
       <title>如何使用多块 GPU（图形处理器） 训练超大模型？</title>
-      <link>https://xingshuozhu1998.github.io/posts/2021-09-25-train-large/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2021-09-25-train-large/</link>
       <pubDate>Fri, 24 Sep 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2021-09-25-train-large/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2021-09-25-train-large/</guid>
       <description>[2022-03-13更新：加入  expert choice routing（专家选择路由） 。]  
  [2022-06-10更新]： Greg  与我撰写了本文更短的升级版，发表于 OpenAI Blog： “Techniques for Training Large Neural Networks”  
  近年来，更大的预训练  语言模型  在许多 NLP（自然语言处理）基准任务上取得更好结果。训练大而深的神经网络颇具挑战，因为需要大量 GPU内存，以及长时间训练。 
@@ -127,10 +127,10 @@
     
     <item>
       <title>Transformer（基于注意力机制的神经网络架构） 家族</title>
-      <link>https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2020-04-07-the-transformer-family/</link>
       <pubDate>Tue, 07 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2020-04-07-the-transformer-family/</guid>
       <description>[更新于   2023-01-27  ：时隔近三年，我对本文进行了大规模重构更新，纳入 2020 年以来的一批新 Transformer 模型。增强版文章在这里：   《Transformer 家族 2.0 版》   。关于这一主题，请参阅该文。] 
   
  距离上一篇关于 注意力 的文章，已近两年。Transformer 新版本与增强版本的近期进展，促使我围绕这一主题再写一篇，重点讨论如何改进基本 Transformer，以扩大长程注意力范围、降低内存与计算消耗、解决 RL（强化学习）任务等。 
@@ -162,10 +162,10 @@
     
     <item>
       <title>深度神经网络是否严重过拟合？</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-03-14-overfit/</link>
       <pubDate>Thu, 14 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-03-14-overfit/</guid>
       <description>[2019-05-27 更新：新增关于 Lottery Ticket Hypothesis（彩票假说）的 一节 。]  
  如果你和我一样，带着传统机器学习经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络参数如此之多，训练误差很容易达到完美，因此它肯定会严重过拟合。它怎么可能泛化到样本外数据点呢？ 
  理解深度神经网络为何能泛化的努力，让我想起系统生物学领域一篇有趣论文—— “Can a biologist fix a radio?”（生物学家能修收音机吗？） （Lazebnik，2002）。如果生物学家像研究生物系统那样修收音机，可能很困难。因为收音机系统的完整机制尚未揭示，探测小型局部功能可能提供线索，却难以呈现系统内全部交互，更不用说完整工作流程。不论你认为它是否与 DL（深度学习）相关，这篇文章都非常有趣。 
@@ -176,10 +176,10 @@
     
     <item>
       <title>用信息论剖析深度学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2017-09-28-information-bottleneck/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2017-09-28-information-bottleneck/</link>
       <pubDate>Thu, 28 Sep 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2017-09-28-information-bottleneck/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2017-09-28-information-bottleneck/</guid>
       <description>Naftali Tishby 教授于 2021 年去世。希望本文能让更多人了解他关于 information bottleneck（信息瓶颈）的精彩想法。  
  最近，我观看了 Naftali Tishby 教授的演讲  “Information Theory in Deep Learning”（深度学习中的信息论） ，觉得非常有趣。他介绍了如何应用信息论，研究深度神经网络在训练期间的成长与变换。利用  Information Bottleneck（信息瓶颈，IB） 方法，他为深度神经网络（DNN）提出了新的学习界，因为参数数量呈指数增加，传统学习理论失效。另一个敏锐的观察是，DNN 训练包含两个不同阶段：首先，训练网络充分表示输入数据并最小化泛化误差；然后，通过压缩输入的表示，网络学习遗忘无关细节。 
  本文大部分资料来自 Tishby 教授的演讲和 相关论文 。 
@@ -190,10 +190,10 @@
     
     <item>
       <title>如何解释机器学习模型的预测？</title>
-      <link>https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2017-08-01-interpretation/</link>
       <pubDate>Tue, 01 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2017-08-01-interpretation/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2017-08-01-interpretation/</guid>
       <description>机器学习模型开始进入医疗、司法和金融等关键领域。因此，弄清模型如何决策，并确保决策过程符合伦理要求或法律法规，成为必要之事。 
  同时，深度学习模型迅速发展，进一步提高了对复杂模型解释的需求。人们急于将 AI 的力量充分用于日常生活的关键方面。但如果缺乏足够信任，或没有高效流程解释意外行为，就很难做到，尤其考虑到深度神经网络生来就是 黑盒 。 
  考虑以下情况： 
@@ -211,10 +211,10 @@
     
     <item>
       <title>面向好奇读者的深度学习概览</title>
-      <link>https://xingshuozhu1998.github.io/posts/2017-06-21-overview/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2017-06-21-overview/</link>
       <pubDate>Wed, 21 Jun 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2017-06-21-overview/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2017-06-21-overview/</guid>
       <description>（本文源于我在  WiMLDS x Fintech 聚会 上所作的演讲，聚会由  Affirm  举办。）  
  相信你们很多人看过或听说过 2016 年 AlphaGo 与职业围棋棋手之间的 比赛 ，那位棋手是  Lee Sedol（李世石） 。Lee 的段位是最高的九段，并曾多次获得世界冠军。毫无疑问，他是世界上最优秀的围棋棋手之一，但在这一系列与 AlphaGo 的对局中，他 以 1 比 4 落败 。在此之前，人们认为围棋是一种计算机难以掌握的游戏，因为其简单规则所产生的棋盘局面变化数量呈指数增长，远多于国际象棋。这件事无疑让 2016 年成为 AI 的重要一年。AlphaGo 使 AI 的进展受到了广泛关注。 
  与此同时，许多公司投入资源，推动 AI 应用的前沿发展；这些应用确实有潜力改变甚至彻底革新我们的生活方式。熟悉的例子包括自动驾驶汽车、聊天机器人、家庭助手设备，以及其他许多应用。近年来我们取得进展的秘密配方之一就是深度学习。 

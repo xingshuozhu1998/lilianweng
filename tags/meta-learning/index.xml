@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/meta-learning</title>
-    <link>https://xingshuozhu1998.github.io/tags/meta-learning/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/meta-learning/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 29 Jan 2020 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/meta-learning/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 29 Jan 2020 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/meta-learning/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>强化学习中的课程学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2020-01-29-curriculum-rl/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2020-01-29-curriculum-rl/</link>
       <pubDate>Wed, 29 Jan 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2020-01-29-curriculum-rl/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2020-01-29-curriculum-rl/</guid>
       <description>[2020-02-03 更新：在“任务专属课程”一节提及  PCG（程序化内容生成） 。  
  [2020-02-04 更新：新增 “通过蒸馏构建课程” 一节。  
  要教一个连基本算术都不懂的 3 岁孩子积分或导数，听起来是不可能的任务。这就是教育的重要性：它提供系统方法，拆解复杂知识，并设计良好课程，由易到难教授概念。课程使我们人类更容易接近并学习困难的东西。但机器学习模型呢？能否通过课程更高效地训练模型？能否设计课程加速学习？ 
@@ -28,10 +28,10 @@
     
     <item>
       <title>元强化学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-06-23-meta-rl/</link>
       <pubDate>Sun, 23 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-06-23-meta-rl/</guid>
       <description>上一篇  meta-learning（元学习）  主要在少样本分类中定义问题。这里探索“元学习”  Reinforcement Learning（强化学习，RL（强化学习））  任务，开发快速、高效解决未见任务的智能体。 
  回顾，好的元学习模型应泛化到未见任务或环境。适应本质是  小型学习阶段 ，测试时有限接触新配置。即使没有显式微调（可训练变量不做梯度反向传播），也能自主调整内部隐藏状态学习。 
  RL训练有时非常困难。如果元学习智能体足够聪明，可解未见任务分布极广，我们就走向  通用方法 ——构建无需太多人类干预或手工特征工程、能解决各种 RL 问题的“大脑”。很棒吧？💖 
@@ -45,10 +45,10 @@
     
     <item>
       <title>用于仿真到现实迁移的域随机化</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-05-05-domain-randomization/</link>
       <pubDate>Sun, 05 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-05-05-domain-randomization/</guid>
       <description>在机器人学中，最困难的问题之一是如何让模型迁移到现实世界。由于深度 RL（强化学习）算法的样本效率较低，而且在真实机器人上收集数据的成本较高，我们往往需要在仿真器中训练模型；理论上，仿真器能够提供无限量的数据。然而，仿真器与物理世界之间的现实差距，往往会导致模型在真实机器人上运行时失败。这种差距源于物理参数的不一致（例如摩擦、kp、阻尼、质量和密度），而更致命的原因则是不正确的物理建模（例如对柔软表面之间碰撞的建模）。 
  为了缩小 sim2real 差距，我们需要改进仿真器，使它更接近现实。以下是几种方法： 
  
@@ -65,10 +65,10 @@
     
     <item>
       <title>元学习：学会快速学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-11-30-meta-learning/</link>
       <pubDate>Fri, 30 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-11-30-meta-learning/</guid>
       <description>[2019-10-01 更新：感谢 Tianhao，本文有了  中文  译本！]  
  好的机器学习模型往往需要大量样本训练。相比之下，人类学习新概念与技能更快、更高效。孩子只见过几次猫和鸟，就能很快区分它们。会骑自行车的人，可能只需少量演示、甚至无需演示，就能迅速学会骑摩托车。能否设计具有类似性质的机器学习模型，用少量训练示例快速学习新概念与技能？这正是  meta-learning（元学习）  的基本目标。 
  我们期待好的 meta-learning（元学习）模型，能很好适应或泛化到训练中未曾遇到的新任务与新环境。适应过程本质上是小型学习阶段，发生在测试期间，只有限接触新任务配置。最终适应后的模型能完成新任务。因此，元学习也称为  learning to learn（学会学习） 。 

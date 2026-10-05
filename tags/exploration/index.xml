@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/exploration</title>
-    <link>https://xingshuozhu1998.github.io/tags/exploration/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/exploration/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 07 Jun 2020 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/exploration/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 07 Jun 2020 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/exploration/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>深度强化学习中的探索策略</title>
-      <link>https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2020-06-07-exploration-drl/</link>
       <pubDate>Sun, 07 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2020-06-07-exploration-drl/</guid>
       <description>[2020-06-17更新：加入  “exploration via disagreement（通过分歧探索）” ，位于“Forward Dynamics（前向动力学）” 一节 。  
   Exploitation（利用）与 exploration（探索）之间的权衡 ，是RL（强化学习）中的重要主题。我们希望RL智能体尽快找到最佳解。然而，在探索不足时过早锁定某个解，会造成很差的结果，因为这可能导致局部极小值或彻底失败。以最优回报为优化目标的现代  RL   算法 ，能够相当高效地实现良好的利用，而探索仍更像一个开放问题。 
  这里，我想讨论深度 RL中的几种常见探索策略。这是一个很大的主题，本文绝不可能覆盖所有重要子主题。我计划定期更新，随着时间推移逐步丰富内容。 
@@ -25,10 +25,10 @@
     
     <item>
       <title>多臂老虎机问题及其解法</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-01-23-multi-armed-bandit/</link>
       <pubDate>Tue, 23 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-01-23-multi-armed-bandit/</guid>
       <description>这些算法针对 Bernoulli bandit（伯努利老虎机）的实现见  lilianweng/multi-armed-bandit 。 
  Exploitation（利用）与 Exploration（探索） #  
  探索与利用的两难困境存在于生活的许多方面。假设你最喜欢的餐馆就在街角。如果每天都去，你很清楚自己会吃到什么，却可能错过发现更好选择的机会。如果总去尝试新地方，你很可能时不时就得吃到难吃的食物。同样，在线广告推荐系统也试图在已知最吸引人的广告与可能取得更好效果的新广告之间取得平衡。 

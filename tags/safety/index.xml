@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/safety</title>
-    <link>https://xingshuozhu1998.github.io/tags/safety/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/safety/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 28 Nov 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/safety/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 28 Nov 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/safety/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2024-11-28-reward-hacking/</link>
       <pubDate>Thu, 28 Nov 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2024-11-28-reward-hacking/</guid>
       <description>当  reinforcement learning（强化学习，RL（强化学习））  智能体  利用  奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。 
  随着  语言模型  开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL训练中的 reward hacking已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。 
  过去有关这一主题的大部分工作相当理论化，重点是定义或证明 reward hacking的存在。然而，针对实际缓解方法的研究，尤其在 RLHF与 LLM（大语言模型）背景下，仍然有限。我尤其希望呼吁，未来投入更多研究，理解 reward hacking 并开发缓解方法。希望不久之后能够用一篇专门文章讨论</description>
@@ -20,10 +20,10 @@
     
     <item>
       <title>LLMs（大语言模型）中的 Extrinsic Hallucinations（缺乏外部事实依据的生成内容）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2024-07-07-hallucination/</link>
       <pubDate>Sun, 07 Jul 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2024-07-07-hallucination/</guid>
       <description>大语言模型中的幻觉通常指模型生成不忠实、虚构、不一致或无意义的内容。作为术语，“幻觉”在一定程度上被泛化到模型犯错的情况。这里，我想将幻觉问题限定为：模型输出是虚构的，且既 不以 给定上下文为依据，也不以世界知识为依据。 
  幻觉有两种类型： 
  
@@ -39,10 +39,10 @@
     
     <item>
       <title>针对 LLMs（大语言模型）的对抗攻击</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-10-25-adv-attack-llm/</link>
       <pubDate>Wed, 25 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-10-25-adv-attack-llm/</guid>
       <description>ChatGPT 的推出大幅加速了大语言模型在真实世界的应用。我们（包括我在 OpenAI 的团队，在此向他们致意）投入了大量精力，在对齐过程中（例如通过  RLHF（基于人类反馈的强化学习） ）为模型建立默认的安全行为。不过，对抗攻击或 jailbreak（绕过模型的行为约束）提示可能使模型输出不希望出现的内容。 
  大量对抗攻击基础工作以图像为对象；与文本不同，它们作用于连续、高维空间。由于缺乏直接梯度信号，针对文本等离散数据的攻击一直被认为困难得多。我之前的文章 《可控文本生成》 与此主题密切相关，因为攻击 LLM本质上是在控制模型，让它输出某一类（不安全的）内容。 
  还有一类工作通过攻击 LLM提取预训练数据、私有知识（ Carlini 等，2020 ），或通过数据投毒攻击模型训练过程（ Carlini 等，2023 ）。本文不涉及这些主题。 
@@ -56,10 +56,10 @@
     
     <item>
       <title>降低语言模型的有害性</title>
-      <link>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2021-03-21-lm-toxicity/</link>
       <pubDate>Sun, 21 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2021-03-21-lm-toxicity/</guid>
       <description>大型预训练  语言模型  在大量在线数据上训练，不可避免地从互联网习得某些有毒行为与偏差。预训练模型能力强大，在许多 NLP（自然语言处理）任务上非常成功。然而，要在现实应用中安全部署，必须对模型生成过程进行强有力的安全控制。 
  减少各类不安全内容，面临许多挑战： 
  

@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log English mirror · tags/auto-ml</title>
-    <link>https://xingshuozhu1998.github.io/en/tags/auto-ml/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/auto-ml/</link>
     <description>English mirror of Lilian Weng’s blog.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 06 Aug 2020 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/auto-ml/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 06 Aug 2020 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/en/tags/auto-ml/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Neural Architecture Search</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2020-08-06-nas/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-08-06-nas/</link>
       <pubDate>Thu, 06 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2020-08-06-nas/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-08-06-nas/</guid>
       <description>Although most popular and successful model architectures are designed by human experts, it doesn’t mean we have explored the entire network architecture space and settled down with the best option. We would have a better chance to find the optimal solution if we adopt a systematic and automatic way of learning high-performance model architectures. 
  Automatically learning and evolving network topologies is not a new idea ( Stanley &amp; Miikkulainen, 2002 ). In recent years, the pioneering work by  </description>
     </item>

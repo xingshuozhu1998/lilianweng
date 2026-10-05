@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/representation-learning</title>
-    <link>https://xingshuozhu1998.github.io/tags/representation-learning/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/representation-learning/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 31 May 2021 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/representation-learning/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 31 May 2021 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/representation-learning/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>对比表征学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2021-05-31-contrastive/</link>
       <pubDate>Mon, 31 May 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2021-05-31-contrastive/</guid>
       <description>对比表征学习的目标，是学习这样的嵌入空间：相似样本对彼此接近，不相似样本对彼此远离。对比学习可以用于监督和无监督情形。在使用无监督数据时，对比学习是 自监督学习 中最强大的方法之一。 
  对比训练目标 #  
  早期用于对比学习的损失函数只涉及一个正样本和一个负样本。近期训练目标的趋势，则是在一个批量中包含多个正样本对和负样本对。 
@@ -26,10 +26,10 @@ $$
     
     <item>
       <title>自监督表征学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-11-10-self-supervised/</link>
       <pubDate>Sun, 10 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-11-10-self-supervised/</guid>
       <description>[2020-01-09 更新：新增  Contrastive Predictive Coding（对比预测编码） 一节。] 
  
   [2020-04-13 更新：新增关于 MoCo（动量对比学习方法）、SimCLR（使用数据增强与对比损失的表征学习方法） 和 CURL 的“Momentum Contrast（动量对比学习）”一节。]  

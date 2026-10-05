@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log English mirror · tags/math-heavy</title>
-    <link>https://xingshuozhu1998.github.io/en/tags/math-heavy/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/math-heavy/</link>
     <description>English mirror of Lilian Weng’s blog.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 11 Jul 2021 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/math-heavy/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 11 Jul 2021 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/en/tags/math-heavy/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>What are Diffusion Models?</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2021-07-11-diffusion-models/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-07-11-diffusion-models/</link>
       <pubDate>Sun, 11 Jul 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2021-07-11-diffusion-models/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-07-11-diffusion-models/</guid>
       <description>[Updated on 2021-09-19: Highly recommend this blog post on  score-based generative modeling  by Yang Song (author of several key papers in the references)].  
  [Updated on 2022-08-27: Added  classifier-free guidance ,  GLIDE ,  unCLIP  and  Imagen .  
  [Updated on 2022-08-31: Added  latent diffusion model .  
@@ -22,20 +22,20 @@
     
     <item>
       <title>Flow-based Deep Generative Models</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2018-10-13-flow-models/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-10-13-flow-models/</link>
       <pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2018-10-13-flow-models/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-10-13-flow-models/</guid>
       <description>So far, I’ve written about two types of generative models,  GAN  and  VAE . Neither of them explicitly learns the probability density function of real data, $p(\mathbf{x})$ (where $\mathbf{x} \in \mathcal{D}$) — because it is really hard! Taking the generative model with latent variables as an example, $p(\mathbf{x}) = \int p(\mathbf{x}\vert\mathbf{z})p(\mathbf{z})d\mathbf{z}$ can hardly be calculated as it is intractable to go through all possible values of the latent code $\mathbf{z}$. 
  Flow-</description>
     </item>
     
     <item>
       <title>Policy Gradient Algorithms</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2018-04-08-policy-gradient/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-04-08-policy-gradient/</link>
       <pubDate>Sun, 08 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2018-04-08-policy-gradient/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-04-08-policy-gradient/</guid>
       <description>[Updated on 2018-06-30: add two new policy gradient methods,  SAC  and  D4PG .] 
  
  [Updated on 2018-09-30: add a new policy gradient method,  TD3 .] 
@@ -53,10 +53,10 @@
     
     <item>
       <title>A (Long) Peek into Reinforcement Learning</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2018-02-19-rl-overview/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-02-19-rl-overview/</link>
       <pubDate>Mon, 19 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2018-02-19-rl-overview/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-02-19-rl-overview/</guid>
       <description>[Updated on 2020-09-03: Updated the algorithm of  SARSA  and  Q-learning  so that the difference is more pronounced. 
  
  [Updated on 2021-09-19: Thanks to 爱吃猫的鱼, we have this post in  Chinese ].  
@@ -65,10 +65,10 @@
     
     <item>
       <title>The Multi-Armed Bandit Problem and Its Solutions</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2018-01-23-multi-armed-bandit/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-01-23-multi-armed-bandit/</link>
       <pubDate>Tue, 23 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2018-01-23-multi-armed-bandit/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-01-23-multi-armed-bandit/</guid>
       <description>The algorithms are implemented for Bernoulli bandit in  lilianweng/multi-armed-bandit . 
  Exploitation vs Exploration #  
  The exploration vs exploitation dilemma exists in many aspects of our life. Say, your favorite restaurant is right around the corner. If you go there every day, you would be confident of what you will get, but miss the chances of discovering an even better option. If you try new places all the time, very likely you are gonna have to eat unpleasant food from time to time. Sim</description>
@@ -76,10 +76,10 @@
     
     <item>
       <title>From GAN to WGAN</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2017-08-20-gan/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2017-08-20-gan/</link>
       <pubDate>Sun, 20 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2017-08-20-gan/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2017-08-20-gan/</guid>
       <description>[Updated on 2018-09-30: thanks to Yoonju, we have this post translated in  Korean !] 
  
  [Updated on 2019-04-18: this post is also available on  arXiv .]  

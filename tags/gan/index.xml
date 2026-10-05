@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/gan</title>
-    <link>https://xingshuozhu1998.github.io/tags/gan/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/gan/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 20 Aug 2017 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/gan/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 20 Aug 2017 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/gan/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>从 GAN（生成对抗网络） 到 WGAN（采用最优传输距离的生成对抗网络）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2017-08-20-gan/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2017-08-20-gan/</link>
       <pubDate>Sun, 20 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2017-08-20-gan/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2017-08-20-gan/</guid>
       <description>[2018-09-30更新：感谢 Yoonju，本文已有  韩文译本 ！] 
  
  [2019-04-18更新：本文也可在  arXiv  获取。]  

@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/robotics</title>
-    <link>https://xingshuozhu1998.github.io/tags/robotics/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/robotics/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 05 May 2019 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/robotics/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 05 May 2019 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/robotics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>用于仿真到现实迁移的域随机化</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-05-05-domain-randomization/</link>
       <pubDate>Sun, 05 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-05-05-domain-randomization/</guid>
       <description>在机器人学中，最困难的问题之一是如何让模型迁移到现实世界。由于深度 RL（强化学习）算法的样本效率较低，而且在真实机器人上收集数据的成本较高，我们往往需要在仿真器中训练模型；理论上，仿真器能够提供无限量的数据。然而，仿真器与物理世界之间的现实差距，往往会导致模型在真实机器人上运行时失败。这种差距源于物理参数的不一致（例如摩擦、kp、阻尼、质量和密度），而更致命的原因则是不正确的物理建模（例如对柔软表面之间碰撞的建模）。 
  为了缩小 sim2real 差距，我们需要改进仿真器，使它更接近现实。以下是几种方法： 
  

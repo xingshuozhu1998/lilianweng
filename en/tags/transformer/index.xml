@@ -2,26 +2,26 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log English mirror · tags/transformer</title>
-    <link>https://xingshuozhu1998.github.io/en/tags/transformer/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/transformer/</link>
     <description>English mirror of Lilian Weng’s blog.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/transformer/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/en/tags/transformer/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Scaling Laws, Carefully</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2026-06-24-scaling-laws/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2026-06-24-scaling-laws/</link>
       <pubDate>Wed, 24 Jun 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2026-06-24-scaling-laws/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2026-06-24-scaling-laws/</guid>
       <description>Scaling laws are one of the most critical empirical findings in deep learning. The observation is simple in form: the training loss $L$ decreases predictably as we scale up model size $N$, dataset size $D$, and compute $C$, following a power-law curve, which appears as a straight line on a log-log plot. We can view scaling laws as a framework for describing the relationship between compute, loss, model size and data; at its core, it is about how to allocate precious compute optimally between $N$</description>
     </item>
     
     <item>
       <title>The Transformer Family Version 2.0</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2023-01-27-the-transformer-family-v2/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-01-27-the-transformer-family-v2/</link>
       <pubDate>Fri, 27 Jan 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2023-01-27-the-transformer-family-v2/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-01-27-the-transformer-family-v2/</guid>
       <description>Many new Transformer architecture improvements have been proposed since my last post on   “The Transformer Family”   about three years ago. Here I did a big refactoring and enrichment of that 2020 post — restructure the hierarchy of sections and improve many sections with more recent papers. Version 2.0 is a superset of the old version, about twice the length. 
  Notations #  
  
@@ -39,10 +39,10 @@
     
     <item>
       <title>Large Transformer Model Inference Optimization</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2023-01-10-inference-optimization/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-01-10-inference-optimization/</link>
       <pubDate>Tue, 10 Jan 2023 10:00:00 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2023-01-10-inference-optimization/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-01-10-inference-optimization/</guid>
       <description>[Updated on 2023-01-24: add a small section on  Distillation .]   
  Large transformer models are mainstream nowadays, creating SoTA results for a variety of tasks. They are powerful but very expensive to train and use. The extremely high inference cost, in both time and memory, is a big bottleneck for adopting a powerful transformer for solving real-world tasks at scale. 
   Why is it hard to run inference for large transformer models?  Besides the increasing size of SoTA models, there are two ma</description>
@@ -50,10 +50,10 @@
     
     <item>
       <title>How to Train Really Large Models on Many GPUs?</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2021-09-25-train-large/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-09-25-train-large/</link>
       <pubDate>Fri, 24 Sep 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2021-09-25-train-large/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-09-25-train-large/</guid>
       <description>[Updated on 2022-03-13: add  expert choice routing .]  
  [Updated on 2022-06-10]:  Greg  and I wrote a shorted and upgraded version of this post, published on OpenAI Blog:  “Techniques for Training Large Neural Networks”  
  In recent years, we are seeing better results on many NLP benchmark tasks with larger pre-trained  language models . How to train large and deep neural networks is challenging, as it demands a large amount of GPU memory and a long horizon of training time. 
@@ -62,10 +62,10 @@
     
     <item>
       <title>How to Build an Open-Domain Question Answering System?</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2020-10-29-odqa/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-10-29-odqa/</link>
       <pubDate>Thu, 29 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2020-10-29-odqa/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-10-29-odqa/</guid>
       <description>[Updated on 2020-11-12: add  an example  on closed-book factual QA using OpenAI API (beta).  
  A model that can answer any question with regard to factual knowledge can lead to many useful and practical applications, such as working as a chatbot or an AI assistant🤖. In this post, we will review several common approaches for building such an open-domain question answering system. 
  Disclaimers given so many papers in the wild: 
@@ -76,10 +76,10 @@
     
     <item>
       <title>The Transformer Family</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2020-04-07-the-transformer-family/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-04-07-the-transformer-family/</link>
       <pubDate>Tue, 07 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2020-04-07-the-transformer-family/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-04-07-the-transformer-family/</guid>
       <description>[Updated on   2023-01-27  : After almost three years, I did a big refactoring update of this post to incorporate a bunch of new Transformer models since 2020. The enhanced version of this post is here:    The Transformer Family Version 2.0   . Please refer to that post on this topic.] 
   
  It has been almost two years since my last post on  attention . Recent progress on new and enhanced versions of Transformer motivates me to write another post on this specific topic, focusing on how the vanill</description>
@@ -87,10 +87,10 @@
     
     <item>
       <title>Generalized Language Models</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2019-01-31-lm/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2019-01-31-lm/</link>
       <pubDate>Thu, 31 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2019-01-31-lm/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2019-01-31-lm/</guid>
       <description>[Updated on 2019-02-14: add  ULMFiT  and  GPT-2 .]  
  [Updated on 2020-02-29: add  ALBERT .]  
  [Updated on 2020-10-25: add  RoBERTa .]  
@@ -107,10 +107,10 @@
     
     <item>
       <title>Attention? Attention!</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2018-06-24-attention/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-06-24-attention/</link>
       <pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2018-06-24-attention/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-06-24-attention/</guid>
       <description>[Updated on 2018-10-28: Add  Pointer Network  and the  link  to my implementation of Transformer.]  
  [Updated on 2018-11-06: Add a  link  to the implementation of Transformer model.]  
  [Updated on 2018-11-18: Add  Neural Turing Machines .]  

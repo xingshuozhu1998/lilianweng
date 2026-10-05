@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/steerability</title>
-    <link>https://xingshuozhu1998.github.io/tags/steerability/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/steerability/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 23 Jun 2023 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/steerability/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 23 Jun 2023 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/steerability/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>由 LLM（大语言模型）驱动的自主智能体</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-06-23-agent/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-06-23-agent/</link>
       <pubDate>Fri, 23 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-06-23-agent/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-06-23-agent/</guid>
       <description>以 LLM作为核心控制器构建智能体，是一个很有意思的概念。 AutoGPT 、 GPT-Engineer  与  BabyAGI  等概念验证演示，提供了富有启发性的例子。LLM 的潜力不只在于生成出色的文案、故事、文章与程序，还可以被构建为强大的通用问题求解器。 
  智能体系统概览 #  
  在 LLM驱动的自主智能体系统中，LLM 充当智能体的大脑，并由几个关键组件补充： 
@@ -36,10 +36,10 @@
     
     <item>
       <title>Prompt Engineering（提示工程）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-03-15-prompt-engineering/</link>
       <pubDate>Wed, 15 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-03-15-prompt-engineering/</guid>
       <description>Prompt Engineering ，也称  In-Context Prompting（上下文提示） ，指如何与 LLM（大语言模型）通信，引导其行为达到预期结果，且  不  更新模型权重的方法。它是一门实证科学，Prompt Engineering 方法在不同模型上的效果可能差异很大，因此需要大量实验与启发式规则。 
  本文只聚焦自回归语言模型的 Prompt Engineering，不涉及完形填空测试、图像生成或多模态模型。Prompt Engineering 的核心目标是对齐与模型可引导性。请参阅我  之前  介绍可控文本生成的文章。 
   [我的个人尖锐看法]  我认为，某些 Prompt Engineering论文不值得写满8页，因为技巧用一句或几句话就能解释，其余全是基准评估。易用且共享的基准基础设施，应对社区更有益。但迭代提示或外部工具使用的配置并不简单，让整个研究社区统一采用它也不容易。 
@@ -50,10 +50,10 @@
     
     <item>
       <title>降低语言模型的有害性</title>
-      <link>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2021-03-21-lm-toxicity/</link>
       <pubDate>Sun, 21 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2021-03-21-lm-toxicity/</guid>
       <description>大型预训练  语言模型  在大量在线数据上训练，不可避免地从互联网习得某些有毒行为与偏差。预训练模型能力强大，在许多 NLP（自然语言处理）任务上非常成功。然而，要在现实应用中安全部署，必须对模型生成过程进行强有力的安全控制。 
  减少各类不安全内容，面临许多挑战： 
  
@@ -73,10 +73,10 @@
     
     <item>
       <title>可控神经文本生成</title>
-      <link>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2021-01-02-controllable-text-generation/</link>
       <pubDate>Sat, 02 Jan 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2021-01-02-controllable-text-generation/</guid>
       <description>[2021-02-01 更新：更新至 2.0 版，新增若干研究工作并修正许多笔误。] 
  
  [2021-05-26 更新：在  “提示设计” 一节新增 P-tuning 和 Prompt Tuning。] 

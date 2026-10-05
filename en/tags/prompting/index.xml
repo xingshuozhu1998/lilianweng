@@ -2,27 +2,27 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log English mirror · tags/prompting</title>
-    <link>https://xingshuozhu1998.github.io/en/tags/prompting/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/prompting/</link>
     <description>English mirror of Lilian Weng’s blog.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/prompting/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/en/tags/prompting/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Harness Engineering for Self-Improvement</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2026-07-04-harness/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2026-07-04-harness/</link>
       <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2026-07-04-harness/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2026-07-04-harness/</guid>
       <description>The concept of  recursive self-improvement (RSI)  dates back to  I. J. Good (1965) , where he defined an “ultraintelligent machine” as a system that can surpass humans in all intellectual activities and design better machines to improve itself.  Yudkowsky (2008)  used the phrase “recursive self-improvement” for a specific feedback loop: an AI uses its current intelligence to improve the cognitive machinery that produces its intelligence. 
  This feedback loop in modern AI may indicate the model r</description>
     </item>
     
     <item>
       <title>LLM Powered Autonomous Agents</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2023-06-23-agent/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-06-23-agent/</link>
       <pubDate>Fri, 23 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2023-06-23-agent/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-06-23-agent/</guid>
       <description>Building agents with LLM (large language model) as its core controller is a cool concept. Several proof-of-concepts demos, such as  AutoGPT ,  GPT-Engineer  and  BabyAGI , serve as inspiring examples. The potentiality of LLM extends beyond generating well-written copies, stories, essays and programs; it can be framed as a powerful general problem solver. 
  Agent System Overview #  
  In a LLM-powered autonomous agent system, LLM functions as the agent’s brain, complemented by several key componen</description>
@@ -30,10 +30,10 @@
     
     <item>
       <title>Prompt Engineering</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2023-03-15-prompt-engineering/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-03-15-prompt-engineering/</link>
       <pubDate>Wed, 15 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2023-03-15-prompt-engineering/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-03-15-prompt-engineering/</guid>
       <description>Prompt Engineering , also known as  In-Context Prompting , refers to methods for how to communicate with LLM to steer its behavior for desired outcomes  without  updating the model weights. It is an empirical science and the effect of prompt engineering methods can vary a lot among models, thus requiring heavy experimentation and heuristics. 
  This post only focuses on prompt engineering for autoregressive language models, so nothing with Cloze tests, image generation or multimodality models. At</description>
     </item>

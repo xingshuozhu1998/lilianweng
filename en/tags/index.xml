@@ -2,485 +2,485 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log English mirror · tags</title>
-    <link>https://xingshuozhu1998.github.io/en/tags/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/</link>
     <description>English mirror of Lilian Weng’s blog.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/en/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Agent</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/agent/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/agent/</link>
       <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/agent/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/agent/</guid>
       <description />
     </item>
     
     <item>
       <title>Auto-Research</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/auto-research/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/auto-research/</link>
       <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/auto-research/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/auto-research/</guid>
       <description />
     </item>
     
     <item>
       <title>Language-Model</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/language-model/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/language-model/</link>
       <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/language-model/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/language-model/</guid>
       <description />
     </item>
     
     <item>
       <title>Prompting</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/prompting/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/prompting/</link>
       <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/prompting/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/prompting/</guid>
       <description />
     </item>
     
     <item>
       <title>Self-Improvement</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/self-improvement/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/self-improvement/</link>
       <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/self-improvement/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/self-improvement/</guid>
       <description />
     </item>
     
     <item>
       <title>Foundation</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/foundation/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/foundation/</link>
       <pubDate>Wed, 24 Jun 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/foundation/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/foundation/</guid>
       <description />
     </item>
     
     <item>
       <title>Learning-Dynamics</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/learning-dynamics/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/learning-dynamics/</link>
       <pubDate>Wed, 24 Jun 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/learning-dynamics/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/learning-dynamics/</guid>
       <description />
     </item>
     
     <item>
       <title>Pretraining</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/pretraining/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/pretraining/</link>
       <pubDate>Wed, 24 Jun 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/pretraining/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/pretraining/</guid>
       <description />
     </item>
     
     <item>
       <title>Transformer</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/transformer/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/transformer/</link>
       <pubDate>Wed, 24 Jun 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/transformer/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/transformer/</guid>
       <description />
     </item>
     
     <item>
       <title>Long-Read</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/long-read/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/long-read/</link>
       <pubDate>Thu, 01 May 2025 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/long-read/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/long-read/</guid>
       <description />
     </item>
     
     <item>
       <title>Reasoning</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/reasoning/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/reasoning/</link>
       <pubDate>Thu, 01 May 2025 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/reasoning/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/reasoning/</guid>
       <description />
     </item>
     
     <item>
       <title>Reinforcement-Learning</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/reinforcement-learning/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/reinforcement-learning/</link>
       <pubDate>Thu, 01 May 2025 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/reinforcement-learning/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/reinforcement-learning/</guid>
       <description />
     </item>
     
     <item>
       <title>Alignment</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/alignment/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/alignment/</link>
       <pubDate>Thu, 28 Nov 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/alignment/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/alignment/</guid>
       <description />
     </item>
     
     <item>
       <title>Rlhf</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/rlhf/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/rlhf/</link>
       <pubDate>Thu, 28 Nov 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/rlhf/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/rlhf/</guid>
       <description />
     </item>
     
     <item>
       <title>Safety</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/safety/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/safety/</link>
       <pubDate>Thu, 28 Nov 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/safety/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/safety/</guid>
       <description />
     </item>
     
     <item>
       <title>Factuality</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/factuality/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/factuality/</link>
       <pubDate>Sun, 07 Jul 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/factuality/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/factuality/</guid>
       <description />
     </item>
     
     <item>
       <title>Hallucination</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/hallucination/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/hallucination/</link>
       <pubDate>Sun, 07 Jul 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/hallucination/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/hallucination/</guid>
       <description />
     </item>
     
     <item>
       <title>Nlp</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/nlp/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/nlp/</link>
       <pubDate>Sun, 07 Jul 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/nlp/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/nlp/</guid>
       <description />
     </item>
     
     <item>
       <title>Generative-Model</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/generative-model/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/generative-model/</link>
       <pubDate>Fri, 12 Apr 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/generative-model/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/generative-model/</guid>
       <description />
     </item>
     
     <item>
       <title>Video-Generation</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/video-generation/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/video-generation/</link>
       <pubDate>Fri, 12 Apr 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/video-generation/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/video-generation/</guid>
       <description />
     </item>
     
     <item>
       <title>Data</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/data/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/data/</link>
       <pubDate>Mon, 05 Feb 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/data/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/data/</guid>
       <description />
     </item>
     
     <item>
       <title>Data-Quality</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/data-quality/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/data-quality/</link>
       <pubDate>Mon, 05 Feb 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/data-quality/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/data-quality/</guid>
       <description />
     </item>
     
     <item>
       <title>Human-Ai</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/human-ai/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/human-ai/</link>
       <pubDate>Mon, 05 Feb 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/human-ai/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/human-ai/</guid>
       <description />
     </item>
     
     <item>
       <title>Adversarial Attacks</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/adversarial-attacks/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/adversarial-attacks/</link>
       <pubDate>Wed, 25 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/adversarial-attacks/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/adversarial-attacks/</guid>
       <description />
     </item>
     
     <item>
       <title>Redteam</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/redteam/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/redteam/</link>
       <pubDate>Wed, 25 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/redteam/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/redteam/</guid>
       <description />
     </item>
     
     <item>
       <title>Robustness</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/robustness/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/robustness/</link>
       <pubDate>Wed, 25 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/robustness/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/robustness/</guid>
       <description />
     </item>
     
     <item>
       <title>Steerability</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/steerability/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/steerability/</link>
       <pubDate>Fri, 23 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/steerability/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/steerability/</guid>
       <description />
     </item>
     
     <item>
       <title>Architecture</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/architecture/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/architecture/</link>
       <pubDate>Fri, 27 Jan 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/architecture/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/architecture/</guid>
       <description />
     </item>
     
     <item>
       <title>Attention</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/attention/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/attention/</link>
       <pubDate>Fri, 27 Jan 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/attention/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/attention/</guid>
       <description />
     </item>
     
     <item>
       <title>Long-Read"</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/long-read/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/long-read/</link>
       <pubDate>Tue, 10 Jan 2023 10:00:00 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/long-read/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/long-read/</guid>
       <description />
     </item>
     
     <item>
       <title>Neural-Tangent-Kernel</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/neural-tangent-kernel/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/neural-tangent-kernel/</link>
       <pubDate>Thu, 08 Sep 2022 10:00:00 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/neural-tangent-kernel/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/neural-tangent-kernel/</guid>
       <description />
     </item>
     
     <item>
       <title>Vision-Language-Model</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/vision-language-model/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/vision-language-model/</link>
       <pubDate>Thu, 09 Jun 2022 15:10:30 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/vision-language-model/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/vision-language-model/</guid>
       <description />
     </item>
     
     <item>
       <title>Vision-Model</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/vision-model/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/vision-model/</link>
       <pubDate>Thu, 09 Jun 2022 15:10:30 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/vision-model/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/vision-model/</guid>
       <description />
     </item>
     
     <item>
       <title>Data-Augmentation</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/data-augmentation/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/data-augmentation/</link>
       <pubDate>Fri, 15 Apr 2022 15:10:30 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/data-augmentation/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/data-augmentation/</guid>
       <description />
     </item>
     
     <item>
       <title>Data-Generation</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/data-generation/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/data-generation/</link>
       <pubDate>Fri, 15 Apr 2022 15:10:30 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/data-generation/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/data-generation/</guid>
       <description />
     </item>
     
     <item>
       <title>Active-Learning</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/active-learning/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/active-learning/</link>
       <pubDate>Sun, 20 Feb 2022 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/active-learning/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/active-learning/</guid>
       <description />
     </item>
     
     <item>
       <title>Unsupervised-Learning</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/unsupervised-learning/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/unsupervised-learning/</link>
       <pubDate>Sun, 05 Dec 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/unsupervised-learning/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/unsupervised-learning/</guid>
       <description />
     </item>
     
     <item>
       <title>Image-Generation</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/image-generation/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/image-generation/</link>
       <pubDate>Sun, 11 Jul 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/image-generation/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/image-generation/</guid>
       <description />
     </item>
     
     <item>
       <title>Math-Heavy</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/math-heavy/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/math-heavy/</link>
       <pubDate>Sun, 11 Jul 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/math-heavy/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/math-heavy/</guid>
       <description />
     </item>
     
     <item>
       <title>Representation-Learning</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/representation-learning/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/representation-learning/</link>
       <pubDate>Mon, 31 May 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/representation-learning/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/representation-learning/</guid>
       <description />
     </item>
     
     <item>
       <title>Auto-ML</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/auto-ml/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/auto-ml/</link>
       <pubDate>Thu, 06 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/auto-ml/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/auto-ml/</guid>
       <description />
     </item>
     
     <item>
       <title>Evolution</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/evolution/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/evolution/</link>
       <pubDate>Thu, 06 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/evolution/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/evolution/</guid>
       <description />
     </item>
     
     <item>
       <title>Exploration</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/exploration/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/exploration/</link>
       <pubDate>Sun, 07 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/exploration/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/exploration/</guid>
       <description />
     </item>
     
     <item>
       <title>Meta-Learning</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/meta-learning/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/meta-learning/</link>
       <pubDate>Wed, 29 Jan 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/meta-learning/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/meta-learning/</guid>
       <description />
     </item>
     
     <item>
       <title>Object-Recognition</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/object-recognition/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/object-recognition/</link>
       <pubDate>Sun, 10 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/object-recognition/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/object-recognition/</guid>
       <description />
     </item>
     
     <item>
       <title>Robotics</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/robotics/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/robotics/</link>
       <pubDate>Sun, 05 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/robotics/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/robotics/</guid>
       <description />
     </item>
     
     <item>
       <title>Information-Theory</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/information-theory/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/information-theory/</link>
       <pubDate>Thu, 14 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/information-theory/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/information-theory/</guid>
       <description />
     </item>
     
     <item>
       <title>Object-Detection</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/object-detection/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/object-detection/</link>
       <pubDate>Thu, 27 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/object-detection/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/object-detection/</guid>
       <description />
     </item>
     
     <item>
       <title>Autoencoder</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/autoencoder/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/autoencoder/</link>
       <pubDate>Sun, 12 Aug 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/autoencoder/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/autoencoder/</guid>
       <description />
     </item>
     
     <item>
       <title>Rnn</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/rnn/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/rnn/</link>
       <pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/rnn/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/rnn/</guid>
       <description />
     </item>
     
     <item>
       <title>Tensorflow</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/tensorflow/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/tensorflow/</link>
       <pubDate>Sat, 05 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/tensorflow/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/tensorflow/</guid>
       <description />
     </item>
     
     <item>
       <title>Tutorial</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/tutorial/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/tutorial/</link>
       <pubDate>Sat, 05 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/tutorial/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/tutorial/</guid>
       <description />
     </item>
     
     <item>
       <title>Gan</title>
-      <link>https://xingshuozhu1998.github.io/en/tags/gan/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/gan/</link>
       <pubDate>Sun, 20 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/tags/gan/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/tags/gan/</guid>
       <description />
     </item>
     

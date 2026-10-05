@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/agent</title>
-    <link>https://xingshuozhu1998.github.io/tags/agent/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/agent/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/agent/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/agent/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>用于自我改进的 Harness Engineering（智能体运行框架工程）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2026-07-04-harness/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2026-07-04-harness/</link>
       <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2026-07-04-harness/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2026-07-04-harness/</guid>
       <description>Recursive self-improvement（递归自我改进） (RSI（递归自我改进）)（递归自我改进）  的概念可以追溯到  I. J. Good (1965) ：他将“ultraintelligent machine（超智能机器）”定义为能够在所有智力活动中超越人类，并设计更好的机器来改进自身的系统。 Yudkowsky (2008)  用“recursive self-improvement”描述一个特定反馈循环：AI 使用当前的智能，改进产生其智能的认知机制。 
  在现代 AI 中，这个反馈循环可能意味着模型直接改写自身权重；更广义地，也可能是模型改进  训练流水线  和  部署系统 ，从而产生更好的后继模型，在具有经济价值的任务上全面改善性能。前沿实验室（ Anthropic ； OpenAI ）已经表明，AI 研发速度显著加快。 
  我明确提到  “部署系统” ，因为原始模型与现实世界情境之间的这一层，似乎与模型本身的智能同样重要（即预训练刚结束时的评估表现）。Claude Code 和 Codex 等成功的编程智能体产品表明，harness（智能体运行框架） 是 </description>
@@ -20,10 +20,10 @@
     
     <item>
       <title>由 LLM（大语言模型）驱动的自主智能体</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-06-23-agent/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-06-23-agent/</link>
       <pubDate>Fri, 23 Jun 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-06-23-agent/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-06-23-agent/</guid>
       <description>以 LLM作为核心控制器构建智能体，是一个很有意思的概念。 AutoGPT 、 GPT-Engineer  与  BabyAGI  等概念验证演示，提供了富有启发性的例子。LLM 的潜力不只在于生成出色的文案、故事、文章与程序，还可以被构建为强大的通用问题求解器。 
  智能体系统概览 #  
  在 LLM驱动的自主智能体系统中，LLM 充当智能体的大脑，并由几个关键组件补充： 

@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/redteam</title>
-    <link>https://xingshuozhu1998.github.io/tags/redteam/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/redteam/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 25 Oct 2023 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/redteam/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 25 Oct 2023 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/redteam/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>针对 LLMs（大语言模型）的对抗攻击</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-10-25-adv-attack-llm/</link>
       <pubDate>Wed, 25 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-10-25-adv-attack-llm/</guid>
       <description>ChatGPT 的推出大幅加速了大语言模型在真实世界的应用。我们（包括我在 OpenAI 的团队，在此向他们致意）投入了大量精力，在对齐过程中（例如通过  RLHF（基于人类反馈的强化学习） ）为模型建立默认的安全行为。不过，对抗攻击或 jailbreak（绕过模型的行为约束）提示可能使模型输出不希望出现的内容。 
  大量对抗攻击基础工作以图像为对象；与文本不同，它们作用于连续、高维空间。由于缺乏直接梯度信号，针对文本等离散数据的攻击一直被认为困难得多。我之前的文章 《可控文本生成》 与此主题密切相关，因为攻击 LLM本质上是在控制模型，让它输出某一类（不安全的）内容。 
  还有一类工作通过攻击 LLM提取预训练数据、私有知识（ Carlini 等，2020 ），或通过数据投毒攻击模型训练过程（ Carlini 等，2023 ）。本文不涉及这些主题。 

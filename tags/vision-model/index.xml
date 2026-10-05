@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/vision-model</title>
-    <link>https://xingshuozhu1998.github.io/tags/vision-model/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/vision-model/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 09 Jun 2022 15:10:30 -0700</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/vision-model/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 09 Jun 2022 15:10:30 -0700</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/vision-model/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>通用视觉语言模型</title>
-      <link>https://xingshuozhu1998.github.io/posts/2022-06-09-vlm/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2022-06-09-vlm/</link>
       <pubDate>Thu, 09 Jun 2022 15:10:30 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2022-06-09-vlm/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2022-06-09-vlm/</guid>
       <description>处理图像以生成文本，例如图像描述与视觉问答，已经研究多年。传统系统依赖目标检测网络作为视觉编码器，捕获视觉特征，再通过文本解码器生成文本。鉴于已有大量文献，本文只关注解决视觉语言任务的一种方法： 扩展预训练 通用语言模型 ，使其能够接收视觉信号 。 
  我将此类 vision language models（视觉语言模型，VLMs）粗略分为四类： 
  
@@ -28,10 +28,10 @@
     
     <item>
       <title>目标检测（四）：快速检测模型</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/</link>
       <pubDate>Thu, 27 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/</guid>
       <description>在 第 3 部分 中，我们回顾了 R-CNN（基于候选区域的卷积神经网络） 家族的模型。它们都是基于区域的目标检测算法，可以达到很高的准确率，但对自动驾驶等某些应用而言，速度可能太慢。第 4 部分只关注快速目标检测模型，包括 SSD、RetinaNet 和 YOLO（通过一次网络前向计算完成目标检测的模型） 家族的模型。 
  本系列所有文章的链接：
 [ 第 1 部分 ]
@@ -48,10 +48,10 @@
     
     <item>
       <title>目标检测入门（三）：R-CNN（基于候选区域的卷积神经网络） 家族</title>
-      <link>https://xingshuozhu1998.github.io/posts/2017-12-31-object-recognition-part-3/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2017-12-31-object-recognition-part-3/</link>
       <pubDate>Sun, 31 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2017-12-31-object-recognition-part-3/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2017-12-31-object-recognition-part-3/</guid>
       <description>[2018-12-20 更新：删除此处的 YOLO（通过一次网络前向计算完成目标检测的模型） 内容。第 4 部分将介绍包括 YOLO 在内的多种快速 object detection 算法。] 
  
  [2018-12-27 更新：为 R-CNN 添加  bbox regression  与  技巧 章节。]  
@@ -68,10 +68,10 @@
     
     <item>
       <title>目标检测入门（二）：CNN（卷积神经网络）、DPM（可变形部件模型） 与 OverFeat（联合分类、定位和检测的卷积网络）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2017-12-15-object-recognition-part-2/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2017-12-15-object-recognition-part-2/</link>
       <pubDate>Fri, 15 Dec 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2017-12-15-object-recognition-part-2/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2017-12-15-object-recognition-part-2/</guid>
       <description>“目标检测入门”系列的 第 1 部分 介绍了：（1）图像梯度向量的概念，以及 HOG（方向梯度直方图） 算法如何汇总一张图像中所有梯度向量的信息；（2）图像分割算法如何检测可能包含对象的区域；（3）Selective Search（选择性搜索）算法如何改进图像分割结果，以生成更好的候选区域。 
  第 2 部分将进一步了解用于图像分类的经典卷积神经网络架构。它们为用于目标检测的深度学习模型的后续进展奠定了  基础  。如果你想进一步了解 R-CNN（基于候选区域的卷积神经网络） 及相关模型，请阅读 第 3 部分 。 
  本系列所有文章的链接：
@@ -87,10 +87,10 @@
     
     <item>
       <title>目标检测入门（一）：梯度向量、HOG（方向梯度直方图）与 SS（选择性搜索）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2017-10-29-object-recognition-part-1/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2017-10-29-object-recognition-part-1/</link>
       <pubDate>Sun, 29 Oct 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2017-10-29-object-recognition-part-1/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2017-10-29-object-recognition-part-1/</guid>
       <description>我从未从事计算机视觉领域的工作，也不知道自动驾驶汽车究竟如何神奇地分辨停车标志与戴红帽子的行人。为了激励自己研究对象识别和检测算法背后的数学，我正在撰写“目标检测入门”系列文章。本文是第 1 部分，从图像处理的极基础概念和几种图像分割方法开始，暂时还不涉及深度神经网络。用于目标检测和识别的深度学习模型将在 第 2 部分 和 第 3 部分 讨论。 
  
  说明：刚开始时，我交替使用“对象识别”和“目标检测”这两个说法。我认为二者并不相同：前者更关注判断图像中是否存在某个对象，后者则需要找到对象的位置。不过，它们密切相关，许多对象识别算法为检测奠定了基础。 

@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/attention</title>
-    <link>https://xingshuozhu1998.github.io/tags/attention/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/attention/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Jan 2023 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/attention/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 27 Jan 2023 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/attention/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Transformer（基于注意力机制的神经网络架构） 家族 2.0</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-27-the-transformer-family-v2/</link>
       <pubDate>Fri, 27 Jan 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-27-the-transformer-family-v2/</guid>
       <description>自从大约三年前我发布上一篇   “The Transformer Family”   以来，人们提出了许多新的 Transformer 架构改进。在这里，我对那篇2020年的文章进行了大幅重构与扩充：重新组织各节的层级，并用更新的论文完善许多章节。2.0版包含旧版的全部内容，长度约为旧版的两倍。 
  符号说明 #  
  
@@ -49,10 +49,10 @@
     
     <item>
       <title>大型 Transformer（基于注意力机制的神经网络架构） 模型的推理优化</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-01-10-inference-optimization/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-10-inference-optimization/</link>
       <pubDate>Tue, 10 Jan 2023 10:00:00 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-01-10-inference-optimization/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-10-inference-optimization/</guid>
       <description>[2023-01-24 更新：新增  distillation（知识蒸馏）  小节。]   
  大型 Transformer模型如今已成为主流，在多种任务上取得最先进结果。它们能力强大，但训练与使用成本都很高。推理在时间和内存上的极高成本，是大规模采用强大 Transformer 解决现实任务的主要瓶颈。 
   为什么大型 Transformer模型推理难以运行？ 除了最先进模型的规模不断增大，还有两个主要因素导致推理困难（ Pope et al. 2022 ）： 
@@ -71,10 +71,10 @@
     
     <item>
       <title>如何构建开放域问答系统？</title>
-      <link>https://xingshuozhu1998.github.io/posts/2020-10-29-odqa/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2020-10-29-odqa/</link>
       <pubDate>Thu, 29 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2020-10-29-odqa/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2020-10-29-odqa/</guid>
       <description>[2020-11-12更新：加入  一个示例 ，使用 OpenAI API（应用程序编程接口）（测试版）进行闭卷事实问答。  
  能够回答任何事实知识问题的模型，可以带来许多有用的实际应用，例如聊天机器人或 AI 助手🤖。本文将回顾构建这种开放域问答系统的几种常见方法。 
  考虑到相关论文很多，先说明几点： 
@@ -92,10 +92,10 @@
     
     <item>
       <title>Transformer（基于注意力机制的神经网络架构） 家族</title>
-      <link>https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2020-04-07-the-transformer-family/</link>
       <pubDate>Tue, 07 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2020-04-07-the-transformer-family/</guid>
       <description>[更新于   2023-01-27  ：时隔近三年，我对本文进行了大规模重构更新，纳入 2020 年以来的一批新 Transformer 模型。增强版文章在这里：   《Transformer 家族 2.0 版》   。关于这一主题，请参阅该文。] 
   
  距离上一篇关于 注意力 的文章，已近两年。Transformer 新版本与增强版本的近期进展，促使我围绕这一主题再写一篇，重点讨论如何改进基本 Transformer，以扩大长程注意力范围、降低内存与计算消耗、解决 RL（强化学习）任务等。 
@@ -127,10 +127,10 @@
     
     <item>
       <title>通用语言模型</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-01-31-lm/</link>
       <pubDate>Thu, 31 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-01-31-lm/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-01-31-lm/</guid>
       <description>[2019-02-14更新：加入  ULMFiT  和  GPT-2（第二代生成式预训练语言模型） 。]  
  [2020-02-29更新：加入  ALBERT 。]  
  [2020-10-25更新：加入  RoBERTa 。]  
@@ -147,10 +147,10 @@
     
     <item>
       <title>注意力？注意力！</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-06-24-attention/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-06-24-attention/</link>
       <pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-06-24-attention/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-06-24-attention/</guid>
       <description>[2018-10-28 更新：新增  Pointer Network（指针网络） ，以及我的 Transformer（基于注意力机制的神经网络架构） 实现的 链接 。]  
  [2018-11-06 更新：新增 Transformer 模型实现的 链接 。]  
  [2018-11-18 更新：新增  Neural Turing Machines（神经图灵机） 。]  

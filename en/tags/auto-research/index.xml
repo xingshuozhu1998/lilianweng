@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log English mirror · tags/auto-research</title>
-    <link>https://xingshuozhu1998.github.io/en/tags/auto-research/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/auto-research/</link>
     <description>English mirror of Lilian Weng’s blog.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/auto-research/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 04 Jul 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/en/tags/auto-research/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Harness Engineering for Self-Improvement</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2026-07-04-harness/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2026-07-04-harness/</link>
       <pubDate>Sat, 04 Jul 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2026-07-04-harness/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2026-07-04-harness/</guid>
       <description>The concept of  recursive self-improvement (RSI)  dates back to  I. J. Good (1965) , where he defined an “ultraintelligent machine” as a system that can surpass humans in all intellectual activities and design better machines to improve itself.  Yudkowsky (2008)  used the phrase “recursive self-improvement” for a specific feedback loop: an AI uses its current intelligence to improve the cognitive machinery that produces its intelligence. 
  This feedback loop in modern AI may indicate the model r</description>
     </item>

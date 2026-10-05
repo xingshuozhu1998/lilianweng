@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log English mirror · tags/human-ai</title>
-    <link>https://xingshuozhu1998.github.io/en/tags/human-ai/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/human-ai/</link>
     <description>English mirror of Lilian Weng’s blog.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 05 Feb 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/human-ai/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 05 Feb 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/en/tags/human-ai/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Thinking about High-Quality Human Data</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2024-02-05-human-data-quality/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2024-02-05-human-data-quality/</link>
       <pubDate>Mon, 05 Feb 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2024-02-05-human-data-quality/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2024-02-05-human-data-quality/</guid>
       <description>[Special thank you to  Ian Kivlichan  for many useful pointers (E.g. the 100+ year old Nature paper “Vox populi”) and nice feedback. 🙏 ]   
  High-quality data is the fuel for modern data deep learning model training. Most of the task-specific labeled data comes from human annotation, such as classification task or  RLHF  labeling (which can be constructed as classification format) for LLM alignment training. Lots of ML techniques in the post can help with data quality, but fundamentally human da</description>
     </item>

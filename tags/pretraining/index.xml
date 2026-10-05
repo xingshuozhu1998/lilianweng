@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/pretraining</title>
-    <link>https://xingshuozhu1998.github.io/tags/pretraining/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/pretraining/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/pretraining/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/pretraining/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>审慎理解 Scaling Laws（规模变化与模型性能之间的规律）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2026-06-24-scaling-laws/</link>
       <pubDate>Wed, 24 Jun 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2026-06-24-scaling-laws/</guid>
       <description>Scaling laws是深度学习最重要的经验发现之一。观察形式简单：训练损失 $L$ 随模型规模 $N$、数据规模 $D$ 与计算量 $C$ 扩大，以可预测方式按幂律下降，在双对数图上呈直线。可将 scaling laws 视为描述计算、损失、模型规模与数据关系的框架；核心是如何在 $N$ 与 $D$ 之间最优分配宝贵计算。 
  这种可预测性使 scaling laws在实践中很有价值。常见流程是在少数小规模运行上拟合 scaling laws，再外推估计大型模型的 token（词元）与计算需求。 
  

@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/learning-dynamics</title>
-    <link>https://xingshuozhu1998.github.io/tags/learning-dynamics/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/learning-dynamics/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/learning-dynamics/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 24 Jun 2026 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/learning-dynamics/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>审慎理解 Scaling Laws（规模变化与模型性能之间的规律）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2026-06-24-scaling-laws/</link>
       <pubDate>Wed, 24 Jun 2026 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2026-06-24-scaling-laws/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2026-06-24-scaling-laws/</guid>
       <description>Scaling laws是深度学习最重要的经验发现之一。观察形式简单：训练损失 $L$ 随模型规模 $N$、数据规模 $D$ 与计算量 $C$ 扩大，以可预测方式按幂律下降，在双对数图上呈直线。可将 scaling laws 视为描述计算、损失、模型规模与数据关系的框架；核心是如何在 $N$ 与 $D$ 之间最优分配宝贵计算。 
  这种可预测性使 scaling laws在实践中很有价值。常见流程是在少数小规模运行上拟合 scaling laws，再外推估计大型模型的 token（词元）与计算需求。 
  
@@ -38,10 +38,10 @@
     
     <item>
       <title>神经切线核背后的数学</title>
-      <link>https://xingshuozhu1998.github.io/posts/2022-09-08-ntk/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2022-09-08-ntk/</link>
       <pubDate>Thu, 08 Sep 2022 10:00:00 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2022-09-08-ntk/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2022-09-08-ntk/</guid>
       <description>神经网络具有过度参数化的特点，这是 众所周知的 。神经网络往往能够轻松拟合数据，使训练损失接近零，同时在测试数据集上取得不错的泛化表现。尽管所有参数都随机初始化，优化过程仍能稳定地得到同样良好的结果。即使模型参数数量超过训练数据点数量，这一点也成立。 
   Neural tangent kernel（神经切线核；NTK（神经切线核）） （ Jacot et al. 2018 ）是一种核，用于解释神经网络在梯度下降训练过程中的演化。它帮助我们深入理解：为什么具有足够宽度的神经网络在训练以最小化经验损失时，能够稳定地收敛到全局最小值。本文将深入讨论 NTK 的动机与定义，并通过刻画无限宽神经网络中的 NTK，证明这些网络在不同初始化下的确定性收敛。 
  
@@ -50,10 +50,10 @@
     
     <item>
       <title>深度神经网络是否严重过拟合？</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-03-14-overfit/</link>
       <pubDate>Thu, 14 Mar 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-03-14-overfit/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-03-14-overfit/</guid>
       <description>[2019-05-27 更新：新增关于 Lottery Ticket Hypothesis（彩票假说）的 一节 。]  
  如果你和我一样，带着传统机器学习经验进入深度学习领域，可能经常思考这个问题：典型深度神经网络参数如此之多，训练误差很容易达到完美，因此它肯定会严重过拟合。它怎么可能泛化到样本外数据点呢？ 
  理解深度神经网络为何能泛化的努力，让我想起系统生物学领域一篇有趣论文—— “Can a biologist fix a radio?”（生物学家能修收音机吗？） （Lazebnik，2002）。如果生物学家像研究生物系统那样修收音机，可能很困难。因为收音机系统的完整机制尚未揭示，探测小型局部功能可能提供线索，却难以呈现系统内全部交互，更不用说完整工作流程。不论你认为它是否与 DL（深度学习）相关，这篇文章都非常有趣。 

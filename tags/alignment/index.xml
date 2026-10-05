@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/alignment</title>
-    <link>https://xingshuozhu1998.github.io/tags/alignment/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/alignment/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 28 Nov 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/alignment/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 28 Nov 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/alignment/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2024-11-28-reward-hacking/</link>
       <pubDate>Thu, 28 Nov 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2024-11-28-reward-hacking/</guid>
       <description>当  reinforcement learning（强化学习，RL（强化学习））  智能体  利用  奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。 
  随着  语言模型  开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL训练中的 reward hacking已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。 
  过去有关这一主题的大部分工作相当理论化，重点是定义或证明 reward hacking的存在。然而，针对实际缓解方法的研究，尤其在 RLHF与 LLM（大语言模型）背景下，仍然有限。我尤其希望呼吁，未来投入更多研究，理解 reward hacking 并开发缓解方法。希望不久之后能够用一篇专门文章讨论</description>
@@ -20,10 +20,10 @@
     
     <item>
       <title>Prompt Engineering（提示工程）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-03-15-prompt-engineering/</link>
       <pubDate>Wed, 15 Mar 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-03-15-prompt-engineering/</guid>
       <description>Prompt Engineering ，也称  In-Context Prompting（上下文提示） ，指如何与 LLM（大语言模型）通信，引导其行为达到预期结果，且  不  更新模型权重的方法。它是一门实证科学，Prompt Engineering 方法在不同模型上的效果可能差异很大，因此需要大量实验与启发式规则。 
  本文只聚焦自回归语言模型的 Prompt Engineering，不涉及完形填空测试、图像生成或多模态模型。Prompt Engineering 的核心目标是对齐与模型可引导性。请参阅我  之前  介绍可控文本生成的文章。 
   [我的个人尖锐看法]  我认为，某些 Prompt Engineering论文不值得写满8页，因为技巧用一句或几句话就能解释，其余全是基准评估。易用且共享的基准基础设施，应对社区更有益。但迭代提示或外部工具使用的配置并不简单，让整个研究社区统一采用它也不容易。 
@@ -34,10 +34,10 @@
     
     <item>
       <title>降低语言模型的有害性</title>
-      <link>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2021-03-21-lm-toxicity/</link>
       <pubDate>Sun, 21 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2021-03-21-lm-toxicity/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2021-03-21-lm-toxicity/</guid>
       <description>大型预训练  语言模型  在大量在线数据上训练，不可避免地从互联网习得某些有毒行为与偏差。预训练模型能力强大，在许多 NLP（自然语言处理）任务上非常成功。然而，要在现实应用中安全部署，必须对模型生成过程进行强有力的安全控制。 
  减少各类不安全内容，面临许多挑战： 
  
@@ -57,10 +57,10 @@
     
     <item>
       <title>可控神经文本生成</title>
-      <link>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2021-01-02-controllable-text-generation/</link>
       <pubDate>Sat, 02 Jan 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2021-01-02-controllable-text-generation/</guid>
       <description>[2021-02-01 更新：更新至 2.0 版，新增若干研究工作并修正许多笔误。] 
  
  [2021-05-26 更新：在  “提示设计” 一节新增 P-tuning 和 Prompt Tuning。] 

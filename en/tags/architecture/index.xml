@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log English mirror · tags/architecture</title>
-    <link>https://xingshuozhu1998.github.io/en/tags/architecture/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/architecture/</link>
     <description>English mirror of Lilian Weng’s blog.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Fri, 27 Jan 2023 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/architecture/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 27 Jan 2023 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/en/tags/architecture/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>The Transformer Family Version 2.0</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2023-01-27-the-transformer-family-v2/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-01-27-the-transformer-family-v2/</link>
       <pubDate>Fri, 27 Jan 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2023-01-27-the-transformer-family-v2/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-01-27-the-transformer-family-v2/</guid>
       <description>Many new Transformer architecture improvements have been proposed since my last post on   “The Transformer Family”   about three years ago. Here I did a big refactoring and enrichment of that 2020 post — restructure the hierarchy of sections and improve many sections with more recent papers. Version 2.0 is a superset of the old version, about twice the length. 
  Notations #  
  
@@ -30,10 +30,10 @@
     
     <item>
       <title>Large Transformer Model Inference Optimization</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2023-01-10-inference-optimization/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-01-10-inference-optimization/</link>
       <pubDate>Tue, 10 Jan 2023 10:00:00 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2023-01-10-inference-optimization/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-01-10-inference-optimization/</guid>
       <description>[Updated on 2023-01-24: add a small section on  Distillation .]   
  Large transformer models are mainstream nowadays, creating SoTA results for a variety of tasks. They are powerful but very expensive to train and use. The extremely high inference cost, in both time and memory, is a big bottleneck for adopting a powerful transformer for solving real-world tasks at scale. 
   Why is it hard to run inference for large transformer models?  Besides the increasing size of SoTA models, there are two ma</description>
@@ -41,10 +41,10 @@
     
     <item>
       <title>How to Train Really Large Models on Many GPUs?</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2021-09-25-train-large/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-09-25-train-large/</link>
       <pubDate>Fri, 24 Sep 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2021-09-25-train-large/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-09-25-train-large/</guid>
       <description>[Updated on 2022-03-13: add  expert choice routing .]  
  [Updated on 2022-06-10]:  Greg  and I wrote a shorted and upgraded version of this post, published on OpenAI Blog:  “Techniques for Training Large Neural Networks”  
  In recent years, we are seeing better results on many NLP benchmark tasks with larger pre-trained  language models . How to train large and deep neural networks is challenging, as it demands a large amount of GPU memory and a long horizon of training time. 
@@ -53,20 +53,20 @@
     
     <item>
       <title>Neural Architecture Search</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2020-08-06-nas/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-08-06-nas/</link>
       <pubDate>Thu, 06 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2020-08-06-nas/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-08-06-nas/</guid>
       <description>Although most popular and successful model architectures are designed by human experts, it doesn’t mean we have explored the entire network architecture space and settled down with the best option. We would have a better chance to find the optimal solution if we adopt a systematic and automatic way of learning high-performance model architectures. 
  Automatically learning and evolving network topologies is not a new idea ( Stanley &amp; Miikkulainen, 2002 ). In recent years, the pioneering work by  </description>
     </item>
     
     <item>
       <title>The Transformer Family</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2020-04-07-the-transformer-family/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-04-07-the-transformer-family/</link>
       <pubDate>Tue, 07 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2020-04-07-the-transformer-family/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-04-07-the-transformer-family/</guid>
       <description>[Updated on   2023-01-27  : After almost three years, I did a big refactoring update of this post to incorporate a bunch of new Transformer models since 2020. The enhanced version of this post is here:    The Transformer Family Version 2.0   . Please refer to that post on this topic.] 
   
  It has been almost two years since my last post on  attention . Recent progress on new and enhanced versions of Transformer motivates me to write another post on this specific topic, focusing on how the vanill</description>
@@ -74,10 +74,10 @@
     
     <item>
       <title>Generalized Language Models</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2019-01-31-lm/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2019-01-31-lm/</link>
       <pubDate>Thu, 31 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2019-01-31-lm/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2019-01-31-lm/</guid>
       <description>[Updated on 2019-02-14: add  ULMFiT  and  GPT-2 .]  
  [Updated on 2020-02-29: add  ALBERT .]  
  [Updated on 2020-10-25: add  RoBERTa .]  
@@ -94,20 +94,20 @@
     
     <item>
       <title>Flow-based Deep Generative Models</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2018-10-13-flow-models/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-10-13-flow-models/</link>
       <pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2018-10-13-flow-models/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-10-13-flow-models/</guid>
       <description>So far, I’ve written about two types of generative models,  GAN  and  VAE . Neither of them explicitly learns the probability density function of real data, $p(\mathbf{x})$ (where $\mathbf{x} \in \mathcal{D}$) — because it is really hard! Taking the generative model with latent variables as an example, $p(\mathbf{x}) = \int p(\mathbf{x}\vert\mathbf{z})p(\mathbf{z})d\mathbf{z}$ can hardly be calculated as it is intractable to go through all possible values of the latent code $\mathbf{z}$. 
  Flow-</description>
     </item>
     
     <item>
       <title>Attention? Attention!</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2018-06-24-attention/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-06-24-attention/</link>
       <pubDate>Sun, 24 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2018-06-24-attention/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-06-24-attention/</guid>
       <description>[Updated on 2018-10-28: Add  Pointer Network  and the  link  to my implementation of Transformer.]  
  [Updated on 2018-11-06: Add a  link  to the implementation of Transformer model.]  
  [Updated on 2018-11-18: Add  Neural Turing Machines .]  

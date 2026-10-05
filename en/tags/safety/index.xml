@@ -2,27 +2,27 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log English mirror · tags/safety</title>
-    <link>https://xingshuozhu1998.github.io/en/tags/safety/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/safety/</link>
     <description>English mirror of Lilian Weng’s blog.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 28 Nov 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/safety/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 28 Nov 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/en/tags/safety/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Reward Hacking in Reinforcement Learning</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2024-11-28-reward-hacking/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2024-11-28-reward-hacking/</link>
       <pubDate>Thu, 28 Nov 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2024-11-28-reward-hacking/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2024-11-28-reward-hacking/</guid>
       <description>Reward hacking occurs when a  reinforcement learning (RL)  agent  exploits  flaws or ambiguities in the reward function to achieve high rewards, without genuinely learning or completing the intended task. Reward hacking exists because RL environments are often imperfect, and it is fundamentally challenging to accurately specify a reward function. 
  With the rise of  language models  generalizing to a broad spectrum of tasks and RLHF becomes a de facto method for alignment training, reward hackin</description>
     </item>
     
     <item>
       <title>Extrinsic Hallucinations in LLMs</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2024-07-07-hallucination/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2024-07-07-hallucination/</link>
       <pubDate>Sun, 07 Jul 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2024-07-07-hallucination/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2024-07-07-hallucination/</guid>
       <description>Hallucination in large language models usually refers to the model generating unfaithful, fabricated, inconsistent, or nonsensical content. As a term, hallucination has been somewhat generalized to cases when the model makes mistakes. Here, I would like to narrow down the problem of hallucination to cases where the model output is fabricated and  not grounded  by either the provided context or world knowledge. 
  There are two types of hallucination: 
  
@@ -31,20 +31,20 @@
     
     <item>
       <title>Adversarial Attacks on LLMs</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2023-10-25-adv-attack-llm/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-10-25-adv-attack-llm/</link>
       <pubDate>Wed, 25 Oct 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2023-10-25-adv-attack-llm/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-10-25-adv-attack-llm/</guid>
       <description>The use of large language models in the real world has strongly accelerated by the launch of ChatGPT. We (including my team at OpenAI, shoutout to them) have invested a lot of effort to build default safe behavior into the model during the alignment process (e.g. via  RLHF ). However, adversarial attacks or jailbreak prompts could potentially trigger the model to output something undesired. 
  A large body of ground work on adversarial attacks is on images, and differently it operates in the cont</description>
     </item>
     
     <item>
       <title>Reducing Toxicity in Language Models</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2021-03-21-lm-toxicity/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-03-21-lm-toxicity/</link>
       <pubDate>Sun, 21 Mar 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2021-03-21-lm-toxicity/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-03-21-lm-toxicity/</guid>
       <description>Large pretrained  language models  are trained over a sizable collection of online data. They unavoidably acquire certain toxic behavior and biases from the Internet. Pretrained language models are very powerful and have shown great success in many NLP tasks. However, to safely deploy them for practical real-world applications demands a strong safety control over the model generation process. 
  Many challenges are associated with the effort to diminish various types of unsafe content: 
  

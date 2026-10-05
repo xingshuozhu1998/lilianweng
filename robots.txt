@@ -1,4 +1,4 @@
 User-agent: *
 Disallow:
-Sitemap: https://xingshuozhu1998.github.io/sitemap.xml
-Sitemap: https://xingshuozhu1998.github.io/en/sitemap.xml
+Sitemap: https://xingshuozhu1998.github.io/lilianweng/sitemap.xml
+Sitemap: https://xingshuozhu1998.github.io/lilianweng/en/sitemap.xml

@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log English mirror · tags/image-generation</title>
-    <link>https://xingshuozhu1998.github.io/en/tags/image-generation/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/image-generation/</link>
     <description>English mirror of Lilian Weng’s blog.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Sun, 11 Jul 2021 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/image-generation/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 11 Jul 2021 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/en/tags/image-generation/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>What are Diffusion Models?</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2021-07-11-diffusion-models/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-07-11-diffusion-models/</link>
       <pubDate>Sun, 11 Jul 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2021-07-11-diffusion-models/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-07-11-diffusion-models/</guid>
       <description>[Updated on 2021-09-19: Highly recommend this blog post on  score-based generative modeling  by Yang Song (author of several key papers in the references)].  
  [Updated on 2022-08-27: Added  classifier-free guidance ,  GLIDE ,  unCLIP  and  Imagen .  
  [Updated on 2022-08-31: Added  latent diffusion model .  
@@ -22,20 +22,20 @@
     
     <item>
       <title>Flow-based Deep Generative Models</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2018-10-13-flow-models/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-10-13-flow-models/</link>
       <pubDate>Sat, 13 Oct 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2018-10-13-flow-models/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-10-13-flow-models/</guid>
       <description>So far, I’ve written about two types of generative models,  GAN  and  VAE . Neither of them explicitly learns the probability density function of real data, $p(\mathbf{x})$ (where $\mathbf{x} \in \mathcal{D}$) — because it is really hard! Taking the generative model with latent variables as an example, $p(\mathbf{x}) = \int p(\mathbf{x}\vert\mathbf{z})p(\mathbf{z})d\mathbf{z}$ can hardly be calculated as it is intractable to go through all possible values of the latent code $\mathbf{z}$. 
  Flow-</description>
     </item>
     
     <item>
       <title>From Autoencoder to Beta-VAE</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2018-08-12-vae/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-08-12-vae/</link>
       <pubDate>Sun, 12 Aug 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2018-08-12-vae/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-08-12-vae/</guid>
       <description>[Updated on 2019-07-18: add a section on  VQ-VAE &amp; VQ-VAE-2 .] 
  
  [Updated on 2019-07-26: add a section on  TD-VAE .] 
@@ -45,10 +45,10 @@
     
     <item>
       <title>From GAN to WGAN</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2017-08-20-gan/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2017-08-20-gan/</link>
       <pubDate>Sun, 20 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2017-08-20-gan/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2017-08-20-gan/</guid>
       <description>[Updated on 2018-09-30: thanks to Yoonju, we have this post translated in  Korean !] 
  
  [Updated on 2019-04-18: this post is also available on  arXiv .]  

@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/reinforcement-learning</title>
-    <link>https://xingshuozhu1998.github.io/tags/reinforcement-learning/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/reinforcement-learning/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 01 May 2025 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/reinforcement-learning/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 01 May 2025 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/reinforcement-learning/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>我们为什么思考</title>
-      <link>https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2025-05-01-thinking/</link>
       <pubDate>Thu, 01 May 2025 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2025-05-01-thinking/</guid>
       <description>特别感谢  John Schulman  为本文提供大量极有价值的反馈，并直接编辑本文。  
  Test-time compute（测试时计算）（ Graves et al. 2016 、 Ling, et al. 2017 、 Cobbe et al. 2021 ）与 chain-of-thought（思维链）（思维链，CoT（思维链））（ Wei et al. 2022 、 Nye et al. 2021 ）显著提升了模型性能，同时也提出了许多研究问题。本文旨在回顾如何有效使用测试时计算（即“思考时间”）、以及它为何有效的最新进展。 
  动机 #  
@@ -23,10 +23,10 @@
     
     <item>
       <title>强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）</title>
-      <link>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2024-11-28-reward-hacking/</link>
       <pubDate>Thu, 28 Nov 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2024-11-28-reward-hacking/</guid>
       <description>当  reinforcement learning（强化学习，RL（强化学习））  智能体  利用  奖励函数的缺陷或歧义获得高奖励，却没有真正学会或完成预期任务时，就发生了 reward hacking。Reward hacking 的存在，是因为 RL 环境往往不完善，而且准确指定奖励函数本身就具有根本性的挑战。 
  随着  语言模型  开始泛化到广泛任务，RLHF（基于人类反馈的强化学习）成为 alignment（使模型行为符合人类意图）训练的事实标准方法，语言模型 RL训练中的 reward hacking已成为关键的现实挑战。模型学会修改单元测试以通过编程任务，或回复包含模仿用户偏好的偏差，这些情形相当令人担忧，而且很可能是 AI 模型在现实中部署更自主应用的主要障碍之一。 
  过去有关这一主题的大部分工作相当理论化，重点是定义或证明 reward hacking的存在。然而，针对实际缓解方法的研究，尤其在 RLHF与 LLM（大语言模型）背景下，仍然有限。我尤其希望呼吁，未来投入更多研究，理解 reward hacking 并开发缓解方法。希望不久之后能够用一篇专门文章讨论</description>
@@ -34,10 +34,10 @@
     
     <item>
       <title>Transformer（基于注意力机制的神经网络架构） 家族 2.0</title>
-      <link>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-27-the-transformer-family-v2/</link>
       <pubDate>Fri, 27 Jan 2023 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-27-the-transformer-family-v2/</guid>
       <description>自从大约三年前我发布上一篇   “The Transformer Family”   以来，人们提出了许多新的 Transformer 架构改进。在这里，我对那篇2020年的文章进行了大幅重构与扩充：重新组织各节的层级，并用更新的论文完善许多章节。2.0版包含旧版的全部内容，长度约为旧版的两倍。 
  符号说明 #  
  
@@ -74,10 +74,10 @@
     
     <item>
       <title>可控神经文本生成</title>
-      <link>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2021-01-02-controllable-text-generation/</link>
       <pubDate>Sat, 02 Jan 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2021-01-02-controllable-text-generation/</guid>
       <description>[2021-02-01 更新：更新至 2.0 版，新增若干研究工作并修正许多笔误。] 
  
  [2021-05-26 更新：在  “提示设计” 一节新增 P-tuning 和 Prompt Tuning。] 
@@ -94,10 +94,10 @@
     
     <item>
       <title>神经架构搜索</title>
-      <link>https://xingshuozhu1998.github.io/posts/2020-08-06-nas/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2020-08-06-nas/</link>
       <pubDate>Thu, 06 Aug 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2020-08-06-nas/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2020-08-06-nas/</guid>
       <description>虽然最流行、最成功的模型架构大多由人类专家设计，但这并不意味着我们已经探索了全部网络架构空间，并选定了最佳方案。如果采用系统化、自动化的方法学习高性能模型架构，我们找到最优解的机会会更大。 
  自动学习并演化网络拓扑并非新想法（ Stanley &amp; Miikkulainen, 2002 ）。近年来， Zoph &amp; Le 2017  与  Baker et al. 2017  的开创性工作，使 Neural Architecture Search（神经架构搜索，NAS（神经架构搜索））受到大量关注，带来许多有趣想法，以实现更好、更快、更节省成本的 NAS。 
  开始研究 NAS时，我发现  Elsken, et al 2019  的这篇优秀综述很有帮助。他们将 NAS 描述为具有三个主要组件的系统，清楚简洁，也被其他 NAS 论文广泛采用。 
@@ -108,10 +108,10 @@
     
     <item>
       <title>深度强化学习中的探索策略</title>
-      <link>https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2020-06-07-exploration-drl/</link>
       <pubDate>Sun, 07 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2020-06-07-exploration-drl/</guid>
       <description>[2020-06-17更新：加入  “exploration via disagreement（通过分歧探索）” ，位于“Forward Dynamics（前向动力学）” 一节 。  
   Exploitation（利用）与 exploration（探索）之间的权衡 ，是RL（强化学习）中的重要主题。我们希望RL智能体尽快找到最佳解。然而，在探索不足时过早锁定某个解，会造成很差的结果，因为这可能导致局部极小值或彻底失败。以最优回报为优化目标的现代  RL   算法 ，能够相当高效地实现良好的利用，而探索仍更像一个开放问题。 
  这里，我想讨论深度 RL中的几种常见探索策略。这是一个很大的主题，本文绝不可能覆盖所有重要子主题。我计划定期更新，随着时间推移逐步丰富内容。 
@@ -124,10 +124,10 @@
     
     <item>
       <title>Transformer（基于注意力机制的神经网络架构） 家族</title>
-      <link>https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2020-04-07-the-transformer-family/</link>
       <pubDate>Tue, 07 Apr 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2020-04-07-the-transformer-family/</guid>
       <description>[更新于   2023-01-27  ：时隔近三年，我对本文进行了大规模重构更新，纳入 2020 年以来的一批新 Transformer 模型。增强版文章在这里：   《Transformer 家族 2.0 版》   。关于这一主题，请参阅该文。] 
   
  距离上一篇关于 注意力 的文章，已近两年。Transformer 新版本与增强版本的近期进展，促使我围绕这一主题再写一篇，重点讨论如何改进基本 Transformer，以扩大长程注意力范围、降低内存与计算消耗、解决 RL（强化学习）任务等。 
@@ -159,10 +159,10 @@
     
     <item>
       <title>强化学习中的课程学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2020-01-29-curriculum-rl/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2020-01-29-curriculum-rl/</link>
       <pubDate>Wed, 29 Jan 2020 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2020-01-29-curriculum-rl/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2020-01-29-curriculum-rl/</guid>
       <description>[2020-02-03 更新：在“任务专属课程”一节提及  PCG（程序化内容生成） 。  
  [2020-02-04 更新：新增 “通过蒸馏构建课程” 一节。  
  要教一个连基本算术都不懂的 3 岁孩子积分或导数，听起来是不可能的任务。这就是教育的重要性：它提供系统方法，拆解复杂知识，并设计良好课程，由易到难教授概念。课程使我们人类更容易接近并学习困难的东西。但机器学习模型呢？能否通过课程更高效地训练模型？能否设计课程加速学习？ 
@@ -178,10 +178,10 @@
     
     <item>
       <title>自监督表征学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-11-10-self-supervised/</link>
       <pubDate>Sun, 10 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-11-10-self-supervised/</guid>
       <description>[2020-01-09 更新：新增  Contrastive Predictive Coding（对比预测编码） 一节。] 
  
   [2020-04-13 更新：新增关于 MoCo（动量对比学习方法）、SimCLR（使用数据增强与对比损失的表征学习方法） 和 CURL 的“Momentum Contrast（动量对比学习）”一节。]  
@@ -196,10 +196,10 @@
     
     <item>
       <title>进化策略</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-09-05-evolution-strategies/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-09-05-evolution-strategies/</link>
       <pubDate>Thu, 05 Sep 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-09-05-evolution-strategies/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-09-05-evolution-strategies/</guid>
       <description>随机梯度下降是优化深度学习模型的通用选择，但并非唯一选项。使用黑盒优化算法，可以评估目标函数 $f(x): \mathbb{R}^n \to \mathbb{R}$，即使不知道 $f(x)$ 的精确解析形式，因此无法计算梯度或 Hessian（海森）矩阵。黑盒优化方法包括  Simulated Annealing（模拟退火） 、 Hill Climbing（爬山算法） 和  Nelder-Mead method（单纯形搜索法） 。 
   Evolution Strategies (ES)（进化策略） 是一类黑盒优化算法，来自  Evolutionary Algorithms (EA)（进化算法） 家族。本文深入讨论几种经典 ES 方法，并介绍 ES 如何在深度强化学习中发挥作用的应用。 
  什么是 Evolution Strategies（进化策略）？ #  
@@ -209,10 +209,10 @@
     
     <item>
       <title>元强化学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-06-23-meta-rl/</link>
       <pubDate>Sun, 23 Jun 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-06-23-meta-rl/</guid>
       <description>上一篇  meta-learning（元学习）  主要在少样本分类中定义问题。这里探索“元学习”  Reinforcement Learning（强化学习，RL（强化学习））  任务，开发快速、高效解决未见任务的智能体。 
  回顾，好的元学习模型应泛化到未见任务或环境。适应本质是  小型学习阶段 ，测试时有限接触新配置。即使没有显式微调（可训练变量不做梯度反向传播），也能自主调整内部隐藏状态学习。 
  RL训练有时非常困难。如果元学习智能体足够聪明，可解未见任务分布极广，我们就走向  通用方法 ——构建无需太多人类干预或手工特征工程、能解决各种 RL 问题的“大脑”。很棒吧？💖 
@@ -226,10 +226,10 @@
     
     <item>
       <title>用于仿真到现实迁移的域随机化</title>
-      <link>https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2019-05-05-domain-randomization/</link>
       <pubDate>Sun, 05 May 2019 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2019-05-05-domain-randomization/</guid>
       <description>在机器人学中，最困难的问题之一是如何让模型迁移到现实世界。由于深度 RL（强化学习）算法的样本效率较低，而且在真实机器人上收集数据的成本较高，我们往往需要在仿真器中训练模型；理论上，仿真器能够提供无限量的数据。然而，仿真器与物理世界之间的现实差距，往往会导致模型在真实机器人上运行时失败。这种差距源于物理参数的不一致（例如摩擦、kp、阻尼、质量和密度），而更致命的原因则是不正确的物理建模（例如对柔软表面之间碰撞的建模）。 
  为了缩小 sim2real 差距，我们需要改进仿真器，使它更接近现实。以下是几种方法： 
  
@@ -246,10 +246,10 @@
     
     <item>
       <title>使用 TensorFlow（机器学习框架） 与 OpenAI Gym（强化学习环境工具库） 实现深度强化学习模型</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-05-05-drl-implementation/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-05-05-drl-implementation/</link>
       <pubDate>Sat, 05 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-05-05-drl-implementation/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-05-05-drl-implementation/</guid>
       <description>完整实现见  lilianweng/deep-reinforcement-learning-gym  
  在前两篇文章中，我介绍了许多深度强化学习模型的算法。现在该亲自动手，练习如何在实际环境中实现这些模型了。我们将在 Tensorflow与 OpenAI  gym  环境中实现它们。本教程的完整代码见  [lilian/deep-reinforcement-learning-gym] 。 
  环境配置 #  
@@ -266,10 +266,10 @@
     
     <item>
       <title>策略梯度算法</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/</link>
       <pubDate>Sun, 08 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/</guid>
       <description>[2018-06-30 更新：新增两种策略梯度方法  SAC（基于最大熵目标的行动者与评论家算法）  和  D4PG（分布式分布型深度确定性策略梯度） 。] 
  
  [2018-09-30 更新：新增策略梯度方法  TD3（双延迟深度确定性策略梯度） 。] 
@@ -291,10 +291,10 @@
     
     <item>
       <title>深入了解强化学习</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-02-19-rl-overview/</link>
       <pubDate>Mon, 19 Feb 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-02-19-rl-overview/</guid>
       <description>[2020-09-03更新：更新  SARSA  与  Q-learning  算法，使两者区别更加明显。 
  
  [2021-09-19更新：感谢爱吃猫的鱼，本文已有  中文版 。]  
@@ -308,10 +308,10 @@
     
     <item>
       <title>多臂老虎机问题及其解法</title>
-      <link>https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2018-01-23-multi-armed-bandit/</link>
       <pubDate>Tue, 23 Jan 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2018-01-23-multi-armed-bandit/</guid>
       <description>这些算法针对 Bernoulli bandit（伯努利老虎机）的实现见  lilianweng/multi-armed-bandit 。 
  Exploitation（利用）与 Exploration（探索） #  
  探索与利用的两难困境存在于生活的许多方面。假设你最喜欢的餐馆就在街角。如果每天都去，你很清楚自己会吃到什么，却可能错过发现更好选择的机会。如果总去尝试新地方，你很可能时不时就得吃到难吃的食物。同样，在线广告推荐系统也试图在已知最吸引人的广告与可能取得更好效果的新广告之间取得平衡。 

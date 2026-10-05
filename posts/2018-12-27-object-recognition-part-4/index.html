@@ -10,15 +10,15 @@
 <meta name="description" content="
 在第 3 部分中，我们回顾了 R-CNN 家族的模型。它们都是基于区域的目标检测算法，可以达到很高的准确率，但对自动驾驶等某些应用而言，速度可能太慢。第 4 部分只关注快速目标检测模型，包括 SSD、RetinaNet 和 YOLO 家族的模型。">
 <meta name="author" content="Lilian Weng">
-<link rel="canonical" href="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/" />
-<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
-<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
+<link rel="canonical" href="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/" />
+<link crossorigin="anonymous" href="https://xingshuozhu1998.github.io/lilianweng/assets/css/stylesheet.min.8e2f522e170c601ef0b359b6e27078d17e3020e1f4d928afdff4dae588c1e9e4.css" integrity="sha256-ji9SLhcMYB7ws1m24nB40X4wIOH02Siv3/Ta5YjB6eQ=" rel="preload stylesheet" as="style">
+<script defer crossorigin="anonymous" src="https://xingshuozhu1998.github.io/lilianweng/assets/js/highlight.min.199271f351c4b46f0d0536b6e2eb89a4766040c0e8df57f1a695c6570d8a4e0f.js" integrity="sha256-GZJx81HEtG8NBTa24uuJpHZgQMDo31fxppXGVw2KTg8="
     onload="hljs.initHighlightingOnLoad();"></script>
-<link rel="icon" href="https://xingshuozhu1998.github.io/favicon_wine.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/apple-touch-icon.png">
-<link rel="mask-icon" href="https://xingshuozhu1998.github.io/safari-pinned-tab.svg">
+<link rel="icon" href="https://xingshuozhu1998.github.io/lilianweng/favicon_wine.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://xingshuozhu1998.github.io/lilianweng/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://xingshuozhu1998.github.io/lilianweng/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://xingshuozhu1998.github.io/lilianweng/apple-touch-icon.png">
+<link rel="mask-icon" href="https://xingshuozhu1998.github.io/lilianweng/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
 
@@ -63,7 +63,7 @@
 <meta property="og:description" content="
 在第 3 部分中，我们回顾了 R-CNN 家族的模型。它们都是基于区域的目标检测算法，可以达到很高的准确率，但对自动驾驶等某些应用而言，速度可能太慢。第 4 部分只关注快速目标检测模型，包括 SSD、RetinaNet 和 YOLO 家族的模型。" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/" /><meta property="article:section" content="posts" />
+<meta property="og:url" content="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/" /><meta property="article:section" content="posts" />
 <meta property="article:published_time" content="2018-12-27T00:00:00&#43;00:00" />
 <meta property="article:modified_time" content="2018-12-27T00:00:00&#43;00:00" />
 
@@ -73,10 +73,10 @@
 在第 3 部分中，我们回顾了 R-CNN 家族的模型。它们都是基于区域的目标检测算法，可以达到很高的准确率，但对自动驾驶等某些应用而言，速度可能太慢。第 4 部分只关注快速目标检测模型，包括 SSD、RetinaNet 和 YOLO 家族的模型。"/>
 
 
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/posts/"}, {"@type": "ListItem", "position": 2, "name": "目标检测（四）：快速检测模型", "item": "https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/"}]}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "目标检测（四）：快速检测模型", "name": "目标检测（四）：快速检测模型", "description": "在第 3 部分中，我们回顾了 R-CNN 家族的模型。它们都是基于区域的目标检测算法，可以达到很高的准确率，但对自动驾驶等某些应用而言，速度可能太慢。第 4 部分只关注快速目标检测模型，包括 SSD、RetinaNet 和 YOLO 家族的模型。", "keywords": ["object-detection", "object-recognition", "vision-model"], "articleBody": "在 第 3 部分 中，我们回顾了 R-CNN（基于候选区域的卷积神经网络） 家族的模型。它们都是基于区域的目标检测算法，可以达到很高的准确率，但对自动驾驶等某些应用而言，速度可能太慢。第 4 部分只关注快速目标检测模型，包括 SSD、RetinaNet 和 YOLO（通过一次网络前向计算完成目标检测的模型） 家族的模型。 \n 本系列所有文章的链接：\n[ 第 1 部分 ]\n[ 第 2 部分 ]\n[ 第 3 部分 ]\n[ 第 4 部分 ]。 \n 两阶段与单阶段检测器 #  \n R-CNN 家族的模型都基于区域。检测分两个阶段进行：（1）首先，模型通过选择性搜索或区域提议网络提出一组感兴趣区域。提出的区域很稀疏，因为潜在的候选边界框可能有无限多个。（2）随后，分类器只处理这些候选区域。 \n 另一种不同的方法跳过区域提议阶段，直接在对可能位置的密集采样上进行检测。这就是单阶段目标检测算法的工作方式。这样更快、更简单，但可能会略微降低性能。 \n 本文介绍的所有模型都是单阶段检测器。 \n YOLO: You Only Look Once #  \n  YOLO  模型（ “You Only Look Once” ； Redmon et al., 2016 ）是构建快速实时目标检测器的最早尝试。由于 YOLO 不经过区域提议步骤，而且只针对有限数量的边界框进行预测，因此推理速度非常快。 \n 工作流程 #  \n \n \n 在图像分类任务上 预训练 一个 CNN（卷积神经网络）。 \n \n \n 将图像划分成 $S \\times S$ 个网格。如果一个目标的中心落在某个网格中，该网格就“负责”检测这个目标的存在。每个网格预测：（a）$B$ 个边界框的位置；（b）置信度分数；（c）以边界框中存在目标为条件的目标类别概率。 \n \n 边界框的 坐标 由包含 4 个值的元组定义，即（中心 x 坐标、中心 y 坐标、宽度、高度）——$(x, y, w, h)$，其中 $x$ 和 $y$ 被设为相对于网格位置的偏移。此外，$x$、$y$、$w$ 和 $h$ 用图像的宽度和高度归一化，因此都落在 (0, 1] 之间。 \n  置信度分数 表示网格包含目标的可能性： Pr(containing an object) x IoU(pred, truth) ；其中  Pr  = 概率， IoU  = 交并比。 \n 如果网格中包含目标，就预测该目标属于每个类别的 概率 ，类别为 $C_i, i=1, \\dots, K$： Pr(the object belongs to the class C_i | containing an object) 。在这一阶段，无论边界框数量 $B$ 是多少，模型都只为每个网格预测一组类别概率。 \n 总共，一张图像包含 $S \\times S \\times B$ 个边界框，每个框对应 4 个位置预测值、1 个置信度分数，以及用于目标分类的 K 个条件概率。一张图像的预测值总数为 $S \\times S \\times (5B + K)$，这也是模型最后一个卷积层的张量形状。 \n \n \n \n 修改预训练 CNN的最后一层，使其输出大小为 $S \\times S \\times (5B + K)$ 的预测张量。 \n \n \n \n\t \n\t YOLO 模型的工作流程。（图片来源： 原始论文 ） \n \n 网络架构 #  \n 基础模型类似于  GoogLeNet ，其中 inception 模块被 1x1 和 3x3 卷积层替代。两个全连接层作用于整个卷积特征图，产生形状为 $S \\times S \\times (5B + K)$ 的最终预测。 \n \n\t \n\t YOLO 的网络架构。 \n \n 损失函数 #  \n 损失包含两部分：用于预测边界框偏移的 定位损失 ，以及用于条件类别概率的 分类损失 。两部分都按误差平方和计算。两个缩放参数分别控制边界框坐标预测的损失应增大多少（$\\lambda_\\text{coord}$），以及不含目标的框的置信度分数预测损失应减小多少（$\\lambda_\\text{noobj}$）。降低背景框所贡献损失的权重很重要，因为大多数边界框中没有实例。论文中，模型设置 $\\lambda_\\text{coord} = 5$ 和 $\\lambda_\\text{noobj} = 0.5$。 \n \n$$\n\\begin{aligned}\n\\mathcal{L}_\\text{loc} &= \\lambda_\\text{coord} \\sum_{i=0}^{S^2} \\sum_{j=0}^B \\mathbb{1}_{ij}^\\text{obj} [(x_i - \\hat{x}_i)^2 + (y_i - \\hat{y}_i)^2 + (\\sqrt{w_i} - \\sqrt{\\hat{w}_i})^2 + (\\sqrt{h_i} - \\sqrt{\\hat{h}_i})^2 ] \\\\\n\\mathcal{L}_\\text{cls}  &= \\sum_{i=0}^{S^2} \\sum_{j=0}^B \\big( \\mathbb{1}_{ij}^\\text{obj} + \\lambda_\\text{noobj} (1 - \\mathbb{1}_{ij}^\\text{obj})\\big) (C_{ij} - \\hat{C}_{ij})^2 + \\sum_{i=0}^{S^2} \\sum_{c \\in \\mathcal{C}} \\mathbb{1}_i^\\text{obj} (p_i(c) - \\hat{p}_i(c))^2\\\\\n\\mathcal{L} &= \\mathcal{L}_\\text{loc} + \\mathcal{L}_\\text{cls}\n\\end{aligned}\n$$\n \n \n 注意：原始 YOLO 论文的损失函数使用 $C_i$ 而不是 $C_{ij}$ 作为置信度分数。我依据自己的理解做了修正，因为每个边界框都应该有自己的置信度分数。如果你不同意，请告知我。非常感谢。 \n \n 其中， \n \n $\\mathbb{1}_i^\\text{obj}$：表示网格 i 是否包含目标的指示函数。 \n $\\mathbb{1}_{ij}^\\text{obj}$：表示网格 i 的第 j 个边界框是否“负责”目标预测（见图 3）。 \n $C_{ij}$：网格 i 的置信度分数， Pr(containing an object) * IoU(pred, truth) 。 \n $\\hat{C}_{ij}$：预测的置信度分数。 \n $\\mathcal{C}$：所有类别的集合。 \n $p_i(c)$：网格 i 是否包含类别为 $c \\in \\mathcal{C}$ 的目标的条件概率。 \n $\\hat{p}_i(c)$：预测的条件类别概率。 \n \n \n\t \n\t 在网格 i 的一个位置上，模型提出 B 个候选边界框，其中与真实标注重叠程度最高的框就是“负责”预测的框。 \n \n 损失函数只在网格中存在目标时才惩罚分类误差，即 $\\mathbb{1}_i^\\text{obj} = 1$。同样，只有预测器“负责”真实标注框时才惩罚边界框坐标误差，即 $\\mathbb{1}_{ij}^\\text{obj} = 1$。 \n 作为单阶段目标检测器，YOLO 速度极快，但由于候选边界框数量有限，它不擅长识别形状不规则的目标或成群的小目标。 \n SSD: Single Shot MultiBox Detector #  \n  Single Shot Detector （ SSD ； Liu et al, 2016 ）是最早利用卷积神经网络的金字塔特征层级高效检测不同大小目标的尝试之一。 \n 图像金字塔 #  \n SSD 使用在 ImageNet 上预训练的  VGG-16  模型作为基础模型，提取有用的图像特征。\n在 VGG16 之上，SSD 添加了几个尺寸逐渐减小的卷积特征层。可以将它们视为不同尺度图像的 金字塔表示 。直观而言，早期层级中较大、细粒度的特征图擅长捕捉小目标，而较小、粗粒度的特征图能够很好地检测大目标。在 SSD 中，每个金字塔层都进行检测，针对不同大小的目标。 \n \n\t \n\t SSD 的模型架构。 \n \n 工作流程 #  \n 与 YOLO 不同，SSD 不会将图像划分成任意大小的网格，而是为特征图上的每个位置预测预定义  anchor boxes（锚框） 的偏移量（论文称之为“默认框”）。每个框相对于其对应网格具有固定的大小和位置。所有 anchor boxes 以卷积方式平铺整个特征图。 \n 不同层级的特征图具有不同的感受野大小。对不同层级的 anchor boxes（锚框）重新缩放，使每张特征图只负责某个特定尺度的目标。例如，在图 5 中，狗只能在 4x4 的特征图（较高层级）中被检测到，而猫只由 8x8 的特征图（较低层级）捕捉到。 \n \n\t \n\t SSD 框架。（a）训练数据包含图像以及每个目标的真实标注框。（b）在细粒度的特征图（8 x 8）中，不同纵横比的 anchor boxes（锚框）对应原始输入中的较小区域。（c）在粗粒度的特征图（4 x 4）中，anchor boxes 覆盖原始输入中的较大区域。（图片来源： 原始论文 ） \n \n anchor box（锚框）的宽度、高度和中心位置都归一化到 (0, 1)。在位置 $(i, j)$，其所属的第 $\\ell$ 个特征层大小为 $m \\times n$，且 $i=1,\\dots,n, j=1,\\dots,m$，我们使用一个与层级成正比的唯一线性尺度，以及 5 种不同的边界框纵横比（宽高比）；当纵横比为 1 时，另加一个特殊尺度（为什么需要它？论文没有解释，可能只是一个启发式技巧）。因此，每个特征网格共有 6 个 anchor boxes。 \n \n$$\n\\begin{aligned}\n\\text{level index: } &\\ell = 1, \\dots, L \\\\\n\\text{scale of boxes: } &s_\\ell = s_\\text{min} + \\frac{s_\\text{max} - s_\\text{min}}{L - 1} (\\ell - 1) \\\\\n\\text{aspect ratio: } &r \\in \\{1, 2, 3, 1/2, 1/3\\}\\\\\n\\text{additional scale: } & s'_\\ell = \\sqrt{s_\\ell s_{\\ell + 1}} \\text{ when } r = 1 \\text{thus, 6 boxes in total.}\\\\\n\\text{width: } &w_\\ell^r = s_\\ell \\sqrt{r} \\\\\n\\text{height: } &h_\\ell^r = s_\\ell / \\sqrt{r} \\\\\n\\text{center location: } & (x^i_\\ell, y^j_\\ell) = (\\frac{i+0.5}{m}, \\frac{j+0.5}{n})\n\\end{aligned}\n$$\n \n \n\t \n\t 当 $\\ell$ 这一层索引增大时，anchor box（锚框）大小如何放大的示例，对应 $L=6, s\\_\\text{min} = 0.2, s\\_\\text{max} = 0.9$。图中只画出了纵横比为 $r=1$ 的框。 \n \n 在每个位置，模型对 $c$ 个类别输出概率，并输出 4 个偏移量，方法是应用 $3 \\times 3 \\times p$ 卷积滤波器（其中 $p$ 为特征图的通道数），对 $k$ 个 anchor boxes（锚框）中的每一个都这样处理。因此，给定大小为 $m \\times n$ 的特征图，我们需要 $kmn(c+4)$ 个预测滤波器。 \n 损失函数 #  \n 与 YOLO 相同，损失函数是定位损失与分类损失之和。 \n $\\mathcal{L} = \\frac{1}{N}(\\mathcal{L}_\\text{cls} + \\alpha \\mathcal{L}_\\text{loc})$ \n 其中，$N$ 是匹配的边界框数量，$\\alpha$ 用于平衡两种损失的权重，通过交叉验证选定。 \n  定位损失 是预测的边界框修正量与真实值之间的  smooth L1 loss（平滑 L1 损失） 。坐标修正变换与  R-CNN  在 边界框回归 中采用的变换相同。 \n \n$$\n\\begin{aligned}\n\\mathcal{L}_\\text{loc} &= \\sum_{i,j} \\sum_{m\\in\\{x, y, w, h\\}} \\mathbb{1}_{ij}^\\text{match}\n L_1^\\text{smooth}(d_m^i - t_m^j)^2\\\\\nL_1^\\text{smooth}(x) &= \\begin{cases}\n    0.5 x^2             & \\text{if } \\vert x \\vert  \n 其中，$\\mathbb{1}_{ij}^\\text{match}$ 表示第 $i$ 个边界框（坐标为 $(p^i_x, p^i_y, p^i_w, p^i_h)$）是否与第 $j$ 个真实标注框（坐标为 $(g^j_x, g^j_y, g^j_w, g^j_h)$）匹配，目标类别不限。$d^i_m, m\\in\\{x, y, w, h\\}$ 是预测的修正项。变换的具体方式请见 这里 。 \n  分类损失 是针对多个类别的 softmax 损失（tensorflow（机器学习框架） 中的  softmax_cross_entropy_with_logits ）： \n \n$$\n\\mathcal{L}_\\text{cls} = -\\sum_{i \\in \\text{pos}} \\mathbb{1}_{ij}^k \\log(\\hat{c}_i^k) - \\sum_{i \\in \\text{neg}} \\log(\\hat{c}_i^0)\\text{, where }\\hat{c}_i^k = \\text{softmax}(c_i^k)\n$$\n \n 其中，$\\mathbb{1}_{ij}^k$ 表示第 $i$ 个边界框与第 $j$ 个真实标注框是否匹配，目标属于类别 $k$。$\\text{pos}$ 是匹配边界框的集合（共 $N$ 项），$\\text{neg}$ 是负样本集合。SSD 使用  hard negative mining（困难负样本挖掘） 选择容易误分类的负样本，以构建这一 $\\text{neg}$ 集合：将所有 anchor boxes（锚框）按目标存在置信度分数排序后，模型选择排名靠前的候选框进行训练，使负样本与正样本的比例最多为 3:1。 \n YOLOv2 / YOLO9000 #  \n  YOLOv2 （ Redmon & Farhadi, 2017 ）是 YOLO 的增强版本。 YOLO9000  基于 YOLOv2 构建，但使用联合数据集训练，该数据集将 COCO 检测数据集与 ImageNet 中排名前 9000 的类别结合起来。 \n YOLOv2 的改进 #  \n 为了让 YOLO 的预测更准确、更快速，采用了多种修改，包括： \n  1. BatchNorm 有帮助 ：在所有卷积层上添加  batch norm（批归一化） ，显著改善收敛。 \n  2. 图像分辨率很重要 ：用 高分辨率 图像微调基础模型，提高检测性能。 \n  3. 使用卷积检测 anchor box（锚框） ：YOLOv2 不再使用作用于整个特征图的全连接层预测边界框位置，而是像 Faster R-CNN 一样，使用 卷积层 预测  anchor boxes  的位置。空间位置预测与类别概率预测相互解耦。总体而言，这一变化使 mAP 略微下降，但提高了召回率。 \n  4. 对边界框尺寸进行 K-means 聚类 ：Faster R-CNN 使用人工选定的 anchor boxes（锚框）大小，而 YOLOv2 在训练数据上进行 K-means 聚类，为 anchor box 的尺寸找到良好的先验。距离度量被设计为 依赖 IoU（交并比）分数 ： \n \n$$\n\\text{dist}(x, c_i) = 1 - \\text{IoU}(x, c_i), i=1,\\dots,k\n$$\n \n 其中，$x$ 是候选真实标注框，$c_i$ 是其中一个聚类中心。最佳的聚类中心（anchor boxes，锚框）数量 $k$ 可以通过 肘部法 选择。 \n 在边界框数量固定的条件下，由聚类生成的 anchor boxes（锚框）能提供更高的平均 IoU（交并比）。 \n  5. 直接预测位置 ：YOLOv2 对边界框预测的建模方式，使预测位置 不会偏离 中心位置太远。如果像区域提议网络那样，边界框位置预测能够将框放在图像的任意位置，模型训练就可能变得不稳定。 \n 给定大小为 $(p_w, p_h)$ 的 anchor box（锚框），它位于左上角坐标为 $(c_x, c_y)$ 的网格中，模型预测偏移量和尺度 $(t_x, t_y, t_w, t_h)$。对应的预测边界框 $b$ 的中心为 $(b_x, b_y)$，大小为 $(b_w, b_h)$。置信度分数是另一个输出经 sigmoid 函数（$\\sigma$）变换后的结果，该输出为 $t_o$。 \n \n$$\n\\begin{aligned}\nb_x &= \\sigma(t_x) + c_x\\\\\nb_y &= \\sigma(t_y) + c_y\\\\\nb_w &= p_w e^{t_w}\\\\\nb_h &= p_h e^{t_h}\\\\\n\\text{Pr}(\\text{object}) &\\cdot \\text{IoU}(b, \\text{object}) = \\sigma(t_o)\n\\end{aligned}\n$$\n \n \n\t \n\t YOLOv2 的边界框位置预测。（图片来源： 原始论文 ） \n \n  6. 添加细粒度特征 ：YOLOv2 添加一个直通层，将较早层中的 细粒度特征 带到最后的输出层。该直通层的机制类似于  ResNet 中的恒等映射 ，用于从先前的层提取更高维的特征。这使性能提高了 1%。 \n  7. 多尺度训练 ：为了让训练出的模型能够适应不同大小的输入图像，输入维度的 新大小 每隔 10 个批次就进行一次 随机采样 。由于 YOLOv2 的卷积层将输入维度下采样 32 倍，新采样的大小是 32 的倍数。 \n  8. 轻量基础模型 ：为了进一步加快预测，YOLOv2 采用轻量基础模型 DarkNet-19，它有 19 个卷积层和 5 个最大池化层。关键是在 3x3 卷积层之间插入平均池化与 1x1 卷积滤波器。 \n YOLO9000：使用丰富的数据集训练 #  \n 由于在图像上绘制用于目标检测的边界框，比为图像添加分类标签昂贵得多，论文提出了一种将小型目标检测数据集与大型 ImageNet 结合的方法，使模型能够接触数量多得多的目标类别。YOLO9000 这个名称来自 ImageNet 中排名前 9000 的类别。在联合训练期间，如果输入图像来自分类数据集，就只对分类损失进行反向传播。 \n 检测数据集的标签数量少得多，且更为宽泛；此外，不同数据集之间的标签往往并不互斥。例如，ImageNet 有“Persian cat”标签，而同一张图像在 COCO 中会被标记为“cat”。如果类别不互斥，对所有类别应用 softmax 就没有意义。 \n 为了高效合并 ImageNet 标签（1000 类，细粒度）与 COCO/PASCAL 标签（少于 100 类，粗粒度），YOLO9000 参考  WordNet  构建了层级树结构，使一般性标签更接近根节点，而细粒度类别标签位于叶节点。这样，“cat”就是“Persian cat”的父节点。 \n \n\t \n\t WordTree 层级结构合并了 COCO 与 ImageNet 的标签。蓝色节点是 COCO 标签，红色节点是 ImageNet 标签。（图片来源： 原始论文 ） \n \n 为了预测某个类别节点的概率，可以沿着该节点到根节点的路径计算： \n  Pr(\"persian cat\" | contain a \"physical object\") \n= Pr(\"persian cat\" | \"cat\") \n  Pr(\"cat\" | \"animal\") \n  Pr(\"animal\" | \"physical object\") \n  Pr(contain a \"physical object\")    # confidence score.\n   注意， Pr(contain a \"physical object\")  是置信度分数，在边界框检测流程中单独预测。条件概率预测的路径可以在任意步骤停止，具体取决于有哪些可用标签。 \n RetinaNet #  \n  RetinaNet （ Lin et al., 2018 ）是一种单阶段密集目标检测器。两个关键组成部分是 特征化图像金字塔 和  focal loss（聚焦损失） 。 \n Focal Loss（聚焦损失） #  \n 目标检测模型训练中的一个问题，是不含目标的背景与包含感兴趣目标的前景极度不平衡。 Focal loss（聚焦损失） 被设计为给困难、容易误分类的样本（例如带有嘈杂纹理或部分目标的背景）分配更高权重，并降低简单样本（例如显然空无一物的背景）的权重。 \n 从二分类的普通交叉熵损失开始， \n \n$$\n\\text{CE}(p, y) = -y\\log p - (1-y)\\log(1-p)\n$$\n \n 其中，$y \\in \\{0, 1\\}$ 是真实的二元标签，表示边界框中是否包含目标，$p \\in [0, 1]$ 是预测的目标存在概率（也称置信度分数）。 \n 为了简化记号， \n \n$$\n\\text{let } p_t = \\begin{cases}\np    & \\text{if } y = 1\\\\\n1-p  & \\text{otherwise}\n\\end{cases},\n\\text{then } \\text{CE}(p, y)=\\text{CE}(p_t) = -\\log p_t\n$$\n \n 对于容易分类、$p_t \\gg 0.5$ 较大的样本，也就是 $p$ 非常接近 0（y=0 时）或 1（y=1 时）的情况，产生的损失仍可能具有不可忽略的大小。Focal loss（聚焦损失）显式地为交叉熵中的每一项添加权重因子 $(1-p_t)^\\gamma, \\gamma \\geq 0$，使 $p_t$ 较大时权重较小，从而降低简单样本的权重。 \n \n$$\n\\text{FL}(p_t) = -(1-p_t)^\\gamma \\log p_t\n$$\n \n \n\t \n\t Focal loss（聚焦损失）通过因子 $(1-p\\_t)^\\gamma$ 减少对简单样本的关注。（图片来源： 原始论文 ） \n \n 为了更好地控制权重函数的形状（见图 10），RetinaNet 使用 focal loss（聚焦损失）的 $\\alpha$ 平衡变体，其中 $\\alpha=0.25, \\gamma=2$ 效果最佳。 \n \n$$\n\\text{FL}(p_t) = -\\alpha (1-p_t)^\\gamma \\log p_t\n$$\n \n \n\t \n\t Focal loss（聚焦损失）权重 $\\alpha (1-p\\_t)^\\gamma$ 随 $p\\_t$ 变化的曲线，分别采用不同的 $\\alpha$ 和 $\\gamma$ 值。 \n \n 特征化图像金字塔 #  \n  特征化图像金字塔 （ Lin et al., 2017 ）是 RetinaNet 的骨干网络。沿用 SSD 中 图像金字塔 的方法，特征化图像金字塔为不同尺度的目标检测提供了基本视觉组件。 \n 特征金字塔网络的关键思想如下所示。基础结构包含一系列 金字塔层级 ，每个层级对应网络中的一个 阶段 。每个阶段包含多个大小相同的卷积层，而各阶段的尺寸依次缩小 2 倍。将第 $i$ 个阶段的最后一层记为 $C_i$。 \n \n\t \n\t 特征化图像金字塔模块示意图。（依据  FPN 论文 中的图 3 重绘） \n \n 两条路径连接卷积层： \n \n  自底向上路径 是常规的前馈计算。 \n  自顶向下路径  沿相反方向，通过横向连接，将粗粒度但语义更强的特征图加回到之前尺寸更大的金字塔层级中。\n \n 首先，对空间上更粗糙的高层特征进行上采样，将尺寸放大 2 倍。对于图像放大，论文使用最近邻上采样。虽然有许多 图像放大算法 ，例如使用  deconv（反卷积） ，但采用其他图像缩放方法可能改善 RetinaNet 的性能，也可能没有改善。 \n 较大的特征图经过一个 1x1 卷积层，以降低通道维度。 \n 最后，通过逐元素相加来合并这两张特征图。\n \n \n横向连接只发生在各阶段的最后一层，记为 $\\{C_i\\}$，这一过程持续到生成最细粒度（最大）的合并特征图。每张合并特征图经过一个 3x3 卷积层后都用于预测，记为 $\\{P_i\\}$。 \n \n \n \n 根据消融研究，特征化图像金字塔设计中各组件的重要性排序如下： 1x1 横向连接  > 跨多个层检测目标 > 自顶向下的特征丰富 > 金字塔表示（相比仅检查最细粒度层）。 \n 模型架构 #  \n 特征化金字塔构建在 ResNet 架构之上。回顾一下， ResNet  有 5 个卷积块（即网络阶段／金字塔层级）。第 $i$ 个金字塔层级的最后一层 $C_i$，其分辨率比原始输入维度低 $2^i$ 倍。 \n RetinaNet 使用从 $P_3$ 到 $P_7$ 的特征金字塔层级： \n \n $P_3$ 到 $P_5$ 由对应的 ResNet 残差阶段 $C_3$ 到 $C_5$ 计算得到。它们通过自顶向下和自底向上的路径连接。 \n $P_6$ 通过在 $C_5$ 上应用步幅为 2 的 3×3 卷积得到。 \n $P_7$ 通过对 $P_6$ 应用 ReLU 和步幅为 2 的 3×3 卷积得到。 \n \n 在 ResNet 上添加更高的金字塔层级，可以改善大目标检测的性能。 \n 与 SSD 相同，所有金字塔层级都通过各自的合并特征图进行预测，从而开展检测。由于这些预测共享同一个分类器和边界框回归器，所以所有特征图都被构造成相同的通道维度 d=256。 \n 每个层级有 A=9 个 anchor boxes（锚框）： \n \n 基础大小对应从 $32^2$ 到 $512^2$ 像素的面积，分别用于 $P_3$ 到 $P_7$。有三种尺寸比例：$\\{2^0, 2^{1/3}, 2^{2/3}\\}$。 \n 每种大小都有三种纵横比 {1/2, 1, 2}。 \n \n 与通常一样，对于每个 anchor box（锚框），模型在分类子网络中输出 $K$ 个类别各自的类别概率，并在边界框回归子网络中回归该 anchor box 到最近的真实标注目标的偏移量。分类子网络采用前面介绍的 focal loss（聚焦损失）。 \n \n\t \n\t RetinaNet 模型架构在 ResNet 之上使用  FPN（特征金字塔网络）  骨干网络。（图片来源： FPN  论文） \n \n YOLOv3 #  \n  YOLOv3  是在 YOLOv2 上应用一系列设计技巧构建的。这些变化受到目标检测领域近期进展的启发。 \n 修改包括以下各项： \n  1. 使用逻辑回归预测置信度分数 ：YOLOv3 使用 逻辑回归 为每个边界框预测置信度分数，而 YOLO 和 YOLOv2 对分类项使用误差平方和（见上面的 损失函数 ）。对偏移预测使用线性回归会导致 mAP 下降。 \n  2. 类别预测不再使用 softmax ：预测类别置信度时，YOLOv3 为每个类别使用 多个独立的逻辑分类器 ，而不是一个 softmax 层。这非常有帮助，尤其是考虑到一张图像可能有多个标签，而且并非所有标签都保证相互排斥。 \n  3. 使用 Darknet + ResNet 作为基础模型 ：新的 Darknet-53 仍像原始 Darknet 架构一样依赖连续的 3x3 和 1x1 卷积层，但添加了残差块。 \n  4. 多尺度预测 ：受到图像金字塔的启发，YOLOv3 在基础特征提取模型之后添加了几个卷积层，并在这些卷积层中的三个不同尺度上进行预测。这样，总体上它需要处理数量多得多、大小各异的候选边界框。 \n  5. 跨层拼接 ：YOLOv3 还在两个预测层（输出层除外）与较早的细粒度特征图之间添加跨层连接。模型先对粗粒度特征图进行上采样，然后通过拼接与先前的特征合并。结合更细粒度的信息，使它更擅长检测小目标。 \n 有趣的是，focal loss（聚焦损失）对 YOLOv3 没有帮助，可能是因为使用了 $\\lambda_\\text{noobj}$ 和 $\\lambda_\\text{coord}$——它们增大边界框位置预测的损失，并降低背景框置信度预测的损失。 \n 总体而言，YOLOv3 比 SSD 表现更好且速度更快；表现不如 RetinaNet，但速度是后者的 3.8 倍。 \n \n\t \n\t 不同快速目标检测模型在速度与 mAP 性能方面的比较。（图片来源： focal loss（聚焦损失） 论文，附加标签来自  YOLOv3  论文。） \n \n \n 引用格式： \n  @article{weng2018detection4,\n  title   = \"Object Detection Part 4: Fast Detection Models\",\n  author  = \"Weng, Lilian\",\n  journal = \"lilianweng.github.io\",\n  year    = \"2018\",\n  url     = \"https://lilianweng.github.io/posts/2018-12-27-object-recognition-part-4/\"\n}\n   参考文献 #  \n [1] Joseph Redmon, et al.  “You only look once: Unified, real-time object detection.”  CVPR 2016. \n [2] Joseph Redmon and Ali Farhadi.  “YOLO9000: Better, Faster, Stronger.”  CVPR 2017. \n [3] Joseph Redmon, Ali Farhadi.  “YOLOv3: An incremental improvement.” . \n [4] Wei Liu et al.  “SSD: Single Shot MultiBox Detector.”  ECCV 2016. \n [5] Tsung-Yi Lin, et al.  “Feature Pyramid Networks for Object Detection.”  CVPR 2017. \n [6] Tsung-Yi Lin, et al.  “Focal Loss for Dense Object Detection.”  IEEE transactions on pattern analysis and machine intelligence, 2018. \n [7]  “What’s new in YOLO v3?” ，作者 Ayoosh Kathuria，发表于“Towards Data Science”，2018 年 4 月 23 日。", "wordCount": "4011", "inLanguage": "zh-CN", "datePublished": "2018-12-27T00:00:00Z", "dateModified": "2018-12-27T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/favicon_wine.ico"}}}</script>
-<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/">
-<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/en/posts/2018-12-27-object-recognition-part-4/">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Posts", "item": "https://xingshuozhu1998.github.io/lilianweng/posts/"}, {"@type": "ListItem", "position": 2, "name": "目标检测（四）：快速检测模型", "item": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/"}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BlogPosting", "headline": "目标检测（四）：快速检测模型", "name": "目标检测（四）：快速检测模型", "description": "在第 3 部分中，我们回顾了 R-CNN 家族的模型。它们都是基于区域的目标检测算法，可以达到很高的准确率，但对自动驾驶等某些应用而言，速度可能太慢。第 4 部分只关注快速目标检测模型，包括 SSD、RetinaNet 和 YOLO 家族的模型。", "keywords": ["object-detection", "object-recognition", "vision-model"], "articleBody": "在 第 3 部分 中，我们回顾了 R-CNN（基于候选区域的卷积神经网络） 家族的模型。它们都是基于区域的目标检测算法，可以达到很高的准确率，但对自动驾驶等某些应用而言，速度可能太慢。第 4 部分只关注快速目标检测模型，包括 SSD、RetinaNet 和 YOLO（通过一次网络前向计算完成目标检测的模型） 家族的模型。 \n 本系列所有文章的链接：\n[ 第 1 部分 ]\n[ 第 2 部分 ]\n[ 第 3 部分 ]\n[ 第 4 部分 ]。 \n 两阶段与单阶段检测器 #  \n R-CNN 家族的模型都基于区域。检测分两个阶段进行：（1）首先，模型通过选择性搜索或区域提议网络提出一组感兴趣区域。提出的区域很稀疏，因为潜在的候选边界框可能有无限多个。（2）随后，分类器只处理这些候选区域。 \n 另一种不同的方法跳过区域提议阶段，直接在对可能位置的密集采样上进行检测。这就是单阶段目标检测算法的工作方式。这样更快、更简单，但可能会略微降低性能。 \n 本文介绍的所有模型都是单阶段检测器。 \n YOLO: You Only Look Once #  \n  YOLO  模型（ “You Only Look Once” ； Redmon et al., 2016 ）是构建快速实时目标检测器的最早尝试。由于 YOLO 不经过区域提议步骤，而且只针对有限数量的边界框进行预测，因此推理速度非常快。 \n 工作流程 #  \n \n \n 在图像分类任务上 预训练 一个 CNN（卷积神经网络）。 \n \n \n 将图像划分成 $S \\times S$ 个网格。如果一个目标的中心落在某个网格中，该网格就“负责”检测这个目标的存在。每个网格预测：（a）$B$ 个边界框的位置；（b）置信度分数；（c）以边界框中存在目标为条件的目标类别概率。 \n \n 边界框的 坐标 由包含 4 个值的元组定义，即（中心 x 坐标、中心 y 坐标、宽度、高度）——$(x, y, w, h)$，其中 $x$ 和 $y$ 被设为相对于网格位置的偏移。此外，$x$、$y$、$w$ 和 $h$ 用图像的宽度和高度归一化，因此都落在 (0, 1] 之间。 \n  置信度分数 表示网格包含目标的可能性： Pr(containing an object) x IoU(pred, truth) ；其中  Pr  = 概率， IoU  = 交并比。 \n 如果网格中包含目标，就预测该目标属于每个类别的 概率 ，类别为 $C_i, i=1, \\dots, K$： Pr(the object belongs to the class C_i | containing an object) 。在这一阶段，无论边界框数量 $B$ 是多少，模型都只为每个网格预测一组类别概率。 \n 总共，一张图像包含 $S \\times S \\times B$ 个边界框，每个框对应 4 个位置预测值、1 个置信度分数，以及用于目标分类的 K 个条件概率。一张图像的预测值总数为 $S \\times S \\times (5B + K)$，这也是模型最后一个卷积层的张量形状。 \n \n \n \n 修改预训练 CNN的最后一层，使其输出大小为 $S \\times S \\times (5B + K)$ 的预测张量。 \n \n \n \n\t \n\t YOLO 模型的工作流程。（图片来源： 原始论文 ） \n \n 网络架构 #  \n 基础模型类似于  GoogLeNet ，其中 inception 模块被 1x1 和 3x3 卷积层替代。两个全连接层作用于整个卷积特征图，产生形状为 $S \\times S \\times (5B + K)$ 的最终预测。 \n \n\t \n\t YOLO 的网络架构。 \n \n 损失函数 #  \n 损失包含两部分：用于预测边界框偏移的 定位损失 ，以及用于条件类别概率的 分类损失 。两部分都按误差平方和计算。两个缩放参数分别控制边界框坐标预测的损失应增大多少（$\\lambda_\\text{coord}$），以及不含目标的框的置信度分数预测损失应减小多少（$\\lambda_\\text{noobj}$）。降低背景框所贡献损失的权重很重要，因为大多数边界框中没有实例。论文中，模型设置 $\\lambda_\\text{coord} = 5$ 和 $\\lambda_\\text{noobj} = 0.5$。 \n \n$$\n\\begin{aligned}\n\\mathcal{L}_\\text{loc} &= \\lambda_\\text{coord} \\sum_{i=0}^{S^2} \\sum_{j=0}^B \\mathbb{1}_{ij}^\\text{obj} [(x_i - \\hat{x}_i)^2 + (y_i - \\hat{y}_i)^2 + (\\sqrt{w_i} - \\sqrt{\\hat{w}_i})^2 + (\\sqrt{h_i} - \\sqrt{\\hat{h}_i})^2 ] \\\\\n\\mathcal{L}_\\text{cls}  &= \\sum_{i=0}^{S^2} \\sum_{j=0}^B \\big( \\mathbb{1}_{ij}^\\text{obj} + \\lambda_\\text{noobj} (1 - \\mathbb{1}_{ij}^\\text{obj})\\big) (C_{ij} - \\hat{C}_{ij})^2 + \\sum_{i=0}^{S^2} \\sum_{c \\in \\mathcal{C}} \\mathbb{1}_i^\\text{obj} (p_i(c) - \\hat{p}_i(c))^2\\\\\n\\mathcal{L} &= \\mathcal{L}_\\text{loc} + \\mathcal{L}_\\text{cls}\n\\end{aligned}\n$$\n \n \n 注意：原始 YOLO 论文的损失函数使用 $C_i$ 而不是 $C_{ij}$ 作为置信度分数。我依据自己的理解做了修正，因为每个边界框都应该有自己的置信度分数。如果你不同意，请告知我。非常感谢。 \n \n 其中， \n \n $\\mathbb{1}_i^\\text{obj}$：表示网格 i 是否包含目标的指示函数。 \n $\\mathbb{1}_{ij}^\\text{obj}$：表示网格 i 的第 j 个边界框是否“负责”目标预测（见图 3）。 \n $C_{ij}$：网格 i 的置信度分数， Pr(containing an object) * IoU(pred, truth) 。 \n $\\hat{C}_{ij}$：预测的置信度分数。 \n $\\mathcal{C}$：所有类别的集合。 \n $p_i(c)$：网格 i 是否包含类别为 $c \\in \\mathcal{C}$ 的目标的条件概率。 \n $\\hat{p}_i(c)$：预测的条件类别概率。 \n \n \n\t \n\t 在网格 i 的一个位置上，模型提出 B 个候选边界框，其中与真实标注重叠程度最高的框就是“负责”预测的框。 \n \n 损失函数只在网格中存在目标时才惩罚分类误差，即 $\\mathbb{1}_i^\\text{obj} = 1$。同样，只有预测器“负责”真实标注框时才惩罚边界框坐标误差，即 $\\mathbb{1}_{ij}^\\text{obj} = 1$。 \n 作为单阶段目标检测器，YOLO 速度极快，但由于候选边界框数量有限，它不擅长识别形状不规则的目标或成群的小目标。 \n SSD: Single Shot MultiBox Detector #  \n  Single Shot Detector （ SSD ； Liu et al, 2016 ）是最早利用卷积神经网络的金字塔特征层级高效检测不同大小目标的尝试之一。 \n 图像金字塔 #  \n SSD 使用在 ImageNet 上预训练的  VGG-16  模型作为基础模型，提取有用的图像特征。\n在 VGG16 之上，SSD 添加了几个尺寸逐渐减小的卷积特征层。可以将它们视为不同尺度图像的 金字塔表示 。直观而言，早期层级中较大、细粒度的特征图擅长捕捉小目标，而较小、粗粒度的特征图能够很好地检测大目标。在 SSD 中，每个金字塔层都进行检测，针对不同大小的目标。 \n \n\t \n\t SSD 的模型架构。 \n \n 工作流程 #  \n 与 YOLO 不同，SSD 不会将图像划分成任意大小的网格，而是为特征图上的每个位置预测预定义  anchor boxes（锚框） 的偏移量（论文称之为“默认框”）。每个框相对于其对应网格具有固定的大小和位置。所有 anchor boxes 以卷积方式平铺整个特征图。 \n 不同层级的特征图具有不同的感受野大小。对不同层级的 anchor boxes（锚框）重新缩放，使每张特征图只负责某个特定尺度的目标。例如，在图 5 中，狗只能在 4x4 的特征图（较高层级）中被检测到，而猫只由 8x8 的特征图（较低层级）捕捉到。 \n \n\t \n\t SSD 框架。（a）训练数据包含图像以及每个目标的真实标注框。（b）在细粒度的特征图（8 x 8）中，不同纵横比的 anchor boxes（锚框）对应原始输入中的较小区域。（c）在粗粒度的特征图（4 x 4）中，anchor boxes 覆盖原始输入中的较大区域。（图片来源： 原始论文 ） \n \n anchor box（锚框）的宽度、高度和中心位置都归一化到 (0, 1)。在位置 $(i, j)$，其所属的第 $\\ell$ 个特征层大小为 $m \\times n$，且 $i=1,\\dots,n, j=1,\\dots,m$，我们使用一个与层级成正比的唯一线性尺度，以及 5 种不同的边界框纵横比（宽高比）；当纵横比为 1 时，另加一个特殊尺度（为什么需要它？论文没有解释，可能只是一个启发式技巧）。因此，每个特征网格共有 6 个 anchor boxes。 \n \n$$\n\\begin{aligned}\n\\text{level index: } &\\ell = 1, \\dots, L \\\\\n\\text{scale of boxes: } &s_\\ell = s_\\text{min} + \\frac{s_\\text{max} - s_\\text{min}}{L - 1} (\\ell - 1) \\\\\n\\text{aspect ratio: } &r \\in \\{1, 2, 3, 1/2, 1/3\\}\\\\\n\\text{additional scale: } & s'_\\ell = \\sqrt{s_\\ell s_{\\ell + 1}} \\text{ when } r = 1 \\text{thus, 6 boxes in total.}\\\\\n\\text{width: } &w_\\ell^r = s_\\ell \\sqrt{r} \\\\\n\\text{height: } &h_\\ell^r = s_\\ell / \\sqrt{r} \\\\\n\\text{center location: } & (x^i_\\ell, y^j_\\ell) = (\\frac{i+0.5}{m}, \\frac{j+0.5}{n})\n\\end{aligned}\n$$\n \n \n\t \n\t 当 $\\ell$ 这一层索引增大时，anchor box（锚框）大小如何放大的示例，对应 $L=6, s\\_\\text{min} = 0.2, s\\_\\text{max} = 0.9$。图中只画出了纵横比为 $r=1$ 的框。 \n \n 在每个位置，模型对 $c$ 个类别输出概率，并输出 4 个偏移量，方法是应用 $3 \\times 3 \\times p$ 卷积滤波器（其中 $p$ 为特征图的通道数），对 $k$ 个 anchor boxes（锚框）中的每一个都这样处理。因此，给定大小为 $m \\times n$ 的特征图，我们需要 $kmn(c+4)$ 个预测滤波器。 \n 损失函数 #  \n 与 YOLO 相同，损失函数是定位损失与分类损失之和。 \n $\\mathcal{L} = \\frac{1}{N}(\\mathcal{L}_\\text{cls} + \\alpha \\mathcal{L}_\\text{loc})$ \n 其中，$N$ 是匹配的边界框数量，$\\alpha$ 用于平衡两种损失的权重，通过交叉验证选定。 \n  定位损失 是预测的边界框修正量与真实值之间的  smooth L1 loss（平滑 L1 损失） 。坐标修正变换与  R-CNN  在 边界框回归 中采用的变换相同。 \n \n$$\n\\begin{aligned}\n\\mathcal{L}_\\text{loc} &= \\sum_{i,j} \\sum_{m\\in\\{x, y, w, h\\}} \\mathbb{1}_{ij}^\\text{match}\n L_1^\\text{smooth}(d_m^i - t_m^j)^2\\\\\nL_1^\\text{smooth}(x) &= \\begin{cases}\n    0.5 x^2             & \\text{if } \\vert x \\vert  \n 其中，$\\mathbb{1}_{ij}^\\text{match}$ 表示第 $i$ 个边界框（坐标为 $(p^i_x, p^i_y, p^i_w, p^i_h)$）是否与第 $j$ 个真实标注框（坐标为 $(g^j_x, g^j_y, g^j_w, g^j_h)$）匹配，目标类别不限。$d^i_m, m\\in\\{x, y, w, h\\}$ 是预测的修正项。变换的具体方式请见 这里 。 \n  分类损失 是针对多个类别的 softmax 损失（tensorflow（机器学习框架） 中的  softmax_cross_entropy_with_logits ）： \n \n$$\n\\mathcal{L}_\\text{cls} = -\\sum_{i \\in \\text{pos}} \\mathbb{1}_{ij}^k \\log(\\hat{c}_i^k) - \\sum_{i \\in \\text{neg}} \\log(\\hat{c}_i^0)\\text{, where }\\hat{c}_i^k = \\text{softmax}(c_i^k)\n$$\n \n 其中，$\\mathbb{1}_{ij}^k$ 表示第 $i$ 个边界框与第 $j$ 个真实标注框是否匹配，目标属于类别 $k$。$\\text{pos}$ 是匹配边界框的集合（共 $N$ 项），$\\text{neg}$ 是负样本集合。SSD 使用  hard negative mining（困难负样本挖掘） 选择容易误分类的负样本，以构建这一 $\\text{neg}$ 集合：将所有 anchor boxes（锚框）按目标存在置信度分数排序后，模型选择排名靠前的候选框进行训练，使负样本与正样本的比例最多为 3:1。 \n YOLOv2 / YOLO9000 #  \n  YOLOv2 （ Redmon & Farhadi, 2017 ）是 YOLO 的增强版本。 YOLO9000  基于 YOLOv2 构建，但使用联合数据集训练，该数据集将 COCO 检测数据集与 ImageNet 中排名前 9000 的类别结合起来。 \n YOLOv2 的改进 #  \n 为了让 YOLO 的预测更准确、更快速，采用了多种修改，包括： \n  1. BatchNorm 有帮助 ：在所有卷积层上添加  batch norm（批归一化） ，显著改善收敛。 \n  2. 图像分辨率很重要 ：用 高分辨率 图像微调基础模型，提高检测性能。 \n  3. 使用卷积检测 anchor box（锚框） ：YOLOv2 不再使用作用于整个特征图的全连接层预测边界框位置，而是像 Faster R-CNN 一样，使用 卷积层 预测  anchor boxes  的位置。空间位置预测与类别概率预测相互解耦。总体而言，这一变化使 mAP 略微下降，但提高了召回率。 \n  4. 对边界框尺寸进行 K-means 聚类 ：Faster R-CNN 使用人工选定的 anchor boxes（锚框）大小，而 YOLOv2 在训练数据上进行 K-means 聚类，为 anchor box 的尺寸找到良好的先验。距离度量被设计为 依赖 IoU（交并比）分数 ： \n \n$$\n\\text{dist}(x, c_i) = 1 - \\text{IoU}(x, c_i), i=1,\\dots,k\n$$\n \n 其中，$x$ 是候选真实标注框，$c_i$ 是其中一个聚类中心。最佳的聚类中心（anchor boxes，锚框）数量 $k$ 可以通过 肘部法 选择。 \n 在边界框数量固定的条件下，由聚类生成的 anchor boxes（锚框）能提供更高的平均 IoU（交并比）。 \n  5. 直接预测位置 ：YOLOv2 对边界框预测的建模方式，使预测位置 不会偏离 中心位置太远。如果像区域提议网络那样，边界框位置预测能够将框放在图像的任意位置，模型训练就可能变得不稳定。 \n 给定大小为 $(p_w, p_h)$ 的 anchor box（锚框），它位于左上角坐标为 $(c_x, c_y)$ 的网格中，模型预测偏移量和尺度 $(t_x, t_y, t_w, t_h)$。对应的预测边界框 $b$ 的中心为 $(b_x, b_y)$，大小为 $(b_w, b_h)$。置信度分数是另一个输出经 sigmoid 函数（$\\sigma$）变换后的结果，该输出为 $t_o$。 \n \n$$\n\\begin{aligned}\nb_x &= \\sigma(t_x) + c_x\\\\\nb_y &= \\sigma(t_y) + c_y\\\\\nb_w &= p_w e^{t_w}\\\\\nb_h &= p_h e^{t_h}\\\\\n\\text{Pr}(\\text{object}) &\\cdot \\text{IoU}(b, \\text{object}) = \\sigma(t_o)\n\\end{aligned}\n$$\n \n \n\t \n\t YOLOv2 的边界框位置预测。（图片来源： 原始论文 ） \n \n  6. 添加细粒度特征 ：YOLOv2 添加一个直通层，将较早层中的 细粒度特征 带到最后的输出层。该直通层的机制类似于  ResNet 中的恒等映射 ，用于从先前的层提取更高维的特征。这使性能提高了 1%。 \n  7. 多尺度训练 ：为了让训练出的模型能够适应不同大小的输入图像，输入维度的 新大小 每隔 10 个批次就进行一次 随机采样 。由于 YOLOv2 的卷积层将输入维度下采样 32 倍，新采样的大小是 32 的倍数。 \n  8. 轻量基础模型 ：为了进一步加快预测，YOLOv2 采用轻量基础模型 DarkNet-19，它有 19 个卷积层和 5 个最大池化层。关键是在 3x3 卷积层之间插入平均池化与 1x1 卷积滤波器。 \n YOLO9000：使用丰富的数据集训练 #  \n 由于在图像上绘制用于目标检测的边界框，比为图像添加分类标签昂贵得多，论文提出了一种将小型目标检测数据集与大型 ImageNet 结合的方法，使模型能够接触数量多得多的目标类别。YOLO9000 这个名称来自 ImageNet 中排名前 9000 的类别。在联合训练期间，如果输入图像来自分类数据集，就只对分类损失进行反向传播。 \n 检测数据集的标签数量少得多，且更为宽泛；此外，不同数据集之间的标签往往并不互斥。例如，ImageNet 有“Persian cat”标签，而同一张图像在 COCO 中会被标记为“cat”。如果类别不互斥，对所有类别应用 softmax 就没有意义。 \n 为了高效合并 ImageNet 标签（1000 类，细粒度）与 COCO/PASCAL 标签（少于 100 类，粗粒度），YOLO9000 参考  WordNet  构建了层级树结构，使一般性标签更接近根节点，而细粒度类别标签位于叶节点。这样，“cat”就是“Persian cat”的父节点。 \n \n\t \n\t WordTree 层级结构合并了 COCO 与 ImageNet 的标签。蓝色节点是 COCO 标签，红色节点是 ImageNet 标签。（图片来源： 原始论文 ） \n \n 为了预测某个类别节点的概率，可以沿着该节点到根节点的路径计算： \n  Pr(\"persian cat\" | contain a \"physical object\") \n= Pr(\"persian cat\" | \"cat\") \n  Pr(\"cat\" | \"animal\") \n  Pr(\"animal\" | \"physical object\") \n  Pr(contain a \"physical object\")    # confidence score.\n   注意， Pr(contain a \"physical object\")  是置信度分数，在边界框检测流程中单独预测。条件概率预测的路径可以在任意步骤停止，具体取决于有哪些可用标签。 \n RetinaNet #  \n  RetinaNet （ Lin et al., 2018 ）是一种单阶段密集目标检测器。两个关键组成部分是 特征化图像金字塔 和  focal loss（聚焦损失） 。 \n Focal Loss（聚焦损失） #  \n 目标检测模型训练中的一个问题，是不含目标的背景与包含感兴趣目标的前景极度不平衡。 Focal loss（聚焦损失） 被设计为给困难、容易误分类的样本（例如带有嘈杂纹理或部分目标的背景）分配更高权重，并降低简单样本（例如显然空无一物的背景）的权重。 \n 从二分类的普通交叉熵损失开始， \n \n$$\n\\text{CE}(p, y) = -y\\log p - (1-y)\\log(1-p)\n$$\n \n 其中，$y \\in \\{0, 1\\}$ 是真实的二元标签，表示边界框中是否包含目标，$p \\in [0, 1]$ 是预测的目标存在概率（也称置信度分数）。 \n 为了简化记号， \n \n$$\n\\text{let } p_t = \\begin{cases}\np    & \\text{if } y = 1\\\\\n1-p  & \\text{otherwise}\n\\end{cases},\n\\text{then } \\text{CE}(p, y)=\\text{CE}(p_t) = -\\log p_t\n$$\n \n 对于容易分类、$p_t \\gg 0.5$ 较大的样本，也就是 $p$ 非常接近 0（y=0 时）或 1（y=1 时）的情况，产生的损失仍可能具有不可忽略的大小。Focal loss（聚焦损失）显式地为交叉熵中的每一项添加权重因子 $(1-p_t)^\\gamma, \\gamma \\geq 0$，使 $p_t$ 较大时权重较小，从而降低简单样本的权重。 \n \n$$\n\\text{FL}(p_t) = -(1-p_t)^\\gamma \\log p_t\n$$\n \n \n\t \n\t Focal loss（聚焦损失）通过因子 $(1-p\\_t)^\\gamma$ 减少对简单样本的关注。（图片来源： 原始论文 ） \n \n 为了更好地控制权重函数的形状（见图 10），RetinaNet 使用 focal loss（聚焦损失）的 $\\alpha$ 平衡变体，其中 $\\alpha=0.25, \\gamma=2$ 效果最佳。 \n \n$$\n\\text{FL}(p_t) = -\\alpha (1-p_t)^\\gamma \\log p_t\n$$\n \n \n\t \n\t Focal loss（聚焦损失）权重 $\\alpha (1-p\\_t)^\\gamma$ 随 $p\\_t$ 变化的曲线，分别采用不同的 $\\alpha$ 和 $\\gamma$ 值。 \n \n 特征化图像金字塔 #  \n  特征化图像金字塔 （ Lin et al., 2017 ）是 RetinaNet 的骨干网络。沿用 SSD 中 图像金字塔 的方法，特征化图像金字塔为不同尺度的目标检测提供了基本视觉组件。 \n 特征金字塔网络的关键思想如下所示。基础结构包含一系列 金字塔层级 ，每个层级对应网络中的一个 阶段 。每个阶段包含多个大小相同的卷积层，而各阶段的尺寸依次缩小 2 倍。将第 $i$ 个阶段的最后一层记为 $C_i$。 \n \n\t \n\t 特征化图像金字塔模块示意图。（依据  FPN 论文 中的图 3 重绘） \n \n 两条路径连接卷积层： \n \n  自底向上路径 是常规的前馈计算。 \n  自顶向下路径  沿相反方向，通过横向连接，将粗粒度但语义更强的特征图加回到之前尺寸更大的金字塔层级中。\n \n 首先，对空间上更粗糙的高层特征进行上采样，将尺寸放大 2 倍。对于图像放大，论文使用最近邻上采样。虽然有许多 图像放大算法 ，例如使用  deconv（反卷积） ，但采用其他图像缩放方法可能改善 RetinaNet 的性能，也可能没有改善。 \n 较大的特征图经过一个 1x1 卷积层，以降低通道维度。 \n 最后，通过逐元素相加来合并这两张特征图。\n \n \n横向连接只发生在各阶段的最后一层，记为 $\\{C_i\\}$，这一过程持续到生成最细粒度（最大）的合并特征图。每张合并特征图经过一个 3x3 卷积层后都用于预测，记为 $\\{P_i\\}$。 \n \n \n \n 根据消融研究，特征化图像金字塔设计中各组件的重要性排序如下： 1x1 横向连接  > 跨多个层检测目标 > 自顶向下的特征丰富 > 金字塔表示（相比仅检查最细粒度层）。 \n 模型架构 #  \n 特征化金字塔构建在 ResNet 架构之上。回顾一下， ResNet  有 5 个卷积块（即网络阶段／金字塔层级）。第 $i$ 个金字塔层级的最后一层 $C_i$，其分辨率比原始输入维度低 $2^i$ 倍。 \n RetinaNet 使用从 $P_3$ 到 $P_7$ 的特征金字塔层级： \n \n $P_3$ 到 $P_5$ 由对应的 ResNet 残差阶段 $C_3$ 到 $C_5$ 计算得到。它们通过自顶向下和自底向上的路径连接。 \n $P_6$ 通过在 $C_5$ 上应用步幅为 2 的 3×3 卷积得到。 \n $P_7$ 通过对 $P_6$ 应用 ReLU 和步幅为 2 的 3×3 卷积得到。 \n \n 在 ResNet 上添加更高的金字塔层级，可以改善大目标检测的性能。 \n 与 SSD 相同，所有金字塔层级都通过各自的合并特征图进行预测，从而开展检测。由于这些预测共享同一个分类器和边界框回归器，所以所有特征图都被构造成相同的通道维度 d=256。 \n 每个层级有 A=9 个 anchor boxes（锚框）： \n \n 基础大小对应从 $32^2$ 到 $512^2$ 像素的面积，分别用于 $P_3$ 到 $P_7$。有三种尺寸比例：$\\{2^0, 2^{1/3}, 2^{2/3}\\}$。 \n 每种大小都有三种纵横比 {1/2, 1, 2}。 \n \n 与通常一样，对于每个 anchor box（锚框），模型在分类子网络中输出 $K$ 个类别各自的类别概率，并在边界框回归子网络中回归该 anchor box 到最近的真实标注目标的偏移量。分类子网络采用前面介绍的 focal loss（聚焦损失）。 \n \n\t \n\t RetinaNet 模型架构在 ResNet 之上使用  FPN（特征金字塔网络）  骨干网络。（图片来源： FPN  论文） \n \n YOLOv3 #  \n  YOLOv3  是在 YOLOv2 上应用一系列设计技巧构建的。这些变化受到目标检测领域近期进展的启发。 \n 修改包括以下各项： \n  1. 使用逻辑回归预测置信度分数 ：YOLOv3 使用 逻辑回归 为每个边界框预测置信度分数，而 YOLO 和 YOLOv2 对分类项使用误差平方和（见上面的 损失函数 ）。对偏移预测使用线性回归会导致 mAP 下降。 \n  2. 类别预测不再使用 softmax ：预测类别置信度时，YOLOv3 为每个类别使用 多个独立的逻辑分类器 ，而不是一个 softmax 层。这非常有帮助，尤其是考虑到一张图像可能有多个标签，而且并非所有标签都保证相互排斥。 \n  3. 使用 Darknet + ResNet 作为基础模型 ：新的 Darknet-53 仍像原始 Darknet 架构一样依赖连续的 3x3 和 1x1 卷积层，但添加了残差块。 \n  4. 多尺度预测 ：受到图像金字塔的启发，YOLOv3 在基础特征提取模型之后添加了几个卷积层，并在这些卷积层中的三个不同尺度上进行预测。这样，总体上它需要处理数量多得多、大小各异的候选边界框。 \n  5. 跨层拼接 ：YOLOv3 还在两个预测层（输出层除外）与较早的细粒度特征图之间添加跨层连接。模型先对粗粒度特征图进行上采样，然后通过拼接与先前的特征合并。结合更细粒度的信息，使它更擅长检测小目标。 \n 有趣的是，focal loss（聚焦损失）对 YOLOv3 没有帮助，可能是因为使用了 $\\lambda_\\text{noobj}$ 和 $\\lambda_\\text{coord}$——它们增大边界框位置预测的损失，并降低背景框置信度预测的损失。 \n 总体而言，YOLOv3 比 SSD 表现更好且速度更快；表现不如 RetinaNet，但速度是后者的 3.8 倍。 \n \n\t \n\t 不同快速目标检测模型在速度与 mAP 性能方面的比较。（图片来源： focal loss（聚焦损失） 论文，附加标签来自  YOLOv3  论文。） \n \n \n 引用格式： \n  @article{weng2018detection4,\n  title   = \"Object Detection Part 4: Fast Detection Models\",\n  author  = \"Weng, Lilian\",\n  journal = \"lilianweng.github.io\",\n  year    = \"2018\",\n  url     = \"https://lilianweng.github.io/posts/2018-12-27-object-recognition-part-4/\"\n}\n   参考文献 #  \n [1] Joseph Redmon, et al.  “You only look once: Unified, real-time object detection.”  CVPR 2016. \n [2] Joseph Redmon and Ali Farhadi.  “YOLO9000: Better, Faster, Stronger.”  CVPR 2017. \n [3] Joseph Redmon, Ali Farhadi.  “YOLOv3: An incremental improvement.” . \n [4] Wei Liu et al.  “SSD: Single Shot MultiBox Detector.”  ECCV 2016. \n [5] Tsung-Yi Lin, et al.  “Feature Pyramid Networks for Object Detection.”  CVPR 2017. \n [6] Tsung-Yi Lin, et al.  “Focal Loss for Dense Object Detection.”  IEEE transactions on pattern analysis and machine intelligence, 2018. \n [7]  “What’s new in YOLO v3?” ，作者 Ayoosh Kathuria，发表于“Towards Data Science”，2018 年 4 月 23 日。", "wordCount": "4011", "inLanguage": "zh-CN", "datePublished": "2018-12-27T00:00:00Z", "dateModified": "2018-12-27T00:00:00Z", "author": {"@type": "Person", "name": "Lilian Weng"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/"}, "publisher": {"@type": "Organization", "name": "Lil'Log", "logo": {"@type": "ImageObject", "url": "https://xingshuozhu1998.github.io/lilianweng/favicon_wine.ico"}}}</script>
+<link rel="alternate" hreflang="zh-CN" href="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/">
+<link rel="alternate" hreflang="en" href="https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-12-27-object-recognition-part-4/">
 </head>
 
 <body class="" id="top">
@@ -117,7 +117,7 @@
 <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://xingshuozhu1998.github.io/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
+            <a href="https://xingshuozhu1998.github.io/lilianweng/" accesskey="h" title="Lil&#x27;Log (Alt + H)">Lil'Log</a>
             <span class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -145,25 +145,25 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="https://xingshuozhu1998.github.io/" title="Posts"> <span>文章</span> </a>
+                <a href="https://xingshuozhu1998.github.io/lilianweng/" title="Posts"> <span>文章</span> </a>
             </li>
             <li>
-                <a href="https://xingshuozhu1998.github.io/archives" title="Archive"> <span>归档</span> </a>
+                <a href="https://xingshuozhu1998.github.io/lilianweng/archives" title="Archive"> <span>归档</span> </a>
             </li>
             <li>
-                <a href="https://xingshuozhu1998.github.io/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
+                <a href="https://xingshuozhu1998.github.io/lilianweng/search/" title="Search (Alt &#43; /)" accesskey=/> <span>搜索</span> </a>
             </li>
             <li>
-                <a href="https://xingshuozhu1998.github.io/tags/" title="Tags"> <span>标签</span> </a>
+                <a href="https://xingshuozhu1998.github.io/lilianweng/tags/" title="Tags"> <span>标签</span> </a>
             </li>
             <li>
-                <a href="https://xingshuozhu1998.github.io/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
+                <a href="https://xingshuozhu1998.github.io/lilianweng/faq" title="FAQ"> <span>FAQ（常见问题）</span> </a>
             </li>
         </ul>
     </nav>
 </header>
 <main class="main">
-<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2018-12-27-object-recognition-part-4/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/en/posts/2018-12-27-object-recognition-part-4/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
+<aside class="translation-note" style="margin:16px 0;padding:12px;border:1px solid var(--border);border-radius:6px">作者：Lilian Weng · <a href="https://lilianweng.github.io/posts/2018-12-27-object-recognition-part-4/">作者原站</a> · <a href="https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-12-27-object-recognition-part-4/">本站英文原文</a> · GPT-6.1-sol 译稿；公式、代码及图片按原文保留。</aside>
 
 <article class="post-single">
   <header class="post-header">
@@ -232,12 +232,12 @@
 </div>
 
   <div class="post-content"><!-- Part 4 of the "Object Detection for Dummies" series focuses on one-stage models for fast detection, including SSD, RetinaNet, and models in the YOLO family. These models skip the explicit region proposal stage but apply the detection directly on dense sampled areas. -->
-<p>在<a href="https://xingshuozhu1998.github.io/posts/2017-12-31-object-recognition-part-3/">第 3 部分</a>中，我们回顾了 R-CNN（基于候选区域的卷积神经网络） 家族的模型。它们都是基于区域的目标检测算法，可以达到很高的准确率，但对自动驾驶等某些应用而言，速度可能太慢。第 4 部分只关注快速目标检测模型，包括 SSD、RetinaNet 和 YOLO（通过一次网络前向计算完成目标检测的模型） 家族的模型。</p>
+<p>在<a href="https://xingshuozhu1998.github.io/lilianweng/posts/2017-12-31-object-recognition-part-3/">第 3 部分</a>中，我们回顾了 R-CNN（基于候选区域的卷积神经网络） 家族的模型。它们都是基于区域的目标检测算法，可以达到很高的准确率，但对自动驾驶等某些应用而言，速度可能太慢。第 4 部分只关注快速目标检测模型，包括 SSD、RetinaNet 和 YOLO（通过一次网络前向计算完成目标检测的模型） 家族的模型。</p>
 <p>本系列所有文章的链接：
-[<a href="https://xingshuozhu1998.github.io/posts/2017-10-29-object-recognition-part-1/">第 1 部分</a>]
-[<a href="https://xingshuozhu1998.github.io/posts/2017-12-15-object-recognition-part-2/">第 2 部分</a>]
-[<a href="https://xingshuozhu1998.github.io/posts/2017-12-31-object-recognition-part-3/">第 3 部分</a>]
-[<a href="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/">第 4 部分</a>]。</p>
+[<a href="https://xingshuozhu1998.github.io/lilianweng/posts/2017-10-29-object-recognition-part-1/">第 1 部分</a>]
+[<a href="https://xingshuozhu1998.github.io/lilianweng/posts/2017-12-15-object-recognition-part-2/">第 2 部分</a>]
+[<a href="https://xingshuozhu1998.github.io/lilianweng/posts/2017-12-31-object-recognition-part-3/">第 3 部分</a>]
+[<a href="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/">第 4 部分</a>]。</p>
 <h1 id="two-stage-vs-one-stage-detectors">两阶段与单阶段检测器<a hidden class="anchor" aria-hidden="true" href="#two-stage-vs-one-stage-detectors">#</a></h1>
 <p>R-CNN 家族的模型都基于区域。检测分两个阶段进行：（1）首先，模型通过选择性搜索或区域提议网络提出一组感兴趣区域。提出的区域很稀疏，因为潜在的候选边界框可能有无限多个。（2）随后，分类器只处理这些候选区域。</p>
 <p>另一种不同的方法跳过区域提议阶段，直接在对可能位置的密集采样上进行检测。这就是单阶段目标检测算法的工作方式。这样更快、更简单，但可能会略微降低性能。</p>
@@ -263,13 +263,13 @@
 </li>
 </ol>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/yolo.png"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/yolo.png"  />
 	<figcaption>YOLO 模型的工作流程。（图片来源：<a href="https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Redmon_You_Only_Look_CVPR_2016_paper.pdf" target="_blank">原始论文</a>）</figcaption>
 </figure>
 <h2 id="network-architecture">网络架构<a hidden class="anchor" aria-hidden="true" href="#network-architecture">#</a></h2>
 <p>基础模型类似于 <a href="https://www.cs.unc.edu/~wliu/papers/GoogLeNet.pdf">GoogLeNet</a>，其中 inception 模块被 1x1 和 3x3 卷积层替代。两个全连接层作用于整个卷积特征图，产生形状为 $S \times S \times (5B + K)$ 的最终预测。</p>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/yolo-network-architecture.png"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/yolo-network-architecture.png"  />
 	<figcaption>YOLO 的网络架构。</figcaption>
 </figure>
 <h2 id="loss-function">损失函数<a hidden class="anchor" aria-hidden="true" href="#loss-function">#</a></h2>
@@ -297,7 +297,7 @@ $$
 <li>$\hat{p}_i(c)$：预测的条件类别概率。</li>
 </ul>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/yolo-responsible-predictor.png" style="width: 85%;"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/yolo-responsible-predictor.png" style="width: 85%;"  />
 	<figcaption>在网格 i 的一个位置上，模型提出 B 个候选边界框，其中与真实标注重叠程度最高的框就是“负责”预测的框。</figcaption>
 </figure>
 <p>损失函数只在网格中存在目标时才惩罚分类误差，即 $\mathbb{1}_i^\text{obj} = 1$。同样，只有预测器“负责”真实标注框时才惩罚边界框坐标误差，即 $\mathbb{1}_{ij}^\text{obj} = 1$。</p>
@@ -308,14 +308,14 @@ $$
 <p>SSD 使用在 ImageNet 上预训练的 <a href="https://arxiv.org/abs/1409.1556">VGG-16</a> 模型作为基础模型，提取有用的图像特征。
 在 VGG16 之上，SSD 添加了几个尺寸逐渐减小的卷积特征层。可以将它们视为不同尺度图像的<em>金字塔表示</em>。直观而言，早期层级中较大、细粒度的特征图擅长捕捉小目标，而较小、粗粒度的特征图能够很好地检测大目标。在 SSD 中，每个金字塔层都进行检测，针对不同大小的目标。</p>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/SSD-architecture.png"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/SSD-architecture.png"  />
 	<figcaption>SSD 的模型架构。</figcaption>
 </figure>
 <h2 id="workflow-1">工作流程<a hidden class="anchor" aria-hidden="true" href="#workflow-1">#</a></h2>
 <p>与 YOLO 不同，SSD 不会将图像划分成任意大小的网格，而是为特征图上的每个位置预测预定义 <em>anchor boxes（锚框）</em>的偏移量（论文称之为“默认框”）。每个框相对于其对应网格具有固定的大小和位置。所有 anchor boxes 以卷积方式平铺整个特征图。</p>
 <p>不同层级的特征图具有不同的感受野大小。对不同层级的 anchor boxes（锚框）重新缩放，使每张特征图只负责某个特定尺度的目标。例如，在图 5 中，狗只能在 4x4 的特征图（较高层级）中被检测到，而猫只由 8x8 的特征图（较低层级）捕捉到。</p>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/SSD-framework.png"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/SSD-framework.png"  />
 	<figcaption>SSD 框架。（a）训练数据包含图像以及每个目标的真实标注框。（b）在细粒度的特征图（8 x 8）中，不同纵横比的 anchor boxes（锚框）对应原始输入中的较小区域。（c）在粗粒度的特征图（4 x 4）中，anchor boxes 覆盖原始输入中的较大区域。（图片来源：<a href="https://arxiv.org/abs/1512.02325" target="_blank">原始论文</a>）</figcaption>
 </figure>
 <p>anchor box（锚框）的宽度、高度和中心位置都归一化到 (0, 1)。在位置 $(i, j)$，其所属的第 $\ell$ 个特征层大小为 $m \times n$，且 $i=1,\dots,n, j=1,\dots,m$，我们使用一个与层级成正比的唯一线性尺度，以及 5 种不同的边界框纵横比（宽高比）；当纵横比为 1 时，另加一个特殊尺度（为什么需要它？论文没有解释，可能只是一个启发式技巧）。因此，每个特征网格共有 6 个 anchor boxes。</p>
@@ -333,7 +333,7 @@ $$
 $$
 </div>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/SSD-box-scales.png"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/SSD-box-scales.png"  />
 	<figcaption>当 $\ell$ 这一层索引增大时，anchor box（锚框）大小如何放大的示例，对应 $L=6, s\_\text{min} = 0.2, s\_\text{max} = 0.9$。图中只画出了纵横比为 $r=1$ 的框。</figcaption>
 </figure>
 <p>在每个位置，模型对 $c$ 个类别输出概率，并输出 4 个偏移量，方法是应用 $3 \times 3 \times p$ 卷积滤波器（其中 $p$ 为特征图的通道数），对 $k$ 个 anchor boxes（锚框）中的每一个都这样处理。因此，给定大小为 $m \times n$ 的特征图，我们需要 $kmn(c+4)$ 个预测滤波器。</p>
@@ -341,7 +341,7 @@ $$
 <p>与 YOLO 相同，损失函数是定位损失与分类损失之和。</p>
 <p>$\mathcal{L} = \frac{1}{N}(\mathcal{L}_\text{cls} + \alpha \mathcal{L}_\text{loc})$</p>
 <p>其中，$N$ 是匹配的边界框数量，$\alpha$ 用于平衡两种损失的权重，通过交叉验证选定。</p>
-<p><em>定位损失</em>是预测的边界框修正量与真实值之间的 <a href="https://github.com/rbgirshick/py-faster-rcnn/files/764206/SmoothL1Loss.1.pdf">smooth L1 loss（平滑 L1 损失）</a>。坐标修正变换与 <a href="https://xingshuozhu1998.github.io/posts/2017-12-31-object-recognition-part-3/#r-cnn">R-CNN</a> 在<a href="https://xingshuozhu1998.github.io/posts/2017-12-31-object-recognition-part-3/#bounding-box-regression">边界框回归</a>中采用的变换相同。</p>
+<p><em>定位损失</em>是预测的边界框修正量与真实值之间的 <a href="https://github.com/rbgirshick/py-faster-rcnn/files/764206/SmoothL1Loss.1.pdf">smooth L1 loss（平滑 L1 损失）</a>。坐标修正变换与 <a href="https://xingshuozhu1998.github.io/lilianweng/posts/2017-12-31-object-recognition-part-3/#r-cnn">R-CNN</a> 在<a href="https://xingshuozhu1998.github.io/lilianweng/posts/2017-12-31-object-recognition-part-3/#bounding-box-regression">边界框回归</a>中采用的变换相同。</p>
 <div>
 $$
 \begin{aligned}
@@ -358,14 +358,14 @@ t^j_h &= \log(g^j_h / p^i_h)
 \end{aligned}
 $$
 </div>
-<p>其中，$\mathbb{1}_{ij}^\text{match}$ 表示第 $i$ 个边界框（坐标为 $(p^i_x, p^i_y, p^i_w, p^i_h)$）是否与第 $j$ 个真实标注框（坐标为 $(g^j_x, g^j_y, g^j_w, g^j_h)$）匹配，目标类别不限。$d^i_m, m\in\{x, y, w, h\}$ 是预测的修正项。变换的具体方式请见<a href="https://xingshuozhu1998.github.io/posts/2017-12-31-object-recognition-part-3/#bounding-box-regression">这里</a>。</p>
+<p>其中，$\mathbb{1}_{ij}^\text{match}$ 表示第 $i$ 个边界框（坐标为 $(p^i_x, p^i_y, p^i_w, p^i_h)$）是否与第 $j$ 个真实标注框（坐标为 $(g^j_x, g^j_y, g^j_w, g^j_h)$）匹配，目标类别不限。$d^i_m, m\in\{x, y, w, h\}$ 是预测的修正项。变换的具体方式请见<a href="https://xingshuozhu1998.github.io/lilianweng/posts/2017-12-31-object-recognition-part-3/#bounding-box-regression">这里</a>。</p>
 <p><em>分类损失</em>是针对多个类别的 softmax 损失（tensorflow（机器学习框架） 中的 <a href="https://www.tensorflow.org/api_docs/python/tf/nn/softmax_cross_entropy_with_logits">softmax_cross_entropy_with_logits</a>）：</p>
 <div>
 $$
 \mathcal{L}_\text{cls} = -\sum_{i \in \text{pos}} \mathbb{1}_{ij}^k \log(\hat{c}_i^k) - \sum_{i \in \text{neg}} \log(\hat{c}_i^0)\text{, where }\hat{c}_i^k = \text{softmax}(c_i^k)
 $$
 </div>
-<p>其中，$\mathbb{1}_{ij}^k$ 表示第 $i$ 个边界框与第 $j$ 个真实标注框是否匹配，目标属于类别 $k$。$\text{pos}$ 是匹配边界框的集合（共 $N$ 项），$\text{neg}$ 是负样本集合。SSD 使用 <a href="https://xingshuozhu1998.github.io/posts/2017-12-31-object-recognition-part-3/#common-tricks">hard negative mining（困难负样本挖掘）</a>选择容易误分类的负样本，以构建这一 $\text{neg}$ 集合：将所有 anchor boxes（锚框）按目标存在置信度分数排序后，模型选择排名靠前的候选框进行训练，使负样本与正样本的比例最多为 3:1。</p>
+<p>其中，$\mathbb{1}_{ij}^k$ 表示第 $i$ 个边界框与第 $j$ 个真实标注框是否匹配，目标属于类别 $k$。$\text{pos}$ 是匹配边界框的集合（共 $N$ 项），$\text{neg}$ 是负样本集合。SSD 使用 <a href="https://xingshuozhu1998.github.io/lilianweng/posts/2017-12-31-object-recognition-part-3/#common-tricks">hard negative mining（困难负样本挖掘）</a>选择容易误分类的负样本，以构建这一 $\text{neg}$ 集合：将所有 anchor boxes（锚框）按目标存在置信度分数排序后，模型选择排名靠前的候选框进行训练，使负样本与正样本的比例最多为 3:1。</p>
 <h1 id="yolov2--yolo9000">YOLOv2 / YOLO9000<a hidden class="anchor" aria-hidden="true" href="#yolov2--yolo9000">#</a></h1>
 <p><strong>YOLOv2</strong>（<a href="https://arxiv.org/abs/1612.08242">Redmon &amp; Farhadi, 2017</a>）是 YOLO 的增强版本。<strong>YOLO9000</strong> 基于 YOLOv2 构建，但使用联合数据集训练，该数据集将 COCO 检测数据集与 ImageNet 中排名前 9000 的类别结合起来。</p>
 <h2 id="yolov2-improvement">YOLOv2 的改进<a hidden class="anchor" aria-hidden="true" href="#yolov2-improvement">#</a></h2>
@@ -395,7 +395,7 @@ b_h &= p_h e^{t_h}\\
 $$
 </div>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/yolov2-loc-prediction.png" style="width: 50%;"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/yolov2-loc-prediction.png" style="width: 50%;"  />
 	<figcaption>YOLOv2 的边界框位置预测。（图片来源：<a href="https://arxiv.org/abs/1612.08242" target="_blank">原始论文</a>）</figcaption>
 </figure>
 <p><strong>6. 添加细粒度特征</strong>：YOLOv2 添加一个直通层，将较早层中的<em>细粒度特征</em>带到最后的输出层。该直通层的机制类似于 <em>ResNet 中的恒等映射</em>，用于从先前的层提取更高维的特征。这使性能提高了 1%。</p>
@@ -406,7 +406,7 @@ $$
 <p>检测数据集的标签数量少得多，且更为宽泛；此外，不同数据集之间的标签往往并不互斥。例如，ImageNet 有“Persian cat”标签，而同一张图像在 COCO 中会被标记为“cat”。如果类别不互斥，对所有类别应用 softmax 就没有意义。</p>
 <p>为了高效合并 ImageNet 标签（1000 类，细粒度）与 COCO/PASCAL 标签（少于 100 类，粗粒度），YOLO9000 参考 <a href="https://wordnet.princeton.edu/">WordNet</a> 构建了层级树结构，使一般性标签更接近根节点，而细粒度类别标签位于叶节点。这样，“cat”就是“Persian cat”的父节点。</p>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/word-tree.png" style="width:100%;"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/word-tree.png" style="width:100%;"  />
 	<figcaption>WordTree 层级结构合并了 COCO 与 ImageNet 的标签。蓝色节点是 COCO 标签，红色节点是 ImageNet 标签。（图片来源：<a href="https://arxiv.org/abs/1612.08242" target="_blank">原始论文</a>）</figcaption>
 </figure>
 <p>为了预测某个类别节点的概率，可以沿着该节点到根节点的路径计算：</p>
@@ -444,7 +444,7 @@ $$
 $$
 </div>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/focal-loss.png" style="width:65%;"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/focal-loss.png" style="width:65%;"  />
 	<figcaption>Focal loss（聚焦损失）通过因子 $(1-p\_t)^\gamma$ 减少对简单样本的关注。（图片来源：<a href="https://arxiv.org/abs/1708.02002" target="_blank">原始论文</a>）</figcaption>
 </figure>
 <p>为了更好地控制权重函数的形状（见图 10），RetinaNet 使用 focal loss（聚焦损失）的 $\alpha$ 平衡变体，其中 $\alpha=0.25, \gamma=2$ 效果最佳。</p>
@@ -454,14 +454,14 @@ $$
 $$
 </div>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/focal-loss-weights.png" style="width:90%;"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/focal-loss-weights.png" style="width:90%;"  />
 	<figcaption>Focal loss（聚焦损失）权重 $\alpha (1-p\_t)^\gamma$ 随 $p\_t$ 变化的曲线，分别采用不同的 $\alpha$ 和 $\gamma$ 值。</figcaption>
 </figure>
 <h2 id="featurized-image-pyramid">特征化图像金字塔<a hidden class="anchor" aria-hidden="true" href="#featurized-image-pyramid">#</a></h2>
 <p><strong>特征化图像金字塔</strong>（<a href="https://arxiv.org/abs/1612.03144">Lin et al., 2017</a>）是 RetinaNet 的骨干网络。沿用 SSD 中<a href="#image-pyramid">图像金字塔</a>的方法，特征化图像金字塔为不同尺度的目标检测提供了基本视觉组件。</p>
 <p>特征金字塔网络的关键思想如下所示。基础结构包含一系列<em>金字塔层级</em>，每个层级对应网络中的一个<em>阶段</em>。每个阶段包含多个大小相同的卷积层，而各阶段的尺寸依次缩小 2 倍。将第 $i$ 个阶段的最后一层记为 $C_i$。</p>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/featurized-image-pyramid.png" style="width:100%;"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/featurized-image-pyramid.png" style="width:100%;"  />
 	<figcaption>特征化图像金字塔模块示意图。（依据 <a href="https://arxiv.org/abs/1612.03144" target="_blank">FPN 论文</a>中的图 3 重绘）</figcaption>
 </figure>
 <p>两条路径连接卷积层：</p>
@@ -480,7 +480,7 @@ $$
 </ul>
 <p>根据消融研究，特征化图像金字塔设计中各组件的重要性排序如下：<strong>1x1 横向连接</strong> &gt; 跨多个层检测目标 &gt; 自顶向下的特征丰富 &gt; 金字塔表示（相比仅检查最细粒度层）。</p>
 <h2 id="model-architecture">模型架构<a hidden class="anchor" aria-hidden="true" href="#model-architecture">#</a></h2>
-<p>特征化金字塔构建在 ResNet 架构之上。回顾一下，<a href="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/TBA">ResNet</a> 有 5 个卷积块（即网络阶段／金字塔层级）。第 $i$ 个金字塔层级的最后一层 $C_i$，其分辨率比原始输入维度低 $2^i$ 倍。</p>
+<p>特征化金字塔构建在 ResNet 架构之上。回顾一下，<a href="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/TBA">ResNet</a> 有 5 个卷积块（即网络阶段／金字塔层级）。第 $i$ 个金字塔层级的最后一层 $C_i$，其分辨率比原始输入维度低 $2^i$ 倍。</p>
 <p>RetinaNet 使用从 $P_3$ 到 $P_7$ 的特征金字塔层级：</p>
 <ul>
 <li>$P_3$ 到 $P_5$ 由对应的 ResNet 残差阶段 $C_3$ 到 $C_5$ 计算得到。它们通过自顶向下和自底向上的路径连接。</li>
@@ -496,7 +496,7 @@ $$
 </ul>
 <p>与通常一样，对于每个 anchor box（锚框），模型在分类子网络中输出 $K$ 个类别各自的类别概率，并在边界框回归子网络中回归该 anchor box 到最近的真实标注目标的偏移量。分类子网络采用前面介绍的 focal loss（聚焦损失）。</p>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/retina-net.png" style="width:100%;"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/retina-net.png" style="width:100%;"  />
 	<figcaption>RetinaNet 模型架构在 ResNet 之上使用 <a href="https://arxiv.org/abs/1612.03144" target="_blank">FPN（特征金字塔网络）</a> 骨干网络。（图片来源：<a href="https://arxiv.org/abs/1612.03144" target="_blank">FPN</a> 论文）</figcaption>
 </figure>
 <h1 id="yolov3">YOLOv3<a hidden class="anchor" aria-hidden="true" href="#yolov3">#</a></h1>
@@ -510,7 +510,7 @@ $$
 <p>有趣的是，focal loss（聚焦损失）对 YOLOv3 没有帮助，可能是因为使用了 $\lambda_\text{noobj}$ 和 $\lambda_\text{coord}$——它们增大边界框位置预测的损失，并降低背景框置信度预测的损失。</p>
 <p>总体而言，YOLOv3 比 SSD 表现更好且速度更快；表现不如 RetinaNet，但速度是后者的 3.8 倍。</p>
 <figure>
-	<img src="https://xingshuozhu1998.github.io/posts/2018-12-27-object-recognition-part-4/yolov3-perf.png" style="width:80%;"  />
+	<img src="https://xingshuozhu1998.github.io/lilianweng/posts/2018-12-27-object-recognition-part-4/yolov3-perf.png" style="width:80%;"  />
 	<figcaption>不同快速目标检测模型在速度与 mAP 性能方面的比较。（图片来源：<a href="https://arxiv.org/abs/1708.02002" target="_blank">focal loss（聚焦损失）</a>论文，附加标签来自 <a href="https://pjreddie.com/media/files/papers/YOLOv3.pdf" target="_blank">YOLOv3</a> 论文。）</figcaption>
 </figure>
 <hr>
@@ -536,17 +536,17 @@ $$
 
   <footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://xingshuozhu1998.github.io/tags/object-detection/">目标检测</a></li>
-      <li><a href="https://xingshuozhu1998.github.io/tags/object-recognition/">目标识别</a></li>
-      <li><a href="https://xingshuozhu1998.github.io/tags/vision-model/">视觉模型</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/lilianweng/tags/object-detection/">目标检测</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/lilianweng/tags/object-recognition/">目标识别</a></li>
+      <li><a href="https://xingshuozhu1998.github.io/lilianweng/tags/vision-model/">视觉模型</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="https://xingshuozhu1998.github.io/posts/2019-01-31-lm/">
+  <a class="prev" href="https://xingshuozhu1998.github.io/lilianweng/posts/2019-01-31-lm/">
     <span class="title">« </span>
     <br>
     <span>通用语言模型</span>
   </a>
-  <a class="next" href="https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/">
+  <a class="next" href="https://xingshuozhu1998.github.io/lilianweng/posts/2018-11-30-meta-learning/">
     <span class="title"> »</span>
     <br>
     <span>元学习：学会快速学习</span>
@@ -556,42 +556,42 @@ $$
 
 <div class="share-buttons">
     <a target="_blank" rel="noopener noreferrer" aria-label="在 Twitter 上分享《目标检测第 4 部分：快速检测模型》"
-        href="https://twitter.com/intent/tweet/?text=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-12-27-object-recognition-part-4%2f&amp;hashtags=object-detection%2cobject-recognition%2cvision-model">
+        href="https://twitter.com/intent/tweet/?text=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2Flilianweng%2fposts%2f2018-12-27-object-recognition-part-4%2f&amp;hashtags=object-detection%2cobject-recognition%2cvision-model">
         <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
             <path
                 d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-253.927,424.544c135.939,0 210.268,-112.643 210.268,-210.268c0,-3.218 0,-6.437 -0.153,-9.502c14.406,-10.421 26.973,-23.448 36.935,-38.314c-13.18,5.824 -27.433,9.809 -42.452,11.648c15.326,-9.196 26.973,-23.602 32.49,-40.92c-14.252,8.429 -30.038,14.56 -46.896,17.931c-13.487,-14.406 -32.644,-23.295 -53.946,-23.295c-40.767,0 -73.87,33.104 -73.87,73.87c0,5.824 0.613,11.494 1.992,16.858c-61.456,-3.065 -115.862,-32.49 -152.337,-77.241c-6.284,10.881 -9.962,23.601 -9.962,37.088c0,25.594 13.027,48.276 32.95,61.456c-12.107,-0.307 -23.448,-3.678 -33.41,-9.196l0,0.92c0,35.862 25.441,65.594 59.311,72.49c-6.13,1.686 -12.72,2.606 -19.464,2.606c-4.751,0 -9.348,-0.46 -13.946,-1.38c9.349,29.426 36.628,50.728 68.965,51.341c-25.287,19.771 -57.164,31.571 -91.8,31.571c-5.977,0 -11.801,-0.306 -17.625,-1.073c32.337,21.15 71.264,33.41 112.95,33.41Z" />
         </svg>
     </a>
     <a target="_blank" rel="noopener noreferrer" aria-label="在 LinkedIn 上分享《目标检测第 4 部分：快速检测模型》"
-        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-12-27-object-recognition-part-4%2f&amp;title=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models&amp;summary=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-12-27-object-recognition-part-4%2f">
+        href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2Flilianweng%2fposts%2f2018-12-27-object-recognition-part-4%2f&amp;title=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models&amp;summary=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models&amp;source=https%3A%2F%2Fxingshuozhu1998.github.io%2Flilianweng%2fposts%2f2018-12-27-object-recognition-part-4%2f">
         <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
             <path
                 d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-288.985,423.278l0,-225.717l-75.04,0l0,225.717l75.04,0Zm270.539,0l0,-129.439c0,-69.333 -37.018,-101.586 -86.381,-101.586c-39.804,0 -57.634,21.891 -67.617,37.266l0,-31.958l-75.021,0c0.995,21.181 0,225.717 0,225.717l75.02,0l0,-126.056c0,-6.748 0.486,-13.492 2.474,-18.315c5.414,-13.475 17.767,-27.434 38.494,-27.434c27.135,0 38.007,20.707 38.007,51.037l0,120.768l75.024,0Zm-307.552,-334.556c-25.674,0 -42.448,16.879 -42.448,39.002c0,21.658 16.264,39.002 41.455,39.002l0.484,0c26.165,0 42.452,-17.344 42.452,-39.002c-0.485,-22.092 -16.241,-38.954 -41.943,-39.002Z" />
         </svg>
     </a>
     <a target="_blank" rel="noopener noreferrer" aria-label="在 Reddit 上分享《目标检测第 4 部分：快速检测模型》"
-        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-12-27-object-recognition-part-4%2f&title=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models">
+        href="https://reddit.com/submit?url=https%3A%2F%2Fxingshuozhu1998.github.io%2Flilianweng%2fposts%2f2018-12-27-object-recognition-part-4%2f&title=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models">
         <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
             <path
                 d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-3.446,265.638c0,-22.964 -18.616,-41.58 -41.58,-41.58c-11.211,0 -21.361,4.457 -28.841,11.666c-28.424,-20.508 -67.586,-33.757 -111.204,-35.278l18.941,-89.121l61.884,13.157c0.756,15.734 13.642,28.29 29.56,28.29c16.407,0 29.706,-13.299 29.706,-29.701c0,-16.403 -13.299,-29.702 -29.706,-29.702c-11.666,0 -21.657,6.792 -26.515,16.578l-69.105,-14.69c-1.922,-0.418 -3.939,-0.042 -5.585,1.036c-1.658,1.073 -2.811,2.761 -3.224,4.686l-21.152,99.438c-44.258,1.228 -84.046,14.494 -112.837,35.232c-7.468,-7.164 -17.589,-11.591 -28.757,-11.591c-22.965,0 -41.585,18.616 -41.585,41.58c0,16.896 10.095,31.41 24.568,37.918c-0.639,4.135 -0.99,8.328 -0.99,12.576c0,63.977 74.469,115.836 166.33,115.836c91.861,0 166.334,-51.859 166.334,-115.836c0,-4.218 -0.347,-8.387 -0.977,-12.493c14.564,-6.47 24.735,-21.034 24.735,-38.001Zm-119.474,108.193c-20.27,20.241 -59.115,21.816 -70.534,21.816c-11.428,0 -50.277,-1.575 -70.522,-21.82c-3.007,-3.008 -3.007,-7.882 0,-10.889c3.003,-2.999 7.882,-3.003 10.885,0c12.777,12.781 40.11,17.317 59.637,17.317c19.522,0 46.86,-4.536 59.657,-17.321c3.016,-2.999 7.886,-2.995 10.885,0.008c3.008,3.011 3.003,7.882 -0.008,10.889Zm-5.23,-48.781c-16.373,0 -29.701,-13.324 -29.701,-29.698c0,-16.381 13.328,-29.714 29.701,-29.714c16.378,0 29.706,13.333 29.706,29.714c0,16.374 -13.328,29.698 -29.706,29.698Zm-160.386,-29.702c0,-16.381 13.328,-29.71 29.714,-29.71c16.369,0 29.689,13.329 29.689,29.71c0,16.373 -13.32,29.693 -29.689,29.693c-16.386,0 -29.714,-13.32 -29.714,-29.693Z" />
         </svg>
     </a>
     <a target="_blank" rel="noopener noreferrer" aria-label="在 Facebook 上分享《目标检测第 4 部分：快速检测模型》"
-        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-12-27-object-recognition-part-4%2f">
+        href="https://facebook.com/sharer/sharer.php?u=https%3A%2F%2Fxingshuozhu1998.github.io%2Flilianweng%2fposts%2f2018-12-27-object-recognition-part-4%2f">
         <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
             <path
                 d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-106.468,0l0,-192.915l66.6,0l12.672,-82.621l-79.272,0l0,-53.617c0,-22.603 11.073,-44.636 46.58,-44.636l36.042,0l0,-70.34c0,0 -32.71,-5.582 -63.982,-5.582c-65.288,0 -107.96,39.569 -107.96,111.204l0,62.971l-72.573,0l0,82.621l72.573,0l0,192.915l-191.104,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Z" />
         </svg>
     </a>
     <a target="_blank" rel="noopener noreferrer" aria-label="在 WhatsApp 上分享《目标检测第 4 部分：快速检测模型》"
-        href="https://api.whatsapp.com/send?text=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-12-27-object-recognition-part-4%2f">
+        href="https://api.whatsapp.com/send?text=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models%20-%20https%3A%2F%2Fxingshuozhu1998.github.io%2Flilianweng%2fposts%2f2018-12-27-object-recognition-part-4%2f">
         <svg version="1.1" viewBox="0 0 512 512" xml:space="preserve">
             <path
                 d="M449.446,0c34.525,0 62.554,28.03 62.554,62.554l0,386.892c0,34.524 -28.03,62.554 -62.554,62.554l-386.892,0c-34.524,0 -62.554,-28.03 -62.554,-62.554l0,-386.892c0,-34.524 28.029,-62.554 62.554,-62.554l386.892,0Zm-58.673,127.703c-33.842,-33.881 -78.847,-52.548 -126.798,-52.568c-98.799,0 -179.21,80.405 -179.249,179.234c-0.013,31.593 8.241,62.428 23.927,89.612l-25.429,92.884l95.021,-24.925c26.181,14.28 55.659,21.807 85.658,21.816l0.074,0c98.789,0 179.206,-80.413 179.247,-179.243c0.018,-47.895 -18.61,-92.93 -52.451,-126.81Zm-126.797,275.782l-0.06,0c-26.734,-0.01 -52.954,-7.193 -75.828,-20.767l-5.441,-3.229l-56.386,14.792l15.05,-54.977l-3.542,-5.637c-14.913,-23.72 -22.791,-51.136 -22.779,-79.287c0.033,-82.142 66.867,-148.971 149.046,-148.971c39.793,0.014 77.199,15.531 105.329,43.692c28.128,28.16 43.609,65.592 43.594,105.4c-0.034,82.149 -66.866,148.983 -148.983,148.984Zm81.721,-111.581c-4.479,-2.242 -26.499,-13.075 -30.604,-14.571c-4.105,-1.495 -7.091,-2.241 -10.077,2.241c-2.986,4.483 -11.569,14.572 -14.182,17.562c-2.612,2.988 -5.225,3.364 -9.703,1.12c-4.479,-2.241 -18.91,-6.97 -36.017,-22.23c-13.314,-11.876 -22.304,-26.542 -24.916,-31.026c-2.612,-4.484 -0.279,-6.908 1.963,-9.14c2.016,-2.007 4.48,-5.232 6.719,-7.847c2.24,-2.615 2.986,-4.484 4.479,-7.472c1.493,-2.99 0.747,-5.604 -0.374,-7.846c-1.119,-2.241 -10.077,-24.288 -13.809,-33.256c-3.635,-8.733 -7.327,-7.55 -10.077,-7.688c-2.609,-0.13 -5.598,-0.158 -8.583,-0.158c-2.986,0 -7.839,1.121 -11.944,5.604c-4.105,4.484 -15.675,15.32 -15.675,37.364c0,22.046 16.048,43.342 18.287,46.332c2.24,2.99 31.582,48.227 76.511,67.627c10.685,4.615 19.028,7.371 25.533,9.434c10.728,3.41 20.492,2.929 28.209,1.775c8.605,-1.285 26.499,-10.833 30.231,-21.295c3.732,-10.464 3.732,-19.431 2.612,-21.298c-1.119,-1.869 -4.105,-2.99 -8.583,-5.232Z" />
         </svg>
     </a>
     <a target="_blank" rel="noopener noreferrer" aria-label="在 Telegram 上分享《目标检测第 4 部分：快速检测模型》"
-        href="https://telegram.me/share/url?text=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2fposts%2f2018-12-27-object-recognition-part-4%2f">
+        href="https://telegram.me/share/url?text=Object%20Detection%20Part%204%3a%20Fast%20Detection%20Models&amp;url=https%3A%2F%2Fxingshuozhu1998.github.io%2Flilianweng%2fposts%2f2018-12-27-object-recognition-part-4%2f">
         <svg version="1.1" xml:space="preserve" viewBox="2 2 28 28">
             <path
                 d="M26.49,29.86H5.5a3.37,3.37,0,0,1-2.47-1,3.35,3.35,0,0,1-1-2.47V5.48A3.36,3.36,0,0,1,3,3,3.37,3.37,0,0,1,5.5,2h21A3.38,3.38,0,0,1,29,3a3.36,3.36,0,0,1,1,2.46V26.37a3.35,3.35,0,0,1-1,2.47A3.38,3.38,0,0,1,26.49,29.86Zm-5.38-6.71a.79.79,0,0,0,.85-.66L24.73,9.24a.55.55,0,0,0-.18-.46.62.62,0,0,0-.41-.17q-.08,0-16.53,6.11a.59.59,0,0,0-.41.59.57.57,0,0,0,.43.52l4,1.24,1.61,4.83a.62.62,0,0,0,.63.43.56.56,0,0,0,.4-.17L16.54,20l4.09,3A.9.9,0,0,0,21.11,23.15ZM13.8,20.71l-1.21-4q8.72-5.55,8.78-5.55c.15,0,.23,0,.23.16a.18.18,0,0,1,0,.06s-2.51,2.3-7.52,6.8Z" />
@@ -604,7 +604,7 @@ $$
     </main>
     
 <footer class="footer">
-    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/">Lil'Log</a></span>
+    <span>&copy; 2026 <a href="https://xingshuozhu1998.github.io/lilianweng/">Lil'Log</a></span>
     <span>
         由以下工具驱动：
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &

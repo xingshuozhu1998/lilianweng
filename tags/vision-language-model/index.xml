@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log 中文学习镜像 · tags/vision-language-model</title>
-    <link>https://xingshuozhu1998.github.io/tags/vision-language-model/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/tags/vision-language-model/</link>
     <description>Lilian Weng 文章学习镜像；机器译文需审校。</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 09 Jun 2022 15:10:30 -0700</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/tags/vision-language-model/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 09 Jun 2022 15:10:30 -0700</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/tags/vision-language-model/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>通用视觉语言模型</title>
-      <link>https://xingshuozhu1998.github.io/posts/2022-06-09-vlm/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/posts/2022-06-09-vlm/</link>
       <pubDate>Thu, 09 Jun 2022 15:10:30 -0700</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/posts/2022-06-09-vlm/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/posts/2022-06-09-vlm/</guid>
       <description>处理图像以生成文本，例如图像描述与视觉问答，已经研究多年。传统系统依赖目标检测网络作为视觉编码器，捕获视觉特征，再通过文本解码器生成文本。鉴于已有大量文献，本文只关注解决视觉语言任务的一种方法： 扩展预训练 通用语言模型 ，使其能够接收视觉信号 。 
  我将此类 vision language models（视觉语言模型，VLMs）粗略分为四类： 
  

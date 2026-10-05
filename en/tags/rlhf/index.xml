@@ -2,17 +2,17 @@
 <rss xmlns:ns0="http://www.w3.org/2005/Atom" version="2.0">
   <channel>
     <title>Lil’Log English mirror · tags/rlhf</title>
-    <link>https://xingshuozhu1998.github.io/en/tags/rlhf/</link>
+    <link>https://xingshuozhu1998.github.io/lilianweng/en/tags/rlhf/</link>
     <description>English mirror of Lilian Weng’s blog.</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 28 Nov 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/en/tags/rlhf/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 28 Nov 2024 00:00:00 +0000</lastBuildDate><ns0:link href="https://xingshuozhu1998.github.io/lilianweng/en/tags/rlhf/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Reward Hacking in Reinforcement Learning</title>
-      <link>https://xingshuozhu1998.github.io/en/posts/2024-11-28-reward-hacking/</link>
+      <link>https://xingshuozhu1998.github.io/lilianweng/en/posts/2024-11-28-reward-hacking/</link>
       <pubDate>Thu, 28 Nov 2024 00:00:00 +0000</pubDate>
       
-      <guid>https://xingshuozhu1998.github.io/en/posts/2024-11-28-reward-hacking/</guid>
+      <guid>https://xingshuozhu1998.github.io/lilianweng/en/posts/2024-11-28-reward-hacking/</guid>
       <description>Reward hacking occurs when a  reinforcement learning (RL)  agent  exploits  flaws or ambiguities in the reward function to achieve high rewards, without genuinely learning or completing the intended task. Reward hacking exists because RL environments are often imperfect, and it is fundamentally challenging to accurately specify a reward function. 
  With the rise of  language models  generalizing to a broad spectrum of tasks and RLHF becomes a de facto method for alignment training, reward hackin</description>
     </item>
