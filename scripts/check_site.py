@@ -5,6 +5,7 @@
 """
 
 import argparse
+from collections import Counter
 import json
 import re
 from pathlib import Path
@@ -15,7 +16,7 @@ from lxml import html
 
 CLASS_BODY = '//*[contains(concat(" ", normalize-space(@class), " "), " post-content ")]'
 CLASS_TOC = '//*[contains(concat(" ", normalize-space(@class), " "), " toc ")]'
-MATH = re.compile(r'(?<!\\)\$\$[\s\S]*?(?<!\\)\$\$|(?<!\\)\$(?!\$)[^$]*?(?<!\\)\$|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)')
+MATH = re.compile(r'(?<!\\)\$\$[\s\S]*?(?<!\\)\$\$|(?<![\\$])\$(?!\$)(?:\\.|[^$])*?(?<!\\)\$(?!\$)|\\\[[\s\S]*?\\\]|\\\([\s\S]*?\\\)')
 CHINESE = re.compile(r'[\u3400-\u9fff]')
 WORDS = re.compile(r'[A-Za-z]+(?:[-\u2019\'][A-Za-z]+)*')
 SITE_HOSTS = {'lilianweng.github.io', 'xingshuozhu1998.github.io'}
@@ -42,7 +43,7 @@ def check_first_explanations(original, translated, terms):
             if not isinstance(node.tag, str) or node.tag in {'pre', 'code', 'script', 'style', 'svg', 'textarea', 'noscript'}:
                 return
             if node.tag in {'h1', 'h2', 'h3', 'h4', 'h5', 'h6'} and 'post-title' not in (node.get('class') or '').split():
-                references = bool(re.search(r'references|citation|papers-mentioned|blog-posts-mentioned|useful-resources|interesting-blogs', node.get('id', ''), re.I))
+                references = bool(re.search(r'references?|citation|papers-mentioned|blog-posts-mentioned|useful-resources|interesting-blogs', node.get('id', ''), re.I))
             if node.text and not references:
                 parts.append(node.text)
             for child in node:
@@ -55,27 +56,62 @@ def check_first_explanations(original, translated, terms):
             parts.append('\n')
         return MATH.sub('', ''.join(parts))
 
-    pattern = re.compile(r'(?<![A-Za-z0-9_])(?:' + '|'.join(re.escape(term) for term in sorted(terms, key=len, reverse=True)) + r')(?![A-Za-z0-9_])', re.I)
+    # MADE/NICE 等大写模型名不能匹配普通英语 made/nice。
+    alternatives = [re.escape(term) if term.isupper() else '(?i:' + re.escape(term) + ')' for term in sorted(terms, key=len, reverse=True)]
+    pattern = re.compile(r'(?<![A-Za-z0-9_-])(?:' + '|'.join(alternatives) + r')(?![A-Za-z0-9_-])')
     source_text, target_text = article_text(original), article_text(translated)
-    source_terms = {match.group().casefold() for match in pattern.finditer(source_text)}
     explanations = {term.casefold(): meaning for term, meaning in terms.items()}
-    seen, errors = set(), []
-    for match in pattern.finditer(target_text):
+    annotation_pattern = re.compile('（(?:' + '|'.join(re.escape(value) for value in set(explanations.values())) + ')）')
+
+    def term_matches(text):
+        # 中文释义里引用的英文名称不算正文首次，例如 BERTserini 的释义可能提到 BERT。
+        annotations = [match.span() for match in annotation_pattern.finditer(text)]
+        return [match for match in pattern.finditer(text) if not any(start <= match.start() < end for start, end in annotations)]
+
+    source_terms = {match.group().casefold() for match in term_matches(source_text)}
+    concepts = {key: key.replace(' ', '').replace('-', '') for key in explanations}
+    meanings = {concepts[key]: value for key, value in explanations.items()}
+    for key, concept in list(concepts.items()):
+        if concept.endswith('s') and meanings.get(concept[:-1]) == explanations[key]:
+            concepts[key] = concept[:-1]
+    seen, seen_concepts, errors = set(), set(), []
+    for match in term_matches(target_text):
         key = match.group().casefold()
+        concept = concepts[key]
         annotation = '（' + explanations[key] + '）'
         explained = target_text[match.end():].startswith(annotation)
-        if key not in seen and not explained:
+        if concept not in seen_concepts and not explained:
             errors.append('英文术语首次出现缺少约定的中文简释：' + match.group())
-        elif key in seen and explained:
+        elif concept in seen_concepts and explained:
             errors.append('英文术语后续出现重复添加中文简释：' + match.group())
         seen.add(key)
-    for term in sorted(source_terms - seen):
+        seen_concepts.add(concept)
+    for term in sorted(term for term in source_terms if concepts[term] not in seen_concepts):
         errors.append('原文英文专名在译文中未保留：' + term)
+    # 只保留一次英语、把后续出现全部汉译，同样不符合用户的术语要求。
+    source_counts = Counter(concepts[m.group().casefold()] for m in term_matches(source_text))
+    target_counts = Counter(concepts[m.group().casefold()] for m in term_matches(target_text))
+    for concept, count in source_counts.items():
+        if target_counts[concept] and target_counts[concept] < count:
+            names = [key for key, value in concepts.items() if value == concept]
+            errors.append(f'英文术语部分出现位置被汉译：{" / ".join(names)}，原文 {count} 次、译文 {target_counts[concept]} 次')
     return errors
 
 
 def math_fragments(node):
-    return MATH.findall(visible_text(node))
+    # 原站个别段落有未配平的美元符号；不能跨段拼接，再把中间的正文误当公式。
+    block_tags = {'p', 'li', 'td', 'th', 'dd', 'dt', 'figcaption', 'blockquote', 'div', 'section', 'article', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'}
+    runs, previous = [], None
+    for text in node.xpath('.//text()[not(ancestor::pre or ancestor::code or ancestor::script or ancestor::style or ancestor::svg)]'):
+        owner = text.getparent().getparent() if text.is_tail else text.getparent()
+        while owner is not None and owner.tag not in block_tags:
+            owner = owner.getparent()
+        if owner == previous and runs:
+            runs[-1] += str(text)
+        else:
+            runs.append(str(text))
+        previous = owner
+    return [fragment for run in runs for fragment in MATH.findall(run)]
 
 
 def image_path(src, page_path, root, base_path):
@@ -150,6 +186,12 @@ def check_post(source, target, upstream, dist, title, base_path, terms):
     page_terms = dict(terms)
     if 'Distributional Policy Gradient' in original_body.text_content():
         page_terms['DPG'] = '分布策略梯度，区别于确定性策略梯度'
+    if 'REALM++' in original_body.text_content():
+        page_terms['EM'] = '完全匹配'
+    elif 'Earth Mover' in original_body.text_content():
+        page_terms['EM'] = '推土机距离'
+    if 'Stable Video Diffusion' in original_body.text_content():
+        page_terms['SVD'] = '稳定视频扩散模型'
     result['term_policy_errors'] = check_first_explanations(original, translated, page_terms)
     result['errors'].extend(result['term_policy_errors'])
 
@@ -161,7 +203,7 @@ def check_post(source, target, upstream, dist, title, base_path, terms):
     for src, dst in zip(original_blocks, translated_blocks):
         text = visible_text(src)
         if src.tag.startswith('h'):
-            in_references = bool(re.search(r'\b(references|citation|cited as|papers mentioned|blog posts mentioned|useful resources|interesting blogs)\b', text, re.I))
+            in_references = bool(re.search(r'\b(references?|citation|cited as|papers mentioned|blog posts mentioned|useful resources|interesting blogs)\b', text, re.I))
         without_math = MATH.sub('', text)
         if in_references or len(WORDS.findall(without_math)) < 8:
             continue

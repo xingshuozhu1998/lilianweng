@@ -32,7 +32,7 @@ class Document(HTMLParser):
     """记录源码位置，编辑时不重新序列化 HTML，避免改变原格式与公式。"""
     def __init__(self, source):
         super().__init__(convert_charrefs=False)
-        self.source, self.stack, self.nodes, self.groups, self.tags = source, [], [], [], []
+        self.source, self.stack, self.nodes, self.groups, self.tags, self.hidden_anchors = source, [], [], [], [], []
         self.lines = [0]
         self.lines.extend(m.end() for m in re.finditer("\n", source))
         self.feed(source)
@@ -61,6 +61,8 @@ class Document(HTMLParser):
             if self.stack[idx][0] == tag:
                 item = self.stack[idx]
                 ancestors = self.stack[:idx]
+                if tag == "a" and "hidden" in item[3]:
+                    self.hidden_anchors.append((item[1], self.source.index(">", self.pos()) + 1))
                 if tag in BLOCK and not item[4] and not any(a[0] in SKIP for a in ancestors):
                     self.groups.append((item[2], self.pos(), tag))
                 del self.stack[idx:]
@@ -97,9 +99,16 @@ def protect(raw):
         placeholders.append({"token": token, "raw": original, "kind": kind.lower()})
         return token
 
-    # 先保护代码与隐藏锚点的整个节点，避免把代码内容或井号送去翻译。
-    raw = re.sub(r"<(code|pre)\b[^>]*>[\s\S]*?</\1\s*>|<a\b(?=[^>]*\bhidden\b)[^>]*>[\s\S]*?</a\s*>",
-                 lambda m: replace("CODE", m.group()), raw, flags=re.I)
+    # 读取真实 hidden 属性；href、aria-label 或 class 的文字都不能冒充该属性。
+    ranges = Document(raw).hidden_anchors
+    ranges += [match.span() for match in re.finditer(r"<(code|pre)\b[^>]*>[\s\S]*?</\1\s*>", raw, re.I)]
+    parts, previous = [], 0
+    for start, end in sorted(ranges, key=lambda value: (value[0], -value[1])):
+        if start < previous:
+            continue
+        parts.extend([raw[previous:start], replace("CODE", raw[start:end])])
+        previous = end
+    raw = "".join(parts) + raw[previous:]
     raw = MATH.sub(lambda m: replace("MATH", m.group()), raw)
     raw = re.sub(r"<!--[\s\S]*?-->|</?[A-Za-z][^>]*>", lambda m: replace("TAG", m.group()), raw)
     return html.unescape(raw), placeholders
@@ -182,7 +191,8 @@ def restore(item, translated):
     if expected != actual:
         raise ValueError(f"占位符数量或顺序变化：{item['id']}: {expected} != {actual}")
     rendered = html.escape(translated, quote=item["kind"] == "attribute")
-    for placeholder in item["placeholders"]:
+    # 后保护的注释或标签可能包住先保护的公式，先恢复外层再恢复内层。
+    for placeholder in reversed(item["placeholders"]):
         rendered = rendered.replace(placeholder["token"], placeholder["raw"])
     return rendered
 
@@ -292,7 +302,7 @@ def explain_first_terms(source, terms):
         def handle_starttag(self, tag, attrs):
             inside_body = any("post-content" in (item[3].get("class") or "").split() for item in self.stack)
             if inside_body and tag in {"h1", "h2", "h3", "h4", "h5", "h6"}:
-                self.references = bool(re.search(r"references|citation|papers-mentioned|blog-posts-mentioned|useful-resources|interesting-blogs", dict(attrs).get("id", ""), re.I))
+                self.references = bool(re.search(r"references?|citation|papers-mentioned|blog-posts-mentioned|useful-resources|interesting-blogs", dict(attrs).get("id", ""), re.I))
             super().handle_starttag(tag, attrs)
 
         def data(self, length):
@@ -306,7 +316,14 @@ def explain_first_terms(source, terms):
                 self.nodes.append((start, start + length))
 
     lookup = {key.casefold(): value for key, value in terms.items()}
-    expression = re.compile(r"(?<![A-Za-z0-9_])(?:" + "|".join(re.escape(key) for key in sorted(terms, key=len, reverse=True)) + r")(?![A-Za-z0-9_])", re.I)
+    concepts = {key: key.replace(" ", "").replace("-", "") for key in lookup}
+    concept_meanings = {concepts[key]: meaning for key, meaning in lookup.items()}
+    for key, concept in list(concepts.items()):
+        if concept.endswith("s") and concept_meanings.get(concept[:-1]) == lookup[key]:
+            concepts[key] = concept[:-1]
+    # 大写模型缩写区分大小写，避免给普通词 made/nice 加上模型解释。
+    alternatives = [re.escape(key) if key.isupper() else "(?i:" + re.escape(key) + ")" for key in sorted(terms, key=len, reverse=True)]
+    expression = re.compile(r"(?<![A-Za-z0-9_-])(?:" + "|".join(alternatives) + r")(?![A-Za-z0-9_-])")
     seen, edits, pending, previous_end = set(), [], None, None
     for start, end in ArticleText(source).nodes:
         raw = source[start:end]
@@ -318,6 +335,8 @@ def explain_first_terms(source, terms):
             separated = re.match(r"[ \t]*(?:（" + re.escape(pending) + r"）|\(" + re.escape(pending) + r"\))", protected)
             if separated:
                 protected = protected[separated.end():]
+                if re.match(r"[A-Za-z]", protected):
+                    protected = " " + protected
         pending = None
         result, previous = [], 0
         for match in expression.finditer(protected):
@@ -326,15 +345,23 @@ def explain_first_terms(source, terms):
                 continue
             term, key = match.group(), match.group().casefold()
             explanation = lookup[key]
+            concept = concepts[key]
             annotation = re.match(r"[ \t]*(?:（" + re.escape(explanation) + r"）|\(" + re.escape(explanation) + r"\))", protected[match.end():])
             result.append(protected[previous:match.start()])
-            result.append(term if key in seen else term + "（" + explanation + "）")
-            seen.add(key)
+            repeated = concept in seen
+            result.append(term if repeated else term + "（" + explanation + "）")
+            seen.add(concept)
             previous = match.end() + (annotation.end() if annotation else 0)
+            # 去除括释后仍保留英文词边界，例如 off-policy（释义）RL。
+            if repeated and annotation and re.match(r"[A-Za-z]", protected[previous:]):
+                result.append(" ")
             if not protected[previous:].strip():
                 pending = explanation
         result.append(protected[previous:])
         normalized = "".join(result)
+        # 删除括释后，行内链接/强调标签两侧的英文仍须分词，避免出现 APIplayground。
+        if normalized != original_protected and re.search(r"[A-Za-z]$", normalized) and re.match(r"(?:</?(?:a|b|i|em|strong|span|mark|small|sup|sub|u|s|del)\b[^>]*>)+[A-Za-z]", source[end:], re.I):
+            normalized += " "
         if normalized != original_protected:
             item = {"id": "first-occurrence", "protected": original_protected, "placeholders": placeholders, "kind": "text"}
             edits.append((start, end, restore(item, normalized)))
@@ -384,6 +411,14 @@ def build(upstream, output, source_path, cache_path):
         term_overrides = {}
         if "Distributional Policy Gradient" in original:
             term_overrides["DPG"] = "分布策略梯度，区别于确定性策略梯度"
+        # EM 在问答评估、运输距离与参数估计中含义不同，不能统一解释成期望最大化。
+        if "REALM++" in original:
+            term_overrides["EM"] = "完全匹配"
+        elif "Earth Mover" in original:
+            term_overrides["EM"] = "推土机距离"
+        # 视频文章的 SVD 指 Stable Video Diffusion，其他文章仍指矩阵的奇异值分解。
+        if "Stable Video Diffusion" in original:
+            term_overrides["SVD"] = "稳定视频扩散模型"
         page_terms = {**terms, **term_overrides}
         page_chunks = chunks(original)
         page_missing = [item["id"] for _, _, item in page_chunks if item["id"] not in cache]
@@ -433,7 +468,7 @@ def build(upstream, output, source_path, cache_path):
                              "translated_segments": len(page_chunks) - len(page_missing), "total_segments": len(page_chunks),
                              "missing_segments": list(dict.fromkeys(page_missing)),
                              "term_explanation_overrides": term_overrides,
-                             "status": "machine_translated_needs_review" if not page_missing else "incomplete"})
+                             "status": "gpt_translated" if not page_missing else "incomplete"})
     for prefix, index in indexes.items():
         base = output / prefix.strip("/")
         write_json(base / "index.json", index)
@@ -474,7 +509,7 @@ def build(upstream, output, source_path, cache_path):
     (output / ".nojekyll").touch()
     manifest_data = {"origin": ORIGIN, "site": SITE, "posts": manifest,
                      "translation_model": "GPT-6.1-sol",
-                     "translation_method": "三个子代理直接逐段翻译，由主代理汇总并审核",
+                     "translation_method": "GPT-6.1-sol 子代理按三组分工直接逐段翻译，由主代理汇总并审核",
                      "term_policy": {"source": "translations/english_terms.json", "retained_english_terms": terms,
                                      "scope": "每篇文章的标题及正文；目录、参考文献、HTML属性、代码和公式不计入首次出现",
                                      "rule": "词表中的专名保留英文；首次紧跟中文括释，后续重复使用英文"},

@@ -1,0 +1,857 @@
+{
+  "reviewer": "主代理 /root",
+  "translation_model": "GPT-6.1-sol",
+  "status": "complete_local_review",
+  "scope": "逐篇检查全文结构与翻译覆盖；主代理独立抽查关键算法段落、数学变量角色、数字与限定条件，审核子代理上报疑点。不是每句经人类审校的译本。",
+  "semantic_checks": [
+    {
+      "source_id": "79528b513917d67aa0fe",
+      "pages": [
+        "posts/2018-04-08-policy-gradient/index.html"
+      ],
+      "source_sha256": "19fd9579b6dc210732b804fe27f77d97c1b81658bd5dc288e4c93b27b827417e",
+      "translation_sha256": "bf41781ba3f0acf3dda90c57a96b334d0228e7b21283acdc094a099ea852ec28",
+      "note": "核对马尔可夫链的平稳概率、初始状态、条件事件与策略的变量角色；译文对应正确。"
+    },
+    {
+      "source_id": "b3f65671707664f5a3f6",
+      "pages": [
+        "posts/2019-01-31-lm/index.html"
+      ],
+      "source_sha256": "e5f0ce234887aea3c5f229406ed57c1301babe50765ce4baf5ac390c169edbf6",
+      "translation_sha256": "c25b64bdc2f77f166bddd0e1ecad20d34f865bb292abcbc29a5487f3d2c77529",
+      "note": "原句175B与1.5B分别译为1750亿与15亿，单位换算正确；源文仍称10倍，译文忠实保留，不能把源文算术问题当译文修正。"
+    },
+    {
+      "source_id": "9d1ec15e4fd0a5c9ffdc",
+      "pages": [
+        "posts/2018-04-08-policy-gradient/index.html"
+      ],
+      "source_sha256": "7f036288a75b469f01aa8bb7a0296f105d5815337d6eeef52035b42fefb92269",
+      "translation_sha256": "701ce983969974a0b1eb7cf5ef0d221580e162d1b75e167cb1276c671d04c6ed",
+      "note": "核对REINFORCE基线以状态价值从动作价值中减去；减少方差且不改变偏差的限定正确。"
+    },
+    {
+      "source_id": "1c2c8f49eb816c33a9b1",
+      "pages": [
+        "posts/2023-01-27-the-transformer-family-v2/index.html"
+      ],
+      "source_sha256": "999877d18c6a92d1d2c1b3c1eb29b9d8575c59569033d4a0b62611513d6a024e",
+      "translation_sha256": "5c8c9e523c67895793d63a89a1a7cd50792f4e3d62ff8448a98fd5f63b013f8f",
+      "note": "核对Linformer键值各用投影、低秩条件与维度变化，线性时间及空间复杂度的论证完整。"
+    },
+    {
+      "source_id": "526e0cb0e94e61243a3c",
+      "pages": [
+        "posts/2021-01-02-controllable-text-generation/index.html"
+      ],
+      "source_sha256": "b462802ae289ff93141f4663c54713002736b2d89f0d1cfb8ebe8db0fea752fd",
+      "translation_sha256": "d9bcfb34161366881e9ec1f9298836b17916f5acc9bed8e1eb7ab32b91648ab9",
+      "note": "核对能量模型无法采样的条件，即使已知配分函数仍无法直接采样；已要求修复遗漏条件，数学变量顺序正确。"
+    },
+    {
+      "source_id": "b747f06b774b4e302835",
+      "pages": [
+        "posts/2021-01-02-controllable-text-generation/index.html"
+      ],
+      "source_sha256": "0f04effef532fb6f49f793b49109fa507abd36e9e91284d8e15561d2b05d657c",
+      "translation_sha256": "cab37afa29d64e91323d3130fc388e782a68f19cb5b2a045cba180188aaf484a",
+      "note": "核对最大值正则化项与惊异度公式，译文保留源文maximum compensation并明确标注；没有悄改源文疑似笔误。"
+    },
+    {
+      "source_id": "cd67ce9b13523fa2e98a",
+      "pages": [
+        "posts/2018-11-30-meta-learning/index.html"
+      ],
+      "source_sha256": "69c26d2811c5b0036f0c9a0523c10d5d499ac9328b5a45ed2b3dcfe900b9a69f",
+      "translation_sha256": "1c66bb2cdeefc2213b4d72cbae51da7f65ab30f2b9770c074f45cb1af8846bd0",
+      "note": "核对MAML两个不同批次的损失上标，同一任务共享损失目标，最优初始化与任务微调关系正确。"
+    },
+    {
+      "source_id": "76604e29dc0ad1bcb7e5",
+      "pages": [
+        "posts/2019-11-10-self-supervised/index.html"
+      ],
+      "source_sha256": "7cb756f4cff551b3eb9025b3edf894478ddb5815da68881c8c3abc7d6b2da3b2",
+      "translation_sha256": "b55bff22a3a7dec0e83440618f24ab0d85f2e931c6b6e76d1b83c47d71a972fa",
+      "note": "核对三元组锚点、正例、负例与潜在空间远近关系，数学变量角色正确。"
+    },
+    {
+      "source_id": "ef784c264f9162b12c62",
+      "pages": [
+        "posts/2020-06-07-exploration-drl/index.html"
+      ],
+      "source_sha256": "ff15ea8c64dc010d9b8448a3c07bfe1268eb1bd753e9337155d96c1086e64450",
+      "translation_sha256": "d76da16994d529a43872b62510df5eb0e93cf855d2a035a2f007861417fc68b1",
+      "note": "核对纯内在奖励、特征映射应紧凑充分稳定及前向动力学；实验条件与引用保留。"
+    },
+    {
+      "source_id": "63e9f87291705d6ab56c",
+      "pages": [
+        "posts/2020-08-06-nas/index.html"
+      ],
+      "source_sha256": "e2472d9ed6c9a0cfb655bbd3b18e6f235c262066ebd0954ffb0e4ee18f34396b",
+      "translation_sha256": "0471e630bac521c08d0f8116f892f87a620cc4fa8105058098778bcce54f30fd",
+      "note": "核对One-Shot超图包含全部搜索操作、路径丢弃率随时间增加及r和k角色；评估子模型的训练条件完整。"
+    },
+    {
+      "source_id": "dad26b55f1f278ea1210",
+      "pages": [
+        "posts/2020-10-29-odqa/index.html"
+      ],
+      "source_sha256": "18dc3af97382990ac6185b9dbed4ef5ee4b672f465a2071d26792b54e1e22381",
+      "translation_sha256": "dada80574859444d62429917328fc3b3fa6f244a691a58c96f3c500e486d84c2",
+      "note": "核对BERTserini检索器与阅读器分工、k=10、代码分支和段落优于句子优于文章的比较方向。"
+    },
+    {
+      "source_id": "d84ffe807c93e21e6977",
+      "pages": [
+        "posts/2021-05-31-contrastive/index.html"
+      ],
+      "source_sha256": "1cdcbb8ad28a652a534586657f4bfa3c33161d691fb1df11bc4289cdf6628de0",
+      "translation_sha256": "a7fc010e99c52acfb587cdb655a385f3864f3428b8961300bd4af9c984f67dae",
+      "note": "核对批量归一化隐式引入负样本依赖及避免坍塌的解释，完整保留原文公式（原公式括号不完整）。"
+    },
+    {
+      "source_id": "75d7bb329f9a5f78dc2f",
+      "pages": [
+        "posts/2021-07-11-diffusion-models/index.html"
+      ],
+      "source_sha256": "2aba2a3de5610dea042e38a3e49bf0ecf9b68da7d612f66bd08a3db5793b4af5",
+      "translation_sha256": "62d28149d5c70ad46c2cfb03b72a892fe3698d0876bbbcb1b1df3d27535efa30",
+      "note": "核对渐进蒸馏学生一步对应教师两步、去噪目标区别于原始样本、每轮步骤减半。 终验再次对照当前译句：英语专名统一及括释调整未改变上述语义。"
+    },
+    {
+      "source_id": "dfd1cdf0701cbd9e5bca",
+      "pages": [
+        "posts/2021-12-05-semi-supervised/index.html"
+      ],
+      "source_sha256": "1a21e6733e5a2e2f8e042347aa5eadd32aaaf25378b4b651d1d0e3277d90e407",
+      "translation_sha256": "c860274633b123245f30ac596d8e6a81af4117148c3735a7c94520e2d7d184d0",
+      "note": "核对时间集成只每轮更新标签预测，Mean Teacher改用权重移动平均；教师和学生权重对应公式正确。"
+    },
+    {
+      "source_id": "afe269e004b04820ab68",
+      "pages": [
+        "posts/2022-04-15-data-gen/index.html"
+      ],
+      "source_sha256": "ff0cfa4a8edbe1dc35ea50cbebde77a8ad66d7ce1fe93f2ecfbee256c5ada6f0",
+      "translation_sha256": "603e7a4cb751056143214a63b28a567c8eb4154d9b9cb1b1b5ad1ee2471f1e1d",
+      "note": "核对NPCL干净样本与损坏样本数量、已知噪声率先验及剪除最大损失样本的条件。"
+    },
+    {
+      "source_id": "ece39102d03fa8ab57df",
+      "pages": [
+        "posts/2023-06-23-agent/index.html"
+      ],
+      "source_sha256": "6425ebb5c88c44c5779f37cd17a97cc04c148ceb3eb72e921a490406746b4665",
+      "translation_sha256": "7fcc60273b46da9061049049e7900c2e7859e0064538790b45a17e207914f169",
+      "note": "核对后见之明链的x/y/r/z角色、按奖励排序、监督微调仅预测补全y和测试时多轮人类反馈。"
+    },
+    {
+      "source_id": "f61cb30c3810b1f88881",
+      "pages": [
+        "posts/2023-10-25-adv-attack-llm/index.html"
+      ],
+      "source_sha256": "a2e2ebb50ebd4815a599ba6729bb98c6abad7ab4b045bbc9575d3fb134c920e0",
+      "translation_sha256": "203131941a685f6b21b2c0344cae44c9bf8b3821d09942a366ab216458e303ac",
+      "note": "核对HotFlip字符位置j与词位置i、维度m/n/V、由a替换为b及独热向量变化。"
+    },
+    {
+      "source_id": "9c60cef04ea635d3668d",
+      "pages": [
+        "posts/2024-07-07-hallucination/index.html"
+      ],
+      "source_sha256": "14a85d71b5a04f1d92b699a45e23d285185b019911ed29e727e24a365730d42c",
+      "translation_sha256": "a0ec3861a9388f4369a732673f27133c8409cc6d579edee72c1bbb79a8c84766",
+      "note": "核对核采样与贪心采样的事实性比较、句子后部随机性更有害的假设、动态p_t及下界omega作用；已要求末句保留English方法名。 终验再次对照当前译句：英语专名统一及括释调整未改变上述语义。"
+    },
+    {
+      "source_id": "27307b56fe5910bcb404",
+      "pages": [
+        "posts/2024-11-28-reward-hacking/index.html"
+      ],
+      "source_sha256": "3cca2680bb85c09c9bcb8a7ca75a7aebbd7f6bf17d1b5576037b8bbca31e392b",
+      "translation_sha256": "e60f4740c16ec313625a483d91336684995a99acbfc824e29c2f449b30852e64",
+      "note": "核对训练前后两种特征印记、橙蓝奖励向量和奖励变化夹角；无害性通过正负条目，有用性仅负条目的区别完整。"
+    },
+    {
+      "source_id": "ec50698a88ad132e18c7",
+      "pages": [
+        "posts/2025-05-01-thinking/index.html"
+      ],
+      "source_sha256": "8bbafdbcfc5e224113b7a93516c3130f0152cf37570303d986f34bf26e0f107c",
+      "translation_sha256": "b6500657f1f28774379121a84e2005e2a33d99e1d320854c6dbefc1dc6293192",
+      "note": "核对潜变量模型的问题、答案、思考联合分布，N为样本数，K为每题思维链数；优化条件似然的含义完整。 终验再次对照当前译句：英语专名统一及括释调整未改变上述语义。"
+    },
+    {
+      "source_id": "c3b9572e18b2ce817a84",
+      "pages": [
+        "posts/2026-07-04-harness/index.html"
+      ],
+      "source_sha256": "76fb93fa644618e3536914823e995b368568cbec59fdfc6ab81cba6270c4a710",
+      "translation_sha256": "7ea8cc90baa461c8688809ac5c60d56f7ed55cd9b0b9f33bc0441091882e42b5",
+      "note": "核对harness更新与使用收益是两种不同能力，模型规模区间和9B提议器过程同构的限定完整。"
+    },
+    {
+      "source_id": "c964fb32565d832296d7",
+      "pages": [
+        "posts/2020-10-29-odqa/index.html"
+      ],
+      "source_sha256": "2bb97c7bcd7a63c304bbc6a24c9a573e724ebc89b431c9d0f38d2f1d2ee19dc7",
+      "translation_sha256": "007c43411b78b4793348c06c3dbd33b2e013bf56b6e749c8fff3a6c8ee7b1b87",
+      "note": "主代理依据所引论文确认ODQA中的EM是答案完全匹配率；已修正文构建与验收的术语上下文解释。"
+    },
+    {
+      "source_id": "7abde10ddea43fe79cd2",
+      "pages": [
+        "posts/2023-01-10-inference-optimization/index.html"
+      ],
+      "source_sha256": "34c6e69bbdda3a2e1544581e8b2b7a4156b63bb2809531c438181709f8b05abf",
+      "translation_sha256": "2a84f93907b25fd82fa103770f2a8d233ec592d5ac1890a2b8726bba799ed24a",
+      "note": "核对DeepSpeed/TUTEL分层全互联先节点内后节点间的顺序、通信跳数表达与变量定义；通信量翻倍但小批次受延迟限制的条件完整。"
+    },
+    {
+      "source_id": "26999687594af2296a21",
+      "pages": [
+        "posts/2018-02-19-rl-overview/index.html"
+      ],
+      "source_sha256": "66388b4a28eac443ac905856e5b7c589293201969e6a70c25eb445a6788800ad",
+      "translation_sha256": "762a67d39996425db5702252eaf00622820b2f9009fb827e69224d89c9e0d62f",
+      "note": "核对AlphaGo Zero无需人类监督、100比0，以及DOTA2 1v1事件；后续介绍RL的学习路线完整。"
+    },
+    {
+      "source_id": "2daf3c2c91358d88a67f",
+      "pages": [
+        "posts/2020-04-07-the-transformer-family/index.html",
+        "posts/2023-01-27-the-transformer-family-v2/index.html"
+      ],
+      "source_sha256": "d14a4a1dc3286e0e85150bf19b7e0d3fff80d8c1926ef7e15a9e34231b434477",
+      "translation_sha256": "ee07ae576cb810d63bf9578e4506730d2e479a9ae4012377d900ef10b7b27a41",
+      "note": "核对Transformer编码器6个模块、注意力与逐位置前馈两部分、同权重线性变换等价1尺寸卷积、残差连接与层归一化。"
+    },
+    {
+      "source_id": "af8d8bdff85699bf7d0a",
+      "pages": [
+        "posts/2021-03-21-lm-toxicity/index.html"
+      ],
+      "source_sha256": "cbd319ec060d809158693ceea03ed2ebafd34dfc0695b340a483db4dbfa722d7",
+      "translation_sha256": "71f53bbc7e631dbd65dede42d83de3414735e013bc8b8279cffdc486a0f264c7",
+      "note": "核对self-diagnosis以模板描述属性、归一化yes/no概率，不需要带标签训练集的条件。"
+    },
+    {
+      "source_id": "e1f9edac637ba11ab52c",
+      "pages": [
+        "posts/2022-06-09-vlm/index.html"
+      ],
+      "source_sha256": "39e7ab0a586c654cbcb1d7bcd11f1f7c0247f44735d30956c931c1a4ab9ec694",
+      "translation_sha256": "4e1372725da0349a4033c07a508ce6fc945e3a457cd160c4f1dabfc73cfac6b9",
+      "note": "核对CoCa池化器编码器输出同时作键值，生成与对比两种损失的查询数分别256与1，冻结编码器只学习新池化器。"
+    },
+    {
+      "source_id": "df0e0575e6b7eccef966",
+      "pages": [
+        "posts/2026-06-24-scaling-laws/index.html"
+      ],
+      "source_sha256": "1e0adf15ac9e4d1edafbc38429f19de0914efa033f00f3717b6d7acc81e45d87",
+      "translation_sha256": "848ad7e8d9172a075c56c494d06c0151611354698abd909a9b0f12ba812fdb08",
+      "note": "核对局部幂律近似区别于全局指数、g基于导数与附录引用；原公式原样保留。"
+    },
+    {
+      "source_id": "8e0ba7138b683b9b5259",
+      "pages": [
+        "posts/2018-02-19-rl-overview/index.html"
+      ],
+      "source_sha256": "7037310fd0cfa1b182908d994a57db3fd1086532c127ac0901defe6f7cfe85f8",
+      "translation_sha256": "088f157e3dcc5e2c9fd29fafcc66162fdea62c43383892a77c0a05bba6497f82",
+      "note": "核对状态、动作与奖励随时间交互，S_t/A_t/R_t各变量角色以及回合在S_T结束。"
+    },
+    {
+      "source_id": "1828779659952d924c84",
+      "pages": [
+        "posts/2018-02-19-rl-overview/index.html"
+      ],
+      "source_sha256": "633ee916a0df7f1233722ab73e5ee9cb2c7bd23a6fb8045eef518970c2e73fe7",
+      "translation_sha256": "f3c4d6d162ab6a2147a2d27c169d43cc200a55dc4956bbf94b0c60ae174f6c3a",
+      "note": "核对所有n步TD目标按lambda^(n-1)加权，乘(1-lambda)使无限权重和为1的论证。"
+    },
+    {
+      "source_id": "975725bb4daebb5a3735",
+      "pages": [
+        "posts/2018-02-19-rl-overview/index.html"
+      ],
+      "source_sha256": "238aa8cdf7df54242e26509f219f8fae84669f922a9904e81e5aafa9625ad814",
+      "translation_sha256": "439263a75730388bb597e9528a7d433d10908b1661aa5b6008cfde16e4a9c81d",
+      "note": "核对环境模型可知或未知、状态转移概率决定下一状态、动作后奖励作为反馈，变量角色完整。"
+    },
+    {
+      "source_id": "59f734aafb03941286c9",
+      "pages": [
+        "posts/2020-01-29-curriculum-rl/index.html"
+      ],
+      "source_sha256": "bb6ca973985a20834ccc61da41fa6d9b09b0dc395da46fd1187d77b687d75a14",
+      "translation_sha256": "82cd004164ed68d17de2589efa29c56880c49c35cd58c0fd475d5ce8b63287e1",
+      "note": "核对CARML关注可迁移未见任务的元RL策略；像素观测区别DIAYN真实状态，奖励只需测试时给定的条件完整。"
+    },
+    {
+      "source_id": "7054808584306ad5866b",
+      "pages": [
+        "posts/2021-09-25-train-large/index.html"
+      ],
+      "source_sha256": "d21849787075d7ddab4430e423ebb6898a7b15a77a381b06c3b58807e9cd6d6e",
+      "translation_sha256": "4aac6e4b71a7821747e3f48e2e592b23dac4dcd09d4008be43a8d6b4a461f4ea",
+      "note": "核对Switch Transformer每输入仅一个专家、稠密前馈替换稀疏层、万亿参数；负载平衡f_i与p_i的定义准确。"
+    },
+    {
+      "source_id": "d257b81cc4ee1fed7cc0",
+      "pages": [
+        "posts/2019-03-14-overfit/index.html"
+      ],
+      "source_sha256": "62e53d69fbfa8aa5a4e73ca8ff3b5fff62b810c494b8784a2855a1b2ef58fd7e",
+      "translation_sha256": "814cad585378eefb07511d1bdf4646d5f4acbc9b7d0a1f088c6d79d3c0ad017a",
+      "note": "核对通用近似定理的线性输出、至少一隐层且有限神经元、紧子集、任意精度、最初sigmoid证明和后续结果。"
+    },
+    {
+      "source_id": "e0100c53b0265e225827",
+      "pages": [
+        "posts/2022-02-20-active-learning/index.html"
+      ],
+      "source_sha256": "3f6047d21f573400376b8ff3851d7518d7d077ad0a5532cdbb4765ae7fe750bc",
+      "translation_sha256": "fb9867ba2a0fe76fb685e29b2382374a42532dc197f672b86855471b018888c8",
+      "note": "核对主动学习样本数N、每时间步t标注的S^(t)、core-set loss为带标签平均经验损失与全数据损失之差。"
+    },
+    {
+      "source_id": "0e3a0654883d75b1b95e",
+      "pages": [
+        "posts/2017-08-20-gan/index.html"
+      ],
+      "source_sha256": "64fa54b04f775f97116c44dfc9b83192dc4a2d6c5a84d9ae17636eadad6b3af9",
+      "translation_sha256": "372ee1633415c997d512ba8ff4ac732f29983d461ca5b67afc2f98c417719b56",
+      "note": "核对联合分布运输计划、x至y土量比例、对x求和得到p_g(y)与反向边缘p_r(x)；源文变量角色全部保留。"
+    },
+    {
+      "source_id": "567b9e4ce9bce6fcb6c9",
+      "pages": [
+        "posts/2018-06-24-attention/index.html"
+      ],
+      "source_sha256": "4385fcc0dc25f76ebe42e16f5e2863560373aa062bfd091e2b94b18545fd3522",
+      "translation_sha256": "abe3f659b51e1c5a8b41923de8f98228d41a8e0ed73f4b09f43cec8b6c95f218",
+      "note": "核对1936图灵机无限纸带、读写头与0/1/空白符号，以及理论模型区别现实计算机有限内存的限定。"
+    },
+    {
+      "source_id": "8f3255685c2d0f649fe5",
+      "pages": [
+        "posts/2019-09-05-evolution-strategies/index.html"
+      ],
+      "source_sha256": "657250ed0d13f395eb84d25eeec084ac7642191d86b80e120a2924edb44f3776",
+      "translation_sha256": "c1513a1bf32ef9609aa6a278e30f97b9017e6185bd86830c43dfff088ced3ff3",
+      "note": "核对WANN不训练权重搜索最小有效拓扑、与NAS重心区别，以及NEAT遗传演化启发。"
+    },
+    {
+      "source_id": "ebad458b67ee46ca9b05",
+      "pages": [
+        "posts/2023-03-15-prompt-engineering/index.html"
+      ],
+      "source_sha256": "5b79e8efd434fbd490478fd6f2ea3394caaf02077323b408c4e5ba135b5494e0",
+      "translation_sha256": "3e559a80e6cadf3f6de6395227419012aa01fff85cd51c2024efd5af86efe8f4",
+      "note": "核对Su图示例选择：G、k近邻、空已选集合L、剩余U与u评分；v的邻居被选越多，s(v)越低，促进多样性。"
+    },
+    {
+      "source_id": "214b87a53d2001e6d5e0",
+      "pages": [
+        "posts/2019-06-23-meta-rl/index.html"
+      ],
+      "source_sha256": "c1889c1283b0b76a3ba9351c42483269b768f8a8bbcfc08656104e3cbbea1d27",
+      "translation_sha256": "79e39db527760abe71f96237a3eca6ac48f21c127829e0a9286f34aff0af91ee",
+      "note": "核对MAESN每任务随机变量z_i、episode内一次采样固定、策略条件化；修正后明确共同优化参数与潜在空间以最大化奖励。"
+    },
+    {
+      "source_id": "b88af154948ba77b356c",
+      "pages": [
+        "posts/2024-02-05-human-data-quality/index.html"
+      ],
+      "source_sha256": "2732206845248fccef90c17bd4f6e9d854773b277a3c46afd6aaea0861b0bd94",
+      "translation_sha256": "a0f024114c51b3f1a03ef7020f653c315a2212cf2ce15e5a4a1b18d43a8b8d6a",
+      "note": "修订后核对MACE随机刷量概率、激励错位、真标签与给定标签、可信度非刷量概率及刷量行为参数，全部对应原文。"
+    },
+    {
+      "source_id": "c10215c81321f5d7d3ce",
+      "pages": [
+        "posts/2024-02-05-human-data-quality/index.html"
+      ],
+      "source_sha256": "6cccc56e94da8b8796c6363887c9966431865913d65cae5ca06a54bb6f9d380a",
+      "translation_sha256": "91442b79026e8df632f86d26c084ca50701897952c3f3b8ba32158f6f20077c5",
+      "note": "修订后核对身份对标签的统计显著作用、专业与众包两组标签比较，元数据关联众包标注者，主题与严重程度影响一致率。"
+    },
+    {
+      "source_id": "fd093cf2c3302580d316",
+      "pages": [
+        "posts/2018-08-12-vae/index.html"
+      ],
+      "source_sha256": "aaccb17b4db9ca06fbc889ad4c6f68256c034c84aeec609c5e33c14062ad7d16",
+      "translation_sha256": "7ac3790ae8afc3623b3838775c57c571ed66b8fd355bf78a225e012235426161",
+      "note": "核对VAE随机采样不可直接反传，重参数化将独立epsilon经由T_phi映射为z，phi为变换参数；源变量角色完整。"
+    },
+    {
+      "source_id": "eb96433b312055ccb4e1",
+      "pages": [
+        "posts/2017-08-01-interpretation/index.html"
+      ],
+      "source_sha256": "5c7cffd7760d156859c53fd3e00176a2bd27cab59773038dcb061df8e48b79bd",
+      "translation_sha256": "2a979c1d837540e790cb7f6e65037df6ff43a4a391a2d31f25443b053a1da7e5",
+      "note": "核对Titanic成年男性头等舱案例、信息差与未知属性A_i条件、深浅条形含义、年龄性别影响大而舱位影响较小的方向。"
+    },
+    {
+      "source_id": "4a17eb4211482298e203",
+      "pages": [
+        "posts/2017-06-21-overview/index.html"
+      ],
+      "source_sha256": "3b9f572220e4edcb8ac0a89429fb11e586febeabdc403f969850d1de87e32e46",
+      "translation_sha256": "a656b82f9aaae546cb75e908cd337c9b38f947589b1f73f2f9380b512a021cba",
+      "note": "核对无监督自编码器低维表征高维数据、f(x)近似x、中间少量节点瓶颈迫使高效编码的论证。"
+    },
+    {
+      "source_id": "67e31ff773bd43f2f74e",
+      "pages": [
+        "posts/2019-05-05-domain-randomization/index.html"
+      ],
+      "source_sha256": "59a58c0c4723f91ff1465253e352b86a5aab5f029addf59104154d1cfe0d5c8f",
+      "translation_sha256": "49d08e0cf94097e90040802f1dde9eaa05b9e68943fed650b71cd7db766e206b",
+      "note": "核对CMA-ES以目标环境xi条件策略表现作适应度，比较贝叶斯优化/神经网稳定性与样本效率，LSTM优于FF的P(xi)模型语境。"
+    },
+    {
+      "source_id": "0a14c5a7f0578d68dbd1",
+      "pages": [
+        "posts/2022-09-08-ntk/index.html"
+      ],
+      "source_sha256": "89a27e50e1273e6a0c585663977d0002611adb4d00ccb97356895e1f4a5e8315",
+      "translation_sha256": "1bb13a98f4883c074afec7dee09b5b481d91a1f6ace93f83526cdf733dcc632c",
+      "note": "核对GP均值/协方差/核(i,j)定义、核相似与函数输出接近、给定观测的条件分布用于未知点预测，依原文保留表述。"
+    },
+    {
+      "source_id": "cbebc7f357157380e5df",
+      "pages": [
+        "posts/2017-07-08-stock-rnn-part-1/index.html"
+      ],
+      "source_sha256": "243929624180f9d9ee203596b3e078fcd6871d979de6a1af29f9bc33d0f4f60c",
+      "translation_sha256": "a384012a2b708f825c48bb25df6891361554b2a06940f6170120c0c4a6720efc",
+      "note": "核对RNN远距输入依赖、LSTM固定num_steps展开、有限近似训练及每个输入块后反向传播，原代码变量未翻译。"
+    },
+    {
+      "source_id": "2d961b183be9fe63a060",
+      "pages": [
+        "posts/2017-07-22-stock-rnn-part-2/index.html"
+      ],
+      "source_sha256": "077d1b6d43649b93187a7158c2639beb105c41a1b1e24d41c6a0c33dd610076a",
+      "translation_sha256": "afa3141281c244839e24d56550e0be7ca0b04bf17356c1d152b44a2aea04cacb",
+      "note": "核对RNN股票标签复制num_steps与目标张量形状，tf.tile第i维按multiples[i]扩张，例子原代码全部保留。"
+    },
+    {
+      "source_id": "91db90e97fcc096c151e",
+      "pages": [
+        "posts/2017-10-29-object-recognition-part-1/index.html"
+      ],
+      "source_sha256": "cbd7c398793fd49525f279a3a3c8e9f582c382b4f3fbc40ddd677cd8ec469770",
+      "translation_sha256": "98d2412e62a89d1e0279a514317bbcbd6e04cba9ab835bfc57f0b9fc092aa269",
+      "note": "核对Selective Search阈值k、颜色空间与相似度组合，最佳质量配置以及质量/模型复杂度与速度权衡。"
+    },
+    {
+      "source_id": "a8be2debb656efe8bcc1",
+      "pages": [
+        "posts/2018-12-27-object-recognition-part-4/index.html"
+      ],
+      "source_sha256": "b46e7dd240c889c42e1e7c89d30404edb583ffcf9128e7a3c19a9ea5ee5dece5",
+      "translation_sha256": "ef92f0cf08b2bf125758f9c3d83a733c5c0d0a4486b53635b7fdfbf4ddc13875",
+      "note": "核对SSD锚框归一化0到1、层级与特征网格坐标、5种宽高比以及宽高比1额外尺度合成6锚框。"
+    },
+    {
+      "source_id": "6bdf1719720ea1d7d4f4",
+      "pages": [
+        "posts/2017-09-28-information-bottleneck/index.html"
+      ],
+      "source_sha256": "e4499e5c9da259b1434ec1c8baa13fa39e29e7dc196f518d94093b7bde18d1c6",
+      "translation_sha256": "b302fff548cc505d5fcfbddceb4d8b9f69b1bc73de830afd3cbf8840300a5c3e",
+      "note": "核对信息瓶颈实验未正则化/权重衰减/dropout，真实标签知识增加对应准确率，先输入学习后压缩遗忘的假说。"
+    },
+    {
+      "source_id": "8e46fd352e37d26b75f6",
+      "pages": [
+        "posts/2017-10-15-word-embedding/index.html"
+      ],
+      "source_sha256": "abcaa0d3ad6b050733281481197e3a031330ed44fc06c737f990cca516fba70a",
+      "translation_sha256": "ca137d8461cf2cf7e189b644020b76ed11e1c8b109450c6e9af2f6671367abbd",
+      "note": "核对交叉熵H(p,q)、y_i当输出w_i为1且其他y_j为0、theta目标最小化；该术语已在Cross Entropy标题首次说明，正文沿用英文。 终验再次对照当前译句：英语专名统一及括释调整未改变上述语义。"
+    },
+    {
+      "source_id": "3585540258ab7500e488",
+      "pages": [
+        "posts/2017-12-15-object-recognition-part-2/index.html"
+      ],
+      "source_sha256": "28443b1361ad852c46a1e9adfed36ad4329cfd668f14ee9cfe21b938766749a2",
+      "translation_sha256": "4330a1abb6ee353ea1b6d43a5cff7c24ba8e1b8f30759a30e0adb35005264d98",
+      "note": "核对DPM基础评分为滤波器beta与区域特征Phi(x)点积，HOG等算法定义特征集合。"
+    },
+    {
+      "source_id": "aa689e66222542b44e2c",
+      "pages": [
+        "posts/2017-12-31-object-recognition-part-3/index.html"
+      ],
+      "source_sha256": "4238d05519b402dd4d21870b9a5893f08f247b58b19a12bc76b728284c468d3e",
+      "translation_sha256": "0616c747bf716800fc8791d447673ac48c1725d28623078eeed70f2f31563dac",
+      "note": "核对Faster R-CNN符号说明：p与二元真值、预测四坐标与真值，分类归一化256、位置归一化2400和平衡约10。"
+    },
+    {
+      "source_id": "dd4362b7486c230771de",
+      "pages": [
+        "posts/2018-01-23-multi-armed-bandit/index.html"
+      ],
+      "source_sha256": "a033e3cfdd8e0e3e068f8e804fb347b56a1d7994d6769846ec8b036c17435194",
+      "translation_sha256": "ec5d6affb930ba0f7bcbd4fe8b0721d59ebff227e50a8e29a986f5ac733f6b52",
+      "note": "核对伯努利老虎机Beta先验，Q(a)为成功概率，范围0到1，alpha与beta对应成功/失败计数。"
+    },
+    {
+      "source_id": "97ae2cbec8fcbf7892ed",
+      "pages": [
+        "posts/2018-05-05-drl-implementation/index.html"
+      ],
+      "source_sha256": "26df6e8beddd4561b73a3b81ede90b7fd5bec4bb3cb93973b2e3c0bacd700951",
+      "translation_sha256": "0b1363ca2d3686056c2d8a2c2238da18a9c115faf87896407a9506e05d18cd36",
+      "note": "核对Double Q-learning同网选择动作并估值导致高估，两个Q网分工，更新Q1时由Q2选最佳动作且反之亦然。"
+    },
+    {
+      "source_id": "b0c24580143cd9fc13e5",
+      "pages": [
+        "posts/2018-10-13-flow-models/index.html"
+      ],
+      "source_sha256": "6d54dd7757a8cc290272cd7d0f745b7fb09277fad5bc40f3749ab3b46e01d206",
+      "translation_sha256": "0627f36ba8e4826a2fdf1c5a4ea74307e120dadbcf552d42f149d6d43d2a7b2b",
+      "note": "修订后核对MADE在自编码器中施加自回归约束；不同窗口D次前馈被二元掩码矩阵替代，每维只依赖给定顺序的前序维度，一次前向传播重建。"
+    },
+    {
+      "source_id": "6413e01ad739822a2476",
+      "pages": [
+        "posts/2024-04-12-diffusion-video/index.html"
+      ],
+      "source_sha256": "5069d3456bd871ff9b3ff77265503ef68bc34a6f42ce3ddf05512f602e17a83f",
+      "translation_sha256": "08656bd1f4bcf35d3e2b618af563bb222f013a2da40860d26a4f7ca28f132d7b",
+      "note": "修订后核对Gen-1残差块二维空间卷积后加一维时间卷积、空间注意力后加时间注意力；s/z拼接而c在交叉注意力提供，先验将CLIP文本嵌入转图像嵌入。"
+    },
+    {
+      "source_id": "7a9ee755070071420293",
+      "pages": [
+        "posts/2024-04-12-diffusion-video/index.html"
+      ],
+      "source_sha256": "6eab0cdb102c9ff626e788f24be7fafa5c10aa2274660402c9f62e05c27a54e3",
+      "translation_sha256": "08ef2056385d09320839a0976b5739bdaddc938ec96d339f000ddc299f52387e",
+      "note": "修订后核对Video LDM先训练图像生成器，仅微调新增时间层phi，空间层theta冻结且图像骨干参数不微调，低帧率关键帧后两步潜在插值。"
+    },
+    {
+      "source_id": "f3bfce3bac5754909287",
+      "pages": [
+        "posts/2024-04-12-diffusion-video/index.html"
+      ],
+      "source_sha256": "998bc3796e60534117456afbf8170cbb6618e25e91aa699b4871e6b2ee70e24a",
+      "translation_sha256": "a33b6b7919e523f7cbea22d4bf13648cce000eaebb2a04eeafb28510d0351426",
+      "note": "修订后核对SVD与Video LDM架构相似但微调整个模型；这里SVD准确指Stable Video Diffusion，LDMs复数保留。"
+    },
+    {
+      "source_id": "0ae3d47faa5e0abf7118",
+      "pages": [
+        "posts/2024-04-12-diffusion-video/index.html"
+      ],
+      "source_sha256": "923e7691c881eb50553807025f83d0419970004d607a495cc9a4402902ca7e0b",
+      "translation_sha256": "f23c83ab1d1eae00111a24d004a8dd3e7880f03bb4ceb460a13f1eb21126ca15",
+      "note": "修订后核对SVD数据筛选：镜头切分、CoCa/V-BLIP/LLM三captioner；2fps光流、OCR文本量、首中末帧CLIP美学与图文相似度筛选，较小高质量集改善模型的条件。"
+    },
+    {
+      "source_id": "badd172301bfcdf0cc42",
+      "pages": [
+        "posts/2024-02-05-human-data-quality/index.html"
+      ],
+      "source_sha256": "95f3a98033064654d2819fd54925d60a45cf43e20e7c8e5967fef6404a84571d",
+      "translation_sha256": "9b1f0b1f919c427dac314463c228fc4b0b735e67f30d24dab76dea16766d519b",
+      "note": "终验修正5系统共5译文、每系统1份的表达，避免误读25份；源句、参考译文、排序与每任务5标注者均保留。"
+    },
+    {
+      "source_id": "550bedf84eacb2a69253",
+      "pages": [
+        "posts/2024-04-12-diffusion-video/index.html"
+      ],
+      "source_sha256": "129a8739360c0063cd2fb2c886c6c094aef0c65823824cae78e793c87bb5630b",
+      "translation_sha256": "3c91cd7a4244935eff8f9dd2af85c96faf67cfc3eb9920566edf3c5b65d8a566",
+      "note": "终验对照全部7个真实数学表达式；T为序列长度，B·T图像批次，theta基础图像模型，l_phi^i时间层，z′/z输出，alpha学习合并参数。恢复完整句及实践中的两种混合层。"
+    },
+    {
+      "source_id": "d51e937a2ec1c0cd3b47",
+      "pages": [
+        "posts/2026-06-24-scaling-laws/index.html"
+      ],
+      "source_sha256": "c6ecbde1e3d10042f253ff3269859d96ca559f6334ee0377e9cf12c67344e837",
+      "translation_sha256": "d10f327e5319d423cd8e73624c01a9a3c6c4066f1e9683c06598d2e1b9efcf17",
+      "note": "终验恢复后续分析的完整叙述：第二个例子，方法3与另两种方法的偏差，原始(N,D,L)数据、图4及方法3重新参数拟合。"
+    }
+  ],
+  "verified_source_issues": [
+    {
+      "source_id": "b3f65671707664f5a3f6",
+      "issue": "源文将175B称为1.5B的10倍；实际比值约116.7。原文数字和10倍措辞保留。"
+    },
+    {
+      "source_id": "b747f06b774b4e302835",
+      "issue": "源文maximum compensation与max_t u_t公式难以对应；译文保留原措辞并标注。"
+    },
+    {
+      "source_id": "d84ffe807c93e21e6977",
+      "issue": "源文正态分布数学片段缺右括号；数学内容原样保留。"
+    },
+    {
+      "source_id": "0f869f65b9ea4b2e4785",
+      "issue": "Cohen kappa源公式分母写1-p_c，但正文定义的是p_e；数学原文保留，不在译文中默改。"
+    },
+    {
+      "source_id": "094fe3301732aad61236",
+      "issue": "源文将H^{-1}写为损失Hessian的均值，而不是该均值的逆；公式原样保留。"
+    }
+  ],
+  "terminology_evidence": [
+    {
+      "term": "EM",
+      "article": "2020-10-29-odqa",
+      "meaning": "答案完全匹配率",
+      "source": "https://aclanthology.org/2021.mrqa-1.16.pdf",
+      "location": "Table 3: Test QA (Exact Match) Accuracy"
+    },
+    {
+      "term": "SVD",
+      "article": "2024-04-12-diffusion-video",
+      "meaning": "Stable Video Diffusion（稳定视频扩散模型）",
+      "source_id": "f3bfce3bac5754909287",
+      "note": "其他文章的SVD仍表示奇异值分解，不能使用全局解释覆盖视频模型名称。"
+    }
+  ],
+  "numeric_review": {
+    "method": "扫描全部去重片段中、公式和代码之外的阿拉伯数值，归一化常用中英文数量单位与月份；对未按相同数值直接对应的候选，由主代理逐条对照原句及译句。此扫描不代替句义审核，中文数量词与省略重复项会形成候选。",
+    "latest_scanned_segments": 10555,
+    "reviewed_candidate_ids": [
+      "ad95ca1460bd556f8065",
+      "7e72775162a365b094aa",
+      "d48daa1dd9a0b52ce94e",
+      "07981391bdaa531d25ba",
+      "daf9190391c6bae6f2c5",
+      "cfe719054c16f7b1e13a",
+      "6a937a26cbf03713294a",
+      "09b598980b85e562f16b",
+      "131fe313d88288479013",
+      "f6ad54a0fc196d7d1e33",
+      "17ef877c64c73f7be69a",
+      "badd172301bfcdf0cc42",
+      "4529d342dca2ff60a5f2",
+      "550bedf84eacb2a69253",
+      "8d353ee089a04631ea10",
+      "d51e937a2ec1c0cd3b47"
+    ],
+    "reviewed_candidates": 16,
+    "findings": "逐条核对16个候选：一两年、一一映射、置零、全零、双词项、单帧、入门课101、100年/百分之百及百万单位换算均对应原意。终验修正共5份译文的实验描述，恢复时间混合层编号与3D，以及方法3参数拟合的重复说明。未发现这批候选的数值被错误改变。"
+  },
+  "revised_article_review": {
+    "article": "2024-02-05-human-data-quality",
+    "reviewer": "主代理 /root",
+    "reviewed_revisions": 61,
+    "source_ids": [
+      "17c72939a49db77eb7ba",
+      "dc81928821929031084f",
+      "7a55cacaa1e691c17657",
+      "54b65b16c4057d8b9efe",
+      "37df46c3d15e9a2337d6",
+      "ed423c486cd22cd548a7",
+      "a6f5fc7c5b1ba2c048d4",
+      "d36d584d5cb51e35bc23",
+      "2e9a85e65b07ea14c0d2",
+      "1044611661640bdf92c0",
+      "01e64fdcb7a1e7ff2758",
+      "680aa0be15bdbb4bcb42",
+      "f34bee758a7c2748a297",
+      "0f869f65b9ea4b2e4785",
+      "45d23094de94ba8f726c",
+      "fba3982384f559cdd807",
+      "906510d1c772c836804d",
+      "2d668e8651d14ac09550",
+      "ab3013ac9f4eb974ddd7",
+      "4cd46ed8b459f3a44664",
+      "4f0fe04df1529865a65f",
+      "bd577e9187a88a51e71a",
+      "c1a7696d61ed16274219",
+      "896985061c564ec3dcbc",
+      "35bd42656d545c271df9",
+      "f6ad54a0fc196d7d1e33",
+      "7e589f3629a3a5792244",
+      "ea1ce69828e0316dbf2b",
+      "d8f58e178df5b29d9b1a",
+      "62a8b80ffb9390592108",
+      "c9cdb8f22161100f533a",
+      "762ee5ca9098e81b2040",
+      "ebd3ad1d63cba2cb3a9d",
+      "bd987758419ac6949a87",
+      "0c0753d65460497db457",
+      "c18e96a727506590ba08",
+      "ae65235e86bd70c2ee18",
+      "78b5456fbf6642c8a154",
+      "ed03aaa87c74fdc50d68",
+      "130d85318d350064517c",
+      "afb1ea4641e1c97392cd",
+      "2179d4097381e8ec430a",
+      "e28b4793501b3df6a6ea",
+      "4c0df38e29c264752208",
+      "813901cbad7252e696ec",
+      "98f7d489b55981210f90",
+      "e6954ab322bf4be30992",
+      "4b81a2cf77d9f2ca6b3d",
+      "738f8b90db138f8d67a0",
+      "a622016956cfe964b49f",
+      "da0061de0b96a8eb120b",
+      "55c532292e7e60013cc8",
+      "3777cc95bda511855039",
+      "094fe3301732aad61236",
+      "e8898721c7db71d3da51",
+      "941e09f2929b0e4c4bb5",
+      "d5cc24a92f66c19f0031",
+      "faae5cf079cfe8efcb08",
+      "7ec04778da154c8a94cd",
+      "93244e687cf4b44249fc",
+      "cb96bfeb7c006a5d527e"
+    ],
+    "result": "主代理已逐条对照61处原句、修订译句与其中的数学变量，修订恢复完整自然表达，保留统计显著性、标注者关联和实验限定。"
+  },
+  "semantic_reviewed_posts": 52,
+  "extraction_fix": {
+    "added_source_id": "ee81993f2b950792484f",
+    "problem": "目录链接href与aria-label中的hidden单词曾误触隐藏锚点保护。",
+    "fix": "根据解析后的真实hidden属性识别；重新提取全站仅新增一个目录段落，译名复用正文标题。",
+    "segments_total": 10555
+  },
+  "review_completed_at": "2026-10-05T06:41:33.948488+00:00",
+  "translation_segments": 10555,
+  "validation": {
+    "report": "translations/validation.json",
+    "sha256": "3cf2f57db3e55f6f83b9752ea3ff122723c60ff7bc1271b2b4aa028637b64df0",
+    "passed_posts": 52,
+    "errors": 0,
+    "warnings": 0,
+    "totals": {
+      "paragraphs": 5040,
+      "math_fragments": 7127,
+      "code_blocks_and_inline": 702,
+      "images": 777,
+      "toc_links": 932,
+      "checked_prose_blocks": 5992,
+      "untranslated_prose_blocks": 0
+    }
+  },
+  "site_smoke": {
+    "bilingual_articles": 52,
+    "html_pages": 374,
+    "language_search_indexes": 2,
+    "items_per_search_index": 52,
+    "feed_files": 112,
+    "rss_items_per_language": 52,
+    "unchanged_assets": 970,
+    "manifest_complete": true,
+    "errors": 0
+  },
+  "browser_review": {
+    "browser": "Playwright 1.63.0 / Chromium，无头真实浏览器；临时环境安装，不属于翻译模型",
+    "resource_mapping": "正式发布前将本站与原站资源映射到对应本地构建目录，MathJax从原CDN加载。",
+    "policy_gradient": [
+      {
+        "kind": "zh-math",
+        "mathCount": 460,
+        "http_status": 200,
+        "page_errors": [],
+        "mobile": {
+          "viewport": 390,
+          "scrollWidth": 873,
+          "bodyWidth": 362
+        }
+      },
+      {
+        "kind": "original-math",
+        "mathCount": 460,
+        "http_status": 200,
+        "page_errors": [],
+        "mobile": {
+          "viewport": 390,
+          "scrollWidth": 873,
+          "bodyWidth": 362
+        }
+      },
+      {
+        "kind": "en-math",
+        "mathCount": 460,
+        "http_status": 200,
+        "page_errors": [],
+        "mobile": {
+          "viewport": 390,
+          "scrollWidth": 873,
+          "bodyWidth": 362
+        }
+      }
+    ],
+    "word_embedding": [
+      {
+        "mathCount": 147,
+        "images": [
+          true,
+          true,
+          true
+        ],
+        "language": "en-us",
+        "label": "original",
+        "http_status": 200,
+        "errors": []
+      },
+      {
+        "mathCount": 147,
+        "images": [
+          true,
+          true,
+          true
+        ],
+        "language": "zh-CN",
+        "label": "zh",
+        "http_status": 200,
+        "errors": [],
+        "toc_navigation": true,
+        "language_switch": true
+      },
+      {
+        "mathCount": 147,
+        "images": [
+          true,
+          true,
+          true
+        ],
+        "language": "en-us",
+        "label": "en",
+        "http_status": 200,
+        "errors": []
+      }
+    ],
+    "search": {
+      "query": "强化学习",
+      "results": 31,
+      "all_results_on_chinese_site": true
+    },
+    "images": "两个抽查文章全部图片均加载成功",
+    "mobile_note": "策略梯度文章在原站、中、英文页的390像素视口均为873像素内容宽度，保留原站长公式的横向溢出。"
+  },
+  "render_fix": {
+    "problem": "HTML注释包含受保护公式时，先恢复公式再恢复注释会残留内部占位符。",
+    "fix": "按保护步骤逆序恢复，先外层注释/标签再内部公式；全374页检查确认无占位符残留。"
+  },
+  "publication": {
+    "status": "awaiting_author_notification_confirmation",
+    "site": "https://xingshuozhu1998.github.io/",
+    "reason": "作者FAQ要求提前邮件通知；维护者表示自行通知，尚未确认已发送。",
+    "faq": "https://lilianweng.github.io/faq/"
+  }
+}
