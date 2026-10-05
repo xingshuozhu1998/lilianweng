@@ -850,15 +850,15 @@
     "fix": "按保护步骤逆序恢复，先外层注释/标签再内部公式；全374页检查确认无占位符残留。"
   },
   "publication": {
-    "status": "migration_prepared",
+    "status": "published_and_verified",
     "site": "https://xingshuozhu1998.github.io/lilianweng/",
     "repository": "https://github.com/xingshuozhu1998/lilianweng",
     "author_notification": "维护者在对话中确认自行完成作者通知并明确授权上传发布，无需等待作者回信。",
     "confirmed_at": "2026-10-05T06:50:43.188161+00:00",
     "faq": "https://lilianweng.github.io/faq/",
-    "verified_at": "2026-10-05T06:55:59.683209+00:00",
-    "translation_source_commit": "225b308",
-    "deployment_commit": "f5cd9cb02989423e4ca846bfc8019485db60b8f9",
+    "verified_at": "2026-10-05T07:15:04.358584+00:00",
+    "translation_source_commit": "1a25364",
+    "deployment_commit": "ac51c9c6bfe834d945cbd7a176556a02893885a3",
     "pages_build_status": "built",
     "anonymous_http_checked_urls": 119,
     "online_article_pages": 104,
@@ -866,7 +866,7 @@
     "content_mismatches": 0
   },
   "online_validation": {
-    "site": "https://xingshuozhu1998.github.io",
+    "site": "https://xingshuozhu1998.github.io/lilianweng",
     "anonymous_requests": true,
     "http_checked_urls": 119,
     "bilingual_articles": 52,
@@ -879,834 +879,834 @@
         "path": "/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "61977db45e0d9f5b098d4508b296179f5570d3420cb725fb0a68df94eb0b7580",
-        "bytes": 27150
+        "sha256": "c456d05f98118621e8892e98d70dda4e0477dd9259e06aee88e0e9980226b09c",
+        "bytes": 27524
       },
       {
         "path": "/en/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "59685b50138df10a793710c665181f2bce01469bc3429a6c9dd58b1e10aa26e3",
-        "bytes": 26545
+        "sha256": "9f85cfc34c47fad23f2d6a8702e9ebff7c40a1f1f5c883c6034fca7ebbd202e9",
+        "bytes": 26919
       },
       {
         "path": "/translations.json",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "653f64b6aa9a8015314a20c17672bef1fc2625af7b215581002eb83a8b79a2f6",
-        "bytes": 419976
+        "sha256": "66faea59d3287808bfc1052229f706fbaafd8ba48efd7e7e4eade1f8d01354aa",
+        "bytes": 421131
       },
       {
         "path": "/index.json",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "c8246d36bf71abc7fa0d6468bb1d5b7777a9a3c5034870bb170c35c731cd6378",
-        "bytes": 1840691
+        "sha256": "4711fec21d7a012bc1f0d067fd72ec8973dbfcd3aa970c1dccf847fc3740a0c6",
+        "bytes": 1841263
       },
       {
         "path": "/en/index.json",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "5ad11c08bd776035366356a28e27481af00b7c986754ff69eee2ecc0a4f6faee",
-        "bytes": 1989867
+        "sha256": "f150e641c4a7759b51a600f545824becad7c0d702683ee6dff0bed82b45713a8",
+        "bytes": 1990439
       },
       {
         "path": "/index.xml",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "891d08ecc77be76386f78b113ff90b3950791f962dfc0e94a9a25ffc4dcc0e4d",
-        "bytes": 72280
+        "sha256": "f2c1032b3a053888bd7495f7cdbebbd9215edf0c90541e0c23e909b3ac343eec",
+        "bytes": 73435
       },
       {
         "path": "/en/index.xml",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "b846fa1f62e8ae70a66ff2183f08e973cb17e5ba3894736ced21f83514c8c0e7",
-        "bytes": 39727
+        "sha256": "0b7bae48ac536652817df0604cd5e25f4bf099b5c0a68c312d58b406c715459b",
+        "bytes": 40882
       },
       {
         "path": "/sitemap.xml",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "4067a497246cd71aae515c27534b0192ec312f57ce6fec9333d10354ab67cd82",
-        "bytes": 14801
+        "sha256": "e3561262f70804efd1cc04beb76ec2d3e828b26af9a9f98ed4120fec6711a252",
+        "bytes": 16847
       },
       {
         "path": "/en/sitemap.xml",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "fc53de3eddabe8a6c0c864c0f11ed6c9b12a04b3237255ada7edb73e1cc08705",
-        "bytes": 15359
+        "sha256": "6ed1802fb3bbf61bddfe2b334637b2bce7e954b22ba3346f12c7182a64df56a3",
+        "bytes": 17405
       },
       {
         "path": "/search/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "bca5d5ac9634ff462df3d125b599383bab910a299c9d6914c1e33672fdbdc2ed",
-        "bytes": 11225
+        "sha256": "533a56d3c5ea9dfdf14ca95d60785c674463e3f0c90e8299a6e47ecad4a5ae5c",
+        "bytes": 11478
       },
       {
         "path": "/en/search/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "f4f9432de0a56ffc6ad5f77ada24163c5367cdbe2df9c7853819a1d56fced1be",
-        "bytes": 11388
+        "sha256": "6990f74321fd60ad34d6ba8c8ae94fbc51aada0e8b2ef5bbf6a57efdea1e3c65",
+        "bytes": 11641
       },
       {
         "path": "/archives/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "082660883ae1e2fe729fee8e3f55f785338a4bf3cc005224ff86066390cbaf61",
-        "bytes": 44324
+        "sha256": "431b55851977cb3b7c6a01082067869d56706737d956466ff2933f7ff0a56ad3",
+        "bytes": 45127
       },
       {
         "path": "/en/archives/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "810b26c3c01029ca87522772742fb4a06acfa71c85827486e2f21c94b5707229",
-        "bytes": 42816
+        "sha256": "282b5ef9b4c122d6b949f2e83ef314a5361408b737b00e3d3c18647dab498d1f",
+        "bytes": 43619
       },
       {
         "path": "/faq/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "a3d06d939c6d858c7f48cb72d6adb79c2173b41ba5148c6e520c7bbe0a9d6ce6",
-        "bytes": 14720
+        "sha256": "1e8c177d47fbe92796db0bc7793212452088e56cb9eed56fe39788160346f3bc",
+        "bytes": 14984
       },
       {
         "path": "/en/faq/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "eb50495e3369510a368c7cdbc2459feba52d30faeb2946b478822753103f0a59",
-        "bytes": 14755
+        "sha256": "852f50f3a6e8bfd5aecabe10c2fb6c0a9a28e9e38a89f415236ff1591cbe67a8",
+        "bytes": 15019
       },
       {
         "path": "/posts/2017-06-21-overview/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "92af1cba36c374514a2a7d6241d7ee35b7319258f27767e50563c0c3a337b7e0",
-        "bytes": 70336
+        "sha256": "4360672518705607e886e56f022aabcb86dcee05fa44394670541436dbd2fd5b",
+        "bytes": 70878
       },
       {
         "path": "/en/posts/2017-06-21-overview/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "77497805438f6eaac540ab5d923af09dc2fc1f59d2d40d36d292fefe891f3659",
-        "bytes": 71151
+        "sha256": "e8429b125f46a88643c8de10b48b88abc0d3a933fcdf4c6481efb4b024f96699",
+        "bytes": 71693
       },
       {
         "path": "/posts/2017-07-08-stock-rnn-part-1/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "0c6b161a88c979a632184ced3a9eb2f759bdad2eea7a59a7575d338a60f91911",
-        "bytes": 85238
+        "sha256": "3c83285cc7d211112b8b70c731a261e4aaf05c1731357635d4330182cd124922",
+        "bytes": 85758
       },
       {
         "path": "/en/posts/2017-07-08-stock-rnn-part-1/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "d03fde606d0125121c70060a8322ec0d64fb757a48e0402d7ca9d033c669ca93",
-        "bytes": 85906
+        "sha256": "567c47caf922ab2296f57fdfa880408398f7de6a3588b4963f0106ac707ed9ab",
+        "bytes": 86426
       },
       {
         "path": "/posts/2017-07-22-stock-rnn-part-2/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "a42abb0e124c7b29893a89c2cdfe3ac621fb79cdc4ea9df65f5b75f24e885943",
-        "bytes": 66140
+        "sha256": "8e61bbac5dfc2920191f8dd19b11c11494053dc9f67a843b27dacc5205bec5ec",
+        "bytes": 66682
       },
       {
         "path": "/en/posts/2017-07-22-stock-rnn-part-2/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "c69d8b2510809c66da28fdd8795682dd9f43266102911a4d5de481f2ef8c78ea",
-        "bytes": 67413
+        "sha256": "8892186e593368c00931ae8cb82c59ad094957273f8166a065a047610f5c0f71",
+        "bytes": 67955
       },
       {
         "path": "/posts/2017-08-01-interpretation/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "7f2a155f18498c13f5ead97ca3ba64c1bc5551b10964b63c9f4ac1bbdf0bea37",
-        "bytes": 79812
+        "sha256": "21afdcfc0d26127785b49edca8436508523b3b85132973f5de432b8f5c1d658b",
+        "bytes": 80288
       },
       {
         "path": "/en/posts/2017-08-01-interpretation/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "c38713c9ab5e065d5833c200e028e4da5441619a5d3fc3bd9695f46f7aeae04f",
-        "bytes": 85000
+        "sha256": "2a127b2f71b3b7482efb32569a2c9991b9951605b456fe20efa6214110aabf70",
+        "bytes": 85476
       },
       {
         "path": "/posts/2017-08-20-gan/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "5b05086f36d6b17f1178db6eca82e9f00a88f1ce8fcb49fdfccc8143be77ca90",
-        "bytes": 86117
+        "sha256": "21f8f27f3ebaab20587ef510a27e1061e581919d3cf9761f417280adc6f93289",
+        "bytes": 86670
       },
       {
         "path": "/en/posts/2017-08-20-gan/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "e01cdb9f4309dc7d5fd6f92b16be802b16f1e5c6e885b2dde3fd7ee14cb0ccc0",
-        "bytes": 94855
+        "sha256": "2037b68967cf07ca465e3dda61c0fc9c09177a5dda1157257bc668e54c11a431",
+        "bytes": 95408
       },
       {
         "path": "/posts/2017-09-28-information-bottleneck/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "872062fc931612fc6f1a645f9fcdf2e4fc62ab2bc4a184a7bd7588672c12d007",
-        "bytes": 54959
+        "sha256": "2966f08f9091b4d081d1fe7d7e42f6d19a78f3420d10dfc340ab5e29cbf9c5a7",
+        "bytes": 55435
       },
       {
         "path": "/en/posts/2017-09-28-information-bottleneck/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "d5e31a64493d83df6bf42ea1005514eee8d3ca101ed26d86f4b3fdcab362b8a2",
-        "bytes": 57847
+        "sha256": "827bc7683cb038d0e79b48ea910d9722793bd9af382fee2d7a36988f9607872a",
+        "bytes": 58323
       },
       {
         "path": "/posts/2017-10-15-word-embedding/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "268dbfbb1dee9cc8f5bad894f990fe6dc681aa774326fdd18a41ef9aa6d2734d",
-        "bytes": 90040
+        "sha256": "2393f19389259269a56b516b66f98c6e5097f5dc9ad6a491be69eb737d156314",
+        "bytes": 90461
       },
       {
         "path": "/en/posts/2017-10-15-word-embedding/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "3a0b84f70f45440426e5c25e5f8dc6c6394588799e0b1c86d2cd81f7f822fdf3",
-        "bytes": 93999
+        "sha256": "09b025f0f3871d1656a0baa5cdbda18cd81969a9131495ef9f780f9a3091322b",
+        "bytes": 94420
       },
       {
         "path": "/posts/2017-10-29-object-recognition-part-1/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "eea5ce19673d6bf5a799e79611ca9aa7edb9fe497109e0185d6d14bf33070005",
-        "bytes": 92850
+        "sha256": "ae2bb5a51a03e2ad05eb3646e97e7789c23f2909566af318a768554b4181a2fe",
+        "bytes": 93414
       },
       {
         "path": "/en/posts/2017-10-29-object-recognition-part-1/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "996e4ebaac417735691601bfeb8fc5a660b5aec0d0cbfda3d50fac0265e7b2c7",
-        "bytes": 96217
+        "sha256": "e43280f93511fb2b999d3c22de753085a93d3c025969c3684401106696cf14de",
+        "bytes": 96781
       },
       {
         "path": "/posts/2017-12-15-object-recognition-part-2/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "c67d5d9af51ed4853ebbcf68c82dfce4c34e67d17cee2f47254343d2e42866e2",
-        "bytes": 51472
+        "sha256": "bb4d3c6b97bff065b5ddb3fb4b66cac88a3155d56a81ae003e8433cacf366be8",
+        "bytes": 52036
       },
       {
         "path": "/en/posts/2017-12-15-object-recognition-part-2/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "17cf4c19cc3d84483139173e0604360d655aadb7daea61208e85141790d681fd",
-        "bytes": 51707
+        "sha256": "64e46bb3108725c9a5706a91bfeb357b76d53d1a1e3f79311c55d76f87104841",
+        "bytes": 52271
       },
       {
         "path": "/posts/2017-12-31-object-recognition-part-3/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "56f2f13f0d2abc39ef039535a21b87c0dde06b65983cb7e15753c27c3c16a1b4",
-        "bytes": 74686
+        "sha256": "1c4f75685d53cdab7bbd135290c5bbb03f586f6321bf6f0678734f8ebc5d59b3",
+        "bytes": 75294
       },
       {
         "path": "/en/posts/2017-12-31-object-recognition-part-3/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "5751d099911a6e7223c01ff50158c646a8e5a6bfa124686448cae3831f19b8ae",
-        "bytes": 74652
+        "sha256": "ae80dba335194d4bdfc6b335e8ccbc1c284048aae3cfa0c1c50ca5a844b5d1ff",
+        "bytes": 75260
       },
       {
         "path": "/posts/2018-01-23-multi-armed-bandit/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "9d6f59a4b831f100aecf38ab41ae2d3ec0eeaf1d947947c7649a731325d107de",
-        "bytes": 59060
+        "sha256": "83fcccec281148915d3badb3f948896d5d545ce38dcaa31f1bfe243cb26008c2",
+        "bytes": 59525
       },
       {
         "path": "/en/posts/2018-01-23-multi-armed-bandit/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "2615aabe06111babff4a2ff8df711e31b3d14d7c736d25eab7a09c4f69a076e6",
-        "bytes": 60426
+        "sha256": "7af240e5978359d59eefe709d10a5ba620cab93f5a960157e20080c1fc9ceb83",
+        "bytes": 60891
       },
       {
         "path": "/posts/2018-02-19-rl-overview/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "c8bd0f420534d9be23200d1d812cfa314fbb2c5473c4fc0c41a15fc284577f2b",
-        "bytes": 120079
+        "sha256": "dc09d24247aa2e30bcaf43f5aa2dd90b5c2bc23d2cfedc783563f86b4ce8aa41",
+        "bytes": 120709
       },
       {
         "path": "/en/posts/2018-02-19-rl-overview/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "1eb2abb7927962cee252ac536d4bec4c5440a184893b7b378eecc27671ebb00f",
-        "bytes": 128135
+        "sha256": "513b4890c77a39c14b59b0e482292729923872a6752f9cde1cfeb16d5fa90260",
+        "bytes": 128765
       },
       {
         "path": "/posts/2018-04-08-policy-gradient/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "12d391a450b0f4ece98ba23018a987046d17bdad0e341325d6918def7c9f0d25",
-        "bytes": 204470
+        "sha256": "6e0d5e2eb31443220e2ca6ab393b2eb2f864f0062f60b0806f80eeabfc5c06a0",
+        "bytes": 205177
       },
       {
         "path": "/en/posts/2018-04-08-policy-gradient/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "33aa982ac4b2eaaaf1ef8cf6497ed8355ce79465b00cb74ef0837633bcc23e14",
-        "bytes": 209915
+        "sha256": "3e3d7291d280150fc8bd71ab035bc447adf7b24a83923fc189032cb588844919",
+        "bytes": 210622
       },
       {
         "path": "/posts/2018-05-05-drl-implementation/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "08fed3da35913b59ed8253752605d73e87a5b2b5157b7a92f2940165e29a6bbe",
-        "bytes": 114368
+        "sha256": "5c9b6cd24319b73809c425b6707a83403ed393bfbdad3f133173e5bff014d90a",
+        "bytes": 114899
       },
       {
         "path": "/en/posts/2018-05-05-drl-implementation/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "fb64c2f980ba60a01b7d4f01c98a3041a4c89b1669950bbd0756bab10ac289f9",
-        "bytes": 114150
+        "sha256": "047025fcfe91b5721544fedfdbfb93f87a1a57ea3f0f072ff1914b7be73f9348",
+        "bytes": 114681
       },
       {
         "path": "/posts/2018-06-24-attention/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "f9ef43284b8a24deab051494d4f1063eb1516d4036881be8f288c92ea44a1f2e",
-        "bytes": 97466
+        "sha256": "5c34d47280f7da8bdb75379b9f07507e988f593248b60fd0609ee0613ec99ad0",
+        "bytes": 98140
       },
       {
         "path": "/en/posts/2018-06-24-attention/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "dac9ae6240b7d301dabb0adf0b1384c1e08d88f5c644e041ad360a2ae537ad65",
-        "bytes": 103960
+        "sha256": "a2b1315706137ee972b913e77a077f0016d46655ca345ae8373da11b44c6385d",
+        "bytes": 104634
       },
       {
         "path": "/posts/2018-08-12-vae/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "c67a809153439b799bc9bb7cd024a01cfe9e939fe5263c40b297709dfb85ce0b",
-        "bytes": 102841
+        "sha256": "9375b829ff4e40a2b38f3b200ae608e018ad2f20c124bcba6d36f589e2ff211b",
+        "bytes": 103394
       },
       {
         "path": "/en/posts/2018-08-12-vae/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "e2d96b196d5371d188b8ac434ab47b9460eabec0b9d5e62a83842a60a8f7cd60",
-        "bytes": 107438
+        "sha256": "75cc31b03e39582cf4f1bfd5990290f8219630c1a455cb55f99c33e020b6dc52",
+        "bytes": 107991
       },
       {
         "path": "/posts/2018-10-13-flow-models/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "7f53a0d71c80cb723f78659c75566b3b14dbf8585c2d1d4d5e4b729934b19265",
-        "bytes": 94441
+        "sha256": "7b0de04506657e49d38865d2de299505cc03b6131ddf57ef37bee8504e716aa7",
+        "bytes": 95005
       },
       {
         "path": "/en/posts/2018-10-13-flow-models/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "9e983448afe4047dfa3b6fca1996745af7fff86a305029990ab8b376ba5545d1",
-        "bytes": 102554
+        "sha256": "362a00e45773f3d95fbe13aabfe83b3c3347bd64b7527665b139c53a6dc50618",
+        "bytes": 103118
       },
       {
         "path": "/posts/2018-11-30-meta-learning/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "dd49881095e5bc1f26e952776d0c7bcb9211056bc0db64bf148a85a8a519f47a",
-        "bytes": 126077
+        "sha256": "00c4cd8a707739b2e693ea07eacecddc70b4bc773cae095a60aef8722b823161",
+        "bytes": 126663
       },
       {
         "path": "/en/posts/2018-11-30-meta-learning/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "37bf709427f09f577b9985ec371752718c532de5e16770a59bfee8f1908d2906",
-        "bytes": 138735
+        "sha256": "453b6860fb9f6343b403b7dc7bcfca66cc6a5c7bcf8e7369333a002d0e91b818",
+        "bytes": 139321
       },
       {
         "path": "/posts/2018-12-27-object-recognition-part-4/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "913530bfb1bfcbf4f4446ff14b384f65cf49e130a888a001c406ff48cfe80f38",
-        "bytes": 86434
+        "sha256": "ecdc21e00f9af3ca044ae8255d655c00052a96264ea449de8171b2d21676e7c8",
+        "bytes": 87086
       },
       {
         "path": "/en/posts/2018-12-27-object-recognition-part-4/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "f9fbe3254a790ac4c5c761e6aafb08412f4dba7453712580ab90cbd16ba65656",
-        "bytes": 90204
+        "sha256": "379b8e2a414ac03074a0cd4ce4743c30ad074abe10dc00aee9e4f77151222e84",
+        "bytes": 90856
       },
       {
         "path": "/posts/2019-01-31-lm/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "ec3fc72d576364d5efb89a25e926933217f0ec560f260af2837020f054198ebe",
-        "bytes": 155331
+        "sha256": "48306620e6102be5b113320e927bee444e863ebcb68ab57b72aec7c57520d209",
+        "bytes": 156104
       },
       {
         "path": "/en/posts/2019-01-31-lm/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "dd1d8cd5eaf23ce6e185f1493933da2c09b63ce2d579d4ea8474c38954527248",
-        "bytes": 162901
+        "sha256": "0b7b71e626d4e13a8bddc7d048373ffa36033f86a90ace97c8c176160ef73413",
+        "bytes": 163674
       },
       {
         "path": "/posts/2019-03-14-overfit/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "20514f48a4132c5410b4121d4ec4e71e9bd53f6b8035968edbc004017a72c3bc",
-        "bytes": 90307
+        "sha256": "23e869cb4a28c34d019851feadb6df7c31d2cd36a8a66ffe6d5e3e71d48bdb2b",
+        "bytes": 90882
       },
       {
         "path": "/en/posts/2019-03-14-overfit/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "160c09874d1caa93a298050c1ebd3aa3dd26d6dc1da40b4b0447b1b0515352fc",
-        "bytes": 98625
+        "sha256": "9c3820d321c3951e7224e4d5d198d4c3cac3ef9a3ec4d25d9fd4076810a31b3b",
+        "bytes": 99200
       },
       {
         "path": "/posts/2019-05-05-domain-randomization/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "75ed2bd0ffe691831ecfd21f126e74fa69ce03c5a52c40c10d3697a5cefb0711",
-        "bytes": 74985
+        "sha256": "bce12b82626f435f71cf17fd1f4224d22fa7e00bfea5b3f70ca8b9713af3de24",
+        "bytes": 75483
       },
       {
         "path": "/en/posts/2019-05-05-domain-randomization/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "e1d75ad5b1f48c30cdf6a719f08d2ef8fdcc0703a83d03ac3c1def392bdc1f80",
-        "bytes": 75782
+        "sha256": "b96f84057efbb86af8968a3ebcad8b7f00b904071e4424cabb75d3fc4eb5796c",
+        "bytes": 76280
       },
       {
         "path": "/posts/2019-06-23-meta-rl/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "a5a8965006d0129ee95d7e7da1e7a84a5d15c68558d9104ab01e9f4fc1e00e2c",
-        "bytes": 87840
+        "sha256": "b7781e17a7d68b1227d7b7b14455e24359eb3fa7ce2594072b3a7326d7397f1e",
+        "bytes": 88503
       },
       {
         "path": "/en/posts/2019-06-23-meta-rl/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "42dacbf7b203b461e3518bdeda19847f5a80cfdc15a67c97b6991f95c6ee552f",
-        "bytes": 104569
+        "sha256": "ce05f33a815dbf17ec0490771b52451bcab8de0f83fafff87663cf5225002304",
+        "bytes": 105232
       },
       {
         "path": "/posts/2019-09-05-evolution-strategies/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "96deeb97492c33fd59c825e082626e449b21417d82d024ea88145660a7d4cc37",
-        "bytes": 106689
+        "sha256": "8c60bea08d9f22c7139e52d31bb539dbda2324a457fb84fd45950d0e3d09d0c4",
+        "bytes": 107319
       },
       {
         "path": "/en/posts/2019-09-05-evolution-strategies/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "c7b6b1ce2d0a1587fd0c9cd69bfd4597f8f8ddd08dafee7c40a6d4fb43441c6b",
-        "bytes": 111821
+        "sha256": "cd35f5da5a28c6933c602523b769a1c6d374bd087215170659955cab9a351fc0",
+        "bytes": 112451
       },
       {
         "path": "/posts/2019-11-10-self-supervised/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "f6550899cadf4bcae71282744171c95213da5e98bc103f4ad2f9787afaeb5f94",
-        "bytes": 151003
+        "sha256": "c14dea31a69ce54299f4e4064b56ab907130259cec3dac699d0f51cb56e5d069",
+        "bytes": 151952
       },
       {
         "path": "/en/posts/2019-11-10-self-supervised/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "a67f056eb84dcd0510dcb894d72ad32e8be55c8c5a5ace40b987fc6c4d940989",
-        "bytes": 156176
+        "sha256": "fb850a2b37fad8e8f2b21c48219b7cffa40b7e9098a0562d18c009548a741b85",
+        "bytes": 157125
       },
       {
         "path": "/posts/2020-01-29-curriculum-rl/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "dccee5894414e454ce3ae06d82f8d11775713f6b33d2493878d7cabd13b1f48d",
-        "bytes": 95940
+        "sha256": "931e85080101069e94d7a9b06a26d9174c698c2cf3ef944f9f7aca18738bb4de",
+        "bytes": 96548
       },
       {
         "path": "/en/posts/2020-01-29-curriculum-rl/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "7614d02075dd86046ffbe8d1bb5391a85ba2eb455efcd2e3a89e09998a99189f",
-        "bytes": 102119
+        "sha256": "5c2877ba6bb727c69ac0772db9dab7b265eb92d4ae672be96ab377ce86ef973d",
+        "bytes": 102727
       },
       {
         "path": "/posts/2020-04-07-the-transformer-family/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "7cf11badcab95b922aaa00ac347a4d37d9b1dd6334c3fc22e9d76fc5e5c1b257",
-        "bytes": 111286
+        "sha256": "157337fb35985cb7dfd6dc8abba04f855e2a0a15d9d992e0d7b855fd451d4b40",
+        "bytes": 111949
       },
       {
         "path": "/en/posts/2020-04-07-the-transformer-family/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "9539f1223f460b1da681951bbff7992de788d46368d30424ff0d8260176d5679",
-        "bytes": 115057
+        "sha256": "cee93fc7cbbcb2d76989fef4753eaba2bc7ff18488e4d98cf46e95c56566d7f8",
+        "bytes": 115720
       },
       {
         "path": "/posts/2020-06-07-exploration-drl/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "18adb58f951b3eef852313980fb694754d109b74e265d7944c80e9d9c8dc7f3e",
-        "bytes": 138505
+        "sha256": "0a1906d6dd8221556a28127f6297e1cfe1d8af84c6d9f678a31d0078b5efdf6c",
+        "bytes": 139234
       },
       {
         "path": "/en/posts/2020-06-07-exploration-drl/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "c76e28e74b8a056a5a552669992de1c71cca4714c3723881a817139b314b5393",
-        "bytes": 148389
+        "sha256": "a2a565071f611336e9037fc7f861c4425b528fa5461ba0a3b3403fa92267a7d0",
+        "bytes": 149118
       },
       {
         "path": "/posts/2020-08-06-nas/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "180ef4aee8eb59b8d75e06965b8ab8b98354cdabe1add37f17eab5e0b09564e9",
-        "bytes": 125396
+        "sha256": "4313a4037745d9b8b172060d2b0350e87dada94dad4412bfe30a96a4eb3b56d1",
+        "bytes": 126202
       },
       {
         "path": "/en/posts/2020-08-06-nas/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "8bd9348fd2bf2cfddfc69e6a7222c5870a107715fa61af577124c3e662872e61",
-        "bytes": 140028
+        "sha256": "c90abea0f2ca1221182daa57e772ac78612b9d9ca6d6776857f6a9bd485e0b1c",
+        "bytes": 140834
       },
       {
         "path": "/posts/2020-10-29-odqa/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "412886f18f5886622a26877ad12421c2d810f913e133b84458ffab56b0c1770e",
-        "bytes": 134576
+        "sha256": "5c8c77f23e380b1f400e02ffb115d6ffd75323dc15cceb3114ec1b145441e8f4",
+        "bytes": 135272
       },
       {
         "path": "/en/posts/2020-10-29-odqa/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "70638aad572efeb195b722d5b742e34032586b8871f0e64345bb271780159012",
-        "bytes": 143529
+        "sha256": "773a645d7f5b39c2768774c8c2fc048c9e386e64bed558375e6a0a14ecd2c142",
+        "bytes": 144225
       },
       {
         "path": "/posts/2021-01-02-controllable-text-generation/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "1e07091c90716e7b5deb3173b0fb6b59bcfa490d0ce79861ab58a2a296851030",
-        "bytes": 169674
+        "sha256": "eb5f3c54a20ca1de06143e7f33875b11e986022882101e59cfbb8cd83eca35f8",
+        "bytes": 170447
       },
       {
         "path": "/en/posts/2021-01-02-controllable-text-generation/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "5ba6e830b4a70e208744e0d0d39915598f2b872314f357a2840b6ab6dc17b84e",
-        "bytes": 173505
+        "sha256": "f6efd725a97e6695460086fc530d7d772416a947fe28208b670948bbbdcc2b71",
+        "bytes": 174278
       },
       {
         "path": "/posts/2021-03-21-lm-toxicity/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "8d5718f7d15032acdd4dbbeed277626790b0090b059477955499610f7215781f",
-        "bytes": 93285
+        "sha256": "b97675a4bc394c91fc29d2f3910ebdc184e30e3e265e399ed4dab0c7927074dc",
+        "bytes": 93882
       },
       {
         "path": "/en/posts/2021-03-21-lm-toxicity/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "8cb0093c35bbaff1782b9b61f6d2b5b597c9eaf85739503fe6c86823030a9d4c",
-        "bytes": 107697
+        "sha256": "0ba290fe229ef775799b0c1896e6f0429eb6cff26c75118807f97b4cbd30a765",
+        "bytes": 108294
       },
       {
         "path": "/posts/2021-05-31-contrastive/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "84522d80b7fc4103ee2f5a93854886270de452e326298ad9d74424f7c5526ed7",
-        "bytes": 180124
+        "sha256": "193d526448c32f9375f3620379f6c1654412c7d4de89d18629116a0593d78b71",
+        "bytes": 180985
       },
       {
         "path": "/en/posts/2021-05-31-contrastive/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "270cbf5a843cee1987194067a48c97f6e767ba962462578d0ba377489bc7c7fc",
-        "bytes": 182946
+        "sha256": "7810a2fe4b993a25ed8780da3978b1b287e2a4683d685578e17b25514e9a1a4d",
+        "bytes": 183807
       },
       {
         "path": "/posts/2021-07-11-diffusion-models/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "7856e4e14113b7d3553c6e6005ef306cbf153275eb0c42c3026383f2f9e15389",
-        "bytes": 148804
+        "sha256": "b85b7ee36d8d015c43d15b95d7a74cd3ed760bbfd6160424238491d9567eaea8",
+        "bytes": 149511
       },
       {
         "path": "/en/posts/2021-07-11-diffusion-models/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "d86ad7d6cab30d478c786fc5a626f10a9d29c84a2a3e893550debf7137c68ee1",
-        "bytes": 157060
+        "sha256": "5929afca8a27295ab76d581b68e4139c9c11503f4ad255fcb90b7866ed76b56f",
+        "bytes": 157767
       },
       {
         "path": "/posts/2021-09-25-train-large/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "71adc880382213806d5841ee07ebdf66eb12a9689d95e611bfd77585af99165a",
-        "bytes": 88227
+        "sha256": "e00e9a0145401272cb66f2fbfb4c61a5dac2d206cc927fabd36d109cf6b7f54d",
+        "bytes": 88824
       },
       {
         "path": "/en/posts/2021-09-25-train-large/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "58873cd7c0db150b438d38998bac1f55e8629dc5bb4e3fdc1a92dc12d0b7cabd",
-        "bytes": 96488
+        "sha256": "8def774c46f620d1ca706922dbbd62c120f6a010c2a10afdbd94a9c84d91b6bd",
+        "bytes": 97085
       },
       {
         "path": "/posts/2021-12-05-semi-supervised/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "77ac46a827ac60aabd7ca26748538d1af685c33562f4baa5b0524d628d893784",
-        "bytes": 114192
+        "sha256": "6dada7f78f057807839e7793d4e08858f6c4a62bfed310cc26b65cd186d794b3",
+        "bytes": 114877
       },
       {
         "path": "/en/posts/2021-12-05-semi-supervised/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "5a65c84ddbc11b4f77b44a6969884dfe08626439db6564239ffda1c2d094f9fe",
-        "bytes": 122765
+        "sha256": "6d65fd43248e1e7160b27b9b75df60b005af8d94f375c5558f97ac83882f0c1e",
+        "bytes": 123450
       },
       {
         "path": "/posts/2022-02-20-active-learning/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "a3a093b9175fd8dbaba8ab65f809c82abf8d45741c6e936d8dd076f1d95c503b",
-        "bytes": 99416
+        "sha256": "b2ddf91d3dbfc56b5869035d7ba626b4e9d3cd0c769c53c21594d46d5956adbc",
+        "bytes": 99980
       },
       {
         "path": "/en/posts/2022-02-20-active-learning/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "23ef11e57529a023c4b97ac6af858bd3ca22296790cd9f63a64926a48ba53d83",
-        "bytes": 107841
+        "sha256": "d5a02d897bf1c192c96042054f61907d7faf677aae16e5915d4a7681459be1c1",
+        "bytes": 108405
       },
       {
         "path": "/posts/2022-04-15-data-gen/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "3088408d5d66b3d855b76b1a11c0d917dc1dc06b79a7b24dec7077b1aeaad854",
-        "bytes": 125915
+        "sha256": "b8952aac6e1e7df57cd916ce6ac1e072005ecb7dbd165ce2cbad1a9f33429b7b",
+        "bytes": 126633
       },
       {
         "path": "/en/posts/2022-04-15-data-gen/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "9d4346792111c758006465c1fa7566f74d5933c66bd06f0ae6841d5632394e8e",
-        "bytes": 129878
+        "sha256": "9d928844f08bac003084bbbc9ad21de5ff39ba0bcceb66250229aa44756bf884",
+        "bytes": 130596
       },
       {
         "path": "/posts/2022-06-09-vlm/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "901c5058fd89b3b12a1cba02dc4a1ba7b1dda6dcdd91a2bd74b30706f4c417c5",
-        "bytes": 111286
+        "sha256": "2d260a1344a7e4daee2aaa4f909ee842f854b560b43581d20fba215eebcfa02b",
+        "bytes": 112070
       },
       {
         "path": "/en/posts/2022-06-09-vlm/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "46b4c8aea3f88d1d7646478ce58b1b60fa22f56c2a2bf1ef540e1d761b923b6d",
-        "bytes": 113519
+        "sha256": "c3d0fb2615411e2d27098220959acf3d42518efb8bf2d99c1db1276cd237c297",
+        "bytes": 114303
       },
       {
         "path": "/posts/2022-09-08-ntk/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "00d70491869187ebbc17252f58381c4f6fbe4446f70d042268272cda74c26c41",
-        "bytes": 95197
+        "sha256": "1fffd1187a31255a04c25620d7a333c147825cd1d4b8c14cafe5ba8e68b553d0",
+        "bytes": 95618
       },
       {
         "path": "/en/posts/2022-09-08-ntk/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "aed6cc3779486a4ce2639657786285f06e24cf32c695ab66c903d6f45641f446",
-        "bytes": 97337
+        "sha256": "93312dbb97afd1aa6131de80449dad08a1e520eda913c5fa0d5c4e541ccc848c",
+        "bytes": 97758
       },
       {
         "path": "/posts/2023-01-10-inference-optimization/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "fe00ada3c495c9d1313e86172297a40df868df0ff9b6caa4ba1e69c16c23d01d",
-        "bytes": 127519
+        "sha256": "a0bf6661ef92d2903219f7c2c087182d424e8ef9fc33ceb57b8ce1c683291723",
+        "bytes": 128413
       },
       {
         "path": "/en/posts/2023-01-10-inference-optimization/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "c122513e3fe12a70e722cc2b799868a0ccb88a1331107a3e3b5d03bd915b1e5f",
-        "bytes": 137356
+        "sha256": "69bbdae112259eda2f50ec8aef0c7ae62532bc48a42a07492fff5f54d3b75090",
+        "bytes": 138250
       },
       {
         "path": "/posts/2023-01-27-the-transformer-family-v2/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "977b8045df365d0a9ec61c36f14161ceb0c489df0b6be8335a71274ae76ede1f",
-        "bytes": 197955
+        "sha256": "beb3cc7813eb1fd5323cf395d4733ab4f9d1ee2d011793fed157d652b0b0d0b7",
+        "bytes": 198805
       },
       {
         "path": "/en/posts/2023-01-27-the-transformer-family-v2/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "c9dec2ef379f767575f4e6dd0cd173846d2989724157a326a7580b41761b8d55",
-        "bytes": 202673
+        "sha256": "8bf8b0d144f2954b7c546d8bb1c006c61b35d739e63597cbc8e72bfd6bd72e10",
+        "bytes": 203523
       },
       {
         "path": "/posts/2023-03-15-prompt-engineering/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "1dde8d5ee7c5789371f25586c269766d0847b3eda2c5000138bd34a78598c38b",
-        "bytes": 93446
+        "sha256": "9307645504cd0cadb93f2f4bb856520907f7aae6ad5d6c21c9a4a7702360e9ac",
+        "bytes": 94043
       },
       {
         "path": "/en/posts/2023-03-15-prompt-engineering/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "13af8e6b36ed0cb99003fe4e1213863566af7bf091f2846554a26703cd2c4237",
-        "bytes": 99865
+        "sha256": "d40d95baf3145f6da8de3a73b5bc81b31dad3d82569f9f95c53e8e9223773e68",
+        "bytes": 100462
       },
       {
         "path": "/posts/2023-06-23-agent/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "26c0035b279a38d0cbb28120993185131a8e40ed0890b73cf5e4558fb4e6afb8",
-        "bytes": 122460
+        "sha256": "ba556f908dba747c634239dba0a6ec12142d66bf1809e380ed1c2aaac5a0b2e5",
+        "bytes": 123090
       },
       {
         "path": "/en/posts/2023-06-23-agent/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "62101a67f4e728eadab338eb1c43bd26e35a749acc008f5e40332ce381a9675f",
-        "bytes": 132600
+        "sha256": "5ecbe33031bb3cb65a7b4c7542126a9b05129b2707e0db9f7301bf45c0929a5a",
+        "bytes": 133230
       },
       {
         "path": "/posts/2023-10-25-adv-attack-llm/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "04e8be1c754a14ca841c849dfc6bb63e3cc1cf70c9e86b3f0180f160f38e54e2",
-        "bytes": 139193
+        "sha256": "0ef399a687017b95a79c33495c95f85a0d87b86831c6f178d5b38ad5431b4b8e",
+        "bytes": 139911
       },
       {
         "path": "/en/posts/2023-10-25-adv-attack-llm/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "99b4efd7cb895f4cf1e825391026c1cce594df1061aa1e41d5ce092590c1eff8",
-        "bytes": 143940
+        "sha256": "65a7d0e8f20051a12b2677f94a41be7fdd961192a6a082e96e3d2a74639770b0",
+        "bytes": 144658
       },
       {
         "path": "/posts/2024-02-05-human-data-quality/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "b2787e29705415ea8580af773b9bed3f7fcac5f9b2f5232f941fe954ce9d8302",
-        "bytes": 91512
+        "sha256": "996b4ed371bbc0030717195c7e7a0178d345356a3b1295a8fff8af573db6d4fe",
+        "bytes": 92098
       },
       {
         "path": "/en/posts/2024-02-05-human-data-quality/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "bdd2b9452e7900a06516e8d1eeb8a2fb741e952d4778fbe3fc0443813e544475",
-        "bytes": 96896
+        "sha256": "3ada753553155f45c70b708da00a21c8a32ef834af4071d16c13d5d270d945f7",
+        "bytes": 97482
       },
       {
         "path": "/posts/2024-04-12-diffusion-video/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "868a227f1903bb674225d0efedc8bd07e31d362dd1495a285659faaaf33755d4",
-        "bytes": 90643
+        "sha256": "da44d2fbd8532513f6a6a990849ece2d79cacd9bf6847164fc039fa10e47adcb",
+        "bytes": 91328
       },
       {
         "path": "/en/posts/2024-04-12-diffusion-video/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "1d5cd27e293d02b01b54a4407e9a58fcbb73082f38652084dac16cb971553199",
-        "bytes": 101552
+        "sha256": "0cf663fd9452b891f9ac6ed136a62c90de5b5135d81bf82a44eb8c185b241e6a",
+        "bytes": 102237
       },
       {
         "path": "/posts/2024-07-07-hallucination/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "7acca940e21eae708591b8636958450c90ad282e00e8b80d88c8cbd84424dccd",
-        "bytes": 128237
+        "sha256": "8b0123c4a16ac6b7d42734e1bc1a0710d8a13573d89738b745d7bdc34f08234b",
+        "bytes": 129010
       },
       {
         "path": "/en/posts/2024-07-07-hallucination/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "0819da87a3e5f1da0473ee60d162da902f61e10254d0121012764aefccefaaee",
-        "bytes": 132662
+        "sha256": "d470eabc03f293c60e79737f716b2cd30c96027665b2a5a0c9ebe343e900d4a5",
+        "bytes": 133435
       },
       {
         "path": "/posts/2024-11-28-reward-hacking/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "3b7233e3a957754320a179fcc41fe7a4a73bd9705b82049bc2e2fbbbf8dc4c3b",
-        "bytes": 146227
+        "sha256": "b3cffab35fdc821f9838972d1bb2c6d4d5db542a1f3fa309d1dde68cbeabb075",
+        "bytes": 147022
       },
       {
         "path": "/en/posts/2024-11-28-reward-hacking/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "1d294d3b409ba16083ec1284c6d4a0a4ec373430bbc2a46d49c0c9aae87cb433",
-        "bytes": 153396
+        "sha256": "b6fc72b49b36e4887c407993849068ef50eee25e78c3d476be9cfd586e1bb915",
+        "bytes": 154191
       },
       {
         "path": "/posts/2025-05-01-thinking/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "d38db297834e9e0b724586114fb229bf3e00d0694816576edb4f3f60acd4ca12",
-        "bytes": 149360
+        "sha256": "5d98428a8a8bfce2eb125720bd04b941698251e15386877a520a62a54dba28b7",
+        "bytes": 150089
       },
       {
         "path": "/en/posts/2025-05-01-thinking/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "1e2915ca951674843776088d2dc323d7ce9bfbb795aea40d43b95c94863a7fb5",
-        "bytes": 157979
+        "sha256": "e1c40fb5db2b5c9c0086b9f9d695d269d1d737be0063773d9ed35b87b78c1be3",
+        "bytes": 158708
       },
       {
         "path": "/posts/2026-06-24-scaling-laws/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "efa476a36c6f0bca4d1e015275a51d9d67530dccc01dafffa9083c760995e659",
-        "bytes": 114858
+        "sha256": "ee55ce7bad9af2cfcd8bf3afa42ea0ffa68ca2747c69917887649a72278f94bc",
+        "bytes": 115455
       },
       {
         "path": "/en/posts/2026-06-24-scaling-laws/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "f8126f46d5ea665e20df788896843635b0343db84958e8733e685e7efa7843ad",
-        "bytes": 128787
+        "sha256": "1ba2019e0bcc3095b3f8f94ed111d268f61ff92a285147b2c4fe28c4b1499954",
+        "bytes": 129384
       },
       {
         "path": "/posts/2026-07-04-harness/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "11a1bf811a0f0db86dff80c9dcf6556fc4dc7d1a254d366bae5c3643a9794d5a",
-        "bytes": 130589
+        "sha256": "e3e131783bdae8fefd792e6f2b22650b47e7bb03479d51c52e5b414c753e9af5",
+        "bytes": 131296
       },
       {
         "path": "/en/posts/2026-07-04-harness/",
         "http_status": 200,
         "matches_local": true,
-        "sha256": "bd58c2170872385b4cbc16d4730dd3c8d1038dbabc86988d489dd0c1a6277781",
-        "bytes": 137264
+        "sha256": "91e4942f3bfe75f0d786240d74f1c798c593a48d9f3ffba43e313d5928814886",
+        "bytes": 137971
       }
     ]
   },
@@ -1731,59 +1731,59 @@
         "mathCount": 460,
         "images": [
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/general_form_policy_gradient.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/general_form_policy_gradient.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/A3C_vs_A2C.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/A3C_vs_A2C.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/DDPG_algo.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/DDPG_algo.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/D4PG_algo.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/D4PG_algo.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/MADDPG.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/MADDPG.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/ppo-loss-functions.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/ppo-loss-functions.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/PPG_algo.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/PPG_algo.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/PPG_exp.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/PPG_exp.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SAC_algo.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/SAC_algo.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SAC2_algo.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/SAC2_algo.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/TD3.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/TD3.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SVPG.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/SVPG.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/IMPALA.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/IMPALA.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/IMPALA-arch.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/IMPALA-arch.png",
             "loaded": true
           }
         ],
@@ -1805,59 +1805,59 @@
         "mathCount": 460,
         "images": [
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/general_form_policy_gradient.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/general_form_policy_gradient.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/A3C_vs_A2C.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/A3C_vs_A2C.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/DDPG_algo.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/DDPG_algo.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/D4PG_algo.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/D4PG_algo.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/MADDPG.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/MADDPG.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/ppo-loss-functions.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/ppo-loss-functions.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/PPG_algo.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/PPG_algo.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/PPG_exp.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/PPG_exp.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SAC_algo.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/SAC_algo.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SAC2_algo.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/SAC2_algo.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/TD3.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/TD3.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/SVPG.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/SVPG.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/IMPALA.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/IMPALA.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/IMPALA-arch.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/IMPALA-arch.png",
             "loaded": true
           }
         ],
@@ -1873,15 +1873,15 @@
         "mathCount": 147,
         "images": [
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2017-10-15-word-embedding/word2vec-skip-gram.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2017-10-15-word-embedding/word2vec-skip-gram.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2017-10-15-word-embedding/word2vec-cbow.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2017-10-15-word-embedding/word2vec-cbow.png",
             "loaded": true
           },
           {
-            "src": "https://xingshuozhu1998.github.io/posts/2017-10-15-word-embedding/word2vec-hierarchical-softmax.png",
+            "src": "https://xingshuozhu1998.github.io/lilianweng/posts/2017-10-15-word-embedding/word2vec-hierarchical-softmax.png",
             "loaded": true
           }
         ],
@@ -1905,127 +1905,127 @@
         "search_results": [
           {
             "title": "元强化学习",
-            "url": "https://xingshuozhu1998.github.io/posts/2019-06-23-meta-rl/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2019-06-23-meta-rl/"
           },
           {
             "title": "强化学习中的课程学习",
-            "url": "https://xingshuozhu1998.github.io/posts/2020-01-29-curriculum-rl/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2020-01-29-curriculum-rl/"
           },
           {
             "title": "深入了解强化学习",
-            "url": "https://xingshuozhu1998.github.io/posts/2018-02-19-rl-overview/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-02-19-rl-overview/"
           },
           {
             "title": "深度强化学习中的探索策略",
-            "url": "https://xingshuozhu1998.github.io/posts/2020-06-07-exploration-drl/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2020-06-07-exploration-drl/"
           },
           {
             "title": "强化学习中的 Reward Hacking（利用奖励机制漏洞取得高奖励）",
-            "url": "https://xingshuozhu1998.github.io/posts/2024-11-28-reward-hacking/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2024-11-28-reward-hacking/"
           },
           {
             "title": "使用 TensorFlow（机器学习框架） 与 OpenAI Gym（强化学习环境工具库） 实现深度强化学习模型",
-            "url": "https://xingshuozhu1998.github.io/posts/2018-05-05-drl-implementation/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-05-05-drl-implementation/"
           },
           {
             "title": "多臂老虎机问题及其解法",
-            "url": "https://xingshuozhu1998.github.io/posts/2018-01-23-multi-armed-bandit/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-01-23-multi-armed-bandit/"
           },
           {
             "title": "面向好奇读者的深度学习概览",
-            "url": "https://xingshuozhu1998.github.io/posts/2017-06-21-overview/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2017-06-21-overview/"
           },
           {
             "title": "用于仿真到现实迁移的域随机化",
-            "url": "https://xingshuozhu1998.github.io/posts/2019-05-05-domain-randomization/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2019-05-05-domain-randomization/"
           },
           {
             "title": "注意力？注意力！",
-            "url": "https://xingshuozhu1998.github.io/posts/2018-06-24-attention/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-06-24-attention/"
           },
           {
             "title": "关于高质量人工数据的思考",
-            "url": "https://xingshuozhu1998.github.io/posts/2024-02-05-human-data-quality/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2024-02-05-human-data-quality/"
           },
           {
             "title": "数据不足时的学习（二）：主动学习",
-            "url": "https://xingshuozhu1998.github.io/posts/2022-02-20-active-learning/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2022-02-20-active-learning/"
           },
           {
             "title": "数据不足时的学习（一）：半监督学习",
-            "url": "https://xingshuozhu1998.github.io/posts/2021-12-05-semi-supervised/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2021-12-05-semi-supervised/"
           },
           {
             "title": "LLMs（大语言模型）中的 Extrinsic Hallucinations（缺乏外部事实依据的生成内容）",
-            "url": "https://xingshuozhu1998.github.io/posts/2024-07-07-hallucination/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2024-07-07-hallucination/"
           },
           {
             "title": "进化策略",
-            "url": "https://xingshuozhu1998.github.io/posts/2019-09-05-evolution-strategies/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2019-09-05-evolution-strategies/"
           },
           {
             "title": "Transformer（基于注意力机制的神经网络架构） 家族",
-            "url": "https://xingshuozhu1998.github.io/posts/2020-04-07-the-transformer-family/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2020-04-07-the-transformer-family/"
           },
           {
             "title": "神经架构搜索",
-            "url": "https://xingshuozhu1998.github.io/posts/2020-08-06-nas/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2020-08-06-nas/"
           },
           {
             "title": "数据不足时的学习（三）：数据生成",
-            "url": "https://xingshuozhu1998.github.io/posts/2022-04-15-data-gen/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2022-04-15-data-gen/"
           },
           {
             "title": "Prompt Engineering（提示工程）",
-            "url": "https://xingshuozhu1998.github.io/posts/2023-03-15-prompt-engineering/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2023-03-15-prompt-engineering/"
           },
           {
             "title": "针对 LLMs（大语言模型）的对抗攻击",
-            "url": "https://xingshuozhu1998.github.io/posts/2023-10-25-adv-attack-llm/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2023-10-25-adv-attack-llm/"
           },
           {
             "title": "用于自我改进的 Harness Engineering（智能体运行框架工程）",
-            "url": "https://xingshuozhu1998.github.io/posts/2026-07-04-harness/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2026-07-04-harness/"
           },
           {
             "title": "元学习：学会快速学习",
-            "url": "https://xingshuozhu1998.github.io/posts/2018-11-30-meta-learning/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-11-30-meta-learning/"
           },
           {
             "title": "自监督表征学习",
-            "url": "https://xingshuozhu1998.github.io/posts/2019-11-10-self-supervised/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2019-11-10-self-supervised/"
           },
           {
             "title": "如何构建开放域问答系统？",
-            "url": "https://xingshuozhu1998.github.io/posts/2020-10-29-odqa/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2020-10-29-odqa/"
           },
           {
             "title": "由 LLM（大语言模型）驱动的自主智能体",
-            "url": "https://xingshuozhu1998.github.io/posts/2023-06-23-agent/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2023-06-23-agent/"
           },
           {
             "title": "我们为什么思考",
-            "url": "https://xingshuozhu1998.github.io/posts/2025-05-01-thinking/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2025-05-01-thinking/"
           },
           {
             "title": "可控神经文本生成",
-            "url": "https://xingshuozhu1998.github.io/posts/2021-01-02-controllable-text-generation/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2021-01-02-controllable-text-generation/"
           },
           {
             "title": "对比表征学习",
-            "url": "https://xingshuozhu1998.github.io/posts/2021-05-31-contrastive/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2021-05-31-contrastive/"
           },
           {
             "title": "Transformer（基于注意力机制的神经网络架构） 家族 2.0",
-            "url": "https://xingshuozhu1998.github.io/posts/2023-01-27-the-transformer-family-v2/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2023-01-27-the-transformer-family-v2/"
           },
           {
             "title": "策略梯度算法",
-            "url": "https://xingshuozhu1998.github.io/posts/2018-04-08-policy-gradient/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2018-04-08-policy-gradient/"
           },
           {
             "title": "如何使用多块 GPU（图形处理器） 训练超大模型？",
-            "url": "https://xingshuozhu1998.github.io/posts/2021-09-25-train-large/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/posts/2021-09-25-train-large/"
           }
         ]
       },
@@ -2043,196 +2043,217 @@
         "search_results": [
           {
             "title": "Meta Reinforcement Learning",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2019-06-23-meta-rl/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2019-06-23-meta-rl/"
           },
           {
             "title": "Curriculum for Reinforcement Learning",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2020-01-29-curriculum-rl/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-01-29-curriculum-rl/"
           },
           {
             "title": "Reward Hacking in Reinforcement Learning",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2024-11-28-reward-hacking/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2024-11-28-reward-hacking/"
           },
           {
             "title": "A (Long) Peek into Reinforcement Learning",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2018-02-19-rl-overview/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-02-19-rl-overview/"
           },
           {
             "title": "Exploration Strategies in Deep Reinforcement Learning",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2020-06-07-exploration-drl/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-06-07-exploration-drl/"
           },
           {
             "title": "Implementing Deep Reinforcement Learning Models with Tensorflow + OpenAI Gym",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2018-05-05-drl-implementation/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-05-05-drl-implementation/"
           },
           {
             "title": "An Overview of Deep Learning for Curious People",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2017-06-21-overview/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2017-06-21-overview/"
           },
           {
             "title": "Domain Randomization for Sim2Real Transfer",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2019-05-05-domain-randomization/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2019-05-05-domain-randomization/"
           },
           {
             "title": "Learning Word Embedding",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2017-10-15-word-embedding/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2017-10-15-word-embedding/"
           },
           {
             "title": "Attention? Attention!",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2018-06-24-attention/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-06-24-attention/"
           },
           {
             "title": "Prompt Engineering",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2023-03-15-prompt-engineering/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-03-15-prompt-engineering/"
           },
           {
             "title": "Evolution Strategies",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2019-09-05-evolution-strategies/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2019-09-05-evolution-strategies/"
           },
           {
             "title": "Learning with not Enough Data Part 2: Active Learning",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2022-02-20-active-learning/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2022-02-20-active-learning/"
           },
           {
             "title": "The Transformer Family",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2020-04-07-the-transformer-family/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-04-07-the-transformer-family/"
           },
           {
             "title": "Meta-Learning: Learning to Learn Fast",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2018-11-30-meta-learning/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-11-30-meta-learning/"
           },
           {
             "title": "Neural Architecture Search",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2020-08-06-nas/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-08-06-nas/"
           },
           {
             "title": "How to Build an Open-Domain Question Answering System?",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2020-10-29-odqa/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2020-10-29-odqa/"
           },
           {
             "title": "LLM Powered Autonomous Agents",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2023-06-23-agent/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-06-23-agent/"
           },
           {
             "title": "Adversarial Attacks on LLMs",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2023-10-25-adv-attack-llm/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-10-25-adv-attack-llm/"
           },
           {
             "title": "Harness Engineering for Self-Improvement",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2026-07-04-harness/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2026-07-04-harness/"
           },
           {
             "title": "Self-Supervised Representation Learning",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2019-11-10-self-supervised/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2019-11-10-self-supervised/"
           },
           {
             "title": "Contrastive Representation Learning",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2021-05-31-contrastive/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-05-31-contrastive/"
           },
           {
             "title": "Why We Think",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2025-05-01-thinking/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2025-05-01-thinking/"
           },
           {
             "title": "Controllable Neural Text Generation",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2021-01-02-controllable-text-generation/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-01-02-controllable-text-generation/"
           },
           {
             "title": "The Transformer Family Version 2.0",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2023-01-27-the-transformer-family-v2/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-01-27-the-transformer-family-v2/"
           },
           {
             "title": "Policy Gradient Algorithms",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2018-04-08-policy-gradient/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-04-08-policy-gradient/"
           },
           {
             "title": "Anatomize Deep Learning with Information Theory",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2017-09-28-information-bottleneck/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2017-09-28-information-bottleneck/"
           },
           {
             "title": "Predict Stock Prices Using RNN: Part 2",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2017-07-22-stock-rnn-part-2/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2017-07-22-stock-rnn-part-2/"
           },
           {
             "title": "The Multi-Armed Bandit Problem and Its Solutions",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2018-01-23-multi-armed-bandit/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-01-23-multi-armed-bandit/"
           },
           {
             "title": "Predict Stock Prices Using RNN: Part 1",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2017-07-08-stock-rnn-part-1/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2017-07-08-stock-rnn-part-1/"
           },
           {
             "title": "How to Train Really Large Models on Many GPUs?",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2021-09-25-train-large/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-09-25-train-large/"
           },
           {
             "title": "Some Math behind Neural Tangent Kernel",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2022-09-08-ntk/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2022-09-08-ntk/"
           },
           {
             "title": "Learning with not Enough Data Part 1: Semi-Supervised Learning",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2021-12-05-semi-supervised/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-12-05-semi-supervised/"
           },
           {
             "title": "How to Explain the Prediction of a Machine Learning Model?",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2017-08-01-interpretation/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2017-08-01-interpretation/"
           },
           {
             "title": "From Autoencoder to Beta-VAE",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2018-08-12-vae/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-08-12-vae/"
           },
           {
             "title": "Flow-based Deep Generative Models",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2018-10-13-flow-models/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-10-13-flow-models/"
           },
           {
             "title": "Object Detection Part 4: Fast Detection Models",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2018-12-27-object-recognition-part-4/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2018-12-27-object-recognition-part-4/"
           },
           {
             "title": "Thinking about High-Quality Human Data",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2024-02-05-human-data-quality/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2024-02-05-human-data-quality/"
           },
           {
             "title": "Diffusion Models for Video Generation",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2024-04-12-diffusion-video/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2024-04-12-diffusion-video/"
           },
           {
             "title": "Reducing Toxicity in Language Models",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2021-03-21-lm-toxicity/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2021-03-21-lm-toxicity/"
           },
           {
             "title": "Scaling Laws, Carefully",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2026-06-24-scaling-laws/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2026-06-24-scaling-laws/"
           },
           {
             "title": "Learning with not Enough Data Part 3: Data Generation",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2022-04-15-data-gen/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2022-04-15-data-gen/"
           },
           {
             "title": "Large Transformer Model Inference Optimization",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2023-01-10-inference-optimization/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2023-01-10-inference-optimization/"
           },
           {
             "title": "Generalized Language Models",
-            "url": "https://xingshuozhu1998.github.io/en/posts/2019-01-31-lm/"
+            "url": "https://xingshuozhu1998.github.io/lilianweng/en/posts/2019-01-31-lm/"
           }
         ]
       }
     ],
-    "visual_inspection": "主代理查看正式站策略梯度文章的桌面和手机截图，标题、作者/原文链接、蓝色更新说明、目录及正文样式正常。"
+    "visual_inspection": "主代理查看新地址的手机截图，并检查6页浏览器报告：中文排版、图片、公式、目录、语言切换与中英文搜索均通过。"
   },
   "path_migration": {
     "from_site": "https://xingshuozhu1998.github.io/",
     "to_site": "https://xingshuozhu1998.github.io/lilianweng/",
     "method": "将本次创建的个人主页仓库重命名为lilianweng项目仓库；完整保留提交、源码、译文、发布分支；重建全部链接与元数据。",
     "translation_changes": false,
-    "status": "in_progress",
+    "status": "complete",
     "local_validation": {
       "passed_posts": 52,
       "errors": 0,
       "pages": 374,
       "url_prefix": "/lilianweng"
-    }
+    },
+    "verified_at": "2026-10-05T07:15:04.358723+00:00",
+    "root_and_existing_sites": [
+      {
+        "url": "https://xingshuozhu1998.github.io/",
+        "http_status": 404
+      },
+      {
+        "url": "https://xingshuozhu1998.github.io/llm-atlas/",
+        "http_status": 200,
+        "final_url": "https://xingshuozhu1998.github.io/llm-atlas/"
+      },
+      {
+        "url": "https://xingshuozhu1998.github.io/linux-c-one-stop/",
+        "http_status": 200,
+        "final_url": "https://xingshuozhu1998.github.io/linux-c-one-stop/"
+      }
+    ],
+    "new_repository": "https://github.com/xingshuozhu1998/lilianweng",
+    "deployment_commit": "ac51c9c6bfe834d945cbd7a176556a02893885a3",
+    "new_site_checked_urls": 119,
+    "old_root_released": true
   }
 }
